@@ -1,0 +1,71 @@
+#Understanding Data
+
+---
+
+##What Does Data Look Like?
+
+The data that we look at typically take the format of a "spreadsheet" with rows and columns. The table below shows some characteristics of four randomly drawn passengers from the Titanic, in this type of spreadsheet format.
+
+```{r echo=FALSE}
+knitr::kable(titanic[c(13, 1238, 2, 306),], row.names=FALSE)
+```
+
+Clearly, we can see variation in who survived and died, the passenger classes they were housed in, gender, and age. We also have a measure of the fare they paid for the trip (in English pounds) and the number of family members traveling with them. To understand how to think about data, we need to understand the concepts of an **observation** and a **variable** and the distinction between them. 
+
+###The observations
+The **observations** are what you have on the rows of your dataset. In the Titanic example, the observations are individual passengers on board the Titanic, but observations can take many different forms. 
+
+We use the term unit of analysis to distinguish what kind of observation you have in your dataset. If you are interviewing individual people and recording their responses, then the unit of analysis is individual people. If you are collecting cross-national data by country, then the unit of analysis would be a country. If you are analyzing data on the "best colleges in the US" then the unit of analysis is a university/college. The most common unit of analysis that we will see in this course is an individual person, but several of our datasets involve other units of analysis and it is important to keep in mind that an observation can be many different kinds of things. 
+
+###The variables
+The **variables** are what you have on the columns of your dataset. Variables measure specific attributes of your observations. If you conduct a survey of individual people and ask them for their age, gender, and education, then these three attributes would be recorded as variables in your dataset. We refer to them as "variables" because they can take different values across the observations. If you were to conduct a survey of individual people and ask your respondents if they are human, then you probably wouldn't have a proper variable because everyone would likely respond "yes" and there would be no variation (although we can't necessarily rule out [jedis](https://en.wikipedia.org/wiki/Jedi_census_phenomenon). 
+
+There are two major types of variables. Some variables measure quantities of something and thus can be represented by a number. We refer to these as **quantitative variables**. Other variables indicate a category to which the observation belongs. We refer to these as **categorical variables**. 
+
+####Quantitative variables
+Quantitative variables measure quantities of something. A person's height, a worker's hourly wage, the number of children that a woman has given birth to, a country's gross domestic product, a US State's poverty rate, and the percent of a university's student body that are women are all examples of quantitative variables. They can all be represented by a number which indicates how much of the thing the observation has. 
+
+There are two important sub-types of quantitative variables. **Discrete variables** can logically only take certain values within a range, while **continuous variables** can logically take any value within a range. The most common example of a discrete variable is a count variable. The number of children that a woman has given birth to is an example of a count variable. This number can only take the value of whole numbers (integers) such as 0, 1, 2, 3, and so on. It makes no sense if a respondent says they have given birth to 2.5 children. Count variables are discrete variables because only whole numbers are logical responses.
+
+A person's height is an example of a continuous variable. It is true that we typically measure height only down to a certain level of precision, typically inches in the United States. We might think that if we were to measure a person's height in inches, it would only take whole number values and therefore it is discrete. But limitations in measurement don't define whether a variable is continuous or discrete. Rather the distinction is whether the value could be logically measured to any degree of accuracy. We often measure height out to half inches and we could imagine that if we have a precise enough measurement instrument, we could measure a person's height out to any decimal level that we desired. So, it is perfectly sensible for someone to say they were 69.825467 inches tall, even though we might think they are being a bit tedious. 
+
+Note that in both the height and the number of children examples, there are logical limits to the values. You can't have negative children or height. There are no exact upper limits to the values that either can take, but we would likely think we have a data coding error if we saw a report of a 20 foot person or a woman who gave birth to 50 children. This is what I mean by the statement "within a range" above. Both discrete and continuous variables can be limited in the range of values that they can take. What distinguishes them from each other is what values they can logically take within that limited range.   
+
+####Categorical variables
+Categorical variables are not represented by numerical quantities but rather by a set of mutually exclusive categories to which observations can belong. The gender, race, political party affiliation, and highest educational degree of a person, the public/private status of a university, and the passenger class of a passenger on the Titanic are all examples of categorical variables.
+
+There are also two sub-types of categorical variables. **Ordinal variables** are categorical variables where the categories have an explicit ordered structure, while **nominal variables** are categorical variables where the categories are unordered.  Highest educational degree is an example of an ordinal variables because it is ordered such that Graduate Degree > BA Degree > AA Degree > High School Diploma > No degree. Passenger class is also an ordinal variables that starts in Third class (or steerage - Think Leonardo DiCaprio) and ends in First class (think Kate Winslet), with a Second class in between.
+
+Race, gender, and political party affiliation are all examples of nominal variables. The categories here have no ordering to them. While some people might have their own political party preferences, these sort of normative evaluations of categories are irrelevant. For the same reason, even the variable of survival on the Titanic is a nominal variable.  We don't judge the value of life and death.
+
+---
+
+##What Can We Do With Data?
+
+We now know what data looks like, but what do social scientists do with data? Most of what will learn in this class can be divided into three categories, and those categories cover most of the ways that social scientists use data.
+
+###How is a variable distributed?
+
+Sometimes, we just want to understand what a single variable "looks like." We may simply be interested in its "average" or we may want to know something else, like how spread out the values of the variable are. In these cases, we calculate **univariate** ("one variable) statistics on the **distribution** of a variable. Typically, univariate statistics aren't as interesting to social scientists as the measures of association discussed below, but even then its often a good idea to look at univariate statistics to understand all of the variables in your research. In some cases, the calculation of a univariate statistics is the important question at hand. For example, when poll researchers try to figure out who is going to win an election, they are very much interested in the univariate distribution of support for each candidate, which gives the proportions of likely voters who intend to vote for each candidate. Here are some other questions we could ask in our data:
+
+- How much variability is there in the amount of money that movies make?
+- What percent of passengers survived the Titanic disaster?
+- What is the average age of voters in the United States?
+
+###Measuring association
+Social scientists are often most interested in the relationships, or **association**, between two or more variables. These associations allow us to test hypotheses about causal relationships between underlying social constructs. For example, we might be interested in whether divorce affected children's well-being. In this case, we would want to look at the relationship between the categorical variable indicating whether a child's parents were divorced and some measure of their well-being, such as feelings of stress, academic performance, etc. There are different ways of measuring association depending on the types of variables involved. Here are some questions about association we could ask in our data:
+
+- Did the probability of surviving the Titanic depend on passenger class? (categorical and categorical)
+- Do the earnings of movies vary by genre? (quantitative and categorical)
+- Is income inequality in a state related to its crime rate? (quantitative and quantitative)
+
+Because this is the primary way in which social scientists use data, we will spend the majority of our time in this course on this topic. First, we will learn how to look at the **bivariate** (two variables) association for different combinations of categorical and quantitative variables. Then, in the final section of the course, we will learn how to expand these methods to the case of **multivariate** (more than two) association as well as other techniques that improve our measurement of association. 
+
+Although we are often interested in underlying causal relationships, its important to emphasize that observing association between two or more variables does not in and of itself indicate that they are causally related or even the direction of the relationship. This is a topic we will discuss in more detail later. 
+
+###Making statistical inferences
+If I told you that in my sample of twenty people, brown-eyed individuals make $5 more than all other eye colors combined, would you believe me? You probably shouldn't, because in a sample of twenty people, even when drawn without systematic bias, weird results like this are not unlikely just by random chance. If I told you I observed this phenomenon on a well-drawn sample of 20,000 individuals, you would probably be more likely to believe me. 
+
+The underlying concept here is called **statistical inference**. We often want to draw conclusions about the larger populations from which our samples are drawn. Statistical inference is the technique of quantifying how uncertain we are about whether our data are similar to the population or not. When you hear press reports on political polls with the term "margin of error," they are referring to statistical inference. 
+
+Many introductory statistics course focus most of their attention on statistical inference, partly because it is more abstract and complex. However, statistical inference is always secondary to the basic descriptive measures of univariate, bivariate, and multivariate statistics. Therefore, I spend considerably less time on this topic than in most statistics courses, so that we can focus on the more important stuff. 

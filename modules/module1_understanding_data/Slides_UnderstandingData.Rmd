@@ -1,0 +1,185 @@
+---
+title: "Understanding Data"
+author: "Prof. Gullickson, University of Oregon, Winter 2019"
+resource_files:
+- shiny_apps/datasets/app.R 
+output:
+  ioslides_presentation:
+    css: lecture_slides.css
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 6
+    logo: images/slides/logo.png
+    widescreen: yes
+subtitle: Sociology 312, Statistical Analysis
+runtime: shiny
+---
+
+<style type="text/css">
+slides > slide:not(.nobackground):after {
+  content: '';
+}
+</style>
+
+```{r echo=FALSE}
+load("example_datasets/movies/movies.RData")
+load("example_datasets/sex/sex.RData")
+load("example_datasets/crimes/crimes.RData")
+load("example_datasets/titanic/titanic.RData")
+load("example_datasets/politics/politics.RData")
+```
+
+# What Does Data Look Like?
+
+Understanding Data
+
+## The structure of data {.smaller}
+
+<div class="footer">
+<body>Sociology 312, Understanding Data: What Does Data Look Like?</body>
+</div>
+
+Most data looks like a spreadsheet with **observations** on the rows and 
+**variables** on the columns. 
+
+>- Observations are the units from which you are taking measurements. The **unit of analysis** indicates the kind of observation that you have (e.g. individual people, countries, universities, etc.).
+>- Variables measure specific attributes of your observations. Variables can either be **categorical** or **quantitative**.
+
+```{r echo=FALSE}
+knitr::kable(titanic[c(13, 1238, 2, 306),], row.names=FALSE)
+```
+
+## Units of Analysis
+
+<div class="footer">
+<body>Sociology 312, Understanding Data: What Does Data Look Like?</body>
+</div>
+
+1. Titanic data
+2. State-level crime data from the FBI
+3. Cross-national data on environmental degradation
+4. Data on the frequency of sexual assault on college campuses
+
+***What is the unit of analysis in each case?***
+
+>1. Individual passengers
+>2. States
+>3. Countries
+>4. Universities
+
+## Quantitative Variables
+
+<div class="footer">
+<body>Sociology 312, Understanding Data: What Does Data Look Like?</body>
+</div>
+
+A quantitative variable measures quantities of something. A quantitative variable is always represented as a number. There are two types of quantitative variables:
+
+>- A **discrete** variable can only take certain values within a range. The most common cases are variables that count things and thus can only be represented by positive whole numbers. Examples are the number of children or the number of violent crimes.
+>- A **continuous** variable can take any value within a given range. Examples include age and height. In practice, we often only measure these variables to a certain decimal level (half inches for height, whole numbers for age), but we could theoretically measure them more precisely with better instruments. 
+
+## Categorical Variables
+
+<div class="footer">
+<body>Sociology 312, Understanding Data: What Does Data Look Like?</body>
+</div>
+
+Categorical variables indicate which category an observation belongs to from a mutually exclusive set of categories. There are also two types of categorical variables:
+
+>- An **ordinal** variable is a categorical variables whose values have a clear ordering. Examples include highest degree received and passenger class on the Titanic.
+>- A **nominal** variable is a categorical variable whose values are unordered. Examples include gender, race, and political party. 
+
+## What types of variables do we have? {.smaller}
+
+<div class="footer">
+<body>Sociology 312, Understanding Data: What Does Data Look Like?</body>
+</div>
+
+```{r echo=FALSE}
+knitr::kable(titanic[c(13, 1238, 2, 306),], row.names=FALSE)
+```
+
+>- **survival:** survival is a nominal variable.
+>- **sex:** sex is a nominal variable.
+>- **age:** age is a continuous variable.
+>- **agegroup:** age group is an ordinal variable.
+>- **pclass:** Passenger class is an ordinal variable.
+>- **fare:** fare paid is a continuous variable (sort of). 
+>- **family:** number of family members is a discrete variable.
+
+# Example Datasets
+Understanding Data
+
+## Working with datasets
+<div class="footer">
+<body>Sociology 312, Understanding Data: Example Datasets</body>
+</div>
+
+
+Throughout the term, we will work with several datasets as examples in class and in the module quizzes. The Canvas site has a [detailed page](https://canvas.uoregon.edu/courses/8808/pages/example-datasets?module_item_id=1558805) on these datasets where you can download versions of the datasets that will load easily into RStudio.
+
+>- Titanic: Data on passengers from the Titanic.
+>- Crime: state-level data on violent and property crime rates and demographic information from the FBI.
+>- Politics: Individual level data from the 2012 National Election Study (NES) on political views, party affiliation, and voting preferences.
+>- Sex: Individual level data from the 2004 General Social Survey in which respondents were asked about the frequency of sexual intercourse.
+>- Movies: Data on specific movies from 2000-2013 from the iMDB and Rotten Tomatoes.
+
+----
+<div class="footer" style="top:575px;">
+<body>Sociology 312, Understanding Data: Example Datasets</body>
+</div>
+
+```{r echo=FALSE}
+shinyAppDir(
+  "shiny_apps/datasets",
+  options=list( width="100%", height=700)
+)
+```
+
+
+# What Can We Do With Data?
+Understanding Data
+
+## We have data, now what?
+
+<div class="footer">
+<body>Sociology 312, Understanding Data: What Can We Do With Data?</body>
+</div>
+
+Data analysis is the process of making sense of data. It is by no means a simple endeavor and can take many forms. We will focus on three of the most common kinds of questions that a person can ask of statistical data:
+
+>- How is a variable **distributed**?
+>- What is the **association** between two or more variables?
+>- How do I know I can **trust** that the conclusions I derive from my data are not just the result of **random chance**?
+
+## The distribution of a variable
+
+<div class="footer">
+<body>Sociology 312, Understanding Data: What Can We Do With Data?</body>
+</div>
+
+In some cases, I might simply be interested in the **distribution** of a variable. We refer to these kinds of measures as **univariate statistics** where "univariate" is a fancy way to say "one variable."
+
+>- How much variability is there in the amount of money that movies make?
+>- What percent of passengers survived the Titanic disaster?
+>- What is the average age of voters in the United States?
+
+## Measuring association
+<div class="footer">
+<body>Sociology 312, Understanding Data: What Can We Do With Data?</body>
+</div>
+
+We are generally most interested in questions about the relationship or association between two or more variables than in a single variable itself. There are multiple ways to measure this association, depending on the type of variables involved. 
+
+>- Did the probability of surviving the Titanic depend on passenger class?
+>- Do the earnings of movies vary by genre?
+>- Is income inequality in a state related to its crime rate?
+
+## Making statistical inferences
+<div class="footer">
+<body>Sociology 312, Understanding Data: What Can We Do With Data?</body>
+</div>
+
+>- If I told you that in a sample of twenty people, brown-eyed individuals made $5 more an hour than people with other eye color, would you believe that I had found an important source of inequality? 
+>- Probably not, because with a sample that small, its possible to get unusual results like this just because of the sample you happened to draw. 
+>- Statistical inference is the technique of quantifying how uncertain we are about our statistical results. It allows us not only to summarize our data, but give a sense of how well we think that data might represent the larger population from which we drew our sample. 

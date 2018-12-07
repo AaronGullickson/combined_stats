@@ -1,0 +1,89 @@
+---
+title: "Sex Dataset"
+author: |
+ | Sociology 312, University of Oregon
+ | Prof. Gullickson
+output: 
+  pdf_document: 
+    fig_height: 3.5
+    fig_width: 5
+    number_sections: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(stargazer)
+load("sex.RData")
+```
+
+#Overview
+
+These data come from a special supplemental questionnaire that was added to the [General Social Survey](http://gss.norc.org/) (GSS) in 2004. The GSS is a survey of attitudes that is conducted every two years by the National Opinion Research Council (NORC).  In the 2004 supplement, respondents were asked questions about their sexual behavior. We will be looking specifically at respondents reported frequency of sexual activity and its relationship to demographic characteristics such as age, education, and marital status. 
+
+Table 1 provides summary statistics for all the quantitative variables in the sex data. 
+
+```{r results='asis', echo=FALSE}
+stargazer(sex, summary.stat=c("n","mean","sd","min","p25","median","p75","max"), header=FALSE, 
+          digit.separate = 0,
+          type="latex", title="Summary statistics for all quantitative variables in the sex dataset")
+```
+
+#Variable Descriptions
+
+##sexf
+
+The sequal frequency response was coded as an ordinal scale variable in which respondents were given a set of options from less to more sexual activity in the previous year. For our purposes, I have recoded the ordinal sexfreq variable into a quantitative variable by giving everyone the midpoint number of sexual acts per year based upon their answer. For example, individuals who said (2 or 3 times a month) were given a value of $2.5*12=30$. This will allow us to use sexual frequency as a dependent variable in regression models.
+
+```{r echo=FALSE, fig.align='center'}
+hist(sex$sexf, breaks=c(seq(from=0, to=160, by=20)), col="skyblue", las=1, cex.main=0.8,
+     main="Histogram of sexual frequency per year", xlab="sexual acts per year", ylab="frequency")
+```
+
+##age
+
+The age of the respondent. The GSS only surveys adults aged 18 years and older. 
+
+```{r echo=FALSE, fig.align='center'}
+hist(sex$age, col="darkgreen", las=1, cex.main=0.8,
+     main="Histogram of age", xlab="age", ylab="frequency")
+```
+
+##gender
+
+The gender of the respondent. There are more women than men in the population because women have longer life expectancies than men. 
+
+```{r echo=FALSE, fig.align='center'}
+barplot(table(sex$gender), col="yellow", las=1, cex.main=0.8, cex.names=0.75,
+        main="Gender of respondent", ylab="frequency")
+```
+
+##educ
+
+Years of education for the respondent. I have drawn the histogram at single year intervals to 
+make the spikes at certain educational transitions (12,14,and 16 in particular) prominent. 
+
+```{r echo=FALSE, fig.align='center'}
+hist(sex$educ, breaks=seq(from=0,to=22,by=1), col="orange",
+     las=1, cex.main=0.8,
+     main="Histogram of years of education", xlab="years of education", ylab="frequency")
+```
+
+##marital
+
+The marital status of respondents. This is likely an important predictor of sexual activity because marital status is a strong predictor of the availability of a willing partner. 
+
+```{r echo=FALSE, fig.align='center'}
+barplot(table(sex$marital), col="pink", las=1, cex.main=0.8, cex.names=0.7,
+        main="Marital status of respondent", ylab="frequency")
+```
+
+##relig
+
+The religious affiliation of the respondent. Protestants have been divided into "mainline" and "fundamentalist" based on a coding of specific denominations used by the GSS.
+
+```{r echo=FALSE, fig.align='center'}
+barplot(table(sex$relig), col="slategrey", las=1, cex.main=0.8, cex.names=0.6,
+        main="Religious affiliation of respondent", ylab="frequency",
+        names.arg=c("Fund.\nProtestant","Main.\nProtestant","Catholic",
+                    "Jewish","Other","None"))
+```

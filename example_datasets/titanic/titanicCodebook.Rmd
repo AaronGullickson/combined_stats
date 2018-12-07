@@ -1,0 +1,96 @@
+---
+title: "Titanic Dataset"
+author: |
+ | Sociology 312, University of Oregon
+ | Prof. Gullickson
+output: 
+  pdf_document: 
+    fig_height: 3.5
+    fig_width: 5
+    number_sections: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(stargazer)
+load("titanic.RData")
+```
+
+#Overview
+
+The titanic data contain information on all 1,309 passengers aboard the Titanic. The data do not include information about the crew. The data primarily come from the online database, [Encyclopedia Titanica](http://www.encyclopedia-titanica.org/). 
+
+
+Table 1 provides summary statistics for all the quantitative variables in the movie data. 
+
+```{r results='asis', echo=FALSE}
+stargazer(titanic, summary.stat=c("n","mean","sd","min","p25","median","p75","max"), header=FALSE, 
+          digit.separate = 0,
+          type="latex", title="Summary statistics for all quantitative variables in the titanic dataset")
+```
+
+#Variable Descriptions
+
+##survival
+
+Whether or not the passenger survived. The original entry in the Encyclopedia Titanica, goes as far as giving the unique number id assigned to each body (for those who died) and the boat number (of those who survived). We will leave out those morbid details and just focus on whether a person survived or died. 
+
+```{r echo=FALSE, fig.align='center'}
+barplot(summary(titanic$survival), col="red", las=1, cex.main=0.8, cex.names=0.75,
+        main="Distribution of Survival", ylab="frequency")
+```
+
+##sex
+
+The reported sex of the passenger. This is a straightforward nominal variable. There were a lot more male passengers than female passengers, although most of this discrepancy is among third class passengers who were largely male labor migrants.
+
+```{r echo=FALSE, fig.align='center'}
+barplot(summary(titanic$sex), col="blue", las=1, cex.main=0.8, cex.names=0.75,
+        main="Distribution of Sex", ylab="frequency")
+```
+
+##age
+
+The age of the person. This variable is reported in whole numbers for those over one year old and as a decimal (based on months of age) for infants under a year of age. The age of passengers is not known in all cases, age is missing or about 20% of passengers. I have used adanced techniques to impute valid values for all missing values. 
+
+```{r echo=FALSE, fig.align='center'}
+hist(titanic$age, breaks=c(seq(from=0, to=80, by=5)), col="skyblue", las=1, cex.main=0.8,
+     main="Histogram of age", xlab="age", ylab="frequency")
+```
+
+##agegroup
+
+A categorical variable indicating whether the person was an adult or a child. I have constructed this variable from the age variable. The cutoff for adults is sixteen years of age. 
+
+```{r echo=FALSE, fig.align='center'}
+barplot(summary(titanic$agegroup), col="green", las=1, cex.main=0.8, cex.names=0.75,
+        main="Distribution of age groups", ylab="frequency")
+```
+
+#pclass
+
+The passenger class of the passenger. There were three passenger classes: First, second, and third (also known as steerage). To give some pop culture references, Rose was first class, and Jack was third class. Most of the passengers were in third class. 
+
+```{r echo=FALSE, fig.align='center'}
+barplot(summary(titanic$pclass), col="gold", las=1, cex.main=0.8, cex.names=0.75,
+        main="Distribution of passenger class", ylab="frequency")
+```
+
+##fare
+
+The fare paid for this passenger's ticket. This is measured in British pounds. Obviously, this will vary substantially by passenger class, but also varies within each class. This variable is heavily right skewed. 
+
+
+```{r echo=FALSE, fig.align='center'}
+hist(titanic$fare, breaks=c(seq(from=0, to=550, by=25)), col="darkgreen", las=1, cex.main=0.8,
+     main="Histogram of fare paid", xlab="fare (British pounds)", ylab="frequency")
+```
+
+##family
+
+The number of family members traveling with the passenger. These family members can either be parents, spouses, siblings, or children. 
+
+```{r echo=FALSE, fig.align='center'}
+hist(titanic$family, breaks=c(seq(from=0, to=10, by=1)), col="yellow", las=1, cex.main=0.8,
+     main="Histogram of family", xlab="number of family members", ylab="frequency")
+```

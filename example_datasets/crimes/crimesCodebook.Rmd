@@ -1,0 +1,118 @@
+---
+title: "Crimes Dataset"
+author: |
+ | Sociology 312, University of Oregon
+ | Prof. Gullickson
+output: 
+  pdf_document: 
+    fig_height: 3.5
+    fig_width: 5
+    number_sections: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(stargazer)
+load("crimes.RData")
+```
+
+#Overview
+
+The crimes data contain information on crime rates and demographic variables for all fifty US states and the District of Columbia. The crime rates are for the year 2010 and come from the FBI's [Uniform Crime Reports](https://www.fbi.gov/about-us/cjis/ucr/ucr) (UCR). The UCR is a program where local law enforcement agencies all report crime statistics to the FBI and these are aggregated into final crime statistics. For our purposes, we are dividing crimes into two main categories of violent and property crime.
+
+The demographic characteristics come from the [American Community Survey](https://www.census.gov/programs-surveys/acs/) (ACS) between the years 2008 and 2012. The ACS is an annual sample of the US population. To get a large enough sample in each state to calculate correct statistics (with little sampling error), I combine five years of data that are "centered"" on 2010. 
+
+Table 1 provides summary statistics for all the variables in the crime dataset. 
+
+```{r results='asis', echo=FALSE}
+stargazer(crimes, summary.stat=c("n","mean","sd","min","p25","median","p75","max"), header=FALSE, 
+          digit.separate = 0, digits=1, 
+          type="latex", title="Summary statistics for all quantitative variables in the crimes dataset")
+```
+
+#Variable Descriptions
+
+##Violent
+
+The violent crime rate. This includes the crimes of murder, rape, robbery, and aggravated assault. Both of our crime rates are determined by taking the number of crimes and dividing by the population of the state and then multiplying by 100,000 like so:
+
+$$\frac{crimes}{population}*100,000$$
+
+The multiplication by 100,000 is just a convenience because otherwise the crime rates are very small numbers. We can interpret our crime rate as the number of violent crimes per year per 100,000 population. 
+
+```{r echo=FALSE, fig.align='center'}
+hist(crimes$Violent, col="red", breaks=seq(from=100,to=1400,by=100),
+     xlab="crime rate per 100,000", main="histogram of violent crime rate", ylab="frequency")
+```
+
+##Property
+
+The property crime rate. This includes the crimes of burglarly, larceny, and motor vehicle theft. Like the violent crime rate, the property crime rate can be intrepreted as the number of property crimes per year per 100,000 population. 
+
+```{r echo=FALSE, fig.align='center'}
+hist(crimes$Property, col="darkgreen", breaks=seq(from=1500,to=5000,by=100),
+     xlab="crime rate per 100,000", main="histogram of property crime rate", ylab="frequency")
+```
+
+##MedianAge
+
+The median age of the population in the state. This is potentially important because we know that criminal behavior is strongly related to age. People commit far less crime as they get older. Can you guess what the youngest state is? (hint: populations tend to be younger when fertility is higher) 
+
+```{r echo=FALSE, fig.align='center'}
+hist(crimes$MedianAge, col="skyblue", breaks=seq(from=25,to=45,by=1),
+     xlab="median age", main="histogram of median age", ylab="frequency")
+```
+
+##PctMale
+
+The percent of the state population that is male. We know that men commit more crime than women, so this may be a useful variable. 
+
+```{r echo=FALSE, fig.align='center'}
+hist(crimes$PctMale, col="yellow", breaks=seq(from=47,to=53,by=0.5),
+     xlab="Percent male", main="histogram of percent male", ylab="frequency")
+```
+
+##PctLessHS
+
+The percent of the state population over the age of 25 without a high school diploma. We limit to age 25 here to allow for people who may still be in the schooling process. 
+
+```{r echo=FALSE, fig.align='center'}
+hist(crimes$PctLessHS, col="grey",
+     xlab="Percent with no HS diploma", main="histogram of percent less than HS", ylab="frequency")
+```
+
+##MedianIncomeHH
+
+Median household income in the state. This is measured in thousands of dollars (i.e. 35 means $35,000). We are taking the income of each household (meaning all members of that household combined) rather than individual level income. For most purposes, this is thought to be a better measure because consumption and savings are typically organized at the household level. 
+
+```{r echo=FALSE, fig.align='center'}
+hist(crimes$MedianIncomeHH, col="green", breaks=seq(from=35, to=75, by=5),
+     xlab="Median household income", main="histogram of median household income", ylab="frequency")
+```
+
+##Unemployment
+
+The unemployment rate in the state. The unemployment "rate" is really just a percentage. Its the percentage of individuals who are not working but want to work among all those in the labor force (those who are working or looking for work).
+
+```{r echo=FALSE, fig.align='center'}
+hist(crimes$Unemployment, col="brown", 
+     xlab="Unemployment rate (percent)", main="histogram of unemployment rate", ylab="frequency")
+```
+
+##Poverty
+
+The individual poverty rate in the state. The poverty "rate" is also really just a percentage. It is the percent of individuals living below the poverty line. The poverty line is a number developed by the [federal government](https://www.healthcare.gov/glossary/federal-poverty-level-FPL/). It was originally developed in the 1960s and is adjusted for inflation every year. Many people critique the poverty line as being too low because it has not kept pace with increases in the consumer price index. 
+
+```{r echo=FALSE, fig.align='center'}
+hist(crimes$Poverty, col="tomato", breaks=seq(from=5,to=25, by=1),
+     xlab="Poverty rate (percent)", main="histogram of poverty rate", ylab="frequency")
+```
+
+##Gini
+
+The gini coefficient which measures income inequality in a state. The gini coefficient is a widely used measure of how unequally income is distributed. If gini is zero, then everyone has exactly the same income. If gini is 100, then one person makes all the money and everyone else zero. The higher the gini coefficient, the more income inequality exists. You can get a more detailed description [here](https://en.wikipedia.org/wiki/Gini_coefficient). 
+
+```{r echo=FALSE, fig.align='center'}
+hist(crimes$Gini, col="purple", breaks=seq(from=40,to=54, by=1),
+     xlab="Gini coefficient", main="histogram of the gini coefficient", ylab="frequency")
+```

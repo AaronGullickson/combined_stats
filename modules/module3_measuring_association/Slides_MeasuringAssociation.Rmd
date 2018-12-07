@@ -1,0 +1,619 @@
+---
+title: "Measuring Association"
+author: "Prof. Gullickson, University of Oregon, Winter 2019"
+resource_files:
+- shiny_apps/influentialpoints/app.R
+- shiny_apps/reducerss/app.R
+- shiny_apps/scatterplot/app.R
+output:
+  ioslides_presentation:
+    css: lecture_slides.css
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 6
+    logo: images/slides/logo.png
+    widescreen: yes
+subtitle: Sociology 312, Statistical Analysis
+runtime: shiny
+---
+
+<style type="text/css">
+slides > slide:not(.nobackground):after {
+  content: '';
+}
+</style>
+
+```{r echo=FALSE}
+load("example_datasets/movies/movies.RData")
+load("example_datasets/sex/sex.RData")
+load("example_datasets/crimes/crimes.RData")
+load("example_datasets/titanic/titanic.RData")
+load("example_datasets/politics/politics.RData")
+```
+
+# Overview
+Measuring Association
+
+## Thinking about Association
+<div class="footer">
+<body>Sociology 312, Measuring Association: Overview</body>
+</div>
+
+The primary goal of most social science statistical analysis is to establish whether there is an association between variables and to describe the strength and direction of this association.
+
+>- Is income inequality in a country related to life expectancy?
+>- Do stronger networks predict better success at finding jobs for job seekers?
+>- Does population size and growth predict environmental degradation? 
+>- How does class affect party affiliation and voting?
+
+## Association vs. Causation
+<div class="footer">
+<body>Sociology 312, Measuring Association: Overview</body>
+</div>
+
+We often think about the relationships we observe in data as being causally determined, but the simple measurement of association is insufficient to establish a necessary causal connection between the variables.
+
+>- **Spuriousness**: The association between two variables could be generated because they are both related to a third variable that is actually the cause. For example, height is related to children's test scores but this is because older children both score higher and are taller. 
+>- **Reverse causality**: We may think that one variable causes the other, but it is equally possible that the causal relationship is the other way. For example, we know that there is a correlation between red meat consumption and aggression, but is this because red meat makes you more aggressive or more aggressive people eat more red meat? 
+
+## Different Methods for Measuring Association
+<div class="footer">
+<body>Sociology 312, Measuring Association: Overview</body>
+</div>
+
+>- Two categorical variables: The **two-way table**
+>- Categorical variable and a quantitative variable: **mean differences**
+>- Two quantitative variables: The **correlation coefficient** and the **bivariate OLS regression line**
+>- Multiple quantitative and/or categorical variables: The **multivariate OLS regression model** (last module of the course)
+
+# The Two-Way Table
+Measuring Association
+
+## The Two-Way Table {.smaller}
+<div class="footer">
+<body>Sociology 312, Measuring Association: The Two-Way Table</body>
+</div>
+
+The **two-way table** gives the **joint distribution** of two categorical variables. The two-way table is also called a **cross-tabulation** or crosstab for short. Here is the two-way table between sex and survival on the titanic, calculated using the `table` command in *R*:
+
+```{r}
+tab <- table(titanic$sex, titanic$survival)
+tab
+```
+
+There were `r tab[1,1]` female survivors, `r tab[1,2]` female deaths, and so on. 
+
+Our primary interest in the two-way table is to understand the relationship between the two variables. You can probably get a sense of the relationship already, but we need a way to formally assess it.
+
+## Marginal Distributions in the Two-Way Table {.smaller}
+<div class="footer">
+<body>Sociology 312, Measuring Association: The Two-Way Table</body>
+</div>
+
+A first step in establishing the relationship is to calculate the **marginal distributions** of the row and column variables. The marginal distributions are simply the distributions of each categorical variable separately. We can calculate these from our table using the `margin.table` command in *R*:
+```{r}
+margin.table(tab,1)
+margin.table(tab,2)
+```
+Note that the the option `1` here gives me the row marginal and the option `2` gives me the column marginal.
+
+## Full two-way table
+<div class="footer">
+<body>Sociology 312, Measuring Association: The Two-Way Table</body>
+</div>
+
+Sex     Survived    Died   Total
+------  ---------   ----  ----------
+Female  339         127     466 
+Male    161         682     843
+Total   500         809     1309
+
+>- We now have the full two-way table which includes the joint distribution, the two marginal distributions, and the **grand total** which is the number of observations (1309).
+
+## Conditional Distributions
+<div class="footer">
+<body>Sociology 312, Measuring Association: The Two-Way Table</body>
+</div>
+
+>- In order to figure out the association between the two variables, we need to calculate the distribution of one variable conditional on the other. 
+>- the conditional distribution is just the distribution of one variable at the different categories of the other variable.
+>- Because the number of observations may differ across categories, it is important that we calculate this distribution by proportion rather than frequency. 
+
+## The Distribution of Survival Conditional on Sex
+<div class="footer">
+<body>Sociology 312, Measuring Association: The Two-Way Table</body>
+</div>
+
+To calculate the distribution of survival conditional on sex, divide through the rows by the marginal distribution of sex:
+
+Sex     Survived    Died      Total
+------  ---------   --------  ----------
+Female  339/466     127/466   466 
+Male    161/843     682/843   843
+Total   500         809       1309
+
+## The Distribution of Survival Conditional on Sex
+<div class="footer">
+<body>Sociology 312, Measuring Association: The Two-Way Table</body>
+</div>
+
+To calculate the distribution of survival conditional on sex, divide through the rows by the marginal distribution of sex:
+
+Sex     Survived    Died      Total
+------  ---------   --------  ----------
+Female  0.727       0.273     1.0
+Male    0.191       0.809     1.0
+
+>- Note that the rows now sum to 1, which indicates that we did it right.
+>- You must read the distributions across the rows.
+    - 72.7% of women survived the Titanic and 27.3% died.
+    - 19.1% of men survived the Titanic and 80.9% died.
+>- Clearly, the two variables are related: Women were substantially more likely to survive the Titanic than men.
+
+## Conditional Distributions in *R*
+<div class="footer">
+<body>Sociology 312, Measuring Association: The Two-Way Table</body>
+</div>
+
+You can easily calculate conditional distributions in *R* using the `prop.table` command on a created table:
+
+```{r}
+prop.table(tab,1)
+```
+
+Note that I could have calculated the conditional distribution the other way by using `2` rather than `1` in the command. We will return to this later. 
+
+## Visualizing Differences with Barplots
+
+```{r fig.width=6, fig.height=4.25, out.width='600px', out.height='425px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+barplot(t(prop.table(tab,1)), beside=TRUE, ylim=c(0,1), col=c("darkgreen","yellow"),
+        main="Distribution of Survival conditional on Sex")
+legend(1, 1, legend=c("Survived","Died"), fill=c("darkgreen","yellow"))
+```
+
+## The Other Conditional Distribution
+<div class="footer">
+<body>Sociology 312, Measuring Association: The Two-Way Table</body>
+</div>
+
+I could have calculated the distribution of gender conditional on passenger class:
+
+```{r}
+prop.table(tab,2)
+```
+
+Note that these now sum to one down the columns rather than across the rows. What do the numbers tell me?
+
+
+## Which is better?
+<div class="footer">
+<body>Sociology 312, Measuring Association: The Two-Way Table</body>
+</div>
+
+```{r echo=FALSE, fig.width=10, fig.height=5, out.width='1000px', out.height='500px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+par(mfrow=c(1,2))
+barplot(t(prop.table(tab,1)), beside=TRUE, ylim=c(0,1), 
+        col=c("darkgreen","yellow"),
+        main="Distribution of Survival conditional on Sex")
+legend(1, 1, legend=c("Survived","Died"), fill=c("darkgreen","yellow"))
+barplot(prop.table(tab,2), beside=TRUE, ylim=c(0,1), 
+        col=c("darkgreen","yellow"),
+        main="Distribution of Sex conditional on Survival")
+legend(1, 1, legend=c("Female","Male"), fill=c("darkgreen","yellow"))
+```
+
+# The Odds Ratio (Advanced)
+
+## Quantifying the Difference: The Odds Ratio
+<div class="footer">
+<body>Sociology 312, Measuring Association: Odds Ratio</body>
+</div>
+
+>- A 73% vs. 19% chance of survival seems like a big difference, but how can I express the magnitude of the difference?
+>- Subtracting one percent from the other is one option (73-19=54), but this can be misleading because as one percent approaches either 0% or 100%, the difference must get smaller.
+>- I could take a ratio of the two percents (73/19=3.84), but that suffers from the same 100/0 "boundary" problem as the above.
+>- The answer is to convert these probabilities of survival into **odds** and then to take the ratio of these odds. 
+
+## From Probabilities to Odds {.smaller}
+<div class="footer">
+<body>Sociology 312, Measuring Association: Odds Ratio</body>
+</div>
+
+>- The probability measured between 0 and 1 gives the proportion of "successes" one expects out of total attempts.
+>- The odds measures the ratio of successes to failures. It tells you how many successes you expect to get for every one failure. 
+>- For any given probability $p$ measured between (0-1), the corresponding odds $O$ is given by: $$O=\frac{p}{1-p}$$
+>- Lets say a basketball player sinks 80% of her free throws. What is the odds that she will make a given free throw? 
+
+## From Probabilities to Odds {.smaller}
+<div class="footer">
+<body>Sociology 312, Measuring Association: Odds Ratio</body>
+</div>
+- The probability measured between 0 and 1 gives the proportion of "successes" one expects out of total attempts.
+- The odds measures the ratio of successes to failures. It tells you how many successes you expect to get for every one failure. 
+- For any given probability $p$ measured between (0-1), the corresponding odds $O$ is given by: $$O=\frac{p}{1-p}$$
+- Lets say a basketball player sinks 80% of her free throws. What is the odds that she will make a given free throw? $$O=\frac{0.8}{1-0.8}=\frac{0.8}{0.2}=4$$ She will make four free throws for every one that she misses, on average.
+
+## Probabilities to Odds Examples {.smaller}
+<div class="footer">
+<body>Sociology 312, Measuring Association: Odds Ratio</body>
+</div>
+
+Probability    Odds
+-----------    -----
+0.2             0.25
+0.33333         0.50
+0.5             1.00
+0.66667         2.00
+0.75            3.00
+0.9             9.00
+0.95           19.00
+0.99           99.00
+
+## Odds and Odds Ratio of Survival by Sex
+
+>- Women had a 72.7% chance of surviving the Titanic. What are the odds?
+>- $\frac{0.727}{1-0.727}=\frac{0.727}{0.273}=2.663$, 2.663 women survived for every one that died.
+>- Men had a 19.1% chance of surviving the Titanic. What are the odds?
+>- $\frac{0.191}{1-0.191}=\frac{0.191}{0.809}=0.236$, 0.236 men survived for every one that died. In other words, about 1 man survived for every four that died. 
+>- To compare these two odds, we take the **odds ratio** which is simply the ratio of the two odds: $$2.663/0.236=11.3$$
+>- Women's odds of surviving the Titanic were 11 times higher than the odds of men surviving the Titanic. 
+
+## Calculating Odds Ratios with the Cross-Product
+<div class="footer">
+<body>Sociology 312, Measuring Association: Odds Ratio</body>
+</div>
+
+We can calculate the odds ratio without having to calculate all the proportions and odds separately by taking the **cross-product**. To get the cross-product, we multiply the two numbers on the diagonal (bolded below) and divide them by the product of the two other numbers.
+
+Sex     Survived    Died
+------  ---------   ----
+Female  **339**     127   
+Male    161         **682** 
+
+$$\frac{339*682}{161*127}=11.3$$
+
+# Mean Differences
+Measuring Association
+
+## One categorical and one quantitative variable
+<div class="footer">
+<body>Sociology 312, Measuring Association: Mean Differences</body>
+</div>
+
+Looking at the relationship between a categorical and a quantitative variable is relatively straightforward. We are interested in whether the distribution of the quantitative variable is different across different categories of the categorical variable. There are two ways we can do this:
+
+>- We can graphically examine the differences in the distributions using our graphical tools for looking at the shape of a distribution. **Comparative boxplots** are particularly useful for this task. 
+>- We can also just compare summary statistics for each distribution to see if they are different. The most common measure to compare is the mean, but we could also compare the median. If we look at the mean, then we are calculating the **mean difference**. 
+
+## Comparative Boxplots {.smaller}
+<div class="footer">
+<body>Sociology 312, Measuring Association: Mean Differences</body>
+</div>
+
+```{r fig.width=6, fig.height=4.5, out.width='600px', out.height='450px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+boxplot(age~pclass, data=titanic, range=0, ylab="age", col="skyblue",
+        main="boxplots of age by passenger class")
+```
+
+## The relationship between age and survival  {.smaller}
+<div class="footer">
+<body>Sociology 312, Measuring Association: Mean Differences</body>
+</div>
+
+```{r fig.width=6, fig.height=4.5, out.width='600px', out.height='450px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+boxplot(age~survival, data=titanic, range=0, ylab="age", col="skyblue",
+        main="boxplots of age by survival")
+```
+
+## Calculating mean differences
+<div class="footer">
+<body>Sociology 312, Measuring Association: Mean Differences</body>
+</div>
+
+```{r}
+tapply(titanic$age,titanic$survival,mean,na.rm=TRUE)
+30.10-29.15
+```
+
+Those who died on the Titanic were 0.95 years older than those who survived, on average. 
+
+# The Scatterplot and Correlation Coefficient
+Measuring Association
+
+## The Independent and Dependent Variable
+<div class="footer">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+>- The **dependent variable** is typically the variable whose outcome we want to predict. This variable is represented by $y$. 
+>- The **independent variable** is typically the variable that we are thinking of as the predictor of the outcome. This variable is represented by $x$. 
+>- The language implies causation, but we are truly only measuring the association, so the choice of which variable to set as dependent or independent is really a matter of semantics.
+
+## Constructing a Scatterplot
+<div class="footer">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+>- Two-dimensional graph with the independent variable on the x-axis (horizontal) and the dependent variable on the y-axis (vertical). 
+>- For each observation, plot a point on the graph that corresponds to that observation's values of $x$ and $y$.
+
+----
+<div class="footer" style="top:575px;">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+plot(crimes$Unemployment[1],crimes$Property[1],
+     xlim=c(min(crimes$Unemployment),max(crimes$Unemployment)),
+     ylim=c(min(crimes$Property),max(crimes$Property)),
+     xlab="Unemployment Rate",
+     ylab="Property crimes (per 100,000)",
+     main="Scatterplot of Unemployment and Property Crime",
+     pch=21, bg="red",las=1)
+text(crimes$Unemployment[1],crimes$Property[1],
+     label=paste(crimes$State[1],"\n(",
+                 round(crimes$Unemployment[1],1),",",
+                 round(crimes$Property[1],0),")",sep=""),
+                 pos=4, cex=0.8)
+```
+
+----
+<div class="footer" style="top:575px;">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+plot(crimes$Unemployment[1],crimes$Property[1],
+     xlim=c(min(crimes$Unemployment),max(crimes$Unemployment)),
+     ylim=c(min(crimes$Property),max(crimes$Property)),
+     xlab="Unemployment Rate",
+     ylab="Property crimes (per 100,000)",
+     main="Scatterplot of Unemployment and Property Crime",
+     pch=21, bg="red",las=1)
+text(crimes$Unemployment[1],crimes$Property[1],
+     label=paste(crimes$State[1],"\n(",
+                 round(crimes$Unemployment[1],1),",",
+                 round(crimes$Property[1],0),")",sep=""),
+                 pos=4, cex=0.8)
+points(crimes$Unemployment[2],crimes$Property[2],
+       pch=21, bg="red")
+text(crimes$Unemployment[2],crimes$Property[2],
+     label=paste(crimes$State[2],"\n(",
+                 round(crimes$Unemployment[2],1),",",
+                 round(crimes$Property[2],0),")",sep=""),
+                 pos=4, cex=0.8)
+```
+
+----
+<div class="footer" style="top:575px;">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+plot(crimes$Unemployment[1],crimes$Property[1],
+     xlim=c(min(crimes$Unemployment),max(crimes$Unemployment)),
+     ylim=c(min(crimes$Property),max(crimes$Property)),
+     xlab="Unemployment Rate",
+     ylab="Property crimes (per 100,000)",
+     main="Scatterplot of Unemployment and Property Crime",
+     pch=21, bg="red",las=1)
+text(crimes$Unemployment[1],crimes$Property[1],
+     label=paste(crimes$State[1],"\n(",
+                 round(crimes$Unemployment[1],1),",",
+                 round(crimes$Property[1],0),")",sep=""),
+                 pos=4, cex=0.8)
+points(crimes$Unemployment[2],crimes$Property[2],
+       pch=21, bg="red")
+text(crimes$Unemployment[2],crimes$Property[2],
+     label=paste(crimes$State[2],"\n(",
+                 round(crimes$Unemployment[2],1),",",
+                 round(crimes$Property[2],0),")",sep=""),
+                 pos=4, cex=0.8)
+points(crimes$Unemployment[3],crimes$Property[3],
+       pch=21, bg="red")
+text(crimes$Unemployment[3],crimes$Property[3],
+     label=paste(crimes$State[3],"\n(",
+                 round(crimes$Unemployment[3],1),",",
+                 round(crimes$Property[3],0),")",sep=""),
+                 pos=2, cex=0.8)
+```
+
+----
+<div class="footer" style="top:575px;">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+plot(crimes$Unemployment,crimes$Property,
+     xlim=c(min(crimes$Unemployment),max(crimes$Unemployment)),
+     ylim=c(min(crimes$Property),max(crimes$Property)),
+     xlab="Unemployment Rate",
+     ylab="Property crimes (per 100,000)",
+     main="Scatterplot of Unemployment and Property Crime",
+     pch=21, bg="red",las=1)
+text(crimes$Unemployment,crimes$Property,
+     label=crimes$State,
+      pos=3, cex=0.5)
+```
+
+## R Code for Scatterplots {.smaller}
+<div class="footer">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+```{r fig.width=6, fig.height=4, out.width='600px', out.height='400px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+plot(crimes$Unemployment,crimes$Property, xlab="Unemployment Rate",
+     ylab="Property crimes (per 100,000)", pch=21, bg="red",las=1)
+```
+
+## What are we looking for?
+<div class="footer">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+<div class="columns-2">
+```{r echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+plot(crimes$Unemployment,crimes$Property,
+     xlab="Unemployment Rate",
+     ylab="Property crimes (per 100,000)",
+     pch=21, bg="red",las=1)
+```
+
+>- **Direction**: positive ($y$ is high when $x$ is high) or negative ($y$ is low when $x$ is high)?
+>- **Linearity**: Does the relationship look linear or does it "curve?"
+>- **Strength**: Cloud vs a tight line. 
+>- **Outliers**: Particularly concerned about outliers that are contrary to the general trend. These may exert heavy influence on measurements.
+
+</div>
+
+## The Correlation Coefficient {.smaller}
+<div class="footer">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+$$r=\frac{1}{n-1}\sum^n_{i=1} (\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})$$
+
+
+## The Correlation Coefficient {.smaller}
+<div class="footer">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+$$r=\frac{1}{n-1}\sum^n_{i=1} (\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})$$
+
+Lets break this formula down into steps:
+
+- ($x_i-\bar{x}$) and ($y_i-\bar{y}$): **Subtract the mean from each value of x and y to get distance above and below mean.**
+
+## Subtract the mean from $x$ and $y$ {.smaller}
+<div class="footer">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+```{r fig.width=6, fig.height=3.5, out.width='600px', out.height='350px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+diffx <- crimes$Unemployment-mean(crimes$Unemployment)
+diffy <- crimes$Property-mean(crimes$Property)
+par(mar=c(4,4,0.1,2))
+plot(diffx,diffy, pch=21, bg="red", las=1)
+abline(h=0,lty=2)
+abline(v=0,lty=2)
+```
+
+## The Correlation Coefficient {.smaller}
+<div class="footer">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+$$r=\frac{1}{n-1}\sum^n_{i=1} (\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})$$
+
+Lets break this formula down into steps:
+
+- ($x_i-\bar{x}$) and ($y_i-\bar{y}$): Subtract the mean from each value of $x$ and $y$ to get distance above and below mean.
+- $(x_i-\bar{x})/s_x$ and $(y_i-\bar{y})/s_y$: **Divide the difference by the standard deviation of $x$ and $y$. We now have the number of standard deviations above or below the mean.**
+
+## Divide by standard deviations {.smaller}
+<div class="footer">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+```{r fig.width=6, fig.height=3.5, out.width='600px', out.height='350px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+sdx <- diffx/sd(crimes$Unemployment)
+sdy <- diffy/sd(crimes$Property)
+par(mar=c(4,4,0.1,2))
+plot(sdx,sdy, pch=21, bg="red",xlab="SDs from mean of x",  ylab="SDs from mean of y", las=1)
+abline(h=0,lty=2)
+abline(v=0,lty=2)
+```
+
+## The Correlation Coefficient {.smaller}
+<div class="footer">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+$$r=\frac{1}{n-1}\sum^n_{i=1} (\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})$$
+
+Lets break this formula down into steps:
+
+- ($x_i-\bar{x}$) and ($y_i-\bar{y}$): Subtract the mean from each value of $x$ and $y$ to get distance above and below mean.
+- $(x_i-\bar{x})/s_x$ and $(y_i-\bar{y})/s_y$: Divide the difference by the standard deviation of $x$ and $y$. We now have the number of standard deviations above or below the mean.
+- **For each observation, multiply these two numbers together. Positive values are evidence of a positive relationship, while negative values are evidence of an negative relationship.**
+
+
+## Which quadrants are the points in?
+<div class="footer">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+```{r echo=FALSE, fig.width=8, fig.height=4.5, out.width='800px', out.height='450px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+cols <- c("red","blue")
+par(mar=c(4,4,0.1,2))
+plot(sdx,sdy,
+     xlab="SDs from mean of x",  ylab="SDs from mean of y",
+     pch=21, bg=cols[((sdx*sdy)>0)+1],las=1)
+abline(h=0,lty=2)
+abline(v=0,lty=2)
+text(c(-1.5,1.5),c(-1.5,1.5),labels="Positive",col="blue")
+text(c(-1.5,1.5),c(1.5,-1.5),labels="Negative",col="red")
+```
+
+## The Correlation Coefficient {.smaller}
+<div class="footer">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+$$r=\frac{1}{n-1}\sum^n_{i=1} (\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})$$
+
+Lets break this formula down into steps:
+
+- ($x_i-\bar{x}$) and ($y_i-\bar{y}$): Subtract the mean from each value of $x$ and $y$ to get distance above and below mean.
+- $(x_i-\bar{x})/s_x$ and $(y_i-\bar{y})/s_y$: Divide the difference by the standard deviation of $x$ and $y$. We now have the number of standard deviations above or below the mean
+- For each observation, multiply these two numbers together. Positive values are evidence of a positive relationship, while negative values are evidence of an negative relationship. 
+- **Sum up the products and divide by the number of observations minus one.** 
+
+## Calculating the Correlation Coefficient
+<div class="footer">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+```{r}
+r <- sum(sdx*sdy)/(length(sdx)-1)
+r
+```
+
+Or you can use the `cor` command in *R*:
+
+```{r}
+cor(crimes$Unemployment, crimes$Property)
+```
+
+## Properties of the Correlation Coefficient ($r$)
+<div class="footer">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+>- The sign of $r$ indicates the direction of the relationship. Positive values indicate a positive relationship and negative values indicate a negative relationship. Zero indicates no relationship. 
+>- The size of $r$ indicates the strength of the relationship. The maximum value of $r$ is 1 and the minimum value is -1. You only reach these values if the points fall exactly on a straight line. 
+>- $r$ is a unitless measure. It can be compared between variables on different scales.
+
+## Strength of $r$
+<div class="footer">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+```{r echo=FALSE, fig.width=8, fig.height=5, out.width='800px', out.height='500px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+library(MASS)
+par(mfrow=c(4,3), xaxt="n", yaxt="n", mar=c(1,1,1,1))
+r <- seq(from=0.0, length=12, by=0.09)
+for(i in 1:length(r)) {
+  plot(mvrnorm(300,c(0,0),Sigma=cbind(c(1,r[i]),c(r[i],1))),
+       pch=21, bg="grey", main=paste("r =",r[i],sep=" "))
+} 
+```
+
+## Limitations of the Correlation Coefficient ($r$)
+<div class="footer">
+<body>Sociology 312, Measuring Association: Scatterplot and Correlation Coefficient</body>
+</div>
+
+>- $r$ is only applicable for linear relationships
+>- $r$ can be severely affected by outliers

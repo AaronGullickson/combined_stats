@@ -1,0 +1,126 @@
+---
+title: "Movies Dataset"
+author: |
+ | Sociology 312, University of Oregon
+ | Prof. Gullickson
+output: 
+  pdf_document: 
+    fig_height: 3.5
+    fig_width: 5
+    number_sections: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(stargazer)
+load("movies.RData")
+```
+
+#Overview
+
+The movie data contain information about 2,612 movies produced between 2001 and 2013. The data come from the [Open Movie Database](http://www.omdbapi.com/), which itself contains data from the [Internet Movie Database](http://www.imdb.com/) and [Rotten Tomatoes](http://www.rottentomatoes.com).  To simplify our analyses, I have limited the analysis to movies that played in the US and received 10 or more reviews. I have also excluded all shorts, documentaries, and foreign language films. 
+
+Table 1 provides summary statistics for all the quantitative variables in the movie data. 
+
+```{r results='asis', echo=FALSE}
+stargazer(movies, summary.stat=c("n","mean","sd","min","p25","median","p75","max"), header=FALSE, 
+          digit.separate = 0,
+          type="latex", title="Summary statistics for all quantitative variables in the movies dataset")
+```
+
+#Variable Descriptions
+
+##Year
+
+The calendar year of the film's release. Although this is technically a quantitative variable, I have graphed its distribution below using a barplot, because we often think of such a variable in categorical terms. 
+
+```{r echo=FALSE, fig.align='center'}
+barplot(summary(as.factor(movies$Year)), col="grey75", las=2, cex.main=0.8, cex.names=0.75,
+        main="Number of movies by year", xlab="year", ylab="frequency")
+```
+
+##Rating
+
+The movie's maturity rating. You can see that the R-rated films are the most common and G-rated films are the least common. 
+
+```{r echo=FALSE, fig.align='center'}
+barplot(summary(movies$Rating), col="yellow", las=1, cex.main=0.8, cex.names=0.75,
+        main="Distribution of Movie Rating", ylab="frequency")
+```
+
+##Runtime
+
+The length of the movie in minutes. The histogram below shows the distribution of this variable with bins of 5 minutes. The distributions is unimodal with slight right skew. The difference between the mean movie length of `r round(mean(movies$Runtime),1)` and the median of `r round(median(movies$Runtime),1)` indicates that this skewness is not severe enough to produce substantial different conclusions about the center. 
+
+```{r echo=FALSE, fig.align='center'}
+hist(movies$Runtime, breaks=c(seq(from=5, to=220, by=5)), col="skyblue", las=1, cex.main=0.8,
+     main="Histogram of movie runtime", xlab="Movie runtime in minutes", ylab="frequency")
+```
+
+##Oscars
+
+The number of Oscar awards that this movie received. This includes Oscars that go to individiual actors (leading and supporting), as well as more general awards (best screenplay, editing, cinematography, etc.), and best picture overall. 
+
+This is a very heavily right-skewed variable, because the vast majority of movies (`r round(100*mean(movies$Oscars==0),1)`%) receive no awards at all. 
+
+```{r echo=FALSE, fig.align='center'}
+barplot(summary(as.factor(movies$Oscars)), col="gold", las=1, cex.main=0.8,
+        main="Number of Oscars", ylab="frequency")
+```
+
+##Rotten Tomatoes Variables
+
+I utilize two different rating metrics employed by Rotten Tomatoes. 
+
+###TomatoMeter
+
+The tomato meter is the percent of reviews that are judged to be positive by Rotten Tomatoes staff. This metric goes from 0 to 100 percent.  Note that movies are spread out pretty evenly across the range of this variable, something we call a "uniform" distribution. Note, that this method makes no distinction between how positive a positive review was or how negative a negative review was, so its perfectly possible for two movies with the same Tomato Meter to be viewed very differently by reviewers. 
+ 
+```{r echo=FALSE, fig.align='center'}
+hist(movies$TomatoMeter, col="tomato4", breaks=seq(from=0,to=100, by=10), las=1, cex.main=0.8,
+     main="Histogram of Rotten Tomatoes Meter", xlab="Rotten Tomatoes meter", ylab="frequency")
+```
+
+###TomatoRating
+
+The tomato rating is a combination of all reviews where the review used some kind of numeric rating (e.g. 3 out of 4 stars, 7 out of 10). Rotten Tomatoes "normalizes" these scores so that they are all recorded on the same basis. The scale of this normalized score goes from 1 to 10. Unlike the Tomato Meter, this scale should be capable of distinguishing how strongly positive or negative the review was. The distribution here is more of a bell curve shape. 
+
+```{r echo=FALSE, fig.align='center'}
+hist(movies$TomatoRating, col="tomato1", breaks=1:10, las=1, cex.main=0.8,
+     main="Histogram of Rotten Tomatoes rating", xlab="Rotten Tomatoes rating", ylab="frequency")
+```
+
+###Relationship between two ratings
+
+Despite the aforementioned differences in how the rating systems are measured, they do produce very similar results, as the scatterplot below shows. The correlation coefficient between the two scores is `r round(cor(movies$TomatoRating,movies$TomatoMeter),3)`.
+
+```{r echo=FALSE, fig.align='center'}
+par(bty="n")
+plot(movies$TomatoRating, movies$TomatoMeter, pch=21, bg="tomato2", cex.main=0.8,
+     main="Scatterplot of two Rotten Tomato rating systems",
+     xlab="Tomato Rating", xlim=c(0,10),
+     ylab="Tomato Meter", ylim=c(0,100), las=1)
+```
+
+##BoxOffice
+
+This is the total box office returns for the movie, reported in millions of US dollars. The histogram below reveals that this variable is heavily right-skewed with a median of $`r round(median(movies$BoxOffice),1)` million and a mean of $`r round(mean(movies$BoxOffice),1)` million. So about half of movies make $`r round(median(movies$BoxOffice),1)` million or less, but a few movies do terrificly well. The highest grossing movie in this time period made $760.5 million (Avatar).
+
+```{r echo=FALSE, fig.align='center'}
+hist(movies$BoxOffice, col="green", breaks=seq(from=0, to=765, by=5), las=1, cex.main=0.8,
+     main="Histogram of Box Office Returns", xlab="Box office returns (in millions of dollars)", ylab="frequency")
+```
+
+##Genre
+
+This is a nominal variable indicating the genre of the movie. This is a tricky variable to create. In actuality, movies could be listed as multiple genres in the original dataset, with twenty different genres to choose from. For example, "No Country for Old Men" is listed in the genres of crime, drama, and thriller while "Lord of the Rings: Return of the King" is listed as action, adventure, and fantasy. This is probably the best way to treat genres, but for our purposes it adds a lot of complexity. Therefore, I have recoded movies into a single "best" genre based on a decision rule where certain genres trump all others on an ordered basis. For example, comedy trumps romance, so romantic comedies will always show up in this dataset as comedies. The ordering of this system is Animation > Family > Musical > Horror > SciFi/Fantasy > Comedy > Romance > Action > Thriller > Mystery > Drama > All Others. For the most part, this system works well, but you may notice some odd disrepancies for a few movies. For example, The Wolf of Wall Street was originally listed as a crime, comedy, and biography movie, which led to it being classified here as a comedy. 
+
+```{r echo=FALSE, fig.align='center'}
+par(mar=c(7,3,1,1))
+barplot(sort(summary(movies$Genre), decreasing = TRUE), col=rainbow(length(levels(movies$Genre))), 
+        cex.main=0.8, las=2,
+        main="Distribution of movie genre")
+```
+
+
+

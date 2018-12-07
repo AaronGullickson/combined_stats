@@ -1,0 +1,461 @@
+---
+title: "Distribution of a Variable"
+author: "Prof. Gullickson, University of Oregon, Winter 2019"
+resource_files:
+- shiny_apps/percentiles/app.R
+- shiny_apps/histogram/app.R
+output:
+  ioslides_presentation:
+    css: lecture_slides.css
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 6
+    logo: images/slides/logo.png
+    widescreen: yes
+subtitle: Sociology 312, Statistical Analysis
+runtime: shiny
+---
+
+<style type="text/css">
+slides > slide:not(.nobackground):after {
+  content: '';
+}
+</style>
+
+```{r echo=FALSE}
+load("example_datasets/movies/movies.RData")
+load("example_datasets/sex/sex.RData")
+load("example_datasets/crimes/crimes.RData")
+load("example_datasets/titanic/titanic.RData")
+load("example_datasets/politics/politics.RData")
+```
+
+
+# What is a distribution?
+
+The Distribution of a Variable
+
+## The concept of a distribution
+
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
+</div>
+
+When we refer to the **distribution** of a variable, we are referring to how the different values of that variable are distributed across the given observations. 
+
+>- The simplest way to examine a distribution is just to look at it in a graph. There are different graphical techniques for looking at a distribution, depending on whether it is categorical or quantitative.
+>- For quantitative variables, we can also calculate summary statistics that describe a distribution, such as its "center" and "spread."
+
+## Calculating the frequency
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
+</div>
+
+In order to display the distribution of a categorical variable, we first need to calculate the **frequency** which is the number of observations that belong to each possible category. We can do this easily in *R* with the `table` command:
+
+```{r} 
+table(politics$party)
+```
+
+## Proportions and Percents {.smaller}
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
+</div>
+
+Lets convert these frequencies into **proportions** by dividing through by the total number of observations. We can also do this easily in *R* by adding the `sum` command to the previous command:
+
+```{r} 
+prop <- table(politics$party)/sum(table(politics$party))
+prop
+```
+
+We are getting a lot of decimal places by default. Lets use a `round` command to trim the number of digits. While we are at it, lets also multiply by 100 to get percentages rather than proportions, and `sort` them from highest to lowest.
+
+```{r} 
+percent <- sort(round(100*prop,1), decreasing=TRUE)
+percent
+```
+
+## Piecharts or Barplots?
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
+</div>
+
+```{r fig.width=10, figh.height=4, out.width='1000px', out.height='400px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')} 
+par(mfrow=c(1,2))
+pie(percent, main="Piechart")
+barplot(percent, col="skyblue", cex.names=0.65, ylab="Percent",
+        main="Barplot")
+```
+
+## Barplots are better!
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
+</div>
+
+Can you tell whether there are more independents or democrats on the piechart? It is much more difficult to figure out the relative size of slices on a piechart than the bars on a barplot, because your eyeballs have to deal with an extra dimension.
+
+```{r echo=FALSE, fig.width=10, fig.height=4, out.width='1000px', out.height='400px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')} 
+par(mfrow=c(1,2))
+pie(percent, main="Piechart")
+barplot(percent, col="skyblue", cex.names=0.65, ylab="Percent",
+        main="Barplot")
+```
+
+## The Histogram
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
+</div>
+
+We can look at the distribution of quantitative variables by graphing the **histogram**. The histogram is somewhat similar to a barplot.
+
+>1. We break the variable into equivalent intervals called **bins**. 
+    If we did a histogram of movie runtime length, we might use bins of 5 minutes width, so our bins would look like 0-5 minutes, 5-10 minutes, 10-15 minutes, 15-20 minutes, etc. 
+    Technically, we need to decide which bin to put cases that straddle two bins (e.g. exactly 5 minutes). *R* defaults to putting these cases in the lower category. 
+>2. We calculate the frequency of observations that fall into each bin.
+>3. We make a barplot of these frequencies, but we put no space between the bars. 
+
+## Making a histogram of movie length {.smaller}
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
+</div>
+
+We can use the `hist` command. What is the bin width in this example?
+
+```{r fig.height=3.5, out.width='600px', out.height='350px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')} 
+par(mar=c(5,4,1,1))
+hist(movies$Runtime, col="skyblue",
+     xlab="Movie runtime (in minutes)", main="Histogram of movie runtime")
+```
+
+----
+<div class="footer" style="top:575px;">
+<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
+</div>
+
+```{r echo=FALSE}
+shinyAppDir(
+  "shiny_apps/histogram",
+  options=list( width="100%", height=700)
+)
+```
+
+## What are we looking for in a histogram? {.smaller}
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
+</div>
+
+>- **Shape**: centered or **skewed**?
+>- **Center**: where is it and is there only one?
+>- **Spread**: How spread out are the values around the center?
+>- **Outliers**: Are there any observations that have relatively very high or low values?
+
+```{r echo=FALSE, fig.height=3.5, out.width='600px', out.height='350px', dpi=300,fig.align='center', dev.args = list(bg = 'transparent')} 
+bins <- seq(0, by=5, length.out = 1+(max(movies$Runtime)/5))
+hist(movies$Runtime, col="skyblue", breaks=bins, 
+     xlab="Movie runtime (in minutes)", main="Histogram of movie runtime", xlim=c(0, max(movies$Runtime)))
+```
+
+# Measuring the Center of a Distribution
+The Distribution of a Variable
+
+## What does "center" mean?
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
+</div>
+
+There are three different ways we talk about the center of a distribution in statistics. All three of these could qualify as the "average" to which people often refer. 
+
+>- The **mean**: The mean is the *balancing point* of a distribution. Imagine trying to put a column underneath a histogram so that it did not tip one direction or the other. This balancing point is the mean. 
+>- The **median**: The median is the *midpoint* of the distribution. At this point, 50% of the observations have lower values, and 50% have higher values. 
+>- The **mode**: The mode is the *high point* of the distribution, or the peak. It is typically much less useful than the other two measures. 
+
+##   Some important mathematical notation {.smaller}
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
+</div>
+
+In order to start doing calculations for statistics like the mean, we need to be familiar with some of the mathematical notation we will use for formulas and how to apply this notation in *R*.
+
+>- We use the term $x$ or $y$ to refer to a generic variable. 
+>- We subscript $x$ to indicate a particular observation. So, $x_1$ means the value of variable $x$ for the first observation. 
+>- We use $n$ to refer generically to the number of observations. So, $x_n$ gives the value of $x$ for the last observation. 
+>- We use the term $x_i$ to refer generically to any particular observation's value of $x$.
+>- We use the $\sum (something)$ term to say sum something up. So, $$\sum_{i=1}^n x_i$$ means to "sum the variable $x$ from the first observation to the last."  
+
+## Summing is easy in *R*
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
+</div>
+
+If we want to sum up a variable in *R*, we just use the `sum` command:
+
+```{r}
+sum(movies$Runtime)
+```
+
+This is the total minutes you would spend watching movies if you watched every movie in our movie database. This is not a particularly useful number yet, but it is the beginning of a calculation that will be useful (spoiler: the mean).
+
+## Calculating the Mean {.smaller}
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
+</div>
+
+The mean (represented as $\bar{x}$) is calculated by taking the sum of the variable divided by the number of observations, or in math speak: $$\bar{x}=\frac{\sum_{i=1}^n x_i}{n}$$
+
+## Calculating the Mean {.smaller}
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
+</div>
+
+The mean (represented as $\bar{x}$) is calculated by taking the sum of the variable divided by the number of observations, or in math speak: $$\bar{x}=\frac{\sum_{i=1}^n x_i}{n}$$
+
+We can use our `sum` command in *R* to get the sum in the numerator and the `nrow` command to get the number of observations in the denominator:
+
+```{r}
+sum(movies$Runtime)/nrow(movies)
+```
+
+Alternatively, we can just use the `mean` command:
+
+```{r}
+mean(movies$Runtime)
+```
+
+## Calculating the Median {.smaller}
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
+</div>
+
+- There is no tidy formula for calculating the median, but the procedure is straightforward. We just need to sort the observations from smallest to largest and pick the exact middle point of the distribution.
+
+- If there are an odd number of observations, there will always be an exact midpoint. If we have an even number of observations, we have to take the two values closest to the midpoint and take their mean. 
+
+- the movies dataset has exactly `r nrow(movies)` observations, so the median should be exactly at the 1277th value:
+
+```{r}
+sort(movies$Runtime)[1277]
+```
+Alternatively, we could just use the `median` command:
+```{r}
+median(movies$Runtime)
+```
+
+## Why are means and medians different?
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
+</div>
+
+>- In perfectly symmetric distributions, the mean and the median will be the same. In other words, the balancing point will be at the midpoint. 
+>- Skewness will "pull" the mean in the direction of the skew, but not the median. This is because the mean will need to move in that direction to maintain balance. 
+>- In highly skewed distributions, this can lead to significant differences between the median and the mean. 
+>- Its important to understand the differences in the meaning of these two terms in order to know which is more helpful for your purposes. If you are shopping for a house, would you rather know the median or mean home price in your area?
+
+## Where will the means be relative to the medians?
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
+</div>
+
+```{r echo=FALSE, fig.width=10, fig.height=3.7, out.width='1000px', out.height='370px', dpi=300, dev.args = list(bg = 'transparent')}
+par(mfrow=c(1,2))
+bins <- seq(0, by=5, length.out = 1+(max(movies$Runtime)/5))
+h <- hist(movies$Runtime, col="grey", breaks=bins, 
+     xlab="Movie runtime (in minutes)", main="Histogram of movie runtime", xlim=c(0, max(movies$Runtime)))
+abline(v=median(movies$Runtime), lwd=3, col="green")
+text(median(movies$Runtime), 0.98*max(h$counts), labels=paste("median=", median(movies$Runtime), sep=""), 
+     pos=4, col="green")
+x <- movies$BoxOffice
+bins <- seq(0, by=5, length.out = 1+(max(x)/1))
+h <- hist(x, col="grey", breaks=bins, 
+     xlab="Box office returns (in millions of dollars)", main="Histogram box office returns ", xlim=c(0, max(x)))
+abline(v=median(x), lwd=3, col="green")
+text(median(x), 0.98*max(h$counts), labels=paste("median=", median(x), sep=""), 
+     pos=4, col="green")
+
+```
+
+## Where will the means be relative to the medians? {.smaller}
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
+</div>
+
+```{r echo=FALSE, fig.width=10, fig.height=3.7, out.width='1000px', out.height='370px', dpi=300, dev.args = list(bg = 'transparent')}
+par(mfrow=c(1,2))
+bins <- seq(0, by=5, length.out = 1+(max(movies$Runtime)/5))
+h <- hist(movies$Runtime, col="grey", breaks=bins, 
+     xlab="Movie runtime (in minutes)", main="Histogram of movie runtime", xlim=c(0, max(movies$Runtime)))
+abline(v=median(movies$Runtime), lwd=3, col="green")
+text(median(movies$Runtime), 0.98*max(h$counts), labels=paste("median=", median(movies$Runtime), sep=""), 
+     pos=4, col="green")
+abline(v=mean(movies$Runtime), lwd=3, col="red")
+text(mean(movies$Runtime), 0.88*max(h$counts), labels=paste("mean=", round(mean(movies$Runtime),1), sep=""), 
+     pos=4, col="red")
+x <- movies$BoxOffice
+bins <- seq(0, by=5, length.out = 1+(max(x)/1))
+h <- hist(x, col="grey", breaks=bins, 
+     xlab="Box office returns (in millions of dollars)", main="Histogram box office returns ", xlim=c(0, max(x)))
+abline(v=median(x), lwd=3, col="green")
+text(median(x), 0.98*max(h$counts), labels=paste("median=", median(x), sep=""), 
+     pos=4, col="green")
+abline(v=mean(x), lwd=3, col="red")
+text(mean(x), 0.88*max(h$counts), labels=paste("mean=", round(mean(x),1), sep=""), 
+     pos=4, col="red")
+
+```
+
+Both means are higher than the medians because of right skewness, but the heavy skew of box office returns leads to a much greater difference between the mean and median. In fact, about 70% of movies make less than the mean!
+
+# Percentiles and The Five Number Summary
+The Distribution of a Variable
+
+## Percentiles/Quantiles
+
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Percentiles and The Five Number Summary</body>
+</div>
+
+>- If you have ever seen the results of a standardized test, then you are probably familiar with **percentiles**. A given percentile tells you what percent of the distribution is below that number. 
+>- Quantile is another name for a percentile.
+>- We have already seen one example of a percentile: the median. The median is the 50th percentile. 50% of the observations are below this value.
+>- The most common percentiles to calculate are the **quartiles**: the 25th, 50th, and 75th percentile. These values split the data into four quarters, thus the name. 
+>- When we combine the quartile values with the minimum and maximum values in the dataset, then we have the **five number summary**. 
+>- We will use the five number summary to construct a **boxplot** which is another graphical technique for looking at a distribution.
+
+## Calculating percentiles in *R* {.smaller}
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Percentiles and The Five Number Summary</body>
+</div>
+
+We can use the `quantile` command to calculate any percentile/quantile that we want:
+```{r}
+quantile(politics$age, p=c(0.27,0.78))
+```
+If we want to get the **quartiles** of the distribution, we can just use the `quantile` command without specifying particular percentiles:
+``` {r}
+quantile(politics$age)
+```
+
+## Constructing a boxplot {.smaller}
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Percentiles and The Five Number Summary</body>
+</div>
+
+``` {r echo=FALSE, fig.width=6, fig.height=4, fig.align='center', out.width='600px', out.height='400px', dpi=300, dev.args = list(bg = 'transparent')}
+quantile(politics$age, na.rm=TRUE)
+par(mar=c(1,4,1,1))
+b <- boxplot(politics$age, col="skyblue", ylab="age",
+             ylim=c(0,100))
+text(0.7, b$stats[,1], labels=c("minimum",paste(c(25,50,75),"%"), "maximum"),pos=2)
+segments(rep(0.7,5),b$stats[,1],c(0.9,rep(0.8,3),0.9),b$stats[,1], lty=3)
+```
+
+----
+<div class="footer" style="top:575px;">
+<body>Sociology 312, The Distribution of a Variable: Percentiles and The Five Number Summary</body>
+</div>
+
+```{r echo=FALSE}
+shinyAppDir(
+  "shiny_apps/percentiles",
+  options=list( width="100%", height=700)
+)
+```
+
+# Measuring the Spread of a Distribution
+The Distribution of a Variable
+
+## The Spread of a Distribution
+
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Measuring the Spread of a Distribution</body>
+</div>
+
+How spread out are observations around the center? In some distributions, observations may be clustered tightly around the center, while in other cases, they may be spread out widely. 
+
+```{r echo=FALSE, fig.width=10, figh.height=4, out.width='1000px', out.height='400px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+par(mfrow=c(1,2), mar=c(1,1,1,1))
+hist(rnorm(10000,0,1), breaks=60, col="red", xlim=c(-4,4), main="wide spread", xlab="", ylab="", xaxt="n", yaxt="n")
+hist(rnorm(10000,0,0.5), breaks=30, col="red", xlim=c(-4,4), main="narrow spread", xlab="", ylab="", xaxt="n", yaxt="n")
+```
+
+## Range and Interquartile Range {.smaller}
+
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Measuring the Spread of a Distribution</body>
+</div>
+
+A simple statistic for spread is the **range**. The range is simply the difference between the minimum and maximum value:
+
+```{r}
+diff(range(crimes$Violent))
+```
+
+The range can be misleading because if there are extremely low or high values they will be captured by the range. That is true in the case above where Washington DC's violent crime rate is an extreme outlier. An alternative is to use the **interquartile range** (IQR) which measures the distance between the 25th and 75th percentile:
+
+```{r}
+IQR(crimes$Violent)
+```
+
+The difference in violent crime rates in the middle 50% of states is `r IQR(crimes$Violent)` crimes per 100,000 population. 
+
+## Range can be misleading
+
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Measuring the Spread of a Distribution</body>
+</div>
+
+```{r echo=FALSE, fig.width=6, fig.height=5, out.width='600px', out.height='500px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+boxplot(crimes$Violent, range=0, col="darkgreen", ylab="Violent crime rate (per 100,000)")
+arrows(1.25,min(crimes$Violent),1.25,max(crimes$Violent),
+       code=3, col="red", length=0.1)
+text(1.31, 0.9*max(crimes$Violent),labels="Range", pos=4, col="red")
+arrows(1.3,quantile(crimes$Violent,p=0.25),1.3,quantile(crimes$Violent,p=0.75),
+       code=3, col="blue", length=0.1)
+text(1.31, median(crimes$Violent),labels="IQR", pos=4, col="blue")
+
+```
+
+
+## Variance and Standard Deviation
+
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Measuring the Spread of a Distribution</body>
+</div>
+
+>- The most common measure of spread is the **variance** and its cousin the **standard deviation.** 
+>- In practice the variance is hard to interpret, because it is measured in squared units compared to the variable's units, so we will more commonly talk about the standard deviation, which is simply the square root of the variance.
+>- The formula for the standard deviation (represented by $s$) is: $$s=\sqrt{\frac{\sum_{i=1}^n(x_i-\bar{x})^2}{n-1}}$$
+>- The standard deviation tells you how far you expect a randomly selected observation's value to be from the mean, on average. 
+
+##  Breaking Down the SD formula {.smaller}
+
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Measuring the Spread of a Distribution</body>
+</div>
+
+$$s=\sqrt{\frac{\sum_{i=1}^n(x_i-\bar{x})^2}{n-1}}$$
+
+>- $(x_i-\bar{x})$: The distance between each observation's value and the mean. Some of these values are positive and some are negative. If we summed these values up across all observations, the sum would equal zero by definition.
+>- $(x_i-\bar{x})^2$: We square this distance to get rid of the negative values.
+>- $\sum_{i=1}^n(x_i-\bar{x})^2$: The sum of the squared distance, sometimes abbreviated *SSX*. This already is a pretty decent measure of spread, but we need to scale it by the number of observations.
+>- $\sum_{i=1}^n(x_i-\bar{x})^2/(n-1)$: Dividing through by the sample size gives us the "average" squared distance from the mean. This number is the **variance**.
+>- $\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2/(n-1)}$: Squared distance is a hard thing to conceptualize, so we square root to get back to distance. 
+
+## Calculating Standard Deviation in *R*
+
+<div class="footer">
+<body>Sociology 312, The Distribution of a Variable: Measuring the Spread of a Distribution</body>
+</div>
+
+```{r}
+distance <- crimes$Violent-mean(crimes$Violent) #distance from mean
+distance.squared <- distance^2 #square the distance
+ssx <- sum(distance.squared) #sum it up
+variance <- ssx/(nrow(crimes)-1) #divide by n-1
+standardD <- sqrt(variance) #square root for the SD
+standardD
+```
+Alternatively, use the `sd` command:
+```{r}
+sd(crimes$Violent)
+```

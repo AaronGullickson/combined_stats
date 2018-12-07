@@ -1,0 +1,542 @@
+#The Distribution of a Variable
+
+---
+
+##What is a Distribution? 
+
+We will hear the term **distribution** a lot during this class. When we think about the distribution of a variable, we are referring to how the different values of the variables are distributed across observations. This distribution gives us a sense of how much variation there is and what the most common values are for a given variable. Intuitively, we think about distributions in our personal life any time we think about how we "measure" up relative to everyone else on something (income, number of Facebook friends, GRE scores, etc.). We want to know where we "fall" in the distribution of these variables. 
+
+A distribution can be represented graphically. However, the technique we use to graph the distribution will depend on whether we have a categorical or a quantitative variable. For categorical variables, we will use a **barplot**, while for quantitative variables, we will use a **histogram**. 
+
+For quantitative variables, we can also calculate summary statistics that will give us information about the distribution, such as its center and spread. We will save those calculations for later modules. For this module, we will focus on graphical techniques. 
+
+###Looking at the distribution of a categorical variable
+
+####Calculating the frequency
+
+In order to graph the distribution of a categorical variable, we first need to calculate its frequency. The frequency is just the number of observations that fall into a given category of a categorical variable. We could, for example, count up the number of passengers who were in the various passenger classes on the Titanic. Doing so would give us the following:
+
+```{r echo=FALSE}
+x <- table(titanic$pclass)
+x <- c(x, sum(x))
+nam <- c("First","Second","Third","Total")
+tab <- cbind(nam,x)
+colnames(tab) <- c("Passenger class", "Frequency")
+rownames(tab) <- NULL
+#knitr::kable(tab, align=c("l","r"))
+set.alignment(c("left","right"))
+emphasize.strong.rows(nrow(tab))
+pander(tab)
+```
+
+There were 323 first class passengers, 277 second class passengers, and 709 third class passengers. Adding those numbers up gives us 1,309 total passengers. *R* will calculate these numbers for us easily using the `table` command: 
+
+```{r}
+table(titanic$pclass)
+```
+
+####Frequency, proportion, and percent
+
+The frequency we just calculated is sometimes called the "absolute" frequency because it just provides the raw number of observations. It is typically more useful to represent this frequency in terms of proportions. Proportions go from 0-1 and give us the share of observations that fall into each category. We can calculate the proportion by simply dividing our frequency by the total number of observations:
+
+```{r echo=FALSE}
+x <- c(paste(paste(tab[1:3,2],tab[4,2],sep="/"),round(as.numeric(tab[1:3,2])/as.numeric(tab[4,2]),3),sep=c("=")),"")
+tab <- cbind(tab,x)
+colnames(tab) <- c("Passenger class", "Frequency","Proportion")
+#knitr::kable(tab, align=c("l","r","r"))
+set.alignment(c("left","right","right"))
+emphasize.strong.rows(nrow(tab))
+pander(tab)
+```
+
+We can calculate this in R by just taking our previous command and dividing by its own sum:
+
+```{r}
+classes <- table(titanic$pclass)
+classes/sum(classes)
+```
+
+We often convert proportions to percents which most people are more familiar. To convert a proportion to a percent, just multiply by 100:
+
+```{r echo=FALSE}
+prop <- round(as.numeric(tab[1:3,2])/as.numeric(tab[4,2]),3)
+x <- c(paste(prop,"*100=",prop*100,"%",sep=""),"")
+tab <- cbind(tab,x)
+colnames(tab) <- c("Passenger class", "Frequency","Proportion", "Percent")
+#knitr::kable(tab, align=c("l","r","r","r"))
+set.alignment(c("left","right","right","right"))
+emphasize.strong.rows(nrow(tab))
+pander(tab)
+```
+
+24.7% of passengers were first class, 21.2% of passengers were second class, and 54.2% of passengers were third class. So, just over half of passengers were third class and the remaining passengers were fairly evenly split between first and second class.
+
+####Barplots and piecharts
+
+Now that we have proportions/percents, we can use these values to construct a graphical display of the distribution. The **piechart** is a very common technique here. I am sure you have all seen examples of piecharts. In a piechart, you show each category's percentage as a slice of a pie. Here is the R code and output of a piechart for the passenger class variable: 
+
+```{r piechart_passclass}
+p <- table(titanic$pclass)/sum(table(titanic$pclass))
+pie(p)
+```
+
+Although piecharts are popular, they are actually not a very good tool. In order to judge the relative size of the slices, your eye has to make judgments in two dimensions and it can often be difficult to decide which slice is bigger. In this case, for example, the relative size of first and second class are quite close. A better way to display the distribution is by using a **barplot** in which vertical (or horizontal) bars give the proportion or percent:
+
+```{r barplot_passclass, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+barplot(p, col="skyblue", las=1)
+```
+
+Now your eye only has to work in one dimension to identify the relative size of each share. In this case, we can clearly see that the first class bar is higher than the second class bar. Barplots are almost always better at displaying distributions than piecharts.
+
+###Looking at the distribution of a quantitative variable
+
+Barplots won't work for quantitative variables because quantitative variables don't have categories. However, we can do something quite similar with the **histogram**. 
+
+One way to think about the histogram is that we are imposing a set of categories on a quantitative variable by breaking our quantitative variable into a set of equally wide intervals that we call bins. The most important decision with a quantitative variable is how wide to make these bins. As an example, lets take the age variable from our politics dataset. I could break this variable into five-year intervals that go from 0-5, 5-10, 10-15, 15-20, and so on. Alternatively, I could use 10-year intervals from 0-10, 10-20, 20-30, and so on. I could also use any other interval I like such as 1-year, 3-year, and so on. Lets use 10-year intervals for this example. I then just have to count up the number of observations that fall into each 10 year interval. 
+
+```{r echo=FALSE}
+x <- as.numeric(table(cut(politics$age, seq(from=0,to=90,by=10))))
+nam <- (paste(seq(from=0,to=80,by=10),seq(from=10,to=90,by=10),sep="-"))
+tab <- cbind(nam,x)
+colnames(tab) <- c("Age","Frequency")
+#knitr::kable(tab, align=c("l","r"))
+set.alignment(c("left","right"))
+pander(tab)
+```
+
+Because the survey was only administered to adults, I have zero individuals from 0-10 and only a few in the 10-20 age range. Note that I have to make a decision on how to handle "edge" cases that are on the border between two bins. For example, does someone who is age 20 go in the 10-20 bin or the 20-30 bin? In this case, I have assigned all of these cases to the higher bin (e.g. 20-30 in the case of 20-year olds) because this is the default behavior in *R*. 
+
+Now that we have the frequencies for each bin, we can plot the histogram. The histogram looks much like a barplot except for two important differences. First, on the x-axis we have a numeric scale for the quantitative variable rather than categories. Second, we don't put any space between our bars. 
+
+Here is some *R* code and output for creating a histogram. First, we define our intervals using the `seq` command to define our bins and then we use the `hist` command to make the plot. Notice, I am adding a few other options to the `hist` command in order to produce some nice labeling and colors. 
+
+```{r hist_agepol, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+bins <- seq(from=0, to=90, by=10)
+hist(politics$age, breaks=bins, col="darkgreen", xlab="age",
+     main="Histogram of age in politics data", las=1)
+```
+
+I can see the peak in the distribution in the 50's (the baby boomers) with a long fat tail to the right and steeper drop off (due to smaller cohorts and higher mortality) on the left.
+
+What would this histogram look like if I had used 5-year bin widths instead of 10-year bins? Lets try it:
+
+```{r hist_agepol_bin5, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+bins <- seq(from=0, to=90, by=5)
+hist(politics$age, breaks=bins, col="darkgreen", xlab="age",
+     main="Histogram of age in politics data", las=1)
+```
+
+I get more or less the same overall impression but a more fine-grained view. Sometimes adjusting bin width can reveal or hide important trends and sometimes it can just make it more difficult to read. As an exercise, [try adjusting the bin width in this example histogram for movie runtime from our movie dataset](https://aarongullickson.shinyapps.io/histogram/). 
+
+```{r echo=FALSE}
+#shinyAppDir(
+#  "ShinyApps/histogram",
+#  options=list( width="100%", height=500)
+#)
+```
+
+
+There are four general things to be on the lookout for when examining a histogram.
+
+1. **Shape**. Is the shape symmetric or is one of the tails longer than the other? When the  long tail is on the right, we refer to this distribution as **right skewed**. When the long tail is on the left, we refer to the distribution as **left skewed**.
+2. **Center**. Where is the center of the distribution? This center is often the same as the peak in the data. Does the histogram have a single peak or multiple peaks? When a distribution has one peak, we call it **unimodal**. When it has two peaks, we call it **bimodal** and so on. 
+3. **Spread**. How spread out are the values around the center? Do they cluster tightly around the center or are they widely spread out? The answer to this question is generally a relative one, which is to say you can only say how spread out a variable is in relation to the spread of some other variable.
+4. **Outliers**. Are there extreme values which fall outside the range of the rest of the data? We want to pay attention to these values because they may have a strong influence on the statistics we calculate to summarize a distribution. They might also help identify data input errors. 
+
+The figure below shows some examples of each of these concepts from the various datasets we are using in class.  
+
+```{r hist_examples, echo=FALSE, error=FALSE, warning=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+invisible(split.screen(figs=c(3,1)))
+invisible(split.screen(figs=c(1,3), screen=1))
+invisible(split.screen(figs=c(1,2), screen=2))
+invisible(split.screen(figs=c(1,2), screen=3))
+
+screen(4)
+par(mar=c(1.5,0.1,1,0.1))
+par(cex.main=0.7, cex.lab=0.5, cex.axis=0.5, las=1)
+h <- hist(crimes$MedianAge, col="skyblue", yaxt="n", xaxt="n",
+     main="Left-skewed")
+axis(1, pos=0, padj=-3, at=seq(from=28,to=44, by=2))
+title(xlab="Median age (crime data)", line=0.5)
+arrows(29,1,30,5, code=1, length=0.03)
+text(30,5.5,labels=c("Utah"),cex=0.5)
+
+screen(5)
+par(cex.main=0.7, cex.lab=0.5, cex.axis=0.5, las=1)
+par(mar=c(1.5,0.1,1,0.1))
+hist(movies$TomatoRating, col="red", 
+     yaxt="n", xaxt="n",
+     main="Roughly Symmetric",
+     xlab="Tomato Rating (movie data)")
+axis(1, pos=0, padj=-3, at=seq(from=1,to=10, by=1))
+title(xlab="Tomato Rating (movie data)", line=0.5)
+
+
+screen(6)
+par(cex.main=0.7, cex.lab=0.5, cex.axis=0.5, las=1)
+par(mar=c(1.5,0.1,1,0.1))
+h <- hist(movies$BoxOffice, col="orange",
+        yaxt="n", xaxt="n",
+     main="Right-skewed")
+axis(1, pos=0, padj=-3, at=seq(from=0,to=800, by=100))
+title(xlab="Box Office returns (movies data)", line=0.5)
+
+screen(7)
+par(cex.main=0.7, cex.lab=0.5, cex.axis=0.5, las=1)
+par(mar=c(1.5,0.1,1,0.1))
+hist(crimes$Violent, breaks=15, col="darkgreen",
+             yaxt="n", xaxt="n",
+     main="Unimodal")
+axis(1, pos=0, padj=-3, at=seq(from=100,to=1400, by=200))
+title(xlab="Violent crime rate (crime data)", line=0.5)
+arrows(1350,1,1250,8, code=1, length=0.03)
+text(1250,9,labels=c("Washington DC"),cex=0.5)
+
+screen(9)
+par(cex.main=0.7, cex.lab=0.5, cex.axis=0.5, las=1)
+par(mar=c(1.5,0.1,1,0.1))
+hist(crimes$Property, breaks=15, col="gold",
+                  yaxt="n", xaxt="n",
+     main="Bimodal",
+     xlab="Property crime rate (crime data)")
+axis(1, pos=0, padj=-3, at=seq(from=1500,to=5000, by=500))
+title(xlab="Property crime rate (crime data)", line=0.5)
+arrows(4700,1,4500,5, code=1, length=0.03)
+text(4500,5.8,labels=c("Washington DC"),cex=0.5)
+
+screen(8)
+par(cex.main=0.7, cex.lab=0.5, cex.axis=0.5, las=1)
+par(mar=c(1.5,0.1,1,0.1))
+bins <- seq(from=70,to=205, by=5)
+hist(movies$Runtime[movies$Genre=="Comedy"], breaks=bins,
+                       yaxt="n", xaxt="n",
+     col="pink",
+     main="Lower spread")
+axis(1, pos=0, padj=-3, at=seq(from=70,to=220, by=30))
+title(xlab="Comedy runtime (movie data)", line=0.5)
+
+screen(10)
+par(cex.main=0.7, cex.lab=0.5, cex.axis=0.5, las=1)
+par(mar=c(1.5,0.1,1,0.1))
+hist(movies$Runtime[movies$Genre=="SciFi/Fantasy"], breaks=bins,
+                            yaxt="n", xaxt="n",
+     col="blue",
+     main="Higher spread")
+axis(1, pos=0, padj=-3, at=seq(from=70,to=220, by=30))
+title(xlab="SciFi/Fantasy runtime (movie data)", line=0.5)
+arrows(203,1,180,20, code=1, length=0.03)
+text(180,22,labels=c("Return of the King"),cex=0.5)
+
+```
+
+---
+
+##Measuring the Center of a Distribution
+
+When we look at a distribution, we often can get an intuitive sense of where its "center" is. But what do we really mean by the term "center?" The notion of center often allows us to think about the value we expect a typical or "average" observation to have, but there are multiple ways of defining this center. In statistics, three different measures of center are used: the **mean**, **median**, and **mode**. 
+
+###The mean
+
+The mean is the measure most frequently referred to as the "average" although that term could apply to the median and mode as well. The mean is the **balancing point** of a distribution. Imagine trying to balance a distribution on your finger like a basketball. Where along the distribution would you place your finger to achieve this balance? This point is the mean. It is equivalent to the concept of "center of mass" from physics. 
+
+The calculation of the mean is straightforward. First, sum up all the values of your variable across all observations. Then, divide by the number of observations. As an example, lets take a sub-sample of our movie data. I am going to select all the romances (not including rom-coms which are coded as comedies) produced in 2013. There were nine "pure" romances in 2013. I want to know their mean Tomato Meter rating. 
+
+```{r echo=FALSE}
+tab <- movies[movies$Genre=="Romance" & movies$Year==2013,c("Title","TomatoMeter")]
+rownames(tab) <- NULL
+tab <- rbind(tab, c("Sum",sum(tab$TomatoMeter)))
+colnames(tab) <- c("Title","Tomato Meter")
+emphasize.strong.rows(nrow(tab))
+set.alignment(c("left","right"))
+pander(tab)
+#knitr::kable(tab)
+```
+
+In the very last row, I show the sum of the Tomato Meter rating which simply sums up the Tomato Meter rating of each movie. To calculate the mean, I simply divide this sum by the number of movies which is 9.
+
+$$\bar{x}=\frac{460}{9}=51.11$$
+
+The mean Tomato Meter rating for romantic movies in 2013 was 51.11. Notice the funny $x$ with a bar over it ("x bar"). Mathematically, we often represent variables with lower-case roman letters like $x$ or $y$. Putting the bar above the letter is the way to mathematically signify the mean of that variable. 
+
+Since we are discussing math symbols, lets talk about creating a mathematical formula for what we just did. In order to do that, I need to introduce a variety of mathematical symbols, but don't get frightened. We are just formalizing the method of calculating the mean that I just demonstrated above. 
+
+First, as I said we represent a given variable by a lower-case roman letter, such as $x$. If we want to specify a particular observation of $x$, we use a subscript number. So $x_1$ is the value of the first observation of $x$ in our data and $x_{25}$ is the value of the 25th observation of $x$ in our data. We use the letter n to signify the number of observations so $x_n$ is always the last observation of $x$ in our data. 
+
+Now we need some way to indicate "sum up all the values of $x$." This is given by the summation sign which looks as follows:
+
+$$\sum_{i=1}^n x_i$$
+
+In English, this just means "sum up all the values of $x$, starting at $x_1$ and ending at $x_n$." That gives us our sum, which we just need to divide by the number of observations, $n$. 
+
+$$\bar{x}=\frac{\sum_{i=1}^n x_i}{n}$$
+
+In *R*, the mean is very straightforward to calculate. Lets calculate the mean of the Tomato Meter rating for all movies in our dataset:
+
+```{r}
+sum(movies$TomatoMeter)/nrow(movies)
+```
+
+The `sum` command calculates the sum and the `nrow` command calculates the number of rows of our dataset, which is equivalent to the number of observations. Or we could go even simpler and just use the `mean` command:
+
+```{r}
+mean(movies$TomatoMeter)
+```
+
+We can see that the mean Tomato Meter of romantic movies in 2013 (51.1) were slightly above the mean for all the movies in our dataset (`r round(mean(movies$TomatoMeter),1)`), but not by much.
+
+###The median
+
+The median is almost as widely used as the mean as a measure of center, for reasons I will discuss below. The median is the **midpoint** of the distribution. It is the point at which 50% of observations have lower values and 50% of the observations have higher values. 
+
+In order to calculate the median, we need to first order our observations from lowest to highest. Lets do that with the romantic movie data above. 
+
+```{r echo=FALSE}
+tab <- movies[movies$Genre=="Romance" & movies$Year==2013,c("Title","TomatoMeter")]
+tab <- tab[order(tab$TomatoMeter),]
+tab$Order <- 1:nrow(tab)
+colnames(tab) <- c("Title","Tomato Meter", "Order")
+rownames(tab) <- NULL
+set.alignment(c("left","right","right"))
+emphasize.strong.rows(5)
+pander(tab)
+```
+
+To find the median, we have to find the observation right in the middle. When we have an odd number of observations, finding the exact middle is easy. In this case, it is given by the 5th observation because it has four observations lower than it and four observations higher than it. So the median Tomato Meter rating for romantic movies in 2013 was 49. 
+
+When you have an even number of observations, then finding the median is slightly more tricky because you have no single observation that is exactly in the middle. In this case, you find the two observations that are closest to the middle and calculate their mean (sum them up and divide by two). For example, if we had ten observations, we would take the mean of the 5th and 6th observations to calculate the median. 
+
+The `median` command in *R* will calculate the median for you.
+
+```{r}
+median(movies$TomatoMeter)
+```
+
+In this particular case, the mean (`r round(mean(movies$TomatoMeter),1)`) and median (`r round(median(movies$TomatoMeter),1)`) of the Tomato Meter produced very similar measures of center, but this isn't always the case as I will demonstrate below. 
+
+###The mode
+
+The mode is the least used of the three measures of center. In fact, it is so infrequently used that R does not even have a built-in function to calculate it. The mode is the **high point** or **peak** of the distribution. When you look at a distribution graphically, the mode is what your eye is drawn to as a measure of center. Calculating the mode however is much trickier. Simply speaking, the mode is the most common value in the data. However, when data are recorded down to very precise decimal levels, this can be a misleading number. Furthermore, there may be multiple "peaks" in the data and so speaking of a single mode can be misleading. 
+
+In this case, we have a tie for the most common value. 41 movies had Tomato Meter ratings of 29, 33, and 51, respectively. If we look at the histogram, we can see that the idea of a "peak" in this data is a little misleading anyway because the distribution looks pretty "flat" across most of the values. 
+
+```{r hist_tomato_meter, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+hist(movies$TomatoMeter, 
+     breaks=seq(from=0,to=100,by=10), col="red",
+     xlab="Tomato Meter",
+     main="Histogram of Tomato Meter")
+```
+
+###Comparing the mean and median
+
+Why would the mean and median give different results? Remember that the mean defines the **balancing point** and the median defines the **midpoint**. If you have a perfectly symmetric distribution, then these two points are the same because you would balance the distribution at the midpoint. However, when the distribution is skewed in one direction or another, the mean and the median will be different. In order to maintain balance, the mean will be pulled in the direction of the skew. When you have heavily skewed distributions, this can lead to dramatically different values for the mean and median. 
+
+Lets look at this phenomenon for a couple of cases in our movie dataset. As the histogram above showed, the Tomato Meter variable is fairly symmetric and as a result we end up with a mean (`r round(mean(movies$TomatoMeter),1)`) and median (`r round(median(movies$TomatoMeter),1)`) that are pretty close. If we look at movie runtime, we see a distribution that is somewhat more right-skewed.
+
+```{r skew_runtime, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+bins <- seq(0, by=5, length.out = 1+(max(movies$Runtime)/5))
+h <- hist(movies$Runtime, col="grey", breaks=bins, 
+     xlab="Movie runtime (in minutes)", main="Histogram of movie runtime", xlim=c(0, max(movies$Runtime)))
+abline(v=median(movies$Runtime), lwd=3, col="green")
+text(median(movies$Runtime), 0.98*max(h$counts), labels=paste("median=", median(movies$Runtime), sep=""), 
+     pos=4, col="green")
+abline(v=mean(movies$Runtime), lwd=3, col="red")
+text(mean(movies$Runtime), 0.88*max(h$counts), labels=paste("mean=", round(mean(movies$Runtime),1), sep=""), 
+     pos=4, col="red")
+```
+
+The skew here is not too dramatic, but it pulls the mean about 3 minutes higher than the median. If we look at the distribution of box office returns to movies, however we see a very heavy right skew. Most movies make moderate amounts of money, and then there are a few star performers that make bucket loads of cash.
+
+```{r skew_boxoffice, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+x <- movies$BoxOffice
+bins <- seq(0, by=5, length.out = 1+(max(x)/1))
+h <- hist(x, col="grey", breaks=bins, 
+     xlab="Box office returns (in millions of dollars)", main="Histogram box office returns ", xlim=c(0, max(x)))
+abline(v=median(x), lwd=3, col="green")
+text(median(x), 0.98*max(h$counts), labels=paste("median=", median(x), sep=""), 
+     pos=4, col="green")
+abline(v=mean(x), lwd=3, col="red")
+text(mean(x), 0.88*max(h$counts), labels=paste("mean=", round(mean(x),1), sep=""), 
+     pos=4, col="red")
+```
+
+As a result of this skew, the mean box office returns are about \$45.2 million, while the median box office returns are about \$21.6 million. The mean here is more than double the median!
+
+Note that neither estimate is in some fundamental way incorrect. They are both correctly estimating what they were intended to estimate. It is up to us to understand and interpret these numbers correctly and to understand their limitations.
+
+In many cases, we are actually more interested in the median as a measure of "average" experience than the mean, even though we think of the mean as the "average." This is, for example, why you see home prices in an area always reported in terms of medians rather than means. Mean home prices tend to be much higher than median home prices because of the relatively few fabulously expensive homes in a given area. 
+
+---
+
+##Percentiles and the Five Number Summary
+
+In this section, we will learn about the concept of **percentiles**. Percentiles will allow us to calculate a **five number summary** of a distribution and introduce a new kind of graph for describing a distribution called the **boxplot**.
+
+###Percentiles
+
+We have already seen one example of a percentile. The median is the 50th percentile of the distribution. It is the point at which 50% of the observations are lower and 50% are higher. We can actually use this same logic to calculate other percentiles. We could calculate the 25th percentile of the distribution by finding the point where 25% of the observations are below and 75% are above. We could even calculate something like the 43rd percentile if we were so inclined. 
+
+We calculate percentiles in a fashion similar to the median. First, sort the data from lowest to highest. Then, find the exact observation where X% of the observations fall below to find the Xth percentile. In some cases, there might not be an exact observation that fits this description and so you may have to take the mean across the two closest numbers. 
+
+The `quantile` command in R will calculate percentiles for us in this fashion (quantile is a synonym for percentile). In addition to telling the quantile command which variable we want the percentiles of, we need to tell it which percentiles we want.  In the command below, I ask for the 27th and 57th percentile of age in our sexual frequency data. 
+
+```{r}
+quantile(sex$age, p=c(.27,.57))
+```
+
+27% of the sample were younger than 32 years of age and 57% of the sample were younger than 46 years of age. 
+
+###The five number summary
+
+We can split our distribution into quarters by calculating the minimum(0th percentile), the 25th percentile, the 50th percentile (the median), the 75th percentile, and the maximum (100th percentile). Collectively, these percentiles are known at the **quartiles** of the distribution (not to be confused with quantile) and are also described as the **five number summary** of the distribution. 
+
+ We can calculate these quartiles with the `quantile` command. If I don't enter in specific percentiles, the `quantile` command will give me the quartiles by default:
+
+```{r}
+quantile(sex$age)
+```
+
+The bottom 25% of respondents are between the ages of 18-31. The next 25% are between the ages of 31-43. The next 25% are between the ages of 43-56. The top 25% are between the ages of 56-89.
+
+We can also use this five number summary to calculate the **interquartile range** (IQR) which is just the difference between the 25th and 75th percentile. This gives us a sense of how spread out observations are. In this data:
+
+$$IQR=56-31=25$$
+
+So, the 25th and 75th percentile of age are separated by 25 years. 
+
+###Boxplots
+
+We can also use this five number summary to create another graphical representation of the distribution called the boxplot. Here is an example of a boxplot for the age variable from the sexual frequency data:
+
+```{r boxplot_age_sex, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+boxplot(sex$age, 
+        col="skyblue", ylab="age", 
+        main="boxplot of age in sexual frequency data")
+```
+
+The "box" in the boxplot is drawn from the 25th to the 75th percentile. The height of this box is equal to the interquartile range. The median is drawn as a thick bar within the box. Finally, "whiskers" are then drawn to the minimum and maximum of the data. Sometimes, the whiskers are drawn to less than the minimum and maximum if these values are very extreme and instead the whiskers are drawn out to 1.5xIQR in length and then individual points are plotted. In this case there were no extreme values, so the whiskers were drawn all the way out to the actual maximum and minimum. 
+
+The boxplot is a very rich graph which provides many pieces of information. It shows the center of the distribution as measured by the median. It also gives a sense of the spread of the distribution and extreme values by the height of the box and whiskers. It can also show skewness in the distribution depending on where the median is drawn within the box and the size of the whiskers. If the median is in the center of the box, then that indicates a symmetric distribution. If the median is towards the bottom of the box, then the distribution is right-skewed. If the median is towards the top of the box, then the distribution is left-skewed.  
+
+As an exercise, [use the slider to see different percentiles on both a histogram and a boxplot](https://aarongullickson.shinyapps.io/percentiles/).
+
+```{r echo=FALSE}
+#shinyAppDir(
+#  "ShinyApps/percentiles",
+#  options=list( width="100%", height=500)
+#)
+```
+
+---
+
+##Measuring the Spread of a Distribution
+
+The second most important measure of a distribution is its spread. Spread indicates how far individual values tend to fall from the center of the distribution. As the figure below shows, two distributions can have the same center and general shape (in this case, a bell curve) but have very different spreads.
+
+```{r spread_compare, echo=FALSE, fig.width=5, fig.height=2, out.width='500px', out.height='200px', dpi=300}
+par(mfrow=c(1,2), mar=c(1,1,1,1))
+hist(rnorm(10000,0,1), breaks=60, col="red", xlim=c(-4,4), main="wide spread", xlab="", ylab="", xaxt="n", yaxt="n")
+hist(rnorm(10000,0,0.5), breaks=30, col="red", xlim=c(-4,4), main="narrow spread", xlab="", ylab="", xaxt="n", yaxt="n")
+```
+
+###Range and interquartile range
+
+One of the simplest measures of spread is to calculate the **range**. The range is the distance between the highest and lowest value. Lets take a look at the range in the fare paid (in British pounds) for tickets on the Titanic. The `summary` command, will give us the information we need:
+
+```{r}
+summary(titanic$fare)
+```
+
+Note that at least one person made it on the Titanic for free. The highest fare paid was 512.3 pounds. So the range is easy to calculate 512.3 - 0 = 512.3. The difference between the highest and lowest paying passenger was about 512 pounds. 
+
+This example also reveals the shortcoming of the range as a measure of spread. If there are any outliers in the data, they are going to show up in the range and so the range may give you a misleading idea of how spread out the values are. Note that the 75th percentile here is only 31.28 pounds, which would suggest that the 512.3 maximum is a pretty high outlier. We can check this by graphing a boxplot:
+
+```{r boxplot_fare, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+boxplot(titanic$fare, col="seagreen",
+        las=1, ylab="British pounds", 
+        main="Boxplot of fare paid")
+```
+
+The maximum value is such an outlier that the rest of the boxplot has to be "scrunched" in order to fit it all into the graph. Clearly this is not a good indicator of spread. However, we have already seen a better measure of spread using a similar idea: the **interquartile range** or **IQR**. The IQR is just the range between the 25th and 75th percentile. We already have these numbers from the output above, so the IQR = 31.28-7.90=23.38. So, the difference in fare between the 25th and 75th percentile (the middle 50% of the data) was 23.4 pounds. That result suggests a much smaller spread of fares. 
+
+You can also use the `IQR` command in *R* to directly calculate the IQR. 
+
+```{r}
+IQR(titanic$fare)
+```
+
+###Variance and standard deviation
+
+The most common measure of spread is the **variance** and its derivative measurement, the **standard deviation**. Its so common in fact, that most people simply refer to the concept of "spread" as "variance." The variance can be defined as the "average squared distance to the mean." Of course, "squared distance" is a bit hard to think about, so we more commonly take the square root of the variance to get the standard deviation which gives us the "average distance to the mean." Imagine if you were to randomly pick one observation from your dataset and guess how far it would be from the mean. Your best guess would be the standard deviation. 
+
+The calculation for the variance and standard deviation is a bit intimidating but we will break it down into steps to show it is not that hard. At the same time, I will show you to calculate the parts in R using the fare variable from the Titanic data. 
+
+The overall formula for the variance (which is represented as $s^2$) is:
+
+$$s^2=\frac{\sum_{i=1}^n (x_i-\bar{x})^2}{n-1}$$
+
+That looks tough, but lets break it down. The first step is this:
+
+$$(x_i-\bar{x})$$
+
+You take each value of your variable $x$ and subtract the mean from it. This can be done in *R* easily:
+
+```{r}
+diffx <- titanic$fare-mean(titanic$fare)
+```
+
+This measure gives us a description of how far each observation is from the mean which is already kind of a measure of spread, but we can't do much with it yet because some differences are positive (higher than the mean) and some are negative (lower than the mean). In fact, if we take the mean of these differences, it will be zero by definition because this is what it means for the mean to be the balancing point of the distribution.
+
+```{r}
+round(mean(diffx),5)
+```
+
+The next step is:
+
+$$(x_i-\bar{x})^2$$
+  
+We just need to square the differences. This will get rid of our negative/positive problem, because the squared values will all be positive.
+
+```{r}
+diffx.squared <- diffx^2
+```
+
+The next step is:
+
+$$\sum_{i=1}^n (x_i-\bar{x})^2$$
+
+We need to sum up all of our values. This value is sometimes  called the **sum of squared X** or **SSX** for short. It is already pretty close to a measure of variance already. 
+
+```{r}
+ssx <- sum(diffx.squared)
+```
+
+The more distance there is from the mean on average, the larger this value will be. However, it also gets larger when we have more values because we are just taking a sum. To get a number that is comparable across different number of observations, we need to do the final step:
+
+$$s^2=\frac{\sum_{i=1}^n (x_i-\bar{x})^2}{n-1}$$
+
+We are going to divide our SSX value by the number of observations minus one. The "minus one" thing is a bit tricky and I don't want to get into the details of why we do it here. When n is large, this will have little effect and basically you are taking an average of the squared distance from the mean.
+
+```{r}
+variance <- ssx/(length(diffx)-1)
+variance
+```
+
+So the average squared distance from the mean fare is 2677.39 pounds squared. Of course, this isn't a very interpretable number, so its probably better to square root it and get the standard deviation:
+
+```{r}
+sqrt(variance)
+```
+
+So, the average distance from the mean fare is 51.74 pounds. 
+
+Note that I could have used the power of *R* to do this entire calculation in one line:
+
+```{r}
+sqrt(sum((titanic$fare-mean(titanic$fare))^2)/(length(titanic$fare)-1))
+```
+
+Alternatively, I could have just used the `sd` command to have *R* do all the heavy lifting:
+
+```{r}
+sd(titanic$fare)
+```

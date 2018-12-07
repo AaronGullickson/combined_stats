@@ -1,0 +1,44 @@
+
+
+Reference
+Number     Year  Variable Description                                      Question Name            
+------------------------------------------------------------------------------------------------------
+E52817.00  XRND  1997 SCHOOLING: GRADE ATTENDED                            SCH_YEAR_TO_GRADE_1997   
+R00001.00  1997  PUBID, YOUTH CASE IDENTIFICATION CODE                     PUBID                    
+R00342.00  1997  WHAT IS HIGHEST GRADE COMPLETED?                          YSCH-5000                
+R05363.00  1997  KEY!SEX, RS GENDER (SYMBOL)                               KEY!SEX                  
+R05364.01  1997  KEY!BDATE, RS BIRTHDATE MONTH/YEAR (SYMBOL)               KEY!BDATE_M              
+R05364.02  1997  KEY!BDATE, RS BIRTHDATE MONTH/YEAR (SYMBOL)               KEY!BDATE_Y              
+R05387.00  1997  KEY!RACE, RACE OF R (SYMBOL)                              KEY!RACE                 
+R11939.00  1997  RS AGE IN MONTHS AS OF INTERVIEW DATE                     CV_AGE(MONTHS)_INT_DATE  
+R11941.00  1997  RS AGE AT INTERVIEW DATE                                  CV_AGE_INT_DATE          
+R12045.00  1997  GROSS HH INCOME IN PAST YEAR                              CV_INCOME_GROSS_YR       
+R12053.00  1997  RS RELATIONSHIP TO HOUSEHOLD PARENT FIGURE                CV_YTH_REL_HH_CURRENT    
+R12093.00  1997  MONTH INTERVIEWED                                         CV_INTERVIEW_CMONTH      
+R12358.00  1997  SAMPLE TYPE.  CROSS-SECTIONAL OR OVERSAMPLE               CV_SAMPLE_TYPE           
+R14826.00  1997  KEY!RACE_ETHNICITY, COMBINED RACE AND ETHNICITY (SYMBOL)  KEY!RACE_ETHNICITY       
+R25534.00  1998  RS AGE IN MONTHS AS OF INTERVIEW DATE                     CV_AGE(MONTHS)_INT_DATE  
+R25535.00  1998  RS AGE AT INTERVIEW DATE                                  CV_AGE_INT_DATE          
+R25633.00  1998  GROSS HH INCOME IN PAST YEAR                              CV_INCOME_GROSS_YR       
+R25636.00  1998  RS RELATIONSHIP TO HOUSEHOLD PARENT FIGURE                CV_YTH_REL_HH_CURRENT    
+R25682.00  1998  MONTH INTERVIEWED                                         CV_INTERVIEW_CMONTH      
+R38762.00  1999  RS AGE IN MONTHS AS OF INTERVIEW DATE                     CV_AGE(MONTHS)_INT_DATE  
+R38763.00  1999  RS AGE AT INTERVIEW DATE                                  CV_AGE_INT_DATE          
+R38849.00  1999  GROSS HH INCOME IN PAST YEAR                              CV_INCOME_GROSS_YR       
+R38852.00  1999  RS RELATIONSHIP TO HOUSEHOLD PARENT FIGURE                CV_YTH_REL_HH_CURRENT    
+R38901.00  1999  MONTH INTERVIEWED                                         CV_INTERVIEW_CMONTH      
+R54641.00  2000  GROSS HH INCOME IN PAST YEAR                              CV_INCOME_GROSS_YR       
+R54644.00  2000  RS RELATIONSHIP TO HOUSEHOLD PARENT FIGURE                CV_YTH_REL_HH_CURRENT    
+R54722.00  2000  MONTH INTERVIEWED                                         CV_INTERVIEW_CMONTH      
+R72278.00  2001  GROSS HH INCOME IN PAST YEAR                              CV_INCOME_GROSS_YR       
+R72281.00  2001  RS RELATIONSHIP TO HOUSEHOLD PARENT FIGURE                CV_YTH_REL_HH_CURRENT    
+R72360.00  2001  MONTH INTERVIEWED                                         CV_INTERVIEW_CMONTH      
+S15417.00  2002  GROSS HH INCOME IN PAST YEAR                              CV_INCOME_GROSS_YR       
+S15420.00  2002  RS RELATIONSHIP TO HOUSEHOLD PARENT FIGURE                CV_YTH_REL_HH_CURRENT    
+S15508.00  2002  MONTH INTERVIEWED                                         CV_INTERVIEW_CMONTH      
+T81225.00  2013  VERSION_R16                                               VERSION_R16              
+Z90838.00  XRND  RS HIGHEST GRADE COMPLETED                                CVC_HGC_EVER             
+Z90839.00  XRND  HIGHEST DEGREE RECEIVED                                   CVC_HIGHEST_DEGREE_EVER  
+Z90848.00  XRND  DATE LEFT PRIMARY/SECONDARY SCHOOL                        CVC_HS_LEFT_DATE         
+Z90849.00  XRND  HIGHEST PRIMARY/SECONDARY GRADE COMPLETED                 CVC_HS_LEFT_HGC          
+Z90850.00  XRND  HIGHEST PRIMARY/SECONDARY GRADE ATTENDED                  CVC_HS_LEFT_HGA          
