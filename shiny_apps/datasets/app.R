@@ -12,7 +12,7 @@ load("example_datasets/titanic/titanic.RData")
 description <- c("A dataset of movies produced between 2000 and 2013, compiled from iMDB and Rotten Tomatoes.",
                   "Violent and property crime rates (per 100,000) by state for 2010 (compiled by the FBI) with accompanying socio-demographic data.",
                   "General Social Survey data from 2004 on sexual frequency of US adults.",
-                  "National Election Studies data from 2012 on the political attitudes and affiliations of the US voting age population.",
+                  "National Election Studies data from 2016 on the political attitudes and affiliations of the US voting age population.",
                   "Compiled data on the characteristics of Titanic passengers, including whether they survived or not.")
 
 names(description) <- c("movies", "crimes","sex","politics","titanic")

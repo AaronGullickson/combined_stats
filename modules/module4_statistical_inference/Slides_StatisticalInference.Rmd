@@ -955,16 +955,16 @@ The hypothesis test we are most interested in is whether the association we obse
 </div>
 
 ```{r}
-tapply(politics$age, politics$party, mean)
+tapply(politics$age, politics$president, mean)
 ```
 
-In my ANES sample, Republicans are older (51.5) than Democrats (49.3). Do I think this reflects a real age difference in the population? My null hypothesis is:
+In my ANES sample, Trump voters are older (54.45) than Clinton voters (50.15). Do I think this reflects a real age difference in the population of voters? My null hypothesis is:
 
-$$H_0: \mu_R-\mu_D=0$$
+$$H_0: \mu_T-\mu_C=0$$
 
-Where $\mu_R$ is the population mean age of Republicans and $\mu_D$ is the population mean age of Democrats. 
+Where $\mu_T$ is the population mean age of Trump voters and $\mu_C$ is the population mean age of Clinton voters. 
 
-The sample mean difference is `r 51.5-49.3` years of age. Is this difference far enough from zero to reject the null hypothesis? 
+The sample mean difference is `r 54.54-50.15` years of age. Is this difference far enough from zero to reject the null hypothesis? 
 
 ## Example: mean differences, continued {.smaller}
 <div class="footer">
@@ -974,9 +974,9 @@ The sample mean difference is `r 51.5-49.3` years of age. Is this difference far
 First, I need the standard error of the sample mean difference, as per the formula in the previous section, which requires the sample SD's and sample size of both groups.
 
 ```{r}
-tapply(politics$age, politics$party, sd)
-table(politics$party)
-se <- sqrt(16.50332^2/2361+16.88751^2/1389)
+tapply(politics$age, politics$president, sd)
+table(politics$president)
+se <- sqrt(17.32455^2/1364+16.87335^2/1245)
 se
 ```
 
@@ -986,14 +986,14 @@ se
 </div>
 
 
-I can now calculate how many standard errors `r 51.5-49.3` is from zero and use that to calculate my p-value. Remember that I use the smaller of the two sample sizes as my degrees of freedom for the t. 
+I can now calculate how many standard errors `r 54.54-50.15` is from zero and use that to calculate my p-value. Remember that I use the smaller of the two sample sizes as my degrees of freedom for the t. 
 
 ```{r}
-(51.5-49.3)/se
-2*pt(-3.88,1389-1)
+(54.54-50.15)/se
+2*pt(-6.55,1364-1)
 ```
 
-The p-value is tiny. Assuming that the true population age difference between Republicans and Democrats is zero, there is a .02% chance of observing an age difference of `r 51.5-49.3` years or larger in a sample of this size. Thus, I **reject** the null hypothesis and conclude that Democrats are younger than Republicans, on average. 
+The p-value is tiny. Assuming that the true population age difference between Trump and Clinton voters is zero, there is a less than 0.0000000001% chance of observing an age difference of `r 54.54-50.15` years or larger in a sample of this size. Thus, I **reject** the null hypothesis and conclude that Trump voters are older than Clinton voters, on average. 
 
 ----
 <div class="footer" style="top:575px;">
@@ -1015,61 +1015,6 @@ text(0,max(y)/2,"p-value=0.00023")
 arrows(x[20],y[20]+0.005,-0.01,max(y)/2-0.02, length=0.1)
 arrows(x[480],y[480]+0.005,0.01,max(y)/2-0.02, length=0.1)
 
-```
-
-## Example: regression slopes {.smaller}
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-Let me treat the ordinal responses to whether respondents were in favor of treating immigrants as citizens as a score from 0 to 2. Lets look at the relationship between this score and income. 
-
-```{r}
-politics$immigscore <- as.numeric(politics$immigcitizen)-1
-model <- lm(immigscore~income, data=politics)
-summary(model)$coef
-```
-
-The model predicts that a thousand dollar increase in income is associated with a 0.0006 increase in the score of support for immigrant citizenship. Note that this is a small substantive effect. Do we think it is a real effect in the population? 
-
-Our null hypothesis is that the true slope in the population is zero:
-
-$$H_0: \beta_1=0$$
-
-## Example: regression slopes, continued {.smaller}
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-Note that the `summary(model)$coef` command actually gave us all the information we need, including the p-value.
-
-```{r}
-summary(model)$coef
-```
-
-The standard error is 0.00018. If we take our regression slope and divide by this standard error, we get a t-statistic of 3.11. A slope this far or farther from zero has a 0.18% probability of being drawn, assuming the null hypothesis is true. 
-
-This is a very small p-value, so we **reject** the null hypothesis. We conclude that there is a very small positive relationship between income and support for immigrant citizenship.
-
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-x <- seq(from=-0.00075,to=0.00075,by=0.00001)
-se <- 0.00018
-y <- (1/(se*sqrt(2*pi)))*exp(-1*(x)^2/(2*se^2))
-
-plot(x,y,type="l",xlab="sample regression slope",yaxt="n",ylab="", main="Sampling distribution of regression slope,\nassuming null hypothesis is true", cex.main=2)
-#abline(v=0,lwd=3,lty=2,col="blue")
-abline(v=0.00058,lwd=3,col="red")
-abline(v=-0.00058,lwd=1,col="red", lty=2)
-polygon(c(x[1],x[1:18],-0.00058),c(-0.005, y[1:18],-0.005), col="grey")
-polygon(c(x[151],x[151:134],0.00058),c(-0.005, y[151:134],-0.005), col="grey")
-text(0,max(y)/2,"p-value=0.0024")
-arrows(x[9],y[9]+0.005,-0.0001,0.95*max(y)/2, length=0.1)
-arrows(x[140],y[140]+0.005,0.0001,0.95*max(y)/2, length=0.1)
 ```
 
 ## Statistical Significance

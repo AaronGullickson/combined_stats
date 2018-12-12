@@ -16,9 +16,9 @@ library(stargazer)
 load("politics.RData")
 ```
 
-#Overview
+# Overview
 
-This data comes from the 2012 [American National Election Study](http://www.electionstudies.org) (ANES). The ANES is a survey of the American electorate that is conducted every two years. The study collects information on a variety of political attitudes and voting behaviors. For our purposes, we are going to primarily look at respondent's attitudes on three issues: (1) immigration, (2) gay marriage, and (3) global warming.
+This data comes from the 2016 [American National Election Study](http://www.electionstudies.org) (ANES). The ANES is a survey of the American electorate that is conducted every two years. The study collects information on a variety of political attitudes and voting behaviors. For our purposes, we are going to primarily look at respondent's vote for president attitudes on three issues: (1) birthright citizenship, (2) gay marriage, and (3) global warming.
 
 Unlike our other datasets, some of the variables originally include significant number of missing values. In most cases, this is because the respondent refused to answer the question or didn't understand the question enough to feel comfortable answering the question. To simplify the analysis here, I have used some advanced techniques to impute valid values for all of the missing valuese. 
 
@@ -30,21 +30,21 @@ stargazer(politics, summary.stat=c("n","mean","sd","min","p25","median","p75","m
           type="latex", title="Summary statistics for all quantitative variables in the politics dataset")
 ```
 
-#Variable Descriptions
+# Variable Descriptions
 
-##immigcitizen
+## brcitizen
 
-Respondents were asked whether they would support a proposal to grant citizenship to some (not necessarily all) undocumented immigrants. Respondents could either favor, oppose, or do neither. There are 10 missing values for this response. 
+Respondents were asked whether they would support a proposal to change the US Constitution to remove birthright citizenship (citizenship automatically granted to individuals born in the US regardless of their parent's citizenship status).  Respondents could either favor, oppose, or neither favor or oppose.
 
 ```{r echo=FALSE, fig.align='center'}
 par(mar=c(3,7,1,1))
-barplot(table(politics$immigcitizen), col=c("darkgreen"), las=2, cex.main=0.8, cex.names=0.75,
-        main="Support for citizenship for undocument migrants", ylab="", xlab="frequency",
+barplot(table(politics$brcitizen), col=c("darkgreen"), las=2, cex.main=0.8, cex.names=0.75,
+        main="Support for removing birthright citizenship", ylab="", xlab="frequency",
         horiz=TRUE,
         names.arg=c("Oppose","Neither/\nDon't Know","Favor"))
 ```
 
-##gaymarriage
+## gaymarriage
 
 Respondents were asked for their position on gay marriage and were given the choices of "no legal recognition", "civil union (but no marriage)", "support gay marriage." There were 80 missing values. 
 
@@ -55,9 +55,9 @@ barplot(table(politics$gaymarriage), col=c("orange"), las=2, cex.main=0.8, cex.n
         names.arg=c("No legal\nrecognition","Civil union","Support gay\nmarriage"))
 ```
 
-##globalwarm
+## globalwarm
 
-I constructed this variable from two separate questions. The first question asks whether respondents think that global warming has been happening with the options being that it "probably has" or "probably has not." The second question asks whether respondents thought that global warming was caused by human activity (either entirely or partially). I combine these into a single dichotomous variable where individuals either think the earth is warming from human activity or that it is not warming from human activity, where the latter category includes people who think it isn't warming at all and people who think it is warming but not because of human activity. There are 142 missing values for this variable.
+I constructed this variable from two separate questions. The first question asks whether respondents think that global warming has been happening with the options being that it "probably has" or "probably has not." The second question asks whether respondents thought that global warming was caused by human activity (either entirely or partially). I combine these into a single dichotomous variable where individuals either think the earth is warming from human activity or that it is not warming from human activity, where the latter category includes people who think it isn't warming at all and people who think it is warming but not because of human activity. 
 
 ```{r echo=FALSE, fig.align='center'}
 par(mar=c(3,7,1,1))
@@ -66,80 +66,79 @@ barplot(table(politics$globalwarm), col=c("red"), las=2, cex.main=0.8, cex.names
         names.arg=c("Not warming from\nhuman activity","Warming from\nhuman activity"))
 ```
 
-##party
+## party
 
-The political party with which the respondent identifies. The original data include a category for "no preference" that I have collapsed with the category of "independent."
+The political party with which the respondent identifies. This does not necessarily mean that a respondent is officially registered with a given party.
 
 ```{r echo=FALSE, fig.align='center'}
-barplot(summary(politics$party), col=c("blue","red","purple","grey"), las=2, cex.main=0.8, cex.names=0.75,
+barplot(summary(politics$party), col=c("grey"), las=2, cex.main=0.8, cex.names=0.75,
         main="Party affiliation", xlab="", ylab="frequency")
 ```
 
-#relig
+## relig
 
-The respondent's religion. To keep things simpler here, I have combined the category of evangelicial and "undifferentiated" protestant. The latter category includes protestants who are so-called "non-denominational." I have also collapsed black protestant denomination with mainline protestants. Thereare 86 missing values for this variable.
+The respondent's religion. This category is based on the combination of people's statement about the kind of services they typically attend along with several non-exclusive yes/no questions about their religion (e.g. evangelical, pentecostal, agnostic, aethist).
 
 ```{r echo=FALSE, fig.align='center'}
-par(mar=c(3,7,1,1))
+par(mar=c(3,9,1,1))
 barplot(table(politics$relig), col=c("yellow"), las=2, cex.main=0.8, cex.names=0.75,
         main="Religious Affiliation", ylab="", xlab="frequency", horiz=TRUE,
-        names.arg=c("Mainline Protestant","Evangelical/\nUndifferentiated\nProtestant",
-                    "Roman Catholic", "Jewish","Other Religion","Not Religious"))
+        names.arg=c("Mainline Protestant","Evangelical Protestant","Catholic","Jewish","Non-religious","Other"))
 ```
 
-##age
+## age
 
-The age of the respondent. The ANES is focused on the voting age population. The youngest interviewee was 17 years old. Presumably this person was interviewed because they would turn 18 by the time of the actual election. There are 60 missing values for this variable.
+The age of the respondent. The ANES is focused on the voting age population. The youngest interviewee was 18 years old. 
 
 ```{r echo=FALSE, fig.align='center'}
 hist(politics$age, breaks=c(seq(from=15, to=90, by=5)), col="skyblue", las=1, cex.main=0.8,
      main="Histogram of age", xlab="age", ylab="frequency")
 ```
 
-##race 
+## race 
 
-The race of the respondent. This is always a tricky category to code. The ANES uses a relatively simple and crude set of six categories and does not allow a respondent to check multiple races. There are 24 missing values on this variable.
+The race of the respondent. Respondents could write in multiple races, but to keep it simple, we will combine the small number of individuals who reported multiple races with those who listed "Other" as their race.
 
 ```{r echo=FALSE, fig.align='center'}
 par(mar=c(3,7,1,1))
 barplot(table(politics$race), col=c("grey"), las=2, cex.main=0.8, cex.names=0.75,
         main="Race", ylab="", xlab="frequency", horiz=TRUE,
-        names.arg=c("White","Black","Hispanic","Asian/\nPacific Islander", "American\nIndian",
-                    "Other"))
+        names.arg=c("White","Black","Latino","Asian/\nPacific Islander", "American\nIndian",
+                    "Other/\nMixed"))
 ```
 
 
-##educ
+## educ
 
-The respondent's level of education. This is recorded as an ordinal variable. The "Some college" response indicates individuals who have attended college (including 2-year programs) but have not earned a BA. There are 50 missing values. 
+The respondent's level of education. This is recorded as an ordinal variable. The "Some college" response indicates individuals who have attended college (including 2-year programs) but have not earned a BA.
 
 ```{r echo=FALSE, fig.align='center'}
 par(mar=c(3,7,1,1))
 barplot(table(politics$educ), col=c("gold"), las=2, cex.main=0.8, cex.names=0.75,
         main="Educational Attainment", ylab="", xlab="frequency", horiz=TRUE,
-        names.arg=c("Less than\nhigh school","High school\ngraduate","Some college",
+        names.arg=c("Less than\nhigh school","High school\ndiploma","Some college",
                     "BA degree","Graduate\ndegree"))
 ```
 
 
-##income
+## income
 
-The family income of the respondentin 1000s of dollars. Respondents did not give actual dollar amounts here but rather indicated which bracket of income (e.g. $20,000-30,000) they fell within. I am treating this like a continuous variable by assigning each respondent the midpoint of the bracket as their actual income (e.g. $20,000-30,000 becomes $25,000). The final category of $250,000 or more is treated as $250,000. There are 520 missing values for income. 
+The family income of the respondent in 1000s of dollars. Respondents did not give actual dollar amounts here but rather indicated which bracket of income (e.g. \$20,000-30,000) they fell within. For the purposes of our class, I randomly select an actual value within this bracket for each respondent. 
 
 ```{r echo=FALSE, fig.align='center'}
-hist(politics$income, breaks=c(seq(from=0, to=260, by=10)), col="skyblue", las=1, cex.main=0.8,
+hist(politics$income, breaks=c(seq(from=0, to=300, by=20)), col="skyblue", las=1, cex.main=0.8,
      main="Histogram of age", xlab="income", ylab="frequency")
 ```
 
 
-##workstatus
+## workstatus
 
-The work status of the respondents. Respondents could either be working, unemployed, or out of the labor force. The last category refers to people who are not employed and not currently looking for work, whereas unemployed indicates a person who is not employed an is currently looking for work. There are 13 missing values. 
+The work status of the respondent. Respondents could either be working, unemployed, or out of the labor force. The last category refers to people who are not employed and not currently looking for work, whereas unemployed indicates a person who is not employed an is currently looking for work.
 
 
 ```{r echo=FALSE, fig.align='center'}
 par(mar=c(3,7,1,1))
 barplot(table(politics$workstatus), col=c("grey"), las=2, cex.main=0.8, cex.names=0.75,
         main="Work Force Status", ylab="", xlab="frequency", horiz=TRUE,
-        names.arg=c("Working","Unemployed","Out of\nLabor Force"))
+        names.arg=c("Out of\nLabor Force","Unemployed","Working"))
 ```

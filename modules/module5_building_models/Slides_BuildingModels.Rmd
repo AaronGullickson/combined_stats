@@ -1124,25 +1124,25 @@ politics.reduced <- droplevels(subset(politics, party=="Democrat" | party=="Repu
 coef(lm(gaymarscale~age+party, data=politics.reduced))
 ```
 
-$$sup\hat{p}ort_i=80.21-0.30(age_i)-25.06(republican_i)$$
+$$sup\hat{p}ort_i=93.16-0.28(age_i)-24.36(republican_i)$$
 
->- The model predicts that, holding party affiliation constant, a one year increase in age is associated with a 0.30 point reduction on the support for gay marriage scale, on average. 
->- The model predicts that, comparing individuals of the same age, Republicans score 25.06 points lower on the support for gay marriage scale than Democrats, on average.
+>- The model predicts that, holding party affiliation constant, a one year increase in age is associated with a 0.28 point reduction on the support for gay marriage scale, on average. 
+>- The model predicts that, comparing individuals of the same age, Republicans score 24.36 points lower on the support for gay marriage scale than Democrats, on average.
 
 ## What is the effect of age for Rs and Ds? {.smaller}
 <div class="footer"> 
 <body>Sociology 312, Building Better Models: Interaction terms</body>
 </div>
 
-$$sup\hat{p}ort_i=80.21-0.30(age_i)-25.06(republican_i)$$
+$$sup\hat{p}ort_i=93.16-0.28(age_i)-24.36(republican_i)$$
 
 **Democrat:**
 
->- $sup\hat{p}ort_i=80.21-0.30(age_i)-25.06(0)=80.21-0.30(age_i)$
+>- $sup\hat{p}ort_i=93.16-0.28(age_i)-24.36(0)=93.16-0.28(age_i)$
 
 **Republican:**
 
->- $sup\hat{p}ort_i=80.21-0.30(age_i)-25.06(1)=(80.21-25.06)-0.30(age_i)=55.15-0.30(age_i)$
+>- $sup\hat{p}ort_i=93.16-0.28(age_i)-24.36(1)=(93.16-24.36)-0.28(age_i)=68.8-0.28(age_i)$
 
 >- The slopes are the same, but the intercepts are different.
 >- This means we have two parallel lines. 
@@ -1155,13 +1155,13 @@ $$sup\hat{p}ort_i=80.21-0.30(age_i)-25.06(republican_i)$$
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
 age <- seq(from=20,to=80,by=1)
-y.repub <- 55.15-0.30*age
-y.dem <- 80.21-0.30*age
+y.repub <- 68.8-0.28*age
+y.dem <- 93.16-0.28*age
 plot(age, y.repub, lwd=2, col="red", type="l", ylim=c(0,100),
      xlab="age", ylab="predicted support", las=1, 
      main="Predicted gay marriage support\nby Republican and Democrats by age", cex.main=1.5)
 lines(age, y.dem, lwd=2, col="blue")
-legend(20,100,legend=c("Republican","Democrat"), lty=1, col=c("red","blue"))
+legend(20,30,legend=c("Republican","Democrat"), lty=1, col=c("red","blue"))
 ```
 
 ----
@@ -1171,16 +1171,16 @@ legend(20,100,legend=c("Republican","Democrat"), lty=1, col=c("red","blue"))
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
 age <- seq(from=20,to=80,by=1)
-y.repub <- 55.15-0.30*age
-y.dem <- 80.21-0.30*age
+y.repub <- 68.8-0.28*age
+y.dem <- 93.16-0.28*age
 plot(age, y.repub, lwd=2, col="red", type="l", ylim=c(0,100),
      xlab="age", ylab="predicted support", las=1, 
      main="Predicted gay marriage support\nby Republican and Democrats by age", cex.main=1.5)
 lines(age, y.dem, lwd=2, col="blue")
-legend(20,100,legend=c("Republican","Democrat"), lty=1, col=c("red","blue"))
+legend(20,30,legend=c("Republican","Democrat"), lty=1, col=c("red","blue"))
 arrows(30,y.repub[11],30,y.dem[11], code=3, length=0.1)
 arrows(70,y.repub[51],70,y.dem[51], code=3, length=0.1)
-text(50,(y.repub[31]+y.dem[31])/2,"The predicted difference between Republicans\nand Democrats is 25.41 at every age")
+text(50,(y.repub[31]+y.dem[31])/2,"The predicted difference between Republicans\nand Democrats is 24.36 at every age")
 ```
 
 ----
@@ -1190,13 +1190,13 @@ text(50,(y.repub[31]+y.dem[31])/2,"The predicted difference between Republicans\
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
 age <- seq(from=20,to=80,by=1)
-y.repub <- 55.15-0.30*age
-y.dem <- 80.21-0.30*age
+y.repub <- 68.8-0.28*age
+y.dem <- 93.16-0.28*age
 plot(age, y.repub, lwd=2, col="red", type="l", ylim=c(0,100),
      xlab="age", ylab="predicted support", las=1, 
      main="Predicted gay marriage support\nby Republican and Democrats by age", cex.main=1.5)
 lines(age, y.dem, lwd=2, col="blue")
-legend(20,100,legend=c("Republican","Democrat"), lty=1, col=c("red","blue"))
+legend(20,30,legend=c("Republican","Democrat"), lty=1, col=c("red","blue"))
 #arrows(30,y.repub[11],30,y.dem[11], code=3, length=0.1, col="grey20")
 #arrows(70,y.repub[51],70,y.dem[51], code=3, length=0.1, col="grey20")
 #text(50,(y.repub[31]+y.dem[31])/2,"The predicted difference between Republicans\nand Democrats is 25.41 at every age")
@@ -1246,15 +1246,15 @@ model <- lm(gaymarscale~age*party, data=politics.reduced)
 coef(model)
 ```
 
-$$sup\hat{p}ort_i=82.87-0.35(age_i)-32.21(republican_i)+0.14(age_i*republican_i)$$
+$$sup\hat{p}ort_i=88.87-0.19(age_i)-14.64(republican_i)-0.19(age_i*republican_i)$$
 
 **Democrats**
 
-$sup\hat{p}ort_i=82.87-0.35(age_i)$
+$sup\hat{p}ort_i=88.87-0.19(age_i)$
 
 **Republican**
 
-$sup\hat{p}ort_i=(82.87-32.21)+(-0.35+0.14)(age_i)=50.66-0.21(age_i)$
+$sup\hat{p}ort_i=(88.87-14.64)+(-0.19-0.19)(age_i)=74.23-0.38(age_i)$
 
 ----
 <div class="footer"  style="top:575px;"> 
@@ -1263,13 +1263,13 @@ $sup\hat{p}ort_i=(82.87-32.21)+(-0.35+0.14)(age_i)=50.66-0.21(age_i)$
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
 age <- seq(from=20,to=80,by=1)
-y.repub <- 50.66-0.21*age
-y.dem <- 82.87-0.35*age
+y.repub <- 74.23-0.38*age
+y.dem <- 88.87-0.19*age
 plot(age, y.repub, lwd=2, col="red", type="l", ylim=c(0,100),
      xlab="age", ylab="predicted support", las=1, 
      main="Predicted gay marriage support\nby Republican and Democrats by age", cex.main=1.5)
 lines(age, y.dem, lwd=2, col="blue")
-legend(20,100,legend=c("Republican","Democrat"), lty=1, col=c("red","blue"))
+legend(20,30,legend=c("Republican","Democrat"), lty=1, col=c("red","blue"))
 ```
 
 ----
@@ -1279,16 +1279,16 @@ legend(20,100,legend=c("Republican","Democrat"), lty=1, col=c("red","blue"))
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
 age <- seq(from=20,to=80,by=1)
-y.repub <- 50.66-0.21*age
-y.dem <- 82.87-0.35*age
+y.repub <- 74.23-0.38*age
+y.dem <- 88.87-0.19*age
 plot(age, y.repub, lwd=2, col="red", type="l", ylim=c(0,100),
      xlab="age", ylab="predicted support", las=1, 
      main="Predicted gay marriage support\nby Republican and Democrats by age", cex.main=1.5)
 lines(age, y.dem, lwd=2, col="blue")
-legend(20,100,legend=c("Republican","Democrat"), lty=1, col=c("red","blue"))
+legend(20,30,legend=c("Republican","Democrat"), lty=1, col=c("red","blue"))
 arrows(30,y.repub[11],30,y.dem[11], code=3, length=0.1)
 arrows(70,y.repub[51],70,y.dem[51], code=3, length=0.1)
-text(50,(y.repub[31]+y.dem[31])/2,"The gap in support between Republicans\nand Democrats is greatest at younger ages")
+text(50,(y.repub[31]+y.dem[31])/2,"The gap in support between Republicans\nand Democrats is smallest at younger ages")
 ```
 
 ----
@@ -1298,16 +1298,16 @@ text(50,(y.repub[31]+y.dem[31])/2,"The gap in support between Republicans\nand D
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
 age <- seq(from=20,to=80,by=1)
-y.repub <- 50.66-0.21*age
-y.dem <- 82.87-0.35*age
+y.repub <- 74.23-0.38*age
+y.dem <- 88.87-0.19*age
 plot(age, y.repub, lwd=2, col="red", type="l", ylim=c(0,100),
      xlab="age", ylab="predicted support", las=1, 
      main="Predicted gay marriage support\nby Republican and Democrats by age", cex.main=1.5)
 lines(age, y.dem, lwd=2, col="blue")
-legend(20,100,legend=c("Republican","Democrat"), lty=1, col=c("red","blue"))
+legend(20,30,legend=c("Republican","Democrat"), lty=1, col=c("red","blue"))
 arrows(30, y.repub[11]+4, 70, y.repub[51]+4, length=0.1)
 arrows(30, y.dem[11]+4, 70, y.dem[51]+4, length=0.1)
-text(50,(y.repub[31]+y.dem[31])/2,"Age differences in support are greater\namong Democrats than Republicans")
+text(50,(y.repub[31]+y.dem[31])/2,"Age differences in support are greater\namong Republicans than Democrats")
 ```
 
 ## Interpreting Interaction Terms
@@ -1315,9 +1315,9 @@ text(50,(y.repub[31]+y.dem[31])/2,"Age differences in support are greater\namong
 <body>Sociology 312, Building Better Models: Interaction terms</body>
 </div>
 
-$$sup\hat{p}ort_i=82.87-0.35(age_i)-32.21(republican_i)+0.14(age_i*republican_i)$$
+$$sup\hat{p}ort_i=88.87-0.19(age_i)-14.64(republican_i)-0.19(age_i*republican_i)$$
 
->- The separate effects of the variables that make up the interaction term are referred to as the **main effects**. In this case, the main effects are -0.35 for age and -32.21 for Republican. 
+>- The separate effects of the variables that make up the interaction term are referred to as the **main effects**. In this case, the main effects are -0.19 for age and -14.64 for Republican. 
 >- You can only interpret each main effect as the effect of that variable **when the other variable in the interaction is at zero**.
 >- The interaction term iself gives you the difference in the size of one of the main effects when one unit higher on the other variable. There are multiple ways we could describe this effect. 
 >- Each of the main effects is doing more than controlling for the other term - it is conditioning the effect. Therefore we do not use the "holding constant" phrase when interpreting main effects. 
@@ -1327,13 +1327,13 @@ $$sup\hat{p}ort_i=82.87-0.35(age_i)-32.21(republican_i)+0.14(age_i*republican_i)
 <body>Sociology 312, Building Better Models: Interaction terms</body>
 </div>
 
-$$sup\hat{p}ort_i=82.87-0.35(age_i)-32.21(republican_i)+0.14(age_i*republican_i)$$
+$$sup\hat{p}ort_i=88.87-0.19(age_i)-14.64(republican_i)-0.19(age_i*republican_i)$$
 
->- **Age Main Effect**: The model predicts that, **among Democrats**, a one year increase in age is associated with a 0.35 point decline in the gay marriage support scale, on average.  
->- **Republican Main Effect**: The model predicts that, **among individuals of zero age**, Republicans have scores on the gay marriage support scale 32.21 points lower than Democrats, on average. 
->- **Interaction Term, version 1**: The model predicts that a one year increase in age **among Republicans** is associated with a 0.14 weaker decline in support for gay marriage than **among Democrats**. (difference in slopes)
->- **Interaction Term, version 2**: The model predicts that a one year increase in age **among Republicans** is associated with a 0.21 decline in the gay marriage support scale, on average. (age slope for indicated category)
->- **Interaction Term, version 3**: The model predicts that each one year increase in age is associated with a 0.14 reduction in the support for gay marriage gap between Republicans and Democrats, on average. (category difference by age)
+>- **Age Main Effect**: The model predicts that, **among Democrats**, a one year increase in age is associated with a 0.19 point decline in the gay marriage support scale, on average.  
+>- **Republican Main Effect**: The model predicts that, **among individuals of zero age**, Republicans have scores on the gay marriage support scale 14.64 points lower than Democrats, on average. 
+>- **Interaction Term, version 1**: The model predicts that a one year increase in age **among Republicans** is associated with a 0.19 greater decline in support for gay marriage than **among Democrats**. (difference in slopes)
+>- **Interaction Term, version 2**: The model predicts that a one year increase in age **among Republicans** is associated with a 0.38 decline in the gay marriage support scale, on average. (age slope for indicated category)
+>- **Interaction Term, version 3**: The model predicts that each one year increase in age is associated with a 0.19 increase in the gap in  support for gay marriage between Republicans and Democrats, on average. (category difference by age)
 
 ## Interpret the never married coefficients {.smaller}
 <div class="footer"> 
@@ -1435,7 +1435,7 @@ stargazer(m1,m2,m3, type="html",
 Lets figure out the mean gay marriage support along two different categorical dimensions: party affiliation and religious affiliation (religious vs. not religious). 
 
 ```{r}
-politics.reduced$noreligion <- politics.reduced$relig=="Not Religious"
+politics.reduced$noreligion <- politics.reduced$relig=="Non-religious"
 tab <- tapply(politics.reduced$gaymarscale, politics.reduced[,c("party","noreligion")], mean, 
               na.rm=TRUE)
 colnames(tab) <- c("Religious","Not Religious")
@@ -1449,14 +1449,14 @@ round(tab,1)
 
 Party         Religious   Not Religious   Difference
 ---------     ---------   -------------   ----------
-Democrat          60.9            83.2          22.3
-Republican        36.6            60.6          24.0
-Difference       -24.3           -22.6
+Democrat          75.6            96.9          21.3
+Republican        53.2            75.9          22.7
+Difference       -22.4           -21.0
 
 >- Among Democrats, the non-religious score 21.3 points higher than the religious. 
->- Among Republicans, the non-religious score 24.0 points higher than the religious.
->- Among the religious, Republicans score 24.3 points lower than Democrats. 
->- Among the non-religious, Republicans score 22.6 points lower than Democrats. 
+>- Among Republicans, the non-religious score 22.7 points higher than the religious.
+>- Among the religious, Republicans score 22.4 points lower than Democrats. 
+>- Among the non-religious, Republicans score 21.0 points lower than Democrats. 
 
 ## How well does an additive model fit? {.smaller}
 <div class="footer"> 
@@ -1467,13 +1467,13 @@ Difference       -24.3           -22.6
 coef(lm(gaymarscale~party+noreligion, data=politics.reduced))
 ```
 
-$$sup\hat{p}ort_i=60.8-24.0(republican_i)+22.8(norelig_i)$$
+$$sup\hat{p}ort_i=75.6-22.3(republican_i)+21.6(norelig_i)$$
 
 Party            Religious         Not Religious   Difference
 ----------  --------------  --------------------   ----------
-Democrat              60.8        60.8+22.8=83.6        22.8
-Republican  60.8-24.0=36.8   60.8-24.0+22.8=59.6        22.8
-Difference           -24.0                 -24.0
+Democrat              75.6        75.6+21.6=97.2        21.6
+Republican  75.6-22.3=53.3   75.6-22.3+21.6=74.9        21.6
+Difference           -22.3                 -22.3
 
 >- The additive model forces the differences to be the same on rows and columns (i.e. across the other two categories)
 
@@ -1486,13 +1486,13 @@ Difference           -24.0                 -24.0
 coef(lm(gaymarscale~party*noreligion, data=politics.reduced))
 ```
 
-$$sup\hat{p}ort_i=60.9-24.3(republican_i)+22.3(norelig_i)+1.6(republican_i)(norelig_i)$$
+$$sup\hat{p}ort_i=75.6-22.4(republican_i)+21.3(norelig_i)+1.4(republican_i)(norelig_i)$$
 
 Party            Religious              Not Religious   Difference
 ----------  --------------  -------------------------   ----------
-Democrat              60.9             60.9+22.3=83.2        22.3
-Republican  60.9-24.3=36.6    60.9-24.3+22.3+1.6=60.5        23.9
-Difference           -24.3                      -22.7
+Democrat              75.6             75.6+21.3=96.9        21.3
+Republican  75.6-22.4=53.2    75.6-22.4+21.3+1.4=75.9        22.7
+Difference           -22.4                      -21.0
 
 >- The model with an interaction term fits the data perfectly (apart from rounding error) because it allows the differences within each set of categories to differ by the other set of categories. 
 
@@ -1501,13 +1501,13 @@ Difference           -24.3                      -22.7
 <body>Sociology 312, Building Better Models: Interaction terms</body>
 </div>
 
-$$sup\hat{p}ort_i=60.9-24.3(republican_i)+22.3(norelig_i)+1.6(republican_i)(norelig_i)$$
+$$sup\hat{p}ort_i=75.6-22.4(republican_i)+21.3(norelig_i)+1.4(republican_i)(norelig_i)$$
 
->- **Intercept**: The average gay marriage support score among religious Democrats is 60.9.
->- **Party Main Effect**: Among the religious, Republicans have gay marriage support scores 24.3 points lower than Democrats. 
->- **Religion Main Effect**: Among Democrats, the non-religious have gay marriage support scores 22.3 points higher than the religious.
->- **Interaction term, version 1**: The difference in gay marriage support between the religious and non-religious is 1.6 points greater among Republicans than among Democrats. 
->- **Interaction term, version 2**: The difference in gay marriage support between Republicans and Democrats is 1.6 points smaller among the non-religious than among the religious.  
+>- **Intercept**: The average gay marriage support score among religious Democrats is 75.6.
+>- **Party Main Effect**: Among the religious, Republicans have gay marriage support scores 21.4 points lower than Democrats. 
+>- **Religion Main Effect**: Among Democrats, the non-religious have gay marriage support scores 21.3 points higher than the religious.
+>- **Interaction term, version 1**: The difference in gay marriage support between the religious and non-religious is 1.4 points greater among Republicans than among Democrats. 
+>- **Interaction term, version 2**: The difference in gay marriage support between Republicans and Democrats is 1.4 points smaller among the non-religious than among the religious.  
 
 ## Interaction terms with more than two categories
 <div class="footer"> 
@@ -1528,9 +1528,9 @@ model <- lm(gaymarscale~party*age, data=politics)
 round(coef(model),2)
 ```
 
->- The intercept (82.87) and the slope of age (-0.35) apply only to Democrats (the reference group). 
+>- The intercept (88.79) and the slope of age (-0.19) apply only to Democrats (the reference group). 
 >- To calculate the intercept and slope for any other party, you need to combine the intercept and main effect of party for the party-specfic intercept and the slope of age and the interaction term for the slope. 
->- Republicans: intercept=$82.87-32.21=50.66$, slope=$-0.35+0.14=-0.21$
+>- Republicans: intercept=$88.79-14.64=74.15$, slope=$-0.19-0.19=-0.38$
 
 ----
 <div class="footer"  style="top:575px;"> 
@@ -1539,17 +1539,17 @@ round(coef(model),2)
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
 age <- seq(from=20,to=80,by=1)
-y.dem <- 82.87-0.35*age
-y.repub <- (82.87-32.21)+(-0.35+0.14)*age
-y.ind <- (82.86-1.39)+(-0.35-0.10)*age
-y.other <- (82.86+8.69)+(-0.35-0.4)*age
+y.dem <- 88.79-0.19*age
+y.repub <- (88.79-14.64)+(-0.19-0.19)*age
+y.ind <- (88.79+3.70)+(-0.19-0.19)*age
+y.other <- (88.79-8.84)+(-0.19-0.03)*age
 plot(age, y.repub, lwd=2, col="red", type="l", ylim=c(0,100),
      xlab="age", ylab="predicted support", las=1, 
      main="Predicted gay marriage support\nby party by age", cex.main=1.5)
 lines(age, y.dem, lwd=2, col="blue")
 lines(age, y.ind, lwd=2, col="purple")
 lines(age, y.other, lwd=2, col="green")
-legend(20,100,legend=c("Republican","Democrat","Independent","Other"), lty=1, col=c("red","blue","purple","green"), ncol=2)
+legend(20,30,legend=c("Republican","Democrat","Independent","Other"), lty=1, col=c("red","blue","purple","green"), ncol=2)
 ```
 
 # Transformations (Advanced)
