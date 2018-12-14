@@ -1,5 +1,5 @@
 ---
-title: "Building Better Models"
+title: "Building Models"
 author: "Prof. Gullickson, University of Oregon, Winter 2019"
 resource_files:
 output:
@@ -28,66 +28,12 @@ load("example_datasets/titanic/titanic.RData")
 load("example_datasets/politics/politics.RData")
 ```
 
-# What is a model?
-Building Better Models
-
-##  The OLS regression line as a model {.smaller}
-<div class="footer"> 
-<body>Sociology 312, Building Better Models: What is a model?</body>
-</div>
-
-Here is the OLS regression line predicting sexual frequency by education:
-
-$$freq\hat{u}ency_i=49.73+0.03*(education_i)$$
-
-The model predicts that a person with zero years of education has sex 49.73 times per year and that a one year increase in education is associated with 0.03 more sexual encounters per year. 
-
-We often refer to this line as a "model." Why?
-
->- We are measuring the relationship between sexual frequency and education by applying some kind of model to describe this relationship. 
->- Our model is simple. We predict sexual frequency as a **linear function** of years of education. 
->- We don't expect that our model provides an absolutely correct view of how this relationship works, but it allows us to abstract from the details and (hopefully) provides some insight. 
->- In this section, we will learn a variety of techniques for extending this very basic model of the relationship to produce more realistic, better models of the relationship. 
-
-##  Additional example for this section
-<div class="footer"> 
-<body>Sociology 312, Building Better Models: What is a model?</body>
-</div>
-
-In addition to our usual datasets, we will be examining two published research articles in this section. 
-
-- The first article is "The rewards of authority in the workplace: Do gender and age matter" by Schieman, Schafer, and McIvor. 
-- The second article is "Generational Status and Academic Achievement among Latino High School Students: Evaluating the Segmented Assimilation Theory" by Demetra Kalogrides. 
-
->- The articles are available on Canvas in the Modules tab, for this module. 
->- You will need to read the articles in their entirety to answer the quizzes and understand material presented in lecture.
->- By the end of this module, you should be able to understand most statistics presented in the articles.
-
----- 
-
-<div class="footer" style="top:575px;"> 
-<body>Sociology 312, Building Better Models: What is a model?</body>
-</div>
-
-<div style="text-align: center"><img src="images/slides/KalogridesTable.png"   align="middle" style="width: 850px;"/></div>
-
-##  How do we build better models?
-<div class="footer"> 
-<body>Sociology 312, Building Better Models: What is a model?</body>
-</div>
-
->- Include multiple independent variables **simultaneously** as predictors of the dependent variable.
->- Include **categorical variables** as independent variables. 
->- Allow independent variables to **interact** with one another in their effect on the dependent variable.
->- **Transform** the dependent variable to handle non-linearity. (Advanced)
-
-
 # The OLS Regression Line
 Measuring Association
 
 ##   Draw a straight line through these points
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 ```{r echo=FALSE, fig.width=8, fig.height=5, out.width='800px', out.height='500px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -102,7 +48,7 @@ plot(crimes$Unemployment,crimes$Property,
 
 ##   The formula for a straight line
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 $$y=a+bx$$
@@ -112,7 +58,7 @@ $$y=a+bx$$
 
 ##   Calculate the values for your line
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 ```{r echo=FALSE, fig.width=8, fig.height=5, out.width='800px', out.height='500px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -141,7 +87,7 @@ text(10,model$coef[1]-500,
 
 ##   The formula for the OLS regression line
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 $$\hat{y}_i=b_0+b_1x_i$$
@@ -152,7 +98,7 @@ $$\hat{y}_i=b_0+b_1x_i$$
 
 ##   How do we know which line is best?
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 The criteria for the best fitting line is the line that minimizes the **sum of squared residuals**. The **residual** is the difference between the actual value of $y_i$ for an observation and its predicted value from the line, $\hat{y}_i$:
@@ -166,7 +112,7 @@ $$SSR=\sum_{i=1}^n=(y_i-\hat{y}_i)^2$$
 
 ----
 <div class="footer" style="top:575px;">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 ```{r echo=FALSE}
 shinyAppDir(
@@ -177,7 +123,7 @@ shinyAppDir(
 
 ##   How do we calculate the slope and intercept?
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 $$b_1=r * \frac{s_y}{s_x}$$
@@ -189,9 +135,19 @@ slope
 mean(crimes$Property)-slope*mean(crimes$Unemployment)
 ```
 
+##  The OLS regression line as a model
+<div class="footer"> 
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
+</div>
+
+We often refer to the OLS regression line as a "model." Why? 
+
+>- We are measuring the relationship between two variables by applying a **linear function** to describe this relationship. 
+>- We don't expect that our model provides an absolutely correct view of how this relationship works, but it allows us to abstract from the details and (hopefully) provides some insight.
+
 ##   Creating OLS regression models in R
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 the `lm` command can be used to create a model object in R. Notice I am not using the dollar signs to identify variables but rather the data option in `lm`.
@@ -208,7 +164,7 @@ coef(model)
 
 ##   Using summary on lm objects {.smaller}
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 ```{r}
@@ -217,7 +173,7 @@ summary(model)
 
 ##   Interpreting the results
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 $$pro\hat{p}erty_i=1628.4+148.7(unemployment_i)$$
@@ -228,7 +184,7 @@ $$pro\hat{p}erty_i=1628.4+148.7(unemployment_i)$$
 
 ##   Try interpreting these numbers
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 Try interpreting these numbers from a regression model where the dependent variable is box office returns (in millions of dollars) and the independent variable is the Tomato Meter (from 0 to 100). 
@@ -241,7 +197,7 @@ $$boxo\hat{f}fice_i=18.32+0.56(meter_i)$$
 
 ##   Nonsensical Intercepts
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 Try interpreting these numbers from a regression model where the dependent variable is sexual frequency (sexual encounters per year) and the independent variable is age in years. 
@@ -255,7 +211,7 @@ $$s\hat{e}x_i=107.96-1.30(age_i)$$
 
 ##   Re-centering independent variables {.smaller}
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 We can easily re-define the meaning of zero for a variable $x$ by subtracting some constant number $a$ from it: 
@@ -275,7 +231,7 @@ The intercept is now the predicted sexual frequency for 18-year olds and the slo
 
 ##   Re-centering moves the intercept
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 ```{r echo=FALSE, fig.width=8, fig.height=4.75, out.width='800px', out.height='475px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -299,7 +255,7 @@ arrows(rep(0,3),c(20,50,80),rep(18,3),c(20,50,80),length=0.1)
 
 ##   Now interpret these numbers
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 $$s\hat{e}x_i=84.58-1.30(age_i-18)$$
@@ -311,7 +267,7 @@ $$s\hat{e}x_i=84.58-1.30(age_i-18)$$
 
 ##   How good is $x$ as a predictor of $y$?
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 >- If you knew nothing about $x_i$ what is your best prediction of $y_i$. 
@@ -322,7 +278,7 @@ $$s\hat{e}x_i=84.58-1.30(age_i-18)$$
 
 ----
 <div class="footer" style="top:575px;">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 ```{r echo=FALSE, fig.width=8, fig.height=5, out.width='800px', out.height='500px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
 plot(crimes$Unemployment,crimes$Property,
@@ -338,7 +294,7 @@ abline(h=mean(crimes$Property), lwd=2, lty=2)
 
 ----
 <div class="footer" style="top:575px;">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 ```{r echo=FALSE, fig.width=8, fig.height=5, out.width='800px', out.height='500px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
 model <- lm(Property~Unemployment, data=crimes)
@@ -357,7 +313,7 @@ points(crimes$Unemployment[46],crimes$Property[46], pch=21,
 
 ----
 <div class="footer" style="top:575px;">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 ```{r echo=FALSE, fig.width=8, fig.height=5, out.width='800px', out.height='500px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
 plot(crimes$Unemployment,crimes$Property,
@@ -378,7 +334,7 @@ segments(crimes$Unemployment[46]-.08,crimes$Property[46],
 
 ----
 <div class="footer" style="top:575px;">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 ```{r echo=FALSE, fig.width=8, fig.height=5, out.width='800px', out.height='500px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
 plot(crimes$Unemployment,crimes$Property,
@@ -409,7 +365,7 @@ legend(4,4500, legend=c("Total distance","Explainable by model", "Model residual
 
 ##   Partition variance into two parts
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 >- Total variance: $SSY=\sum_{i=1}^n (y_i-\bar{y})^2$
@@ -422,7 +378,7 @@ legend(4,4500, legend=c("Total distance","Explainable by model", "Model residual
 
 ##   Easy calculation
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 $$\frac{SSM}{SSY}=r^2$$
@@ -435,7 +391,7 @@ About 19.7% of the variation in property crime rates across states is explainabl
 
 ----
 <div class="footer" style="top:575px;">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 ```{r echo=FALSE}
@@ -445,9 +401,41 @@ shinyAppDir(
 )
 ```
 
+## Inference for OLS regression models
+<div class="footer"> 
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
+</div>
+
+When dealing with samples, we can also address questions of inference in OLS regression models. 
+
+We can think about an OLS regression model in the population (using greek letters, because its a population):
+
+$$\hat{y}_i=\beta_0+\beta_1(x_i)$$
+
+The null hypothesis is that the slope in the population is zero, and therefore there is no relationship between $x$ and $y$. 
+
+$$H_0: \beta_1=0$$
+
+We just need to know how to get the standard error for a slope and degrees of freedom and we should be good.
+
+## Output of `lm` makes inference easy! {.smaller}
+<div class="footer"> 
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
+</div>
+
+```{r}
+model <- lm(sexf~I(age-18), data=sex)
+summary(model)$coef
+```
+
+>- The first number (-1.2989) is the slope.
+>- The second number (0.0654) is the standard error. 
+>- The third number is the t-value derived by dividing the slope by the standard error. 
+>- The last number is the p-value. The scientific notation means that the p-value is tiny. We can strongly reject the null hypothesis that there is no relationship between a person's age and their sexual frequency. Sexual frequency appears to diminish with age. 
+
 ##   OLS Regression Limitations
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 >- Regression only applies to linear relationships. 
@@ -456,7 +444,7 @@ shinyAppDir(
 
 ##   Non-Linearity
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 ```{r echo=FALSE, fig.width=7, fig.height=4.5, out.width='700px', out.height='450px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -474,7 +462,7 @@ text(2300,68,label="Overestimate", col="red")
 
 ----
 <div class="footer" style="top:575px;">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 ```{r echo=FALSE}
@@ -486,7 +474,7 @@ shinyAppDir(
 
 ##   Extrapolating beyond the range of the data
 <div class="footer">
-<body>Sociology 312, Measuring Association: The OLS Regression Line</body>
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
 </div>
 
 >- Our model only holds for the existing range of our independent variable. 
@@ -494,13 +482,36 @@ shinyAppDir(
 >- Imagine you were predicting height by age among children from 5-15 years of age. Would it be advisable to use this formula to estimate the height of a 50-year old? 
 >- No, no, no. We would expect that this relationship only holds in the physical development stage of life. We would dramatically overestimate a 50-year old's height with this model. 
 
+##  How do we build better models?
+<div class="footer"> 
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
+</div>
+
+>- Include multiple independent variables **simultaneously** as predictors of the dependent variable.
+>- Include **categorical variables** as independent variables. 
+>- Allow independent variables to **interact** with one another in their effect on the dependent variable.
+
+##  Understanding real research
+<div class="footer"> 
+<body>Sociology 312, Building Models: The OLS Regression Line</body>
+</div>
+
+By understanding models better we will begin to be able to understand real research. There are two research articles that we will talk about extensively in this module: 
+
+- "The rewards of authority in the workplace: Do gender and age matter" by Schieman, Schafer, and McIvor. 
+- "Generational Status and Academic Achievement among Latino High School Students: Evaluating the Segmented Assimilation Theory" by Demetra Kalogrides. 
+
+>- The articles are available on Canvas in the Modules tab, for this module. 
+>- You will need to read the articles in their entirety to answer the quizzes and understand material presented in lecture.
+>- By the end of this module, you should be able to understand most statistics presented in the articles.
+
 
 # The power of controlling for other variables
-Building Better Models
+Building Models
 
 ##  Education and sexual frequency {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: The power of controlling for other variables</body>
+<body>Sociology 312, Building Models: The power of controlling for other variables</body>
 </div>
 
 I noted in the previous section that the OLS regression slope of years of education predicting sexual frequency is 0.03. So there is a very small positive association. 
@@ -514,7 +525,7 @@ I noted in the previous section that the OLS regression slope of years of educat
 
 ##  Adding independent variables to a model
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: The power of controlling for other variables</body>
+<body>Sociology 312, Building Models: The power of controlling for other variables</body>
 </div>
 
 We can account for the confounding variable of age by including both education and age in a model predicting sexual frequency:
@@ -527,7 +538,7 @@ $$freq\hat{u}ency_i=b_0+b_1(education_i)+b_2(age_i)$$
 
 ----
 <div class="footer" style="top:575px;"> 
-<body>Sociology 312, Building Better Models: The power of controlling for other variables</body>
+<body>Sociology 312, Building Models: The power of controlling for other variables</body>
 </div>
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -543,7 +554,7 @@ s3d$plane3d(fit, col="red")
 
 ##  How do we calculate slopes and intercept?
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: The power of controlling for other variables</body>
+<body>Sociology 312, Building Models: The power of controlling for other variables</body>
 </div>
 
 $$freq\hat{u}ency_i=b_0+b_1(education_i)+b_2(age_i)$$
@@ -557,7 +568,7 @@ How do we know what the best values of $b_0$, $b_1$ and $b_2$ are?
 
 ##  Multivariate models in R {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: The power of controlling for other variables</body>
+<body>Sociology 312, Building Models: The power of controlling for other variables</body>
 </div>
 
 ```{r}
@@ -567,7 +578,7 @@ coef(model)
 
 ## Interpreting slopes and intercepts
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: The power of controlling for other variables</body>
+<body>Sociology 312, Building Models: The power of controlling for other variables</body>
 </div>
 
 $$freq\hat{u}ency_i=91.06-0.43(education_i)-1.30(age_i-18)$$
@@ -579,7 +590,7 @@ $$freq\hat{u}ency_i=91.06-0.43(education_i)-1.30(age_i-18)$$
 
 ## What does "holding constant" mean?
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: The power of controlling for other variables</body>
+<body>Sociology 312, Building Models: The power of controlling for other variables</body>
 </div>
 
 >- When I interpret the effect of education, "holding constant" age, I am indicating that this is the predicted effect of education on sexual frequency *among individuals of the same age*. 
@@ -589,7 +600,7 @@ $$freq\hat{u}ency_i=91.06-0.43(education_i)-1.30(age_i-18)$$
 
 ## What is the effect of education on sex? 
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: The power of controlling for other variables</body>
+<body>Sociology 312, Building Models: The power of controlling for other variables</body>
 </div>
 
 $$
@@ -604,7 +615,7 @@ freq\hat{u}ency_i=&91.06-0.43(education_i)-1.30(age_i-18)
 
 ## Crime example {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: The power of controlling for other variables</body>
+<body>Sociology 312, Building Models: The power of controlling for other variables</body>
 </div>
 
 ```{r}
@@ -614,7 +625,7 @@ coef(model)
 
 ## Crime model interpretation
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: The power of controlling for other variables</body>
+<body>Sociology 312, Building Models: The power of controlling for other variables</body>
 </div>
 
 $$vio\hat{l}ent_i=-3699+30(pctmale_i)+57(gini_i)$$
@@ -626,7 +637,7 @@ $$vio\hat{l}ent_i=-3699+30(pctmale_i)+57(gini_i)$$
 
 ## Why stop at two independent variables? 
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: The power of controlling for other variables</body>
+<body>Sociology 312, Building Models: The power of controlling for other variables</body>
 </div>
 
 ```{r}
@@ -637,7 +648,7 @@ summary(model)$r.squared
 
 ## Interpreting the numbers {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: The power of controlling for other variables</body>
+<body>Sociology 312, Building Models: The power of controlling for other variables</body>
 </div>
 
 $$vio\hat{l}ent_i=619-23(pctmale_i)+43(gini_i)-27(medianage_i)$$
@@ -649,7 +660,7 @@ $$vio\hat{l}ent_i=619-23(pctmale_i)+43(gini_i)-27(medianage_i)$$
 
 ## General form of the multivariate model
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: The power of controlling for other variables</body>
+<body>Sociology 312, Building Models: The power of controlling for other variables</body>
 </div>
 
 $$\hat{y}_i=b_0+b_1x_{i1}+b_2x_{i2}+b_3x_{i3}+\ldots+b_px_{ip}$$
@@ -658,10 +669,9 @@ $$\hat{y}_i=b_0+b_1x_{i1}+b_2x_{i2}+b_3x_{i3}+\ldots+b_px_{ip}$$
 >- $b_1$,$b_2$,through $b_p$: the predicted change in $y$ for a one unit increase in the given independent variable, holding all other independent variables constant. 
 >- $R^2$: The variation in $y$ that is accountable for by the variation in all of the independent variables collectively.
 
-
 ## Typical presentation of regression results
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: The power of controlling for other variables</body>
+<body>Sociology 312, Building Models: The power of controlling for other variables</body>
 </div>
 
 <div class="stargazer">
@@ -687,7 +697,7 @@ stargazer(m1,m2,m3, type="html",
 
 ## Typical presentation of regression results {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: The power of controlling for other variables</body>
+<body>Sociology 312, Building Models: The power of controlling for other variables</body>
 </div>
 
 <div class="columns-2">
@@ -696,7 +706,9 @@ stargazer(m1,m2,m3, type="html",
 >- The independent variables are shown on the rows
 >- "Constant"" is the same as intercept
 >- Each model is shown in a column. Models are often "nested" so that each additional model adds independent variables. 
->- Within each cell, the number on top is the slope. We will learn about he number in parenthesis and the asterisks in the next module.
+>- Within each cell, the number on top is the slope. 
+>- The number in parenthesis is usually the standard error for that slope.
+>- The asterisks gives you an indication of whether the p-value for the null hypothesis that the slope is zero is below some benchmark. Results with asterisks are considered "statistically significant."
 
 ![](images/slides/stargazer.png)
 
@@ -706,18 +718,18 @@ stargazer(m1,m2,m3, type="html",
 ---- 
 
 <div class="footer" style="top:575px;"> 
-<body>Sociology 312, Building Better Models: The power of controlling for other variables</body>
+<body>Sociology 312, Building Models: The power of controlling for other variables</body>
 </div>
 
 <div style="text-align: center"><img src="images/slides/SchiemanSchaferMcIvorTable1.png"   align="middle" style="width: 350px;"/></div>
 
 
 # Using a categorical variable as an independent variable
-Building Better Models
+Building Models
 
 ## Including categorical variables
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 At the moment we only know how to use and interpret quantitative variables in an OLS regression model. However, there is a fairly easy trick that will allow us to include categorical variables in an OLS regression models as independent variables (but not dependent variables).
@@ -726,7 +738,7 @@ To illustrate this trick, lets look at the relationship between gender and sexua
 
 ## Gender and sexual frequency
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 ```{r}
@@ -738,7 +750,7 @@ Women report 5.854 fewer sexual encounters per year than men. Note that I use th
 
 ## Create an indicator variable
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 $$female_i=\begin{cases}
@@ -752,7 +764,7 @@ $$female_i=\begin{cases}
 
 ----
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -766,7 +778,7 @@ axis(1, at=c(0,1), labels=c("0=men","1=women"))
 
 ----
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -785,7 +797,7 @@ text(c(0,1),tapply(sex$sexf, sex$female, mean)*1.1,
 
 ----
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -804,7 +816,7 @@ abline(lm(sexf~female, data=sex), lty=2, col="red")
 
 ----
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -824,7 +836,7 @@ text(0.5, 30, "Slope is -5.854,\nthe mean difference between\nmen and women")
 
 ## Run regression model with indicator variable {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 ```{r}
@@ -838,7 +850,7 @@ The slope (-5.854) is identical to the mean difference between men and women. Th
 
 ## Indicator variable is like a switch
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 $$freq\hat{u}ency_i=53.28-5.85(female_i)$$
@@ -850,7 +862,7 @@ $$freq\hat{u}ency_i=53.28-5.85(female_i)$$
 
 ## Interpreting slopes for categorical variables
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 $$freq\hat{u}ency_i=53.28-5.85(female_i)$$
@@ -860,7 +872,7 @@ $$freq\hat{u}ency_i=53.28-5.85(female_i)$$
 
 ## What if I flipped the indicator variable? {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 ```{r}
@@ -873,7 +885,7 @@ The slope is identical but in the opposite direction because now it is telling m
 
 ## Using categorical variables in lm {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 You can enter categorical variables like *gender* directly into the `lm` command. Every categorical variable will already have a default reference category. You can change this reference with the `relevel` command as shown below. 
@@ -886,7 +898,7 @@ coef(lm(sexf~gender, data=sex))
 
 ## Variables with more than two categories
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 Lets look at the relationship between marital status and sexual frequency. Marital status has four categories: never married, married, divorced, and widowed. There is a very small fifth category of married, but separated individuals who I am going to collapse into the divorced for my purposes. 
@@ -895,7 +907,7 @@ Regardless of how many categories you have, one category must always serve as th
 
 ## Create indicator variables
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 $$never_i=\begin{cases}
@@ -915,7 +927,7 @@ $$never_i=\begin{cases}
 
 ## Put variables into a model
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 $$freq\hat{u}ency_i=b_0+b_1(never_i)+b_2(divorced_i)+b_3(widowed_i)$$
@@ -931,7 +943,7 @@ $$freq\hat{u}ency_i=b_0+b_1(never_i)+b_2(divorced_i)+b_3(widowed_i)$$
 
 ## Interpreting the values
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 $$freq\hat{u}ency_i=b_0+b_1(never_i)+b_2(divorced_i)+b_3(widowed_i)$$
@@ -943,7 +955,7 @@ $$freq\hat{u}ency_i=b_0+b_1(never_i)+b_2(divorced_i)+b_3(widowed_i)$$
 
 ## Run the model in R
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 ```{r}
@@ -959,7 +971,7 @@ round(coef(lm(sexf~marital, data=sex)),1)
 
 ----
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -983,7 +995,7 @@ title(main="Differences from the reference category equal the slopes", cex.main=
 
 ----
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -1013,7 +1025,7 @@ title(main="What if I make never-married the reference category?", cex.main=1.5)
 
 ## Changing the reference category
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 ```{r}
@@ -1024,7 +1036,7 @@ round(coef(lm(sexf~marital, data=sex)),1)
 
 ## Quantitative and categorical variables together
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 >- We can use the indicator variable framework to get mean differences out of an OLS regression model. But so what? We could calculate mean differences already. 
@@ -1035,7 +1047,7 @@ round(coef(lm(sexf~marital, data=sex)),1)
 
 ## Marital status and age as predictors
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 ```{r}
@@ -1046,7 +1058,7 @@ We now interpret the slopes on martial status as the mean difference between mar
 
 ## Interpreting results {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 $$freq\hat{u}ency_i=73.7+24.4(married_i)+14.3(divorced_i)+9.2(widowed_i)-1.5(age_i-18)$$
@@ -1058,7 +1070,7 @@ $$freq\hat{u}ency_i=73.7+24.4(married_i)+14.3(divorced_i)+9.2(widowed_i)-1.5(age
 
 ## Compare the models
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Using a categorical variable as an independent variable</body>
+<body>Sociology 312, Building Models: Using a categorical variable as an independent variable</body>
 </div>
 
 
@@ -1090,17 +1102,17 @@ stargazer(m1,m2, type="html",
 ---- 
 
 <div class="footer" style="top:575px;"> 
-<body>Sociology 312, Building Better Models: What is a model?</body>
+<body>Sociology 312, Building Models: What is a model?</body>
 </div>
 
 <div style="text-align: center"><img src="images/slides/KalogridesTable.png"   align="middle" style="width: 850px;"/></div>
 
 # Interaction terms
-Building Better Models
+Building Models
 
 ## Linear models assume additive relationships
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 By definition, linear models assume that independent variables relate to the dependent variable separately and do not interact with one another. 
@@ -1115,7 +1127,7 @@ Lets look at the relationship between support for gay marriage and both party af
 
 ## Fitting an additive model {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 ```{r}
@@ -1131,7 +1143,7 @@ $$sup\hat{p}ort_i=93.16-0.28(age_i)-24.36(republican_i)$$
 
 ## What is the effect of age for Rs and Ds? {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 $$sup\hat{p}ort_i=93.16-0.28(age_i)-24.36(republican_i)$$
@@ -1150,7 +1162,7 @@ $$sup\hat{p}ort_i=93.16-0.28(age_i)-24.36(republican_i)$$
 
 ----
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -1166,7 +1178,7 @@ legend(20,30,legend=c("Republican","Democrat"), lty=1, col=c("red","blue"))
 
 ----
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -1185,7 +1197,7 @@ text(50,(y.repub[31]+y.dem[31])/2,"The predicted difference between Republicans\
 
 ----
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -1207,7 +1219,7 @@ text(50,(y.repub[31]+y.dem[31])/2,"The slope for age is assumed to be the \nsame
 
 ## Limitation of the additive assumption
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 >- age is **assumed** to have the same effect for Democrats and Republicans.
@@ -1218,7 +1230,7 @@ text(50,(y.repub[31]+y.dem[31])/2,"The slope for age is assumed to be the \nsame
 
 ## Interaction terms {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 $$sup\hat{p}ort_i=b_0+b_1(age_i)+b_2(republican_i)+b_3(age_i*republican_i)$$
@@ -1236,7 +1248,7 @@ $$sup\hat{p}ort_i=b_0+b_1(age_i)+b_2(republican_i)+b_3(age_i*republican_i)$$
 
 ## Interaction terms in R {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 You can create an interaction term very easily in *R* by just multiplying two variables together on the right hand side of the formula in `lm`. 
@@ -1258,7 +1270,7 @@ $sup\hat{p}ort_i=(88.87-14.64)+(-0.19-0.19)(age_i)=74.23-0.38(age_i)$
 
 ----
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -1274,7 +1286,7 @@ legend(20,30,legend=c("Republican","Democrat"), lty=1, col=c("red","blue"))
 
 ----
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -1293,7 +1305,7 @@ text(50,(y.repub[31]+y.dem[31])/2,"The gap in support between Republicans\nand D
 
 ----
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -1312,7 +1324,7 @@ text(50,(y.repub[31]+y.dem[31])/2,"Age differences in support are greater\namong
 
 ## Interpreting Interaction Terms
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 $$sup\hat{p}ort_i=88.87-0.19(age_i)-14.64(republican_i)-0.19(age_i*republican_i)$$
@@ -1324,7 +1336,7 @@ $$sup\hat{p}ort_i=88.87-0.19(age_i)-14.64(republican_i)-0.19(age_i*republican_i)
 
 ## Interpreting Interaction Terms {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 $$sup\hat{p}ort_i=88.87-0.19(age_i)-14.64(republican_i)-0.19(age_i*republican_i)$$
@@ -1337,7 +1349,7 @@ $$sup\hat{p}ort_i=88.87-0.19(age_i)-14.64(republican_i)-0.19(age_i*republican_i)
 
 ## Interpret the never married coefficients {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 <div class="stargazer">
@@ -1368,7 +1380,7 @@ stargazer(m1,m2,m3, type="html",
 
 ## Interpret the education coefficients {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 <div class="stargazer">
@@ -1399,7 +1411,7 @@ stargazer(m1,m2,m3, type="html",
 
 ## Interpret the interaction term {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 <div class="stargazer">
@@ -1429,7 +1441,7 @@ stargazer(m1,m2,m3, type="html",
 
 ## Interacting two categorical variables
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 Lets figure out the mean gay marriage support along two different categorical dimensions: party affiliation and religious affiliation (religious vs. not religious). 
@@ -1444,7 +1456,7 @@ round(tab,1)
 
 ## Four different comparisons in the table
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 Party         Religious   Not Religious   Difference
@@ -1460,7 +1472,7 @@ Difference       -22.4           -21.0
 
 ## How well does an additive model fit? {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 ```{r}
@@ -1479,7 +1491,7 @@ Difference           -22.3                 -22.3
 
 ## How about an interaction term? {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 ```{r}
@@ -1498,7 +1510,7 @@ Difference           -22.4                      -21.0
 
 ## Interpreting the coefficients {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 $$sup\hat{p}ort_i=75.6-22.4(republican_i)+21.3(norelig_i)+1.4(republican_i)(norelig_i)$$
@@ -1511,7 +1523,7 @@ $$sup\hat{p}ort_i=75.6-22.4(republican_i)+21.3(norelig_i)+1.4(republican_i)(nore
 
 ## Interaction terms with more than two categories
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 >- I have been simplifying all of the examples here to only have two categories, but that is not a necessary limitation. 
@@ -1520,7 +1532,7 @@ $$sup\hat{p}ort_i=75.6-22.4(republican_i)+21.3(norelig_i)+1.4(republican_i)(nore
 
 ## Interaction of marital status and education {.smaller}
 <div class="footer"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 ```{r}
@@ -1534,7 +1546,7 @@ round(coef(model),2)
 
 ----
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Interaction terms</body>
+<body>Sociology 312, Building Models: Interaction terms</body>
 </div>
 
 ```{r echo=FALSE, warning=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
@@ -1553,12 +1565,12 @@ legend(20,30,legend=c("Republican","Democrat","Independent","Other"), lty=1, col
 ```
 
 # Transformations (Advanced)
-Building Better Models
+Building Models
 
 ## Transforming variables
 
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Transformations</body>
+<body>Sociology 312, Building Models: Transformations</body>
 </div>
 
 Sometimes, it is useful to apply a **tranformation** to a quantitative variable before running an OLS regression model. 
@@ -1576,7 +1588,7 @@ Sometimes, it is useful to apply a **tranformation** to a quantitative variable 
 ## The Natural Log
 
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Transformations</body>
+<body>Sociology 312, Building Models: Transformations</body>
 </div>
 
 When I refer to the "log" transformation, I am referring to the "natural log" or what would show up on your calculators as the "ln" button. In R, it is easy to take the natural log of a number by just using the `log` command. Any positive number can be logged. 
@@ -1589,7 +1601,7 @@ The natural log of 5 is 1.609, but what does this mean? The natural log of any n
 
 ## The Natural Log, continued
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Transformations</body>
+<body>Sociology 312, Building Models: Transformations</body>
 </div>
 
 $$log(x)=a$$
@@ -1606,7 +1618,7 @@ We get back the original value of 5, as we would expect given the definition of 
 
 ## Properties of the natural log
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Transformations</body>
+<body>Sociology 312, Building Models: Transformations</body>
 </div>
 
 The most important feature of the natural log for our purposes is that it converts multiplicative relationships into additive relationships. 
@@ -1621,7 +1633,7 @@ log(5)+log(4)
 
 ## Performing the log transformation in R
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Transformations</body>
+<body>Sociology 312, Building Models: Transformations</body>
 </div>
 
 The box office returns of movies were heavily right-skewed with some extreme outliers. This kind of shape is a perfect candidate for the log transformation. 
@@ -1634,7 +1646,7 @@ To transform the variable, I have simply applied the `log` command to the variab
 
 ## Transformations reduce skewness and pull in outliers {.smaller}
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Transformations</body>
+<body>Sociology 312, Building Models: Transformations</body>
 </div>
 
 ```{r echo=FALSE, fig.width=10, fig.height=3.7, out.width='1000px', out.height='370px', dpi=300, dev.args = list(bg = 'transparent')}
@@ -1649,7 +1661,7 @@ hist(movies$lboxoffice, col="skyblue", las=1,
 
 ## Transformations can make non-linear relationships more linear {.smaller}
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Transformations</body>
+<body>Sociology 312, Building Models: Transformations</body>
 </div>
 
 ```{r echo=FALSE, fig.width=10, fig.height=3.7, out.width='1000px', out.height='370px', dpi=300, dev.args = list(bg = 'transparent')}
@@ -1665,7 +1677,7 @@ plot(movies$TomatoRating, movies$lboxoffice,
 
 ## Using a Transformation in Regression
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Transformations</body>
+<body>Sociology 312, Building Models: Transformations</body>
 </div>
 
 You can use a log-transformed variable either as an independent or dependent variable or both in an OLS regression model, but for this class we will only focus on the case where the dependent variable is log-transformed. 
@@ -1681,7 +1693,7 @@ But how do we interpret the results?
 
 ## Interpreting log-transformed models
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Transformations</body>
+<body>Sociology 312, Building Models: Transformations</body>
 </div>
 
 Because of the transformation, we have to adjust our interpretation of the resulting slope and intercept. Our model is now:
@@ -1694,7 +1706,7 @@ $$\log(ret\hat{u}rns_i)=1.06+0.20(rating_i)$$
 
 ## Converting back to original scale
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Transformations</body>
+<body>Sociology 312, Building Models: Transformations</body>
 </div>
 
 To get back to the original scale of box office returns for the dependent variable, we need to exponentiate both side side of the regression equation by $e$:
@@ -1707,7 +1719,7 @@ $$ret\hat{u}rns_i=(e^{1.06})(e^{0.20})^{rating_i}$$
 
 ## A multiplicative relationship {.smaller}
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Transformations</body>
+<body>Sociology 312, Building Models: Transformations</body>
 </div>
 
 $$ret\hat{u}rns_i=(e^{1.06})(e^{0.20})^{rating_i}$$
@@ -1725,7 +1737,7 @@ The relationship between box office returns is no longer an additive relationshi
 
 ## What does multiplicative mean? 
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Transformations</body>
+<body>Sociology 312, Building Models: Transformations</body>
 </div>
 
 Lets calculate predicted box office returns for Tomato Ratings of 0, 1, and 2. 
@@ -1742,7 +1754,7 @@ $ret\hat{u}rns_i=(2.89)(1.22)^{1}=2.89(1.22)$
 
 ## What does multiplicative mean? 
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Transformations</body>
+<body>Sociology 312, Building Models: Transformations</body>
 </div>
 
 Lets calculate predicted box office returns for Tomato Ratings of 0, 1, and 2. 
@@ -1758,7 +1770,7 @@ $ret\hat{u}rns_i=(2.89)(1.22)^{2}=2.89(1.22)(1.22)$
 
 ## General Form and Interpretation
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Transformations</body>
+<body>Sociology 312, Building Models: Transformations</body>
 </div>
 
 $$\log(\hat{y}_i)=b_0+b_1(x_i)$$
@@ -1770,7 +1782,7 @@ $$\log(\hat{y}_i)=b_0+b_1(x_i)$$
 
 ## Interpret these numbers
 <div class="footer"  style="top:575px;"> 
-<body>Sociology 312, Building Better Models: Transformations</body>
+<body>Sociology 312, Building Models: Transformations</body>
 </div>
 
 $$\log(ret\hat{u}rns_i)=3.22+0.50(G_i)-0.24(PG13_i)-1.93(R_i)$$

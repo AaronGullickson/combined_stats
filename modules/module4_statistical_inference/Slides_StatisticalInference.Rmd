@@ -44,7 +44,21 @@ Statistical Inference
 
 >- Statistical inference is the technique of quantifying our uncertainty about the true values in the population. 
 
->- Lets take the example of the slope between sexual frequency and age from our sexual frequency data. The data came from the General Social Survey (GSS), a **representative** sample of the US population.  
+>- Lets take the example of the percent who favor ending birthright citizenship in the ANES data. The ANES data are drawn from a **representative** sample of the US population.  
+
+## Estimating a sample proportion
+<div class="footer">
+<body>Sociology 312, Statistical Inference: The problem of statistical inference</body>
+</div>
+
+I can use `prop.table` and `table` to quickly get this proportion.
+
+
+```{r}
+round(prop.table(table(politics$brcitizen)),3)
+```
+
+About 31.9% of respondents to the ANES sample favored ending birthright citizenship.
 
 ----
 <div class="footer" style="top:575px;">
@@ -56,7 +70,7 @@ par(mar=c(0,0,0,0))
 plot(-2,-2, xlim=c(0,10), ylim=c(0,10), xaxt="n", yaxt="n", bty="n", xlab="", ylab="")
 rect(6,1,10,9, col="skyblue")
 text(8,5,"US Population", cex=1.2)
-text(8,4,expression(beta[1]%~~%"?"))
+text(8,4,expression(rho%~~%"?"))
 ```
 
 ----
@@ -69,10 +83,10 @@ par(mar=c(0,0,0,0))
 plot(-2,-2, xlim=c(0,10), ylim=c(0,10), xaxt="n", yaxt="n", bty="n", xlab="", ylab="")
 rect(6,1,10,9, col="skyblue")
 text(8,5,"US Population", cex=1.2)
-text(8,4,expression(beta[1]%~~%"?"))
+text(8,4,expression(rho%~~%"?"))
 rect(0,3,4,7, col="yellow")
-text(2,5,"GSS Sample", cex=1.2)
-text(2,4,expression(b[1]==-1.3))
+text(2,5,"ANES Sample", cex=1.2)
+text(2,4,expression(hat(p)==0.396))
 arrows(6,4,4,4)
 text(5,3.5,"Draw a sample", cex=0.7)
 ```
@@ -88,10 +102,10 @@ par(mar=c(0,0,0,0))
 plot(-2,-2, xlim=c(0,10), ylim=c(0,10), xaxt="n", yaxt="n", bty="n", xlab="", ylab="")
 rect(6,1,10,9, col="skyblue")
 text(8,5,"US Population", cex=1.2)
-text(8,4,expression(beta[1]%~~%-1.3))
+text(8,4,expression(rho%~~%0.396))
 rect(0,3,4,7, col="yellow")
-text(2,5,"GSS Sample", cex=1.2)
-text(2,4,expression(b[1]==-1.3))
+text(2,5,"ANES Sample", cex=1.2)
+text(2,4,expression(hat(p)==0.396))
 arrows(6,4,4,4)
 text(5,3.5,"Draw a sample", cex=0.7)
 arrows(4,6,6,6)
@@ -103,8 +117,8 @@ text(5,5.5,"Infer from sample", cex=0.7)
 <body>Sociology 312, Statistical Inference: The problem of statistical inference</body>
 </div>
 
->- We refer to the unknown value in the poplation that we want to know about as a **parameter**. We represent this value with a greek letter (e.g. $\beta_1$)
->- We refer to the value in the sample that is an estimate of the population value as a **statistic**. We represent this value with a roman letter (e.g. $b_1$). 
+>- We refer to the unknown value in the poplation that we want to know about as a **parameter**. We represent this value with a greek letter (e.g. $\rho$)
+>- We refer to the value in the sample that is an estimate of the population value as a **statistic**. We represent this value with a roman letter (e.g. $\hat{p}$). 
 
 ## How do we know if our sample is any good?
 <div class="footer">
@@ -566,7 +580,6 @@ results
 
 Note that because the sample size is large here, the t-statistic is very close to 1.96. 
 
-
 ## Example: Sexual frequency, continued {.smaller}
 <div class="footer">
 <body>Sociology 312, Statistical Inference: Confidence Intervals</body>
@@ -594,68 +607,145 @@ The only trick is knowing how to calculate the standard error and degrees of fre
 <body>Sociology 312, Statistical Inference: Confidence Intervals</body>
 </div>
 
-Type              SE                                                                  df for $t$
-------            ------                                                              ------
-Mean              $s/\sqrt{n}$                                                        $n-1$
-Proportion        $\sqrt\frac{\hat{p}*(1-\hat{p})}{n}$                                $n-1$
-Mean Difference   $\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}$                        min($n_1-1$,$n_2-1$)
-Regression Slope  $\frac{\sqrt{\sum (y_i-\hat{y}_i)^2/(n-1)}}{\sum (x_i-\bar{x})^2}$  $n-2$
+Type                     SE                                                                                df for $t$
+------                   ------                                                                            ------
+Mean                     $s/\sqrt{n}$                                                                      $n-1$
+Proportion               $\sqrt\frac{\hat{p}*(1-\hat{p})}{n}$                                              $n-1$
+Mean Difference          $\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}$                                      min($n_1-1$,$n_2-1$)
+Proportion Difference    $\sqrt{\frac{\hat{p}_1*(1-\hat{p}_1)}{n_1}+\frac{\hat{p}_2*(1-\hat{p}_2)}{n_2}}$  min($n_1-1$,$n_2-1$)
+Correlation Coefficient  $\sqrt{\frac{1-r^2}{n-2}}$                                                        $n-2$
 
-Notes: $\hat{p}$ is the sample proportion, $s_1$ and $s_2$ are the standard deviation of group 1 and 2, respectively, and $n_1$ and $n_2$ are the standard deviation of group 1 and 2. 
-
-Don't worry, we won't generally have to calculate these things by hand. 
-
-## Mean age difference by soccer fandom {.smaller}
+## Proportion example
 <div class="footer">
 <body>Sociology 312, Statistical Inference: Confidence Intervals</body>
 </div>
 
+What proportion of voters support removing birthright citizenship?
+
 ```{r}
-tapply(students$age, students$soccer, mean)
-diff <- 20.78571-22.39286
-tapply(students$age, students$soccer, sd)
-table(students$soccer)
+prop.table(table(politics$brcitizen))
+p <- 0.3185465
+n <- nrow(politics)
+se <- sqrt(p*(1-p)/n)
+t <- qt(0.975, n-1)
 ```
 
-## Mean difference by soccer fandom {.smaller}
+
+## Proportion example, continued
 <div class="footer">
 <body>Sociology 312, Statistical Inference: Confidence Intervals</body>
 </div>
 
 ```{r}
-se <- sqrt(7.67^2/28+1.58^2/14)
-t <- qt(0.975,14-1)
+p+t*se
+p-t*se
+```
+
+I am 95% confident that the true proportion of American adults who support removing birthright citizenship from the constitution is between 30.5% and 33.3%.
+
+## Mean difference example {.smaller}
+<div class="footer">
+<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
+</div>
+
+What is the difference in sexual frequency between married and never married individuals?
+
+```{r}
+tapply(sex$sexf, sex$marital, mean)
+diff <- 56.094106-53.617704
+tapply(sex$sexf, sex$marital, sd)
+sd1 <- 49.95361
+sd2 <- 58.81459
+```
+
+## Mean difference example, continued {.smaller}
+<div class="footer">
+<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
+</div>
+
+```{r}
+table(sex$marital)
+n1 <- 1052
+n2 <- 514
+se <- sqrt(sd1^2/n1+sd2^2/n2)
+t <- qt(0.975,n2-1)
+```
+
+## Mean difference example, continued
+<div class="footer">
+<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
+</div>
+
+```{r}
 diff+t*se
 diff-t*se
 ```
 
-I am 95% confident that, among sociology majors, avid soccer fans are on average between 1.65 years older to 4.87 years younger than those who are not avid soccer fans.
+I am 95% confident that, among American adults, married individuals have sex between 8.4 more times per year or 3.45 less times per year than never married individuals, on average. 
 
-## Regression slope of age and sexual frequency {.smaller}
+## Proportion difference example{.smaller}
+<div class="footer">
+<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
+</div>
+
+What is the difference in support for removing birthright citizenship between those who have served in the military and those who have not? 
+
+```{r}
+prop.table(table(politics$brcitizen, politics$military), 2)
+p1 <- 0.304
+p2 <- 0.435
+diff <- p2-p1
+```
+
+## Proportion difference example, continued {.smaller}
 <div class="footer">
 <body>Sociology 312, Statistical Inference: Confidence Intervals</body>
 </div>
 
 ```{r}
-nrow(sex)
-model <- lm(sexf~age, data=sex)
-summary(model)$coef
+table(politics$military)
+n1 <- 3778
+n2 <- 460
+se <- sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
+t <- qt(0.975, n2-1)
 ```
 
-The command above gives me both the slope (-1.2989) and its standard error (0.0654). 
+## Proportion difference example, continued
+<div class="footer">
+<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
+</div>
+```{r}
+diff-t*se
+diff+t*se
+```
 
-## Regression slope of age and sexual frequency {.smaller}
+I am 95% confident that the percent in support for removing birthright citizenship is between 8.3% and 17.9% higher among who have served in the military than those who have not. 
+
+## Correlation coefficent example
 <div class="footer">
 <body>Sociology 312, Statistical Inference: Confidence Intervals</body>
 </div>
 
+What is the correlation between age and income in the US? 
+
 ```{r}
-t <- qt(0.975, 2103-2)
--1.2989+t*0.0654
--1.2989-t*0.0654
+r <- cor(politics$age, politics$income)
+r
+n <- nrow(politics)
+se <- sqrt((1-r^2)/(n-2))
+t <- qt(0.975, n-2)
 ```
 
-I am 95% confident that the true regression slope of sexual frequency predicted by age is between -1.17 and -1.43 fewer sexual encounters per year for every year of age. 
+## Correlation coefficent example, continued
+<div class="footer">
+<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
+</div>
+```{r}
+r - t*se
+r + t*se
+```
+
+I am 95% confident that the true correlation coefficient in the US between age and income is between -0.016 and 0.044. 
 
 # Hypothesis Tests
 Statistical Inference
@@ -946,27 +1036,34 @@ Note that `pt` always gives the lower tail, so you should always put in negative
 
 The hypothesis test we are most interested in is whether the association we observe between two variables in our sample holds in the population. 
 
->- Mean differences: Are the means between two groups in the population different? In other words, is the mean difference non-zero?
->- Regression slopes: is the regression slope in the population non-zero? 
+>- Mean/proportion differences: Are the means/proportions between two groups in the population different? In other words, is the mean/proportion difference non-zero?
+>- Correlation coefficent: is the correlation coefficient in the population non-zero? 
 
-## Example: mean differences {.smaller}
+## Example: Mean differences
+<div class="footer">
+<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
+</div>
+
+Is there a difference in sexual frequency between married and never married individuals? Formally, my null hypothesis is:
+
+$$H_0: \mu_M-\mu_N=0$$
+
+Where $\mu_N$ is the population mean sexual frequency of married individuals and $\mu_N$ is the population mean sexual frequency of never-married individuals.
+
+## Example: Mean differences, continued {smaller}
 <div class="footer">
 <body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
 </div>
 
 ```{r}
-tapply(politics$age, politics$president, mean)
+tapply(sex$sexf, sex$marital, mean)
+diff <- 56.094106-53.617704
+diff
 ```
 
-In my ANES sample, Trump voters are older (54.45) than Clinton voters (50.15). Do I think this reflects a real age difference in the population of voters? My null hypothesis is:
+In my GSS sample, married individuals have sex 56.1 times per year on average and never married individuals have sex 53.6 time per year on average. So, in my sample, married individuals have sex about 2.5 more times per year than never-married individuals, on average. Is this difference far enough from zero to reject the null hypothesis? 
 
-$$H_0: \mu_T-\mu_C=0$$
-
-Where $\mu_T$ is the population mean age of Trump voters and $\mu_C$ is the population mean age of Clinton voters. 
-
-The sample mean difference is `r 54.54-50.15` years of age. Is this difference far enough from zero to reject the null hypothesis? 
-
-## Example: mean differences, continued {.smaller}
+## Example: Mean differences, continued {.smaller}
 <div class="footer">
 <body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
 </div>
@@ -974,48 +1071,95 @@ The sample mean difference is `r 54.54-50.15` years of age. Is this difference f
 First, I need the standard error of the sample mean difference, as per the formula in the previous section, which requires the sample SD's and sample size of both groups.
 
 ```{r}
-tapply(politics$age, politics$president, sd)
-table(politics$president)
-se <- sqrt(17.32455^2/1364+16.87335^2/1245)
-se
+tapply(sex$sexf, sex$marital, sd)
+sd1 <- 49.95361
+sd2 <- 58.81459
+table(sex$marital)
+n1 <- 1052
+n2 <- 514
+se <- sqrt(sd1^2/n1+sd2^2/n2)
 ```
 
-## Example: mean differences, continued {.smaller}
+## Example: Mean differences, continued {.smaller}
 <div class="footer">
 <body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
 </div>
 
-
-I can now calculate how many standard errors `r 54.54-50.15` is from zero and use that to calculate my p-value. Remember that I use the smaller of the two sample sizes as my degrees of freedom for the t. 
+I can now calculate how many standard errors my sample mean difference is from zero and use that to calculate my p-value. Remember that I use the smaller of the two sample sizes as my degrees of freedom for the t. 
 
 ```{r}
-(54.54-50.15)/se
-2*pt(-6.55,1364-1)
+diff/se
+#always take the negative version
+2*pt(-0.8208,n2-1)
 ```
 
-The p-value is tiny. Assuming that the true population age difference between Trump and Clinton voters is zero, there is a less than 0.0000000001% chance of observing an age difference of `r 54.54-50.15` years or larger in a sample of this size. Thus, I **reject** the null hypothesis and conclude that Trump voters are older than Clinton voters, on average. 
+Assuming that the true sexual frequency difference between married and never-married dinviduals is zero in the populatiln, there is a 41.2% chance of observing a sample sexual frequency difference of 2.5 years or larger in a sample of this size. Thus, I **fail to reject** the null hypothesis there there is no difference in the average sexual frequency between married and never-married individuals in the US. 
 
-----
-<div class="footer" style="top:575px;">
+## Example: Proportion differences
+<div class="footer">
 <body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
 </div>
 
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-x <- seq(from=-2.5,to=2.5,by=0.01)
-se <- 0.566
-y <- (1/(se*sqrt(2*pi)))*exp(-1*(x)^2/(2*se^2))
+Is there a difference in support for removing birthright citizenship between those who have served in the military and those who have not? 
 
-plot(x,y,type="l",xlab="sample mean difference",yaxt="n",ylab="", main="Sampling distribution of mean difference,\nassuming null hypothesis is true", cex.main=2)
-#abline(v=0,lwd=3,lty=2,col="blue")
-abline(v=2.1,lwd=3,col="red")
-abline(v=-2.1,lwd=1,col="red", lty=2)
-polygon(c(x[1],x[1:41],-2.1),c(-0.005, y[1:41],-0.005), col="grey")
-polygon(c(x[500],x[500:461],2.1),c(-0.005, y[500:461],-0.005), col="grey")
-text(0,max(y)/2,"p-value=0.00023")
-arrows(x[20],y[20]+0.005,-0.01,max(y)/2-0.02, length=0.1)
-arrows(x[480],y[480]+0.005,0.01,max(y)/2-0.02, length=0.1)
+```{r}
+prop.table(table(politics$brcitizen, politics$military), 2)
+p1 <- 0.304
+p2 <- 0.435
 
 ```
+
+## Example: Proportion differences, continued
+<div class="footer">
+<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
+</div>
+
+```{r}
+diff <- p2-p1
+diff
+table(politics$military)
+n1 <- 3778
+n2 <- 460
+se <- sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
+```
+
+## Example: Proportion differences, continued
+<div class="footer">
+<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
+</div>
+
+```{r}
+diff/se
+pt(-5.391824, n2-1)
+```
+
+Assuming that there is no difference in the US population between those who have served in the military and those who have not in support for removing birthright citizenship, there is less than a 0.000001% chance of observing a sample difference in proportion of 13.1% or greater by random chance in a sample of this size. Thus, I **reject** the null hypothesis there there is no difference in support for removing birthright citizenship between those who have served in the military and those who have not. 
+
+## Example: Correlation coefficient
+<div class="footer">
+<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
+</div>
+
+Is there a relationship between a person's age and their income in the US? 
+
+```{r}
+r <- cor(politics$age, politics$income)
+r
+n <- nrow(politics)
+se <- sqrt((1-r^2)/(n-2))
+```
+
+## Example: Correlation coefficient, continued
+<div class="footer">
+<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
+</div>
+
+```{r}
+r/se
+pt(-0.9174406, n-2)
+```
+
+Assuming no association between a person's age and their income in the US, there is a 17.9% chance of observing a correlation coefficient between age and income of 0.014 or larger in absolute magnitude in a sample of this size. Therefore, I **fail to reject** the null hypothesis that there is no relationship between a person's age and their income in the US population.
 
 ## Statistical Significance
 <div class="footer"> 
@@ -1026,38 +1170,6 @@ If you reject the null hypothesis of "no relationship," then the relationship yo
 
 >- Don't confuse statistical and substantive significance. In a large sample, even very small substantive associations can be found to be statistically significant. On the flip side, in small samples, very large substantive associations can fail to be statistically significant. 
 >- A better term might be "statistically distinguishable" as in "the association observed in the sample is statistically distinguishable from zero."
-
-##  Statistical Inference in Regression Tables {.smaller}
-<div class="footer"> 
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-<div class="stargazer">
-```{r echo=FALSE, results="asis", warning=FALSE, message=FALSE}
-library(stargazer, quietly=TRUE, verbose=FALSE)
-m1 <- lm(Violent~PctMale, data=crimes)
-m2 <- lm(Violent~PctMale+Gini, data=crimes)
-m3 <- lm(Violent~PctMale+Gini+MedianAge, data=crimes)
-stargazer(m1,m2,m3, type="html",
-          omit.stat=c("adj.rsq","ser","f"), 
-          digits=2, 
-          star.cutoffs=c(0.05,0.01,0.001),
-          dep.var.labels="Violent crime rate",
-          covariate.labels = c("Percent male", 
-                               "Gini coefficient",
-                               "Median Age"),
-          notes=c("<em>&#42;p&lt;0.05;&#42;&#42;p&lt;0.01;&#42;&#42;&#42;p&lt;0.001</em>",
-                  "Standard errors in parenthesis"),
-          notes.append=FALSE,
-          title="OLS regression models predicting violent crime rates for US states",
-          dep.var.labels.include=FALSE,
-          dep.var.caption="")
-```
-</div>
-
->- The number in parenthesis is the standard error. If you divide this number by the estimate, you will get a t-statistic and you could use this to calculate a p-value.
->- The asterisks provide an easy visual cue as to whether the p-value for a given estimate is below a certain benchmark. Since one asterisks indicates a p-value less than 0.05, any result with an asterisk is "statistically significant."
-
 
 ## What is a p-value? {.centered}
 <div class="footer"> 
