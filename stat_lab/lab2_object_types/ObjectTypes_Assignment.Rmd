@@ -1,0 +1,45 @@
+---
+output: html_document
+---
+
+Consider a simple dataset with the following variables:
+
+- **id**: a unique ID, that contains numbers and letters
+- **age**: age in years
+- **gender**: recorded as a male/female binary
+- **belief**: belief in god on the following ordinal scale:
+    - No god exists
+    - No way to know
+    - Higher power
+    - Believe in god, but doubts
+    - Believe in god absolutely
+- **attend**: A logical value if the respondent indicated that they attend services regularly
+
+The pilot study only consisted of 10 observations shown below:
+
+| id        | age            |   gender   |  belief                   |  attend      | 
+|-----------|----------------|------------|---------------------------|--------------|
+| 1A12      | 27             |  Male      | Higher Power              | FALSE        |
+| 1B07      | 47             |  Female    | No way to know            | FALSE        |
+| 2A11      | 34             |  Female    | Believe in god absolutely | TRUE         |
+| 3B03      | 67             |  Male      | Believe in god, but doubts| FALSE        |
+| 1C57      | NA             |  Female    | No god exists             | FALSE        |
+| 3A23      | 36             |  Male      | No way to know            | TRUE         |
+| 1B18      | 47             |  Male      | Higher Power              | TRUE         |
+| 2D87      | 52             |  Male      | Believe in god absolutely | FALSE        |
+| 1C45      | 78             |  Female    | Higher Power              | TRUE         |
+| 2C78      | 18             |  Female    | No way to know            | FALSE        |
+
+
+Construct a script that does the following: 
+  
+  1) Construct a data.frame object of this pilot dataset.  
+  2) Calculate a summary of each variable in the dataset.
+  3) Calculate the distribution of belief conditional on attendance.  
+  4) Create another variable called `nones` that is TRUE if the respondent said "No god exists" or "No way to know". 
+  5) Calculate the distribution of gender by the `nones` variable. 
+  6) Create a subset of data that includes only respondents over the age of 40. 
+  
+Use good commenting throughout the script to explain what the code is doing. Also, put a header on the script identifying yourself and the general purpose of the script. 
+
+Save your script with the name "lastname_exercise1.R" (changing "lastname" to your actual last name, obviously) and upload it to Canvas.

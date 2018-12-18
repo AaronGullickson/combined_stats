@@ -1,0 +1,226 @@
+---
+output: 
+  html_document: 
+    self_contained: no
+---
+# Using R Markdown
+
+Pretty much every page on canvas (including this one) and every slide that you have seen this term was produced in what is called an "R Markdown" document. This kind of document is a recent innovation, so we are on the "bleeding edge" here, but it is an extremely useful tool for doing analysis and for writing papers. To put it simply, R Markdown documents allow you to combine textual description, code, and the output from code seamlessly into a single document. There are multiple ways this can be used such as to write brief reports, [create a lab notebook](https://www.r-bloggers.com/knitr-github-and-a-new-phase-for-the-lab-notebook/), or even to write full [research articles](http://svmiller.com/blog/2016/02/svm-r-markdown-manuscript/). More importantly, R Markdown helps to achieve the goals of the [open science movement](https://rpubs.com/marschmi/117051) to make the process of data analysis more open and reproducible by combining in one document the actual analysis with a write-up of that analysis. 
+
+
+## Plain Text Science
+
+In order to understand the idea of R Markdown files, its important to have some understanding of how scientific manuscripts are produced. I am drawing here on [Kieran Healy's Plain Person's Guide to Plain Text Science paper](http://kieranhealy.org/files/papers/plain-person-text.pdf), which I would highly encoruage you to read. There are basically two models for producign paper. The first model (the "Office model") which Healy describes as:
+
+> Office solutions tend towards a cluster of tools where something like Microsoft Word is at the center of your work. A Word file or set of files is the most “real” thing in your project. Changes to your work are tracked inside that file or files. Citation and reference managers plug into those files. The outputs of data analyses—tables, figures—get cut and pasted in as well, or are kept alongside them. The master document may be passed around from person to person to be edited and updated. The final output is exported from it, perhaps to PDF or to HTML, but maybe most often the final output just is the .docx file, cleaned up and with the track changes feature turned off. 
+
+In the Office Model manuscripts are in typically written in an application like Microsoft Word that is WYSIWYG (What-You-See-Is-What-You-Get). The actual substantive content of the text and the visual presentation of that text are inseparable. 
+
+On the other hand, in the Engineering Model: 
+
+> In the Engineering model, meanwhile, plain text files are at the center of your work. The most “real” thing in your project will either be those files or, more likely, the version control repository that stores the project. Changes are tracked outside of files, again using a version control system. Data analysis is managed in code that produces outputs in (ideally) a known and reproducible manner. Citation and reference management will likely also be done in plain text, as with a BibTeX .bib file. Final outputs are assembled from the plain text and turned to .tex, .html, or .pdf using some kind of typesetting or conversion tool. Very often, because of some unavoidable facts about the world, the final output of this kind of solution is also a .docx file.
+
+In the Engineering Model, manuscripts are written in a plain-text file with some kind of [logical markup](https://en.wikipedia.org/wiki/Markup_language) applied. This plain-text file can then be processed by another application to produce the final viewable output in a variety of formats (e.g. HTML, PDF, docx). In this model the actual substantive content of the text and the visual presentation of that text are separated. 
+
+The engineering model tends to be more prevalent in the hard sciences and STEM fields, while the office model is more common in the humanities. The social sciences are the warzone, where the majority of disciplines and individuals probably use the Office Model, to the eternal consternation and annoyance of those who utilize the Engineering Model. I don't want to force you to use the engineering model, but I do want you to have some familiarity with this style and to understand its benefits when working with a quantitative analysis.
+
+## Markdown Syntax
+
+The development of [Markdown](https://daringfireball.net/projects/markdown/syntax) has made the Engineering Model considerably easier. Before Markdown, the preferred markup language for typesetting scientific manuscripts was [LaTex](https://www.latex-project.org/about/). Latex is powerful and can produce beautiful documents, but it is also complex and has a steep learning curve. Markdown, on the other hand, is dead simple. 
+
+[Markdown](https://daringfireball.net/projects/markdown/syntax) is one of many ["markup" languages](https://en.wikipedia.org/wiki/Markup_language). Markup languages provide a way to write a document in which formatting of text is done by using some kind of coding syntax. The most well-known markup language is, of course, HTML, which stands for hypertext markup language. Markdown was actually originally written as a simpler syntax than HTML but that could be easily converted into HTML. However, with the arrival of an incredibly useful program called [pandoc](https://pandoc.org/), which can convert between a variety of document formats, markdown has now become the default geek choice for writing documents of all kinds. Yes, you can even convert from markdown to Word. 
+
+As its tongue-in-check name indicates, the beauty of Markdown is that its syntax is dead simple and produces text documents that are very readable even before processing. Here is an example of Markdown syntax with most of the basic syntax that you would be likely to need for writing an academic report. 
+
+```
+# Title
+
+Here is a sentence.
+
+## A subtitle
+
+Here is another sentence, but this time I **bolded** and *italicized* some things.
+
+### A sub-subtitle
+
+Here is another sentence but this time, I am going to also create a bulleted list.
+
+- First Item
+     - First Subitem
+     - Second Subitem
+- Second Item
+- Third Item
+
+How about a numbered list? Why not.
+
+1) First Item
+      a) Subitem 1
+      b) Subitem 3
+2) Second Item
+
+What if I want to blockquote somebody. Sure, lets do that:
+
+> I have sworn upon the altar of god eternal hostility against every form of tyranny over the mind of man.
+
+See how easy this is?
+```
+
+There is some basic markup syntax here, but it is so subtle that the text is easy to read even without processing into a prettier form. How do you process this into a prettier form? There are multiple ways to process markdown files. If you open this markdown file (*.md) in RStudio, it will give you the option of converting it to an HTML, PDF, or word document. Here is what the output looks like as an HTML file loaded into a browser:
+
+![](resources/basicmarkdown.png)
+
+Thats all there is to it. RStudio will produce an html file in the same location as the md file when you process it. There are some [other syntax options](https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet) for basic Markdown as well, but nothing fancy or complicated. 
+
+## R Markdown
+
+Markdown is so popular that it has spawned a variety of spin-off flavors. One of those flavors is [R Markdown](http://rmarkdown.rstudio.com/lesson-1.html). You can create a new R Markdown document in RStudio by going to File > New File > R Markdown and choosing the document option. It will ask you to choose an output option, but you can switch this at any time. The default is HTML.
+
+R Markdown has all the basic capabilities of Markdown, but also allows you to run and display R code and output within what are called *code chunks*.^[Despite the name, you can also use a variety of other code in these code chunks, including Python, C++, SQL, and Bash. Its even possible to [run Stata code in R Markdown](http://www.ssc.wisc.edu/~hemken/Stataworkshops/Stata%20and%20R%20Markdown/Statalinux.html).] When the R Markdown is processed by RStudio, the code chunks will be run and the output will be displayed within the document. 
+
+To start an R code chunk , use the syntax \`\`\`{r codechunkname}. To end a code chunk, use the syntax \`\`\`. Everything inside should be R code. The objects that you create in a code chunk will be remembered from chunk to chunk within the same document, so you can use one code chunk to load some data and then process that data in a different code chunk. 
+
+Here is an example of a simple code chunk in an R Markdown document. 
+
+![](resources/chunk_basicexample_code.png)
+
+Notice the play button on the far right. If you push that button, RStudio will process the code in the chunk and display any output inline within your document. This allows you to basically preview your output. Once I am ready to run this Markdown file, I can simply press the "Knit" button at the top and RStudio will pop up my HTML file. Here is what the output looks like for that code chunk:
+
+![](resources/chunk_basicexample_output.png)
+
+In some cases (such as our class), its useful to show the code and the output, but in other cases you might want to only show the output. This can easily be switched by adding an argument to the code chunk within the curly brackets. In this case, the option `echo=FALSE` will cause the code to be supressed, and only the output to be shown. 
+
+![](resources/chunk_basicexamplenoecho_code.png)
+
+The output will look similar to before but will not include the code:
+
+![](resources/chunk_basicexamplenoecho_output.png)
+
+### Figures in R Markdown
+
+You can use R code chunks to directly produce nice figures within your document. You can also put captions on these figures with the `fig.cap` argument. Lets make a barplot of the conditional distribution of survival on the Titanic using a code chunk:
+
+![](resources/chunk_nicefigure_code.png)
+
+This code will produce:
+
+![](resources/chunk_nicefigure_output.png)
+You can also change the figure width, height and resolution with arguments to the code chunk. If you play around a bit, you will also discover that you can make global changes to figure width and height for the whole document. 
+
+### Making Tables in R Markdown
+
+Making tables in R Markdown is [not as smooth or as easy](http://pages.uoregon.edu/aarong/geek/2016/12/13/adventures_markdown.html) as making figures. You can of course just produce R output directly as a table, as I did above for the passenger class by survival crosstab, but this typically will not look very polished.  There are a few different optional library commands that will produce table output that looks nicer in R Markdown. The major options that I am familiar with are:
+
+- the `kable` command in the `knitr` package. This command can output tables in a native markdown format so that they will be converted properly regardless of what final output you are using. 
+- The `pandoc.table` command from the `pander` package. This command also produces tables in a native markdown format. Its very similar to the `kable` command with arguably more customization options.
+- The `xtable` command in the `xtable` package. This will produce output either in LaTex (for PDF) or HTML format, so if you switch output types, you will have to remember to make the corresponding change to this format. This command is highly customizable but is also complex. 
+- The `stargazer` command in the `stargazer` package. This command is specifically designed to produce regression tables in the format you would see in an article, as well as tables of summary statistics. It can output either LaTeX (for PDF), HTML, or plain text. Unless you use plain text, you will need to switch output type in the command if you switch output type for the main document. 
+
+For our purposes, I am going to show you how to make a crosstab with `kable` or `pandoc.table` and a regression and summary table with `stargazer`. Remember that in all cases, you will need to install these packages using `install.packages` in order to use them.
+
+#### Using `kable` and `pandoc.table`
+
+Lets look at our passenger class by survival crosstab using `kable` and `pandoc.table`. The `kable` command has one special advantage. Because this command comes from the same library that "knits" together our document, RStudio knows that the output should be displayed as a real table rather than as simple R output. Here is the code chunk to produce the table in `kable`:
+
+![](resources/chunk_kabletable_code.png)
+
+And the output:
+
+![](resources/chunk_kabletable_output.png)
+
+This looks pretty decent. My major complaints are that the variables themselves are not labeled directly and that the table stretches out across the whole width. 
+
+To produce the table using `pandoc.table`, we will need to add the argument `results=asis` in the code chunk to tell R to treat the output as regular Markdown text that can be further processed. 
+
+![](resources/chunk_pandoctable_code.png)
+
+And the output;
+
+![](resources/chunk_pandoctable_output.png)
+
+I like the compact nature of this table. I don't care for the lack of left alignment for the row names, but I could have adjusted this with some further options. 
+
+#### Using `stargazer`
+
+The `stargazer` command is an extremely useful command for producing regression tables in the style that is common in journal articles. It is highly customizable. We will focus on only a few of its customization options. 
+
+To get started lets create a sequence of nested models in R predicing Tomato Meter ratings of movies:
+
+```{r buildregs}
+load("ExampleDatasets/movies.RData")
+model1 <- lm(TomatoMeter~I(Runtime-90), data=movies)
+model2 <- update(model1,.~.+Rating)
+model3 <- update(model2,.~.+I(Runtime-90)*Rating)
+model4 <- update(model3,.~.+I(Year-2001)+Genre+I(BoxOffice-mean(BoxOffice)))
+```
+
+I can now feed these models into the stargazer command to print out a regression table:
+
+![](resources/chunk_stargazer_code.png)
+
+I have added a few arguments to the code chunk. I need the results to come out 
+"asis" to be displayed properly as html. I also need to make sure warnings and messages aren't printed to the output because stargazer always prints a message about citation use. I get this output:
+
+```{r stargazer, echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+library(stargazer)
+stargazer(model1, model2, model3, model4, type="html")
+```
+
+That looks pretty nice already, but there are a few things that could be better than the default settings. The variable names of the independent variables are just the names from the data frame and are not very clear. I probably don't need to go out to three digits. I have a bunch of summary statistics that we don't even know how to interpret, and I should probably have some notes indicating the centering and references for the variables. It turns out I can fix all of this with a few additional arguments:
+
+```{r stargazerregbetter, message=FALSE, results="asis"}
+stargazer(model1, model2, model3, model4, type="html",
+          digits=2,
+          covariate.labels = c("Runtime (minutes)",
+                               "PG", "PG-13","R","NC-17","Unrated",
+                               "Year","Animation","Comedy","Drama","Family",
+                               "Horror","Musical/Music","Mystery","Romance",
+                               "Science Fiction/Fantasy","Thriller",
+                               "Box Office returns (millions)",
+                               "Runtime x PG", "Runtime x PG-13",
+                               "Runtime x R", "Runtime x NC-17", "Runtime x Unrated"),
+          notes=c("Standard errors in parenthesis",
+                 "Runtime is centered on 90 minutes. Year is centered on 2001. Box office returns is centered on the mean.",
+                 "The reference categories for maturity rating and genre are G and action movies, respectively."),
+          notes.align="l", notes.append=TRUE, 
+          keep.stat=c("n","rsq"))
+```
+
+
+The `digits` options rounds to two decimal places. The `covariate.labels` option allows me to feed any better names for the independent variables. The various `notes` options allow me to append a set of additional notes. The `keep.stat` option identifies which summary statistics I want to keep. There are a lot of additional customization options in the full help file for `stargazer`. 
+
+You can also use `stargazer` on a data frame to produce a summary statistics table of all of the quantitative variables:
+
+```{r stargazersummary, message=FALSE, results="asis"}
+stargazer(movies, type="html")
+```
+
+I have noticed that the output for html is not very good, but for LaTeX (pdf), its much better. 
+
+### Converting to PDF
+
+You can also "knit" R Markdown files to PDF. Its useful to know what is actually happening here. RStudio is using the pandoc application to first convert the markdown file to a LaTeX file and then it is using LaTeX to process that file into a PDF. As long as you have LaTeX installed, this process should work pretty seamlessly. However, there are two things to keep in mind:
+
+1. If knitting to PDF, you should not number your figures or tables as LaTeX will prefix your caption with a "Figure/Table X: "  with the correct numbering. 
+2. When using table-producing commands like `stargazer` it will be necessary to change the type of output to "latex" rather than "html". This can be done in `stargazer` with the `type` argument. 
+
+### Citations in R Markdown
+
+In order to add citations in R Markdown, you will need to create a BibTex bibliography (*.bib file) of your references. Most reference managers (including Zotero and Mendeley) will allow you to do this. You will then need to put your .bib file in the same directory as your Markdown file and add a line to the top header in your Markdown file that looks like this:
+
+```
+bibliography: bibliography.bib
+```
+
+You can then call up references in the text using the citation key for each entry. You can see examples of how this citation syntax works [here](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html#citations). 
+
+When you knit your document, the citations will be filled in with proper names and a reference list will be placed at the bottom. 
+
+### Writing Equations in R Markdown
+
+One final nice feature of R Markdown is that you can write complex equations. The [syntax](https://en.wikibooks.org/wiki/LaTeX/Mathematics) for writing equations is borrowed from the typesetting program LaTex. This syntax can take some time to learn, but is worth the effort if you will be using complex equations in your work. You can start math equations by surrounding them on either side with double dollar signs, like so:
+
+![](resources/markdown_equation.png)
+
+This will be processed by RStudio as:
+
+$$\hat{y}_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$

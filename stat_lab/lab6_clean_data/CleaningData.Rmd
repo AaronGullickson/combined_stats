@@ -1,0 +1,303 @@
+---
+output: 
+  html_document: 
+    self_contained: no
+---
+# Cleaning Data
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+load("ExampleDatasets/sex.RData")
+load("ExampleDatasets/crimes.RData")
+load("ExampleDatasets/movies.RData")
+```
+
+Cleaning data is a major component of any quantitative project. Rarely will data come to you in exactly the form that you want for your research question. In this section, we will focus on two of the most important components of data cleaning: (1) assigning and handling missing values, (2) recoding variables, and (3) aggregating data.
+
+For this analysis, we will use a data extract from the 2015 [American Community Survey](https://www.census.gov/programs-surveys/acs/) conducted by the US Census Bureau. I downloaded this extract from [IPUMS](https://usa.ipums.org/usa/). You can get a copy of this data in STATA format here. 
+
+The data is a sample of individuals in the US. Here is what the data looks like:
+
+```{r}
+library(readstata13)
+census <- read.dta13("resources/rawdata_ipums.dta")
+head(census)
+```
+
+
+## The Most Important Rule: [Check yourself before you wreck yourself](https://www.youtube.com/watch?v=5aAbOgdbTbM)
+
+The number one rule of cleaning and processing data is to always check your code to make sure it is producing what you think it should be producing. In the examples below, I run several diagnostic checks using tables and figures to ensure that what I am producing looks correct. There are a variety of ways you can check your code, but its important to take your time here and be extra scrupulous. If you don't properly clean your data, then everything you produce in the later analysis will be questionable at best. You don't want  [this](http://journals.sagepub.com/doi/abs/10.1177/0003122417714422) to happen to you. 
+
+## Assigning missing values
+
+One of the first things you should check in your data is how missing values are coded. In many cases, missing values will be coded with a numeric value rather than a proper missing value. If you don't correct this, then all of your statistics will be incorrect. Codebooks that are provided with the data will normally identify the codes used for missing values. Usually, missing values are coded with numeric values that are impossible or well outside the range of the data, so that they can easily be identified. For example, if you look at the [codebook for SEI](https://usa.ipums.org/usa-action/variables/SEI#codes_section) from the IPUMS website, you will see that the zero value is a missing value. Since SEI is based on occupation, individuals who were not working receive a zero for SEI. If you leave the zeros in, then you will drastically underestimate mean SEI in the sample. 
+
+In R, we can easily code in missing values by identifying a subset of the variable with a proper boolean statement and then assigning the special `NA` value to that subset. 
+
+```{r}
+summary(census$sei)
+census$sei[census$sei==0] <- NA
+summary(census$sei)
+```
+
+The mean and median change dramatically once I code in all of the missing values. thats because I had a lot of non-workers without a proper value for SEI who were being reported as zero. 
+
+Notice that there was no comma here for the `col_index` in my brackets. Because I am identifying a specific variable here rather than the full dataset, there is only one dimension (the "rows") to subset along. 
+
+The bracket-and-boolean approach is one of the standard ways to re-code certain values for a variable in R. Another common approach is to use the `ifelse` statement. An `ifelse` command takes three arguments. The first argument is a boolean statement. The second argument is what value should be returned if the first argument evaluates to TRUE and the third argument is what value should be returned if the first argument evaluates to FALSE. Here is how I can use the `ifelse` command in this example:
+
+```{r}
+#re-load the data to get the original SEI values
+census <- read.dta13("resources/rawdata_ipums.dta")
+census$sei <- ifelse(census$sei==0, NA, census$sei)
+summary(census$sei)
+```
+When `census$sei==0` is TRUE, the `ifelse` command returns `NA` and when `census$sei==0` is false, the `ifelse` command returns the original value of `sei`. This command accomplishes the same thing as the bracket-and-boolean approach above. Where the `ifelse` command really shines is when you can string together multiple `ifelse` commands. 
+
+## Recoding
+
+Recoding variables is an integral part of preparing your data for analysis. Rarely will all the variables come in exactly the form that you want for the reserch question at hand. In many cases, you will want to *collapse* and/or *combine* categorical variables and *transform* quantitative variables.  It will also frequently be useful to use **sensitivity analysis** to try out muliple approaches to coding your variables to see how sensitive your results are to coding decisions.  When you recode variables, its usually a good idea to generate a new version of the variable with a different name. This allows you both to check the new variable against the old variable to ensure that your code is working correclty and the ability to go back to the original variable when necessary. 
+
+### Collapsing and Combining Categorical Variables
+
+Collapsing categorical variables means reducing the number of categories to a smaller set of categories, by lumping some categories together. As an example, lets look at the full set of categories for the detailed education variable `educd` in the Census data. 
+
+```{r}
+summary(census$educd)
+```
+
+
+There are a a lot of categories. Its unlikely that this fine level of detail will be helpful in any analyses that we will perform. In addition there are a lot of categories that seem to overlap and have zero responses. The [reason for these zero categories](https://usa.ipums.org/usa-action/variables/EDUC#comparability_section) is that the set of categories was created to capture all of the ways that educational attainment was recorded across censuses since 1850, but many of the codes are not used in the particular data that we have.
+
+A first step to collapsing this data would be to remove all of the unused categories. There is a very handy function in R called `droplevels` that will do this for us. Before I do that I will also code the missing value category of "N/A" as a proper missing value:
+
+```{r}
+census$educd[census$educd=="N/A"] <- NA
+census$educd <- droplevels(census$educd)
+summary(census$educd)
+```
+
+This is a bit more compact and missing values are now properly coded,  but we still have 24 unique categories, which is probably too many for most analyses. Many scholars use a parsimonious four-category coding of educational attainment: less than high school, high school diploma, some college, four-year college degree or more. In R, we can collapse the `educd` variable into this four category variable by defining a new variable and assigning values to it based on boolean statements.
+
+```{r}
+census$edattain <- NA
+census$edattain[census$educd=="No schooling completed" |
+                  census$educd=="Nursery school, preschool" |
+                  census$educd=="Kindergarten" |
+                  census$educd=="Grade 1" |
+                  census$educd=="Grade 2" |
+                  census$educd=="Grade 3" |
+                  census$educd=="Grade 4" |
+                  census$educd=="Grade 5" |
+                  census$educd=="Grade 6" |
+                  census$educd=="Grade 7" |
+                  census$educd=="Grade 8" |
+                  census$educd=="Grade 9" |
+                  census$educd=="Grade 10" |
+                  census$educd=="Grade 11" |
+                  census$educd=="12th grade, no diploma"] <- "Less than HS"
+census$edattain[census$educd=="GED or alternative credential" |
+                  census$educd=="Regular high school diploma"] <- "HS Diploma"
+census$edattain[census$educd=="Some college, but less than 1 year" |
+                  census$educd=="Associate's degree, type not specified"|
+                  census$educd=="1 or more years of college credit, no degree"] <- "Some College"
+census$edattain[census$educd=="Bachelor's degree" |
+                  census$educd=="Master's degree"|
+                  census$educd=="Professional degree beyond a bachelor's degree" |
+                  census$educd=="Doctoral degree"] <- "College"
+census$edattain <- factor(census$edattain, levels=c("Less than HS", "HS Diploma",
+                                                    "Some College","College"), 
+                          ordered=TRUE)
+table(census$educd, census$edattain, exclude=NULL)
+```
+
+The first line of code creates a new variable called `edattain` that is entirely made up of missing values. This gives me a starting "empty" variable to which I can then assign values. The next four lines of code assign different character string labels to the `edattain` variable depending on the value of the `educd` variable. I am stinging together multiple categories of the original variable by the use of the OR (`|`) statement. At this point, the recoding is done,  but my new variable is not a proper factor variable but rather a character string variable. In order to convert this into a proper factor variable, I use the `factor` command on this variable to turn those character strings into factors. By specifying the levels of the factor variable and that these categories are ordered, I can make sure that my ordinal variable has the correct order and that it will be possible to run "greater than" or "less than" type boolean statements on it. The last line of code crosstabs `educd` and `edattain` to make sure that all of my categories are in the right places. I included the `exclude=NULL` option here to include missing values in this table to also make sure that missing values match between the two datasets.
+
+In some cases, recoding may involve incorporating information on multiple variables. Racial categorization on census data is an interesting example where multiple variables are often used to create a single composite variable. For reasons that are complex and historical, a person's identification as Hispanic/Latino is recorded on a separate question from the question on race on census data. So, according to the census system, a person can be any combination of race and Hispanic/Non-Hispanic. We can look at that crosstab:
+
+```{r}
+table(census$race, census$hispan, exclude=NULL)
+```
+
+In practice, researchers will often identify anyone who said they were Hispanic as Hispanic by race, and then code the remaining racial groups as "non-Hispanic" (e.g. "non-Hispanic white","non-Hispanic black"). In the data that we have we can use our `race` and `hispan` variables to create this kind of composite variable. At the same time, I will also collapse some of the racial categories into a smaller set. 
+
+```{r}
+census$raceethnic <- NA
+census$raceethnic[census$race=="White" & census$hispan=="Not Hispanic"] <- "NH White"
+census$raceethnic[census$race=="Black/Negro" & census$hispan=="Not Hispanic"] <- "NH Black"
+census$raceethnic[census$race=="American Indian or Alaska Native" & 
+                    census$hispan=="Not Hispanic"] <- "NH AIAN"
+census$raceethnic[(census$race=="Chinese" | 
+                     census$race=="Japanese" | 
+                     census$race=="Other Asian or Pacific Islander")
+                   & census$hispan=="Not Hispanic"] <- "NH API"
+census$raceethnic[(census$race=="Other race, nec" | 
+                     census$race=="Two major races" | 
+                     census$race=="Three or more major races")
+                  & census$hispan=="Not Hispanic"] <- "NH Other/Multi"
+census$raceethnic[census$hispan!="Not Hispanic"] <- "Hispanic"
+census$raceethnic <- factor(census$raceethnic,
+                            levels=c("NH White","NH Black","Hispanic","NH API",
+                                     "NH AIAN", "NH Other/Multi"))
+table(census$race, census$raceethnic, exclude=NULL)
+table(census$hispan, census$raceethnic, exclude=NULL)
+```
+
+My boolean statements that identify Asian and Pacific Islanders (API) and Other/Multi use both `|` and `&` statements to chain together booleans. When doing this, it is often critical to use parenthesis to specify the order in which statements should be evaluated. In this case, I want the string of OR statements about racial classification to be evaluated to TRUE or FALSE and then I want that final TRUE/FALSE to be chained together with an AND statement on Hispanic classification. 
+
+I am not suggesting that this is the "right" way to code race from this data. There is no single right way to do it. How you code it really depends on what system will better address the question at hand. In most cases, experimenting with multiple different techniques for collapsing/combining data is useful, in order to see how robust your results are across different specifications. 
+
+I could have also coded this new race-hispanicity variable using a set of nested, or cascading, `ifelse` statements:
+
+```{r}
+census$raceethnic2 <- factor(ifelse(census$hispan!="Not Hispanic","Hispanic",
+                                    ifelse(census$race=="White", "NH White",
+                                           ifelse(census$race=="Black/Negro", "NH Black",
+                                                  ifelse(census$race=="American Indian or Alaska Native", 
+                                                         "NH AIAN",
+                                                         ifelse(census$race=="Chinese" | 
+                                                                  census$race=="Japanese" | 
+                                                                  census$race=="Other Asian or Pacific Islander", 
+                                                                "NH API", "NH Other/Multi"))))),
+                             levels=c("NH White", "NH Black", "Hispanic", "NH API", 
+                                      "NH AIAN", "NH Other/Multi"))
+table(census$raceethnic, census$raceethnic2, exclude=NULL) 
+```
+
+The trick to this set of `ifelse` statements is that the third argument to each `ifelse` statement is another `ifelse` statement. So, if any of these cascading `ifelse` statements evaluates to TRUE for an observation then we break out and assign a value, otherwise we keep going until we have exhausted all possibilities and get to the residual category of "NH Other Multi". Because of the cascading nature of the logic, we only have to check for Hispanicity once at the top, and if we are still in the cascade after that then we know we have a non-Hispanic respondent. 
+
+### Transforming Quantitative Variables
+
+Quantitative variables can also be recoded in R and this is typically much easier. The most common change is to transform a variable by applying some function to it, such as a log. For example, I could calculate a new variable that is the log of box office receipts from the movie database, like so:
+
+```{r}
+movies$lboxoffice <- log(movies$BoxOffice)
+plot(movies$BoxOffice, movies$lboxoffice, xlab="Box office receipts", ylab="Box office receipts, logged", pch=21, bg="grey", las=1)
+```
+
+Some transformations can be more complex. One common approach to handle non-linearity in regression data is to code what is called a "spline" variable. A spline transformation of $x$ means that for values of $x$ below some certain value $x$ will be coded as zero but will keep the same value for values of $x$ above this value. Lets try coding this kind of variable using both the bracket-and-boolean approach and the `ifelse` approach:
+
+```{r}
+load("ExampleDatasets/movies.RData")
+#bracket-and-boolean approach
+movies$runtime.spline <- movies$Runtime
+movies$runtime.spline[movies$runtime.spline<90] <- 0
+plot(movies$Runtime, movies$runtime.spline)
+#ifelse approach
+movies$runtime.spline <- ifelse(movies$Runtime<90, 0, movies$Runtime)
+plot(movies$Runtime, movies$runtime.spline)
+```
+
+## Aggregating Data
+
+It is not uncommon to want to aggregate data at one unit of analysis up to a higher unit of analysis. For example, the individual-level census data that we have contains a variable that identifies the state of residence for each respondent (`statefip`). What if I wanted to aggregate my individual level data up to the state-level? As a simple example, lets say that I wanted to calculate mean SEI across each state. 
+
+### Using `tapply`
+
+The simplest approach to this problem is to use the `tapply` command that we have already seen elsewhere.
+
+```{r}
+census$statefip <- droplevels(census$statefip)
+state_sei_means <- tapply(census$sei, census$statefip, mean, na.rm=TRUE)
+state_sei_means
+```
+
+The `tapply` command is useful, but there are a couple of limitations to it. First, the output is not in the form of a `data.frame`. Second, it can only be used to find the mean of one variable at a time. 
+
+We can use the command `as.data.frame.table` to coerce the output here into a data frame, but we will then have to change the column names manually.
+
+```{r}
+state_sei_means <- as.data.frame.table(state_sei_means)
+head(state_sei_means)
+colnames(state_sei_means) <- c("state", "mean_sei")
+head(state_sei_means)
+```
+
+The second problem is that `tapply` will only aggregate one variable at a time. The `aggregate` command below will offer us a better alternative here, but we can sort of hack together something by calling `tapply` multiple times and outputting results to a new `data.frame`:
+
+```{r}
+temp1 <- as.data.frame.table(tapply(census$sei, census$statefip, mean, na.rm=TRUE))
+colnames(temp1) <- c("state","mean_sei")
+temp2 <- as.data.frame.table(tapply(census$perwt, census$statefip, sum, na.rm=TRUE))
+colnames(temp2) <- c("state","population")
+state_data <- cbind(temp1, temp2$population)
+head(state_data)
+```
+
+This code is not really the safest because we are assuming that the size and ordering of states in the two separate datasets is the same. In the next lab, we will learn a safer way to combine these datasets with the `merge` command. 
+
+We can also use `tapply` to get the mean on multiple dimensions. Lets get the mean of SEI by state and race:
+
+```{r}
+state_race_sei <- tapply(census$sei, census[,c("statefip","raceethnic")], mean, na.rm=TRUE)
+head(state_race_sei)
+```
+
+Now we get mean SEI by race and state. The output data here are in the form of a matrix. We can coerce this to a `data.frame` two different ways with different results:
+
+```{r}
+head(as.data.frame(state_race_sei))
+head(as.data.frame.table(state_race_sei))
+```
+
+Do you see how these are different?
+
+
+### Using `aggregate`
+
+The `aggregate` command works similarly to `tapply` but has more flexibility, namely that you can aggregate multiple variables at once. There are two different syntax forms for `aggregate` but we will focus on the formula syntax. This syntax works like `agg_var~by_var1+by_var2` where the `agg_var` is the variable that you want to aggregate on and `by_var1` and `by_var2` are the variables that you want to aggregate by. Here is a simple example of getting the mean for SEI by state. 
+
+```{r}
+state_mean_sei <- aggregate(sei~statefip, data=census, mean, na.rm=TRUE)
+head(state_mean_sei)
+``` 
+
+The results here are output as a `data.frame` with better names than `tapply`. We can also get the mean of multiple variables at once by using the `cbind` command:
+
+```{r}
+temp <- aggregate(cbind(sei,hhwt)~statefip, data=census, mean, na.rm=TRUE)
+head(temp)
+```
+
+We can also aggregate across multiple dimensions. Lets do that now for SEI by state and race. 
+
+```{r}
+temp <- aggregate(sei~statefip+raceethnic, data=census, mean, na.rm=TRUE)
+head(temp)
+```
+
+What if we want to aggregate the proportion of respondents in each category of a categorical variable by state? The syntax here is a little messier, but we can do this by creating booleans for each category and then calculating means:
+
+```{r}
+temp <- aggregate(cbind(pwhite=raceethnic=="NH White", 
+                pblack=raceethnic=="NH Black",
+                phispanic=raceethnic=="Hispanic",
+                papi=raceethnic=="NH API",
+                paian=raceethnic=="NH AIAN")~statefip, data=census, mean, na.rm=TRUE)
+head(temp)
+```
+
+# Using `table` and `prop.table`
+
+You can also use `table` and prop.table to get the proportions of respondents in categories of a categorical variable.
+
+```{r}
+temp <- prop.table(table(census$statefip, census$raceethnic), 1)
+head(temp)
+#check to make sure proportions add up to 1 for each state
+apply(temp, 1, sum)
+```
+
+What happens when you want to combine things together from multiple commands? We can use `cbind` to combine them together, but we will want to eliminate the first column of states for all but the first dataset. 
+
+```{r}
+temp <- cbind(aggregate(cbind(sei,hhwt)~statefip, data=census, mean, na.rm=TRUE),
+              aggregate(cbind(percent_white=raceethnic=="NH White", 
+                              percent_black=raceethnic=="NH Black",
+                              percent_hispanic=raceethnic=="Hispanic",
+                              percent_api=raceethnic=="NH API",
+                              percent_aian=raceethnic=="NH AIAN")~statefip, data=census, mean, na.rm=TRUE)[,-1])
+head(temp)
+```
+
+As I mentioned above, we will learn a safer way to combine datasets through the `merge` command in the next lab.

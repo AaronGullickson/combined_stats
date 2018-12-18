@@ -1,0 +1,167 @@
+# Combining and Merging Data
+
+It is not uncommon to have data from multiple sources that you want to combine in some way. In some cases, data from the same source may also need to be split, sliced, and re-combined in order to analyze it. Knowing how to efficiently re-organize and combine data is a crucial skill for doing real data analysis. 
+
+As an example, we are going to look at some data from the [World Bank Development Indicators](http://databank.worldbank.org/data/reports.aspx?source=world-development-indicators#) and the [International Labour Organization](http://www.ilo.org/ilostat/faces/wcnav_defaultSelection?_afrLoop=107076059659881&_afrWindowMode=0&_afrWindowId=kaen3qrnf_51#!%40%40%3F_afrWindowId%3Dkaen3qrnf_51%26_afrLoop%3D107076059659881%26_afrWindowMode%3D0%26_adf.ctrl-state%3Dkaen3qrnf_71). Both of these sites have nice designs that allow users to filter an extract of their choosing by country, year, and variable type. They also allow download of the data in a variety of formats including CSV. The labor data provides information on unemployment rates by age and sex and I have limited the years to 2014 or later. I then pulled an extract of the world bank data from 2014 on all countries for the variables of GDP per capita, life expectancy at birth, and population size. You can download the World Bank extract here and the ILO data here, if you want to follow along.^[I should note that the World Bank CSV file had notes at the bottom that weren't part of the data. I had to open up the CSV file in Excel in order to remove this junk, and then re-save it to get data that would be machine-readable by R. This is Very Bad but Unfortunately Common Practice.]
+
+##Re-organizing data
+
+Ultimately, I want to combine these two data sources together, but before I can do that they both will need quite a bit of internal processing. Lets start by looking at the world bank data. 
+
+```{r}
+worldbank <- read.csv("resources/worldbank.csv")
+head(worldbank)
+```
+
+This data is in a very different format than we are used to seeing. Each line is for a single variable in a single year. Since we have three variables and one year, there are three separate lines for each country. This is not how we want the data to be structured. We want a single row for each country with all three variables listed in separate columns on the same row. As a first step to reconstructing this dataset, I can use the `Series.Code` variable to pull out each of my desiered variables as a separate vector of data. 
+
+```{r}
+gdpcap <- worldbank$Value[worldbank$Series.Code=="NY.GDP.PCAP.CD"]
+lifeexp <- worldbank$Value[worldbank$Series.Code=="SP.DYN.LE00.IN"]
+pop <- worldbank$Value[worldbank$Series.Code=="SP.POP.TOTL"]
+summary(gdpcap)
+summary(lifeexp)
+summary(pop)
+length(gdpcap)
+length(lifeexp)
+length(pop)
+```
+
+I have created three separate vectors for each variable. The `summary` and `length` commands check that everything is working correctly. In all three cases, I had 217 country values and the summary statistics for each variable look reasonable for what they are measuring. I now want to combine these vectors together as columns of a dataframe. However, I first need to get vectors for the names and codes of each country so that I will know what country each observation is referencing. There are multiple ways that I could go about this, but the `unique` command should pull out all of the unique country names in the correct order. I will just want to check that it is the same length as my other vectors. 
+
+```{r}
+name <- unique(as.character(worldbank$Country.Name))
+length(name)
+head(name)
+code <- unique(as.character(worldbank$Country.Code))
+length(code)
+head(code)
+```
+
+The length matches and the ordering looks good. I now have five vectors that I need to combine back together into a data.frame object. The easiest way to do this is with the `data.frame` command.
+
+```{r}
+worldbank <- data.frame(name, code, gdpcap, lifeexp, pop)
+head(worldbank)
+dim(worldbank)
+summary(worldbank)
+```
+
+Everything looks good with this data now. Now we need to check the ILO data. Lets take a look at it.
+
+```{r}
+ilo <- read.csv("resources/ilostat.csv")
+head(ilo)
+summary(ilo)
+```
+
+Just like the World Bank data, the ILO data has multiple lines per country. I am only measuring one variable, unemployment rates, which is given by the variable names `obs_value`. However, there are multiple breakdowns of this variable for different age groups, gender, and data sources, all reported on different rows for the same country. Let me first limit the data to umemployment rates for the total population (all age and all sex). Since the World Bank data are from 2014, I will further limit the data to the year of 2014. 
+
+```{r}
+ilo.sub <- subset(ilo, sex=="SEX_T" & classif1=="AGE_AGGREGATE_TOTAL" & time==2014)
+table(ilo.sub$ref_area)
+```
+
+The `table` command gives me a tabulation of how many records I now have per country. For most countries, I now only have one record for the overall unemployment rate. However, for a few countries (e.g. Argentina, Brazil, China) there are still multiple records per year. Lets look at Brazil to explore further.
+
+```{r}
+ilo.sub[ilo.sub$ref_area=="BRA",]
+```
+It seems that there are multiple sources for each unemployment rate. The notes provide some indication of how these different numbers were developed. There is no easy programmatic way to make a decision about which source to choose. If I were doing a real research project, I would carefully study the documentation here and reach a decision about each country separately. For our purposes, it seems like the broadest scope measure is generally in the first source listed for a country, so I will just take the first row for countries with multiple rows. I can do this easily in R using the `duplicated` command to remove repeat country entries. The duplicated command will return a TRUE for values in a vector that duplicate earlier entries. I will also restrict this data to the variable that I actually care about, along with the country names and codes.
+
+```{r}
+ilo.sub <- subset(ilo.sub, !duplicated(ref_area),
+                  select=c("ref_area","ref_area.label","obs_value"))
+table(ilo.sub$ref_area)
+```
+
+Finally,  I will rename the variables to something more intuitive. 
+
+```{r}
+colnames(ilo.sub) <- c("code","country_name","unemployment")
+dim(ilo.sub)
+head(ilo.sub)
+```
+
+## Merging data
+
+I am now finally ready to merge my data. I noticed that both sources use a three letter capitalized code to identify countries, so I am crossing my fingers that they are using the same coding system and that I can use this code to link countries across the two datasets. 
+
+Generally speaking, there are two different kinds of merges one can perform. In a **one-to-one** merge, each observation in one dataset should be linked to one and only one observation in the other dataset. In this case, the identifier used to link the two datasets should be unique (not be repeated) within each dataset. In this example, I am performing a one-to-one merge. I can check that my identifiers are unique by running the `duplicated` command:
+
+```{r}
+sum(duplicated(worldbank$code))
+sum(duplicated(ilo.sub$code))
+```
+
+No duplicates, so everything looks good. 
+
+The other kind of merge that can be performed is a **many to one** merge. In this case, multiple observations in one dataset would all be linked to a single observation in the other dataset. For example, lets say I wanted to link the academic records of elementary school students to information about their teachers. In this case, multiple students would be linked to the same teacher data. We will see more examples of this kind of merging next term, when we delve into multilevel models. In practice, R handles both of these merge types with the same basic syntax.
+
+The `merge` command in R will take two different data.frame objects and merge them together by matching the columns identified in the `by`,`by.x`, or `by.y` option. Notice that I renamed the country codes in my ILO dataset with the name `code` in order to match the name in the world bank data. This will allow me to use the `by` option rather than separate `by.x` and `by.y` options. You can also not specificy any id variable for the matching, and `merge` will then try to match on every variable with the same name in the two datasets. 
+
+Here is the basic `merge` command. 
+
+```{r}
+test <- merge(worldbank, ilo.sub, by="code", all.x=TRUE, all.y=TRUE)
+```
+
+Merging can be tricky and you should always check and double-check your results to make sure the merge worked properly. In this case, I have saved my merged data.frame as a new object named `test`. The `all.x` and `all.y` option indicates that the final merged object should include rows for both the first and second data.frame even if they didn't find a match in the other data.frame. 
+
+Lets begin our checks by examining the number of observations in our datasets. 
+
+```{r}
+nrow(worldbank)
+nrow(ilo.sub)
+nrow(test)
+```
+
+There is something odd going on here. The world bank data included 217 countries, while the ILO data only had 115 countries. So the ILO data is presumably missing a lot of countries that are in the world bank data. When we merge the data together, we now get 223 total countries. How did we end up with six more countries in total than the world bank data? 
+
+There are three possible outomes for each observation in our merged test dataset. In some cases, a match was made and there should be valid data for that observation. In other cases, an observation from the World Bank data failed to find a match in the ILO data. We expect this to happen frequently and are not troubled by it because the world bank data has more coverage than the ILO data. Finally, an observation from the ILO data may fail to find a match with the world bank data. We can find out whether a match was made by looking for NA values for the `name` variable which comes from the world bank data, and NA values for the `country_name` variable that comes from the ILO data. 
+
+```{r}
+table(is.na(test$name), is.na(test$country_name))
+```
+
+In 109 cases, we found a match. A further 108 cases from the world bank data were not found in the ILO data and 6 cases from the ILO data were not found in the world bank data. We can also think about this graphically in terms of a venn diagram. 
+
+
+```{r venn_merge, echo=FALSE, message=FALSE, warning=FALSE}
+library(VennDiagram)
+grid.draw(draw.pairwise.venn(217,115,109, category=c("World Bank data", "ILO data"), fill=c("blue","yellow")))
+```
+
+The problematic categories here are the six cases from ILO that were not matched in the World Bank data. I want to check those cases out in detail to see if we missed a match. I can do that with a boolean statement:
+
+```{r}
+subset(test, is.na(test$name))
+```
+These are the six missing countries. Looking for the corresponding countries in the World Bank data, I can see that three of these cases (Isle of Man, Kosovo, and Romania) have different codes in the two datasets. The three remaining cases don't exist in the World Bank data (Taiwan and Palestine for political reasons). 
+
+I can fix the code for Isle of Man, Kosovo, and Romania by changing these codes in the ILO dataset and then re-running the merge. There is a bit of a catch here, however. The codes are recorded as a factor variable in `code`. Normally, you can't change the values of factor variables to a different value. For example, the code `ilo.sub$code[ilo.sub$code=="IMN"] <- "IMY"` to replace the "IMN" code for Isle of Man to "IMY" would just generate a missing value. 
+
+
+In order to change the values, I first have to convert this factor variable to a character variable with the `as.character` command, make my changes and then convert it back to a factor variable with the `as.factor` command. 
+
+```{r}
+ilo.sub$code <- as.character(ilo.sub$code)
+ilo.sub$code[ilo.sub$code=="IMN"] <- "IMY"
+ilo.sub$code[ilo.sub$code=="KOS"] <- "KSV"
+ilo.sub$code[ilo.sub$code=="ROU"] <- "ROM"
+ilo.sub$code <- as.factor(ilo.sub$code)
+```
+
+Now, I should be able to re-run my merge command and pick up those three matches. Note that I am setting `all.y=FALSE` because I can't do anything about the last three cases of Palestine, Taiwan, and Jersey, so I might as well drop them.  
+
+```{r}
+combined <- merge(worldbank, ilo.sub, by="code", all.x=TRUE, all.y=FALSE)
+nrow(combined)
+sum(is.na(combined$country_name))
+```
+
+The total size is now correct and I have reduced the non-matches from the World Bank data to the ILO data from 108 to 105, as expected. I now have a full merged dataset. I can do a last `summary` command to check that everything looks as expected. 
+
+```{r}
+summary(combined)
+```

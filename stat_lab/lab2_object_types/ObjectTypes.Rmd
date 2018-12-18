@@ -1,0 +1,441 @@
+# Object Types
+
+R is an object-oriented programming language. This means that within R, you can save a variety of objects to memory. These objects will show up in the upper right panel in the environment tab in RStudio when you create them. A variety of functions can be applied to objects and in many cases, the same function may produce different results when applied to different kinds of objects. We will work most commonly with the `data.frame` object, but it is useful to know some other basic object types to understand how R works. 
+
+Objects can have different types and R will often handle them differently depending on their type. However, type is defined in two different ways. Each object has a `mode` and a `class`. The class of an object is typically what determines how it is handled by other functions. The `mode` is most important in terms of the "atomic" or "basic" modes of R objects. These are the basic-building blocks of everything else. 
+
+## Atomic Modes
+
+The three most important atomic modes for our purposes are:
+
+- `numeric`: records a numeric value.
+- `character`: records a set of characters. This is often called a "string" in computer science parlance. 
+- `logical`: records either a TRUE or FALSE value. In computer science parlance, this is called a "boolean."
+
+There is also a fourth type `complex` for things like imaginary numbers, but we won't really need to worry about that. Lets try assigning values to an object of each mode: 
+
+```{r}
+a <- 3
+b <- "bob said"
+c <- TRUE
+a
+mode(a)
+class(a)
+b
+mode(b)
+class(b)
+c
+mode(c)
+class(c)
+```
+
+note that for these simple objects the mode is the same as the class. These objects will now show up in my upper right panel. However, programming with these simple objects with one value is not very useful. What we usually really want is an aggregation of many of these values. There are a variety of ways we can do this. 
+
+## Vectors and Matrices
+
+### Vectors
+
+If you want to put a bunch of values of the same mode together (don't call it a "list" because that means something else, see below), you can do that with a `vector`. You can create a vector with the concatenation function `c`. Lets do that below:
+
+```{r}
+name <- c("Bob","Juan","Maria","Jane","Howie")
+age <- c(15,25,19,12,21)
+ate_breakfast <- c(TRUE,FALSE,TRUE,TRUE,FALSE)
+name
+age
+ate_breakfast
+mode(name)
+class(name)
+mode(age)
+class(age)
+mode(ate_breakfast)
+class(ate_breakfast)
+```
+
+Note that the `mode` and `class` of each vector is given by the `mode` of the values that makes up the vector. As you can see, vectors are basically equivalent to variables for the purpose of data analysis. We can even calculate values like the mean for numeric and logical vectors:
+
+```{r}
+mean(age)
+mean(ate_breakfast)
+```
+
+How can you calculate a mean for a logical vector? R automatically converts logical values to numeric values where `TRUE=1` and `FALSE=0` when it seems like a numeric value is needed. Therefore, the mean is tellling us that 60% of respondents ate breakfast. 
+
+You can also force vectors (and some other objects) into a different basic type:
+
+```{r}
+as.character(age)
+as.numeric(ate_breakfast)
+as.numeric(name)
+```
+
+Note that this didn't work so well when converting a character string to a number and I ended up with a set of missing values (NA). 
+
+### Matrices
+
+A `matrix` is just an extention of a vector, but two dimensional instead of one dimensional. We can use the `matrix` command to turn a vector into a matrix, by speficying the number of rows and columns.
+
+```{r}
+x <- matrix(c(4,5,3,9,7,8), 3, 2)
+x
+mode(x)
+class(x)
+```
+
+I created a matrix of numeric values with three rows and two columns. Notice that when putting all of these values, R tries to fill up each column before moving on to the next column. Its also worth noting that the mode and class of my matrix are no longer the same. This means that I can specify specific functions that will apply to the class of `matrix`. The mode tells me what kind of values I have within the matrix. 
+
+I can also create a matrix by binding together vectors into different rows (`rbind`) or columns (`cbind`). 
+
+```{r}
+a <- c(4,5,3)
+b <- c(9,7,8)
+cbind(a,b)
+rbind(a,b)
+```
+
+This might seem like a good way to create a full dataset from the variables I created above, but there is a problem:
+
+```{r}
+cbind(name, age, ate_breakfast)
+```
+
+A matrix has to have values of the same atomic mode. In most cases, if there is any character vector in the binding, then everything will get converted to characters. We will see a better way to create a dataset (spoiler: the `data.frame` object) below. 
+
+Note there is an extension to the matrix object called the `array` which generalizes it to n-dimensions rather than two. However, we will not make much use of that in this class. 
+
+### Indexing Vectors and Matrices
+
+What if I want to know a specific value in my vector or matrix. Lets say I want to know the name of the fourth person in my `name` vector. You can easily get this value by indexing the vector or matrix with square brackets. In my case:
+
+```{r}
+name[4]
+```
+
+Because a vector only has one dimension, I only need one index. In the case of matrices, you will need two numbers, separated by a comma. If you want to get an entire row or column, you can leave one of the indices blank, but you still need the comma.
+
+```{r}
+x
+#value in 2nd row, 1st column
+x[2,1]
+#2nd row
+x[2,]
+#1st column
+x[,1]
+#1st and 2nd row
+x[c(1,2),]
+```
+
+## Factors
+
+You will note that we don't yet have a representation for categorical variables. Lets say for example that I wanted to include highest degree received for my respondents from above. I could create this as a character variable:
+
+```{r}
+high_degree <- c("Less than HS", "College", "HS Diploma", "HS Diploma", "College")
+summary(high_degree)
+```
+
+However, this is not very satisfying because there is very little that can be done with categorical variables. As you see the `summary` command failed to produce anything useful.
+
+What I want to do is turn this into a `factor`. A factor in R is the standard object for coding categorical variables. Each value is actually recorded with a mode of "numeric" but the object also contains a set of labels that provide the meaning of each level. Almost all functions in R will know how to handle these factor objects correcly. 
+
+To create a factor object, I can just apply the `factor` function to my vector:
+
+```{r}
+high_degree_fctr <- factor(high_degree)
+levels(high_degree_fctr)
+summary(high_degree_fctr)
+mode(high_degree_fctr)
+class(high_degree_fctr)
+```
+
+Now the summary command gives me a table of frequencies for each category. 
+
+### Re-ordering categories in factors
+
+The only problem with my factor is that this is an ordinal variable and the categories are backwards with "College" first and "Less than HS" last. This is because R sorts alphabetically by default. In order to ensure a specific order to the categories in the factor, I will need to specify the `levels` argument in the `factor` function and explicitly write out the order I want:
+
+```{r}
+high_degree_fctr <- factor(high_degree,
+                           levels=c("Less than HS","HS Diploma","College"))
+levels(high_degree_fctr)
+summary(high_degree_fctr)
+```
+
+Another option is to use the `relevel` function on a factor to just change the very first level of a factor to something else:
+
+```{r}
+levels(high_degree_fctr)
+levels(relevel(high_degree_fctr,"HS Diploma"))
+```
+
+## Logical Values and Boolean Statements
+
+One of the most important features of  all computer programming languages is the ability to create statements that will either evaluate to a "boolean" value of TRUE or FALSE (a "logical" value in R parlance). These kinds of statements are called boolean statements. The following basic operators will allow you to make boolean statements in R.  
+
+| Operator | Meaning               |
+|----------|-----------------------|
+| ==       | equal to              |
+| !=       | not equal to          |
+| <        | less than             |
+| >        | greater than          |
+| >=       | less than or equal    |
+| <=       | greater than or equal |
+
+Note that the "equal to" syntax is a double-equals. This is because the single equals is used for assignment of values to objects. 
+
+As a simple example, lets say that I wanted to identify all respondents from my data above that were 18 years of age or older:
+
+```{r}
+age>=18
+```
+
+You can use factor variables in boolean statements of equality as well, but you need to use the character string variables. Lets say I want to identify all respondents with a college degree:
+
+```{r}
+high_degree=="College"
+```
+
+A very important feature of boolean statements is the ability to string together multiple boolean statements with a & (AND) or | (OR) in order to make compound statement. Lets say I wanted to identify all respondents who had either a high school diploma or a college degree:
+
+```{r}
+high_degree=="College" | high_degree=="HS Diploma"
+```
+
+Lets say I want to find all respondents who are between the ages of [20,25):
+
+```{r}
+age>=20 & age<25
+```
+
+You can also use parenthesis to ensure that your compound boolean statements are interpreted in the correct order.
+
+```{r}
+(age>=20 & age<25) & (high_degree=="College" | high_degree=="HS Diploma")
+```
+
+Another useful option is the ability to put a `!` sign in front of a boolean variable to indicate "not". Lets say I wanted to find all respondents who had NOT eaten breakfast:
+
+```{r}
+!ate_breakfast
+```
+
+## Missing Values
+
+Missing values are a common feature of most real-world data. They can exist for a variety of reasons, but *item non-response* (i.e. respondent declined to answer a specific question) is one of the most common reasons. In R, missing values are represented with the `NA` value. missing values can exist for any of the modes we have discussed. 
+
+Lets insert a missing value into the age vector that we have been using:
+
+```{r}
+age[4] <- NA
+age
+```
+
+Watch what happens now when we try to calculate the mean of age:
+
+```{r}
+mean(age)
+```
+
+The mean is missing! This is the default behavior for many functions in R. If the values you feed in have missing values, R will return a missing value. R wants to be sure that you explicitly decide how to treat missing values. In Soc 513, we will learn about other ways of dealing with missing values, but our approach this term will be to simply remove observations that have missing values (i.e. *casewise deletion*) and then calculate the appropriate statistics. In many of the functions in R, this can be accomplished by setting the argument `na.rm` to TRUE:
+
+```{r}
+mean(age, na.rm=TRUE)
+```
+
+Another useful function to know is the `is.na` function. If you feed in a vector of values, this function will return a logical vector that evaluates to TRUE if a value is missing. 
+
+```{r}
+is.na(age)
+```
+
+Combining this with the `!` from the previous section, we can easily create a function that tells us which observations have non-missing values:
+
+```{r}
+!is.na(age)
+```
+
+## Lists
+
+Lists are one of the most flexible types of standard objects. Lists are just collections of different objects and the objects can be of different types and dimensions. You can even put lists into lists and end up with lists of lists.
+
+Lets put our four variables into a list:
+
+```{r}
+my_list <- list(name, age, ate_breakfast, high_degree_fctr)
+my_list
+mode(my_list)
+class(my_list)
+```
+
+In this case, each item in the list is a vector of the same length but they don't need to be. 
+
+### Accessing elements of the list
+
+You will notice a lot of brackets in the list output above. To access an object at a specific index of the list, I need to use double square brackets. Lets say, I wanted to access the third object (ate_breakfast):
+
+```{r}
+my_list[[3]]
+```
+
+If I want to access a specific element of that vector, I can follow up that double bracket indexing with single indexing:
+
+```{r}
+my_list[[3]][4]
+```
+
+My fourth respondent did eat breakfast. Good to know. 
+
+There is another way to access objects within the list but to do this, I need to provide a name for each object in the list. I can do this within the initial list command by using a `name=value` syntax for each object:
+
+```{r}
+my_list <- list(name=name, age=age, ate_breakfast=ate_breakfast, high_degree=high_degree_fctr)
+```
+
+Now, I can call up any object by its name with the basic syntax `list_name$object_name`. Lets do that for age:
+
+```{r}
+my_list$age
+mean(my_list$age, na.rm=TRUE)
+```
+
+You will notice in RStudio that when you type the "$", it brings up a list of all the names you could want. You can select the one you want and tab to complete. Thanks, RStudio!
+
+### The `lapply` command is awesome
+
+Lets say that I just want to get a summary of each object in my list:
+
+```{r}
+summary(my_list)
+```
+
+Well, that was not super helpful. R is giving me a summary of the list itself rather than a summary of each object in the list. What if I want to apply the same function to every object in the list? This is exactly what the `lapply` command does. Feed in a list and a function (even a custom function) and it will sequentally apply that function to each object in the list:
+
+```{r}
+lapply(my_list, summary)
+```
+
+Thats much better. It won't be immediately obvious, but `lapply` turns out to be a very powerful and helpful tool. We will learn more about it later this term. 
+
+## Data Frames
+
+The list was a nice way to organize my data, but it wasn't ideal because it didn't represent data in the two-dimensional observations-on-the-row and variables-on-the-columns way we expect most datasets to be typical organized. This is where the `data.frame` object comes in. This is the object that we will mostly work directly with in this class and the one you are most likely to work with in real projects. 
+
+The `data.frame` object is basically a special form of a list in which each object in the list is required to be a vector of the same length, but not necessarily the same mode and class. The results can be displayed like a matrix and the same kinds of options for indexing that are available for matrices can be used on data.frames. 
+
+Lets put the variables into a data.frame:
+
+```{r}
+my_data <- data.frame(name, age, ate_breakfast, high_degree=high_degree_fctr)
+my_data
+```
+
+Now that looks like a dataset. Note that by default it just used the name of the object as the column name. However, I specifically changed this behavior for high_degree. 
+
+We can run a summary on the whole dataset now:
+
+```{r}
+summary(my_data)
+```
+
+It is now treating the name variable like a factor. By default, R will convert all character variables into factors when including them in a `data.frame`.
+
+I can also access any specific variable with the same "$" syntax as for lists:
+
+```{r}
+mean(my_data$age, na.rm=TRUE)
+```
+
+I can also use the same indexing as for matrices to retrieve particular values:
+
+```{r}
+my_data[3,2]
+```
+
+### Renaming Variables in a `data.frame`
+
+Vectors, matrices, lists, and data.frames can all have names associated with their elements. You have already seen an example of specifying names in the creation of the list and data.frame objects. But you can also change names of elements after creation. We will focus here specifically on the case of data frames, but much of this is generalizable to other objects as well.
+
+the `rownames` and `colnames` command can be used to both retrieve and set the row and column names, respectively for a data frame. The `colnames` command is generally more useful because we typically care more about variable names than observation names. 
+
+```{r}
+colnames(my_data)
+```
+
+Lets say I decided that I wanted to have all my variable names capitalized. I can easily change this by just assigning a new character vector to this colnames command:
+
+```{r}
+colnames(my_data) <- c("Name","Age","Ate_breakfast","High_degree")
+my_data
+```
+
+I can also use indexing of the colnames to just change specific variable names. Lets say I decided that "Ate_breakfast" was too long:
+
+```{r}
+colnames(my_data)[3] <- "Breakfast"
+my_data
+```
+
+### Subsetting Data Frames
+
+One of the most common tasks of organizing data is slicing and dicing datat into smaller subsets. There are two cases that are common. 
+
+#### Subsetting Observations
+
+You may want only a subset of observations by some logical characteristics (e.g. only women, people born after 1975, people who grew up in Lake Geneva WI, member-states of the OECD). One nice feature of R is that you can use the same indexing of rows as I discussed above but instead of specific index numbers, you can provide a boolean statement and only observations that evaluate to TRUE will be kept. Lets say that you want limit the dataset we have been using to only those who completed college:
+
+```{r}
+my_data[my_data$High_degree=="College",]
+```
+
+One "gotcha" with this approach is missing values in your boolean statement. Lets try to subset the data to only those respondents 18 years and older:
+
+```{r}
+my_data[my_data$Age>=18,]
+```
+
+Notice we get one full row of NA values. This was because of the one missing value on age. To avoid this, we first need to tell R to only keep cases that do not have missing values on age:
+
+```{r}
+my_data[!is.na(my_data$Age) & my_data$Age>=18,]
+```
+
+Now it works. However, we can also use the `subset` command to do the same thing and the `subset` command will be more robust to this missing value problem. The first argument to the `subset` command is the data frame you want to subset and the second is a boolean statement about the variables in that data frame. When this boolean statement evaluates to true for an observation it will be kept in the subset. 
+
+```{r}
+subset(my_data, Age>=18)
+```
+
+Notice that I did not have to use the full `my_data$Age` specification in my boolean statement, because the subset command knows that this variable must be in the dataset that I fed in. I also did not have to deal with the whole business of missing values. In general, the `subset` command produces cleaner and more readable code than bracketing and indexing. 
+
+### Subsetting by variables
+
+Sometimes you want to drop variables. This may be because you have used those variables to construct another variable and you don't need them any longer or maybe your data source just contains a lot more variables than you need. I am a big proponent of dropping irrelevant variables. It keeps your dataset cleaner and easier to read for others. 
+
+You can use indexing of columns in your data frame to choose variables that you want to keep. Lets say that I only wanted to keep age and highest degree in the dataset that we have been looking at:
+
+```{r}
+my_data[,c("Age","High_degree")]
+```
+
+You can also use the negative sign in front of a number index to remove it rather than keep it.
+
+```{r}
+my_data[,c(-1,-3)]
+```
+
+You can also use the `select` argument in the `subset` command to keep only certain variables. 
+
+```{r}
+subset(my_data, select=c("Age","High_degree"))
+```
+
+You can even use the subset command to simultaneously subset observations and drop variables. Lets say that I wanted to use my `Name` variable as row names for my dataset and I also want to drop any cases that are missing on age:
+
+```{r}
+rownames(my_data) <- my_data$Name
+my_data2 <- subset(my_data, !is.na(Age),
+                   select=c("Age","Breakfast","High_degree"))
+my_data2
+```
+
+

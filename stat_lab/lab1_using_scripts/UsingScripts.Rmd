@@ -1,0 +1,138 @@
+\appendix
+
+# Using Scripts
+
+One of the primary advantages of using statistical software like *R* or *Stata* is the ability to perform your analysis in a script. A script is a text file of commands that can be run to reproduce a data cleaning exercise, an analysis, a simulation, etc. It is a good practice to **always** do your statistical work using scripts. The advantage of scripting is that you will have an easily reproducible record of exactly what you did. Lets say that I did a thorough and time-consuming statistical analysis in Excel or (god forbid) SPSS using pull-down menus and buttons and I found The Best Result Ever. I quickly put together a paper and submit it to a flagship journal. My R&R comes back several months later and the reviewers say that my results look great, but they want to see if the results hold up if I limit my sample in some way. Now I have to (a) try to remember exactly what I did months ago, and (b) re-run that entire time-consuming analysis from scratch. That is horribly inefficient and is likely to lead to inconsistencies between the two analyses. Imagine that instead of cowboying my analysis, I had written everything into an R or Stata script. Now, I only have to add a line of code at the top that subsets my sample and processes the script. This will take a few minutes at most. 
+
+## Getting Started with Scripts
+
+Lets put together a simple script in R. In RStudio, you can go to `File > New File > R Script` to get a new script up and running. This will open a text pane in the upper left corner of RStudio. This is your R script. Lets start by writing a simple "Hello World" script. Type the following command into your script:
+
+```{r eval=FALSE}
+cat("Hello World!")
+2+2
+```
+
+You can run this script a couple of different ways:
+
+- You could just copy and paste both lines of code to the console in the lower left. This is quick and dirty but is typically not the most efficient way to run code from your script.
+- You could run your entire script by clicking the "Source" button in the upper right corner of the script pane. Note that with this button, you won't get the output, unless you use the drop-down arrow to choose "Source with Echo".
+- You could run a single line of your script where the cursor is located. You can do this by either hitting the "Run" button or by clicking Ctrl+Enter on Windows/OSX or Command+Enter on OSX. When you do execute the code this way, your cursor will automatically move to the next line of code, so you can execute your way through the code simply by clicking Ctrl+Enter repeatedly.
+- If you have saved the script to a file, you can also type in the `source` command in the console to source the script.
+
+Lets run this script using the "Source with Echo" button. Here is what the output looks like in my console: 
+
+```
+> source('~/.active-rstudio-document', echo=TRUE)
+
+> cat("Hello World")
+Hello World
+> 2+2
+[1] 4
+```
+
+Now, lets save this script as `helloworld.R` (".R" is the expected suffix for R scripts) and source it from the console:
+
+```{r}
+source("resources/helloworld.R", echo=TRUE)
+```
+
+Now lets try a slightly more useful script. In this script, I am going to do the following:
+
+- load in the politics dataset
+- re-code the gay marriage support variable into support for gay marriage vs. all else, and the religion variable as evangelical vs. all else
+- Create a two-way table (crosstab) of these two new variables. 
+- Calculate the odds ratio between the two new variables.
+
+I don't expect you to know how all of this code works yet. I just want to show you an example of a script that actually does something interesting. 
+
+```{r eval=FALSE}
+load("example_datasets/politics/politics.RData")
+politics$supportgmar <- politics$gaymarriage=="Support gay marriage"
+politics$evangelical <- politics$relig=="Evangelical Protestant"
+tab <- table(politics$supportgmar, politics$evangelical)
+tab
+prop.table(tab, 2)
+OR <- tab[1,1]*tab[2,2]/(tab[1,2]*tab[2,1])
+OR
+```
+
+If I run this script, I will get:
+
+```{r}
+source("resources/politics.R", echo=TRUE)
+```
+
+About 49% of non-evangelicals supported gay marriage while only 24% of evangelicals supported it. That works out to an odds ratio of 0.33, meaning that the odds of gay marriage support were about a third as high for evangelicals as for non-evangelicals. 
+
+Lets say I then wanted to change this script to broaden the definition of support for gay marriage to include civil unions. I could then just change the line of code creating the `supportgmar` variable to:
+
+```
+politics$supportgmar <- politics$gaymarriage=="Support gay marriage" | politics$gaymarriage=="Civil unions"
+```
+
+If I re-run this new script, I will get:
+
+```{r}
+source("resources/politics2.R", echo=TRUE)
+```
+
+The percentage of overall support gets higher, of course, but the odds ratio between evangelicals and everyone else stays about the same. 
+
+### Not Everything Goes Into Your Script
+
+You don't need to put every command into your script. The script should provide a narrative of your analysis (the part that you want to be easily reproducible), not a log of every single command you ran. Sometimes you may try out some exploratory commands or may just need to get some basic information about a variable. For example, in the script above, I first had to remember what the names were for the categories of the `gaymarriage` variable. To figure this out, I typed:
+
+```{r}
+table(politics$gaymarriage)
+```
+
+From there I could see that the category I wanted was called "Support gay marriage" and I could use that in my script. However, there was no need to put this command into my script because it wasn't producing anything that I needed to know or that was necessary for later commands in the script. 
+
+### Commenting for Sanity
+
+There is one big thing missing from the scripts listed above: comments! Comments are crucial for good script writing. Comments are lines in your script that will not be processed by R (or Stata). In R, you can create single line comments by using the pound sign (#). Anything after the pound sign will be ignored by R until a new line. You should use these comments to explain what the code is doing. You can also use them to help visually separate the script into sections for easier readability. Comments help you remember what you were doing when you come back to a project you haven't worked on for weeks or months. They are also useful for other people who might end up reading your code (co-authors, advisers, etc). Increasingly, academics are being asked to do more "open" research where we make our code available. As you write code, its useful to think of it as something that will eventually be seen by other people and thus needs to be well documented. 
+
+Here is the script from above, but now with some helpful commenting:
+
+```{r eval=FALSE}
+#################################################################
+# Aaron Gullickson
+# Program to analyze the differences in support for gay marriage
+# between evangelical christians and all those of other religious
+# affiliations
+#################################################################
+
+#### DATA ORGANIZATION ####
+
+#load the politics dataset. Note that this command will not work if 
+#you have the dataset loaded into a different directory. 
+load("example_datasets/politics/politics.RData")
+
+#dichotomize both the support for gay marriage and the religious variable
+politics$supportgmar <- politics$gaymarriage=="Support gay marriage"
+politics$evangelical <- politics$relig=="Evangelical Protestant"
+
+#### ANALYSIS ####
+
+#create a crosstab
+tab <- table(politics$supportgmar, politics$evangelical)
+tab
+
+#Distribution of support conditional on religion
+prop.table(tab, 2)
+
+#Calculate the odds ratio of support
+OR <- tab[1,1]*tab[2,2]/(tab[1,2]*tab[2,1])
+OR
+```
+
+Even if you don't understand what the code here is doing yet, you can at least get a sense of what it is supposed to be doing. Notice that I use multiple pound signs to draw attention to the header and larger sections. For a script this small, the division between DATA ORGANIZATION and ANALYSIS is probably overkill, but for larger scripts, this sectioning can be very useful in helping to easily distinguish different components of the analysis.
+
+One nice feature of RStudio is that if you surround your comments with at least four pound signs on either side, then the outline of your script will show these sections and you can navigate to them. You can also go to `Code > Insert Section` to add a section with a somewhat different look. 
+
+#### Don't Overcomment
+
+While commenting is necessary for good script writing, *more* commenting is not always better. The key issue is that you need to think of commenting as documentation of your code. If you change the code, you also need to change the documentation. If you change the code, but not the documentation, then you will actually make your code more confusing to other readers. **Only write documentation that you will actively maintain.**
+
+The most common error that novices make is to use comments to describe the results of their code. This is very bad practice, because as you make changes to your data and methods, these results are likely to change and if you don't update your comments, there will be a lack of alignment between your real results and your documentation of the results. Later in the term, we will learn a better way to separate out the reporting of results in a "lab notebook" fashion, from comments in scripts. 
