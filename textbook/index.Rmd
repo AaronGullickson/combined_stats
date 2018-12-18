@@ -1,0 +1,44 @@
+--- 
+title: "Statistical Analysis in Sociology"
+author: "Aaron Gullickson"
+date: "`r Sys.Date()`"
+knit: "bookdown::render_book"
+output: 
+  bookdown::pdf_book:
+    number_section: false
+  bookdown::gitbook:
+    split_by: "section+number"
+    number_section: false
+  bookdown::html_book:
+    split_by: "section+number"
+    number_section: false
+    toc: false
+#site: bookdown::bookdown_site
+documentclass: book
+#bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+#github-repo: rstudio/bookdown-demo
+description: "Textbook for Statistical Analysis for University of Oregon Sociology"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+load("../example_datasets/movies/movies.RData")
+load("../example_datasets/sex/sex.RData")
+load("../example_datasets/crimes/crimes.RData")
+load("../example_datasets/titanic/titanic.RData")
+load("../example_datasets/politics/politics.RData")
+load("../example_datasets/students/studentsCurrent.RData")
+load("../example_datasets/students/studentsamplingdist.RData")
+preston <- read.csv("../example_datasets/misc/preston.csv")
+election <- read.csv("../example_datasets/misc/ecofallacy.csv")
+library(pander) 
+```
+ 
+# Preface {-}
+
+This PDF combines all of the module sections on Canvas for Sociology 312 into a single document. 
