@@ -183,3 +183,47 @@ We are generally most interested in questions about the relationship or associat
 >- If I told you that in a sample of twenty people, brown-eyed individuals made $5 more an hour than people with other eye color, would you believe that I had found an important source of inequality? 
 >- Probably not, because with a sample that small, its possible to get unusual results like this just because of the sample you happened to draw. 
 >- Statistical inference is the technique of quantifying how uncertain we are about our statistical results. It allows us not only to summarize our data, but give a sense of how well we think that data might represent the larger population from which we drew our sample. 
+
+## Building Models
+<div class="footer">
+<body>Sociology 312, Understanding Data: What Can We Do With Data?</body>
+</div>
+
+In the last module of the course we will expand on what we have learned previously to build **statistical models** that can help us better understand relationships we observe in the data. 
+
+Statistical models allow us to examine relationships between multiple variables using more complex mathematical specifications. We use these models to address two types of questions: 
+
+>- Do I observe a relationship between two variables, even after controlling for potential confounders? 
+>- Does the relationship between two variables differ depending on the context of a third variable? 
+
+## The problem of confounders
+<div class="footer">
+<body>Sociology 312, Understanding Data: What Can We Do With Data?</body>
+</div>
+
+Confounders are variables that might account for the relationship between two other variables and thus produce a **spurious** non-causal relationship. Some real questions we might ask:
+
+>- Does the gender advantage in surviving the Titanic hold even after accounting for differences in gender and survival by passenger class? 
+>- Do racial differences in the probability of being shot by the police hold even after accounting for situational factors such as the type of violation, time of day, place of interaction? 
+>- Are differences in sexual frequency by marital status a product of age differences by marital status?
+
+## Interactions
+<div class="footer">
+<body>Sociology 312, Understanding Data: What Can We Do With Data?</body>
+</div>
+
+We can also go beyond simple statements about the association between two variables and begin to ask how the association between two variables might differ depending on the level or value of a third variable. Some real questions we might ask:
+
+>- Does the female advantage in survival on the Titanic get smaller or larger by the class of the passenger?
+>- Does the relationship between age and support for gay marriage differ by political party affiliation? 
+>- Does the effect of movie runtime on box office returns vary by the genre of the movie? 
+
+## Two views on using observational data
+<div class="footer">
+<body>Sociology 312, Understanding Data: What Can We Do With Data?</body>
+</div>
+
+Most of the data we use in the social sciences is **observational** rather than **experimental**. We observe what actually happens rather than manipulate "treatments" in order to observe a response. There are two different views of exactly what the use of statistics contributes to observational data analysis:
+
+>- **Pseudo-Experimental**: In this model of research, we can use statistical modeling to try to mimic the stronger causal claims of experimental research. This can be as simple as "controlling" for other variables to mimic random assignment of a treatment, to the use of "natural" experiments.
+>- **Formal Description**: In this model of research, we use statistical modeling to describe what we observe in the data in a formal, systematic, and replicable way. We derive expectations drawn from theory to show how the data are either consistent or inconsistent with certain views of a social process. This approach has more in common with qualitative forms of research in the social sciences than with the experimental approach.

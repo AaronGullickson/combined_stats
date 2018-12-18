@@ -63,8 +63,7 @@ We often think about the relationships we observe in data as being causally dete
 
 >- Two categorical variables: The **two-way table**
 >- Categorical variable and a quantitative variable: **mean differences**
->- Two quantitative variables: The **correlation coefficient** and the **bivariate OLS regression line**
->- Multiple quantitative and/or categorical variables: The **multivariate OLS regression model** (last module of the course)
+>- Two quantitative variables: The **correlation coefficient**
 
 # The Two-Way Table
 Measuring Association
