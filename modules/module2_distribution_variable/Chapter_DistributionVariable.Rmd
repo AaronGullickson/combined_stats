@@ -1,8 +1,8 @@
-#The Distribution of a Variable
+# The Distribution of a Variable
 
 ---
 
-##What is a Distribution? 
+## What is a Distribution? 
 
 We will hear the term **distribution** a lot during this class. When we think about the distribution of a variable, we are referring to how the different values of the variables are distributed across observations. This distribution gives us a sense of how much variation there is and what the most common values are for a given variable. Intuitively, we think about distributions in our personal life any time we think about how we "measure" up relative to everyone else on something (income, number of Facebook friends, GRE scores, etc.). We want to know where we "fall" in the distribution of these variables. 
 
@@ -10,9 +10,9 @@ A distribution can be represented graphically. However, the technique we use to 
 
 For quantitative variables, we can also calculate summary statistics that will give us information about the distribution, such as its center and spread. We will save those calculations for later modules. For this module, we will focus on graphical techniques. 
 
-###Looking at the distribution of a categorical variable
+### Looking at the distribution of a categorical variable
 
-####Calculating the frequency
+#### Calculating the frequency
 
 In order to graph the distribution of a categorical variable, we first need to calculate its frequency. The frequency is just the number of observations that fall into a given category of a categorical variable. We could, for example, count up the number of passengers who were in the various passenger classes on the Titanic. Doing so would give us the following:
 
@@ -35,7 +35,7 @@ There were 323 first class passengers, 277 second class passengers, and 709 thir
 table(titanic$pclass)
 ```
 
-####Frequency, proportion, and percent
+#### Frequency, proportion, and percent
 
 The frequency we just calculated is sometimes called the "absolute" frequency because it just provides the raw number of observations. It is typically more useful to represent this frequency in terms of proportions. Proportions go from 0-1 and give us the share of observations that fall into each category. We can calculate the proportion by simply dividing our frequency by the total number of observations:
 
@@ -71,7 +71,7 @@ pander(tab)
 
 24.7% of passengers were first class, 21.2% of passengers were second class, and 54.2% of passengers were third class. So, just over half of passengers were third class and the remaining passengers were fairly evenly split between first and second class.
 
-####Barplots and piecharts
+#### Barplots and piecharts
 
 Now that we have proportions/percents, we can use these values to construct a graphical display of the distribution. The **piechart** is a very common technique here. I am sure you have all seen examples of piecharts. In a piechart, you show each category's percentage as a slice of a pie. Here is the R code and output of a piechart for the passenger class variable: 
 
@@ -88,7 +88,7 @@ barplot(p, col="skyblue", las=1)
 
 Now your eye only has to work in one dimension to identify the relative size of each share. In this case, we can clearly see that the first class bar is higher than the second class bar. Barplots are almost always better at displaying distributions than piecharts.
 
-###Looking at the distribution of a quantitative variable
+### Looking at the distribution of a quantitative variable
 
 Barplots won't work for quantitative variables because quantitative variables don't have categories. However, we can do something quite similar with the **histogram**. 
 
@@ -231,11 +231,11 @@ text(180,22,labels=c("Return of the King"),cex=0.5)
 
 ---
 
-##Measuring the Center of a Distribution
+## Measuring the Center of a Distribution
 
 When we look at a distribution, we often can get an intuitive sense of where its "center" is. But what do we really mean by the term "center?" The notion of center often allows us to think about the value we expect a typical or "average" observation to have, but there are multiple ways of defining this center. In statistics, three different measures of center are used: the **mean**, **median**, and **mode**. 
 
-###The mean
+### The mean
 
 The mean is the measure most frequently referred to as the "average" although that term could apply to the median and mode as well. The mean is the **balancing point** of a distribution. Imagine trying to balance a distribution on your finger like a basketball. Where along the distribution would you place your finger to achieve this balance? This point is the mean. It is equivalent to the concept of "center of mass" from physics. 
 
@@ -284,7 +284,7 @@ mean(movies$TomatoMeter)
 
 We can see that the mean Tomato Meter of romantic movies in 2013 (51.1) were slightly above the mean for all the movies in our dataset (`r round(mean(movies$TomatoMeter),1)`), but not by much.
 
-###The median
+### The median
 
 The median is almost as widely used as the mean as a measure of center, for reasons I will discuss below. The median is the **midpoint** of the distribution. It is the point at which 50% of observations have lower values and 50% of the observations have higher values. 
 
@@ -313,7 +313,7 @@ median(movies$TomatoMeter)
 
 In this particular case, the mean (`r round(mean(movies$TomatoMeter),1)`) and median (`r round(median(movies$TomatoMeter),1)`) of the Tomato Meter produced very similar measures of center, but this isn't always the case as I will demonstrate below. 
 
-###The mode
+### The mode
 
 The mode is the least used of the three measures of center. In fact, it is so infrequently used that R does not even have a built-in function to calculate it. The mode is the **high point** or **peak** of the distribution. When you look at a distribution graphically, the mode is what your eye is drawn to as a measure of center. Calculating the mode however is much trickier. Simply speaking, the mode is the most common value in the data. However, when data are recorded down to very precise decimal levels, this can be a misleading number. Furthermore, there may be multiple "peaks" in the data and so speaking of a single mode can be misleading. 
 
@@ -326,7 +326,7 @@ hist(movies$TomatoMeter,
      main="Histogram of Tomato Meter")
 ```
 
-###Comparing the mean and median
+### Comparing the mean and median
 
 Why would the mean and median give different results? Remember that the mean defines the **balancing point** and the median defines the **midpoint**. If you have a perfectly symmetric distribution, then these two points are the same because you would balance the distribution at the midpoint. However, when the distribution is skewed in one direction or another, the mean and the median will be different. In order to maintain balance, the mean will be pulled in the direction of the skew. When you have heavily skewed distributions, this can lead to dramatically different values for the mean and median. 
 
@@ -367,11 +367,11 @@ In many cases, we are actually more interested in the median as a measure of "av
 
 ---
 
-##Percentiles and the Five Number Summary
+## Percentiles and the Five Number Summary
 
 In this section, we will learn about the concept of **percentiles**. Percentiles will allow us to calculate a **five number summary** of a distribution and introduce a new kind of graph for describing a distribution called the **boxplot**.
 
-###Percentiles
+### Percentiles
 
 We have already seen one example of a percentile. The median is the 50th percentile of the distribution. It is the point at which 50% of the observations are lower and 50% are higher. We can actually use this same logic to calculate other percentiles. We could calculate the 25th percentile of the distribution by finding the point where 25% of the observations are below and 75% are above. We could even calculate something like the 43rd percentile if we were so inclined. 
 
@@ -385,7 +385,7 @@ quantile(sex$age, p=c(.27,.57))
 
 27% of the sample were younger than 32 years of age and 57% of the sample were younger than 46 years of age. 
 
-###The five number summary
+### The five number summary
 
 We can split our distribution into quarters by calculating the minimum(0th percentile), the 25th percentile, the 50th percentile (the median), the 75th percentile, and the maximum (100th percentile). Collectively, these percentiles are known at the **quartiles** of the distribution (not to be confused with quantile) and are also described as the **five number summary** of the distribution. 
 
@@ -403,7 +403,7 @@ $$IQR=56-31=25$$
 
 So, the 25th and 75th percentile of age are separated by 25 years. 
 
-###Boxplots
+### Boxplots
 
 We can also use this five number summary to create another graphical representation of the distribution called the boxplot. Here is an example of a boxplot for the age variable from the sexual frequency data:
 
@@ -428,7 +428,7 @@ As an exercise, [use the slider to see different percentiles on both a histogram
 
 ---
 
-##Measuring the Spread of a Distribution
+## Measuring the Spread of a Distribution
 
 The second most important measure of a distribution is its spread. Spread indicates how far individual values tend to fall from the center of the distribution. As the figure below shows, two distributions can have the same center and general shape (in this case, a bell curve) but have very different spreads.
 
@@ -438,7 +438,7 @@ hist(rnorm(10000,0,1), breaks=60, col="red", xlim=c(-4,4), main="wide spread", x
 hist(rnorm(10000,0,0.5), breaks=30, col="red", xlim=c(-4,4), main="narrow spread", xlab="", ylab="", xaxt="n", yaxt="n")
 ```
 
-###Range and interquartile range
+### Range and interquartile range
 
 One of the simplest measures of spread is to calculate the **range**. The range is the distance between the highest and lowest value. Lets take a look at the range in the fare paid (in British pounds) for tickets on the Titanic. The `summary` command, will give us the information we need:
 
@@ -464,7 +464,7 @@ You can also use the `IQR` command in *R* to directly calculate the IQR.
 IQR(titanic$fare)
 ```
 
-###Variance and standard deviation
+### Variance and standard deviation
 
 The most common measure of spread is the **variance** and its derivative measurement, the **standard deviation**. Its so common in fact, that most people simply refer to the concept of "spread" as "variance." The variance can be defined as the "average squared distance to the mean." Of course, "squared distance" is a bit hard to think about, so we more commonly take the square root of the variance to get the standard deviation which gives us the "average distance to the mean." Imagine if you were to randomly pick one observation from your dataset and guess how far it would be from the mean. Your best guess would be the standard deviation. 
 

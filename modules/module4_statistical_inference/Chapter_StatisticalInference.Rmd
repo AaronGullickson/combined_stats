@@ -1,8 +1,8 @@
-#Statistical Inference
+# Statistical Inference
 
 ------
 
-##The Problem of Statistical Inference
+## The Problem of Statistical Inference
 
 So far, we have only been looking at measurements from our actual datasets. We examined both **univariate statistics** like the mean, median, and standard deviation, as well as **measures of association** like the mean difference, correlation coefficient and OLS regression line slope. We can use this measures to draw conclusions about our data. 
 
@@ -51,7 +51,7 @@ It is also important to keep in mind that statistical inference only works when 
 
 ------
 
-##The Concept of the Sampling Distribution
+## The Concept of the Sampling Distribution
 
 Lets say that you want to know the mean years of education of US adults. You implement a well-designed representative survey that samples 100 respondents from the USA. You ask people the simple question "how many years of education do you have?" You then calculate the mean years of education in your sample. 
 
@@ -63,7 +63,7 @@ This simple example involves three different kinds of distributions. Understandi
 
 The sampling distribution is much more abstract than the other two distributions, but is key to understanding statistical inference. When we draw a sample and calculate a sample statistic from this sample, we are in effect reaching into the sampling distribution and pulling out a value. Therefore, the sampling distribution give us information about how variable our sample statistic might be as a result of randomness in the sampling. 
 
-###Example: class height
+### Example: class height
 
 Lets treat our class of `r sum(!is.na(students$height))` students as a population that I would like to know something about. In this case, I would like to know the mean height of the class. In most cases, the population distribution is unknown but in this case, I know the height of all `r sum(!is.na(students$height))` students because of the surveys you all took at the beginning of the term. Here is the population distribution of height in our class:
 
@@ -140,7 +140,7 @@ Note that the mean of each sampling distribution is identical to the true popula
 
 Also note that the standard deviation of the sampling distributions gets smaller with increasing sample size. This is the mathematically way of seeing the shrinking of the spread that we observed graphically. In larger sample sizes, we are less likely to draw a sample mean far away from the true population mean. 
 
-###Central limit theorem and the normal distribution
+### Central limit theorem and the normal distribution
 
 The patterns we are seeing here are well known to statisticians. In fact, they are patterns that are predicted by the most important theorem in statistics, the **central limit theorem**. We won't delve into the technical details of this theorem. We can generally interpret the central limit theorem to say:
 
@@ -179,7 +179,7 @@ text(2.5, max(y)*0.05, label="99.7%", col="black", pos=3)
 
 The distribution is symmetric and bell shaped. The center of the distribution is shown  by the red dotted line. This center will always be at the true population mean, $\mu$. The area of the normal distribution also has a regularity that is sometimes referred to as the "68%,95%,99.7%" rule. Regardless of the actual variable, 68% of all the sample means will be within 68% of the true population mean, 95% of all the sample means will be within 95% of the true population mean, and 99.7% of all the sample means will be within three standard deviations of the mean. This regularity will become very helpful later on for making statistical inferences.
 
-####The standard error
+#### The standard error
 
 It is easy to get confused by the number of standard deviations being thrown around in this section. There are three standard deviations we need to keep track of to properly understand what is going on here. Each of these standard deviations is associated with one of the types of distributions I introduced at the beginning of this section. 
 
@@ -187,7 +187,7 @@ It is easy to get confused by the number of standard deviations being thrown aro
 2. $s$: the **sample standard deviation**. In our example, this would be the standard deviation of height from a particular sample of a given size from the class. This number can be calculated for the sample that you have, using the techniques we learned earlier in the class. 
 3. $\sigma/\sqrt{n}$: The **standard deviation of the sampling distribution of the sample mean**. We divide the population standard deviation $\sigma$ by the square root of the sample size. In general, we refer to the standard deviation of the sampling distribution as the **standard error**, for short. So remember that when I refer to the "standard error" I am using shorthand for the "standard deviation of the sampling distribution." 
 
-####Other sample statistics
+#### Other sample statistics
 
 In the example here, I have focused on the sample mean as the sample statistic of interest. However, the logic of the central limit theorem applies to several other important sample statistics of interest to us. In particular, the sampling distributions of:
 
@@ -200,7 +200,7 @@ all become normal as the sample size increases. Thus, this normal distribution b
 
 Note that the standard error formula $\sigma/\sqrt{n}$ only applies to the sampling distribution of sample means. Other sample statistics have different formulas for their standard errors, which I will introduce in the next section. 
 
-###What can we do with the sampling distribution?
+### What can we do with the sampling distribution?
 
 Now that we know the sampling distribution of the sample mean should be normally distributed, what can we do with that information? The sampling distribution gives us information about how we would expect the sample means to be distributed. This seems like it should be helpful in figuring out whether we got a value close to the center or not. However, there is a catch. We don't know either $\mu$, the center of this distribution or $\sigma$ which we need to calculate its standard deviation. Thus, we know theoretically what it should look like but we have no concrete numbers to determine its actual shape. 
 
@@ -215,7 +215,7 @@ I will discuss these two different methods in the next two sections.
 
 ------
 
-##Confidence Intervals
+## Confidence Intervals
 
 Remember from the previous section that 95% of all the possible sample means will be within 1.96 standard errors of the true population mean $\mu$. Therefore: 
 
@@ -265,7 +265,7 @@ The blue line gives the true population mean. The dots represent the sample mean
 
 We refer to this interval as the **95% confidence interval**. Of course, in practice, we only construct one interval on the sample that we have. We use this interval to give a range of values that we feel "confident" will contain the true population mean. 
 
-###What do we mean by "confident?"
+### What do we mean by "confident?"
 
 The term "confident" is a little ambiguous. Given my statements above, it might be tempting to interpret the 95% confidence interval to mean that there is a 95% probability that the true population mean is within the interval. This interpretation seems intuitive and straightforward, but that interpretation is incorrect according to the classic approach to inference. The problem here is subtle, but from the classical viewpoint, probability is an **objective** phenomenon that relates to the outcomes of future processes over the long run. From this viewpoint, we cannot express our **subjective** uncertainties about numbers in terms of probabilities.The population mean is a single static number. This leads us to a sort of [yoda-like](https://www.youtube.com/watch?v=BQ4yd2W50No) statement: The population mean is either in your interval or it is not. There is no probability. 
 
@@ -273,7 +273,7 @@ This is why we use a more neutral term like "confidence." If we want to be long-
 
 If this all seems a bit confusing, you are perfectly normal. As I said, this is the classic view of probability. Intuitively, people often think of uncertainty in probabilistic terms (e.g. what are the odds your team will win the game?). Many contemporary statisticians would in fact agree that it is perfectly okay to express subjective uncertainty as a probability. But, I still need to let you know that from the classic approach, interpreting your confidence interval as a probability statement is a no-no. 
 
-###Calculating the confidence interval for the sample mean
+### Calculating the confidence interval for the sample mean
 
 Okay, lets try calculating a confidence interval. Lets try this out for age in the politics dataset. The formula is:
 
@@ -313,7 +313,7 @@ xbar-t*se
 
 We are 95% confident that the  mean age among all US adults is between 49.01 and 49.87 years of age. As you can see, the large sample of nearly 6,000 respondents produces a very tight confidence interval. 
 
-###Calculating the confidence interval for other sample statistics
+### Calculating the confidence interval for other sample statistics
 
 As noted in the previous section, the sampling distribution of other sample statistics such as proportions, mean differences, and regression slopes is also normally distributed in large enough samples. This means that we can use the same approach to construct confidence intervals for other sample statistics. The general form of the confidence interval is:
 
@@ -331,7 +331,7 @@ Regression Slope  $\frac{\sqrt{\sum (y_i-\hat{y}_i)^2/(n-1)}}{\sum (x_i-\bar{x})
 
 Some of these formulas look real nasty. Luckily, we won't spend a lot of time calculating these standard errors by hand. For the regression slope case, where we will spend most of our time in the next module, the SE is already calculated internally by the `lm` command.
 
-###Example with proportions
+### Example with proportions
 
 The course slides cover examples of the confidence interval for mean differences and regression slopes. Here I will show how to calculate the 95% confidence interval for a proportion. As an example, lets use the proportion of respondents who do not believe in anthropogenic climate change. In our politics sample, we get:
 
@@ -372,13 +372,13 @@ We are 95% confident that the true percentage of climate change deniers in the t
 
 ------
 
-##Hypothesis Tests
+## Hypothesis Tests
 
 In social scientific practice, hypothesis testing is far more common than confidence intervals as a technique of statistical inference. Both techniques are fundamentally derived from the sampling distribution and produce similar results, but the methodology and interpretation of results is very different. 
 
 In hypothesis testing, we play a game of make believe. Remember that the fundamental issue we are trying to work around is that we don't know the value of the true population parameter and thus we don't know where the center is for the sampling distribution of the sample statistic. In hypothesis testing, we work around this issue by boldly asserting what we think the true population parameter. We then test whether the data that we got are reasonably consistent with that assertion. 
 
-###Example: Coke winners
+### Example: Coke winners
 
 Lets take a fairly straightforward example. Coca-Cola used to run promotions where a certain percentage of bottle caps were claimed to win you another free coke. In one such promotion, when I was in graduate school, Coca-Cola ran a promotion where they claimed that 1 in 12 bottles were winners. If this is true, then 8.3% (1/12=0.083) of all the coke bottles in every grocery store and mini mart should be winners. 
 
@@ -473,7 +473,7 @@ How low does the p-value need to be in order to reject it? There is no right ans
 
 No reasonable scientist, however, would reject the null hypothesis with a p-value of 24% as we have in our Coke case. Nearly 1 in 4 samples of size 100 would produce a sample proportion this different  from the assumed true proportion of 8.3% just by random chance. I therefore do not have sufficient evidence to reject the null hypothesis that Coke is telling the truth. Note that I have not proved that Coke is telling the truth. I have only failed to produce evidence that they are lying. 
 
-###The general procedure of hypothesis testing
+### The general procedure of hypothesis testing
 
 The general procedure of hypothesis testing is as follows:
 
@@ -482,7 +482,7 @@ The general procedure of hypothesis testing is as follows:
 3. Calculate the **p-value** for the test statistic. The p-value is the probability of getting a sample statistic this far or farther (in absolute value) from the true population parameter, *assuming the null hypothesis is true*. 
 4. If the p-value is below some threshold (typically 0.05), **reject the null hypothesis**. Otherwise, **fail to reject the null hypothesis**. 
 
-####Interpreting p-values correctly
+#### Interpreting p-values correctly
 
 P-values are widely misunderstood in practice. Studies have been done of practicing researchers across different disciplines where these researchers were asked to interpret a p-value from a multiple choice question and the majority get it wrong. Therefore, don't feel bad if you are having trouble understanding a p-value. You are in good company! Nonetheless, proper interpretation of a p-value is critically important for our understanding of what a hypothesis test does.
 
@@ -492,11 +492,11 @@ Correctly interpreted, **the p-value is a probability statement about the data, 
 
 The reason why everyone (including you and me) struggles with this is that our brains want it to be the other way around. Ultimately by rejecting or failing to reject we are making statements about whether we believe the hypothesis or not, but we are not doing that directly by a probability statement about the hypothesis but rather a probability statement about the likelihood of the data given the hypothesis. 
 
-###Hypothesis tests of relationships
+### Hypothesis tests of relationships
 
 The hypothesis tests that we care the most about in the sciences are hypothesis tests about relationships between variables. We want to know whether the association we are observing in the sample is true in the population. In all of these cases, our null hypothesis is that there is no association, and we want to know whether the association we observe in the sample is strong enough to reject this null hypothesis of no association. We can do hypothesis tests of this nature for both mean differences and regression slopes. 
 
-####Example: mean differences
+#### Example: mean differences
 
 Lets look at differences in mean income (measured in $1000) by religion in the politics dataset.
 
@@ -535,7 +535,7 @@ The t-statistic of 0.44 here is not very large. I am only 0.44 standard errors a
 
 In a sample of this size, there is an 66% chance of observing a mean income difference of $1,607 or more between Catholics and members of other religions, just by sampling error, assuming that there is no difference in income in the population. Therefore, I **fail to reject the null hypothesis** that Catholics and members of other religions make the same income. 
 
-####Example: regression slopes
+#### Example: regression slopes
 
 Lets look at the relationship between sexual frequency and age using an OLS regression line. The `summary` command will give me all the information I need for the hypothesis test.
 
@@ -562,7 +562,7 @@ However, note that this number was also already calculated in the "t value" colu
 
 Note that this number is also already calculated in the final column of the output above. But what is this number? It looks kind of weird. This number is so small that *R* is reporting it in scientific notation. To interpret it correctly, we need to move the decimal 80 places to the left. In other words, the probability of getting a regression slope this large or larger in the sample, assuming the true population slope is zero, is incredibly tiny and therefore very, very unlikely. Thus, I **reject the null hypothesis** and conclude that age does have a negative association with sexual frequency in the population. 
 
-####Statistical Significance
+#### Statistical Significance
 
 When a researcher is able to reject the null hypothesis of "no association," the result is said to be **statistically significant**. This is a somewhat unfortunate phrase that is sometimes loosely interpreted to indicate that the result is "important" in some vague scientific sense. 
 

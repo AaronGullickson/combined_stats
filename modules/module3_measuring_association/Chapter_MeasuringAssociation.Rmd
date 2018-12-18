@@ -1,8 +1,8 @@
-#Measuring Association
+# Measuring Association
 
 ------
 
-##The Two-Way Table
+## The Two-Way Table
 
 The **two-way table** (also known as a **cross-tabulation** or **crosstab**) gives the joint distribution of two categorical variables. Lets use our politics dataset to construct a two-way table of belief in anthropogenic climate change by political party:
 
@@ -39,7 +39,7 @@ margin.table(tab,2)
 
 The two-way table provides us with evidence about the association between two categorical variables. To understand what the association looks like, we will learn how to calculate **conditional distributions**. 
 
-###Conditional distributions
+### Conditional distributions
 
 To this point, we have learned about the **joint** and **marginal** distributions in a two-way table. In order to look at the relationship between two categorical variables, we need to understand a third kind of distribution: the **conditional distribution**. The conditional distribution is the distribution of one variable conditional on being in a certain category of the other variable. In a two-way table, there are always two ways to calculate a conditional distribution. In our case, we could look at the distribution of climate change belief conditional on party affiliation, or we could look at the distribution of party affiliation conditional on climate change belief. Both of these distributions really give us the same information about the association, but sometimes one way is more intuitive to understand. In this case, I am going to start with the former case and calculate the distribution of climate change belief conditional on party affiliation.
 
@@ -179,11 +179,11 @@ Note, however, that the information here is the same because the 0.21 here is ex
 
 ------
 
-##Mean Differences
+## Mean Differences
 
 Measuring association between a quantitative and categorical variable is fairly straightforward. We want to look for differences in the distribution of the quantitative variable at different categories of the categorical variables. For example, if we were interested in the gender wage gap, we would want to compare the distribution of wages for women to the distribution of wages for men. There are two ways we can do this. First, we can graphically examine the distributions using the techniques we have already developed, particularly the boxplot. Second, we can compare summary measures like the mean across categories.
 
-###Graphically examining differences in distributions
+### Graphically examining differences in distributions
 
 We could compare entire histograms of the quantitative variable across different categories of the categorical variable, but this is often too much information. A cleaner method is to use **comparative boxplots**. Comparative boxplots construct boxplots of the quantitative variable across all categories of the categorical variable and plot them next to each other for easier comparison. Here is an example looking at differences in movie runtime across different movie genres.
 
@@ -197,7 +197,7 @@ Comparative boxplots are useful because they allow us to easily compare differen
 
 However, the boxplot also reveals additional information on the spread of runtimes for each genre. This is easiest to see by comparing the height of the boxes (the interquartile range) across genres. In particular, we can see that scifi/fantasy, action, and dramas have the largest variation in movie runtime, while horror and animated movies have very small variation. Clearly, there is more consensus about the appropriate length of horror and animated movies, than there is about action, drama, and scifi/fantasy movies. 
 
-###Comparing differences in the mean
+### Comparing differences in the mean
 
 We can also establish a relationship by looking at differences in summary measures. Implicitly, we are already doing this in the comparative boxplot when we look at the median bars across categories. However, in practice it is more common to compare the mean of the quantitative variable across different categories of the categorical variable. In *R*, you can get the mean of one variable at different levels of a categorical variable using the `tapply` command like so:
 
@@ -225,7 +225,7 @@ Action movies are, on average, 15 minutes longer than horror movies.
 
 ------
 
-##Scatterplot and Correlation Coefficient
+## Scatterplot and Correlation Coefficient
 
 The techniques for looking at the association between two quantitative variables are more developed than the other two cases, so we will spend more time on this topic. Additionally, the major approach here of ordinary least squares regression turns out to be a very flexible, extendable method that we will build on later in the term.
 
@@ -233,7 +233,7 @@ When examining the association between two quantitative variables, we usually di
 
 The language of dependent vs. independent variable is causal, but its important to remember that we are only measuring the association. That association is the same regardless of which variable we set as the dependent and which we set as the independent. Thus, the selection of the dependent and independent variable is more about which way it more intuitively makes sense to interpret our results.
 
-###The scatterplot
+### The scatterplot
 
 We can examine the relationship between two quantitative variables by constructing a **scatterplot**. A scatterplot is a two-dimensional graph. We put the independent variable on the x-axis and the dependent variable on the y-axis. For this reason, we often refer generically to the independent variable as x and the dependent variable generically as y. 
 
@@ -279,7 +279,7 @@ Third, what is the **strength** of the relationship. If all the points fall exac
 
 Fourth, are there **outliers**? We are particularly concerned about outliers that go against the general trend of the data, because these may exert a strong influence on our later measurements of association. In this case, there are two clear outliers, Washington DC and Utah. Washington DC is an outlier because it has an extremely high level of violent crime relative to the rest of the data. Its median age tends to be on the younger side, so its placement is not inconsistent with the general trend. Utah is an outlier that goes directly against the general trend because it has one of the lowest violent crime rates and the youngest populations. This is, of course, driven by Utah's heavily Mormon population, who both have high rates of fertility (leading to a young population) and whose church communities are able to exert a remarkable degree of social control over these young populations.
 
-####Constructing scatterplots in *R*
+#### Constructing scatterplots in *R*
 
 You can construct scatterplots in *R* with the `plot` command. At a very basic level, you can just feed in the independent and dependent variables:
 
@@ -322,7 +322,7 @@ plot(jitter(sex$educ,5), jitter(sex$sexf,50),
 
 In this case, because of the large number of observations we still have a lot of overplotting. 
 
-###The correlation coefficient
+### The correlation coefficient
 
 We can measure the association between two quantitative variables with the correlation coefficient, *r*. The formula for the correlation coefficient is:
 
@@ -400,7 +400,7 @@ There are some important cautions when using the correlation coefficient. First,
 
 ------
 
-##The OLS Regression Line
+## The OLS Regression Line
 
 Lets take another look at the scatterplot we constructed in the previous section that showed the relationship between median age and violent crime rates:
 
@@ -417,7 +417,7 @@ abline(lm(Violent~MedianAge, data=crimes))
 
 Notice that I now have a line plotted through those points. When you were trying to determine the direction of the relationship many of you were probably imagining a line going through the points already. Of course, if we just tried to "eyeball" the best line, we would get many different results. The line I have graphed above, however, is the best fitting line, at least according to some reasonable criteria. It is the best-fitting line because it minimizes the total distance from all of the points collectively to the line. This line is called the **ordinary least squares regression line** ( or OLS regression line, for short) and it is the basis for the most used statistical technique in the social sciences. This fairly simply concept of fitting the best line to a set of points on a scatterplot is the workhorse of social science statistics.
 
-###The Formula for a Line
+### The Formula for a Line
 
  Remember the basic formula for a line in two-dimensional space? In algebra, you probably learned something like this:
 
@@ -441,7 +441,7 @@ We would interpret our numbers as follows. The model predicts that a one-year in
 
 There is a lot to digest in these interpretations and I want to return to them in detail, but first I want to address a more basic question. How did I know that these are the right numbers for the best-fitting line? 
 
-###Calculating the Best-Fitting Line
+### Calculating the Best-Fitting Line
 
 The slope and intercept of the OLS regression line are determined based on addressing one simple criteria: minimize the distance between the actual points and the line. More formally, we choose the slope and intercept that produce the **minimum sum of squared residuals (SSR)**.
 
@@ -495,11 +495,11 @@ mean(crimes$Violent)-slope*mean(crimes$MedianAge)
 
 We can also estimate the OLS regression line using the `lm` command, which I describe below, but first lets turn to the issue of interpretation. 
 
-###Interpeting Slopes and Intercepts
+### Interpeting Slopes and Intercepts
 
 Learning to properly interpret slopes and intercepts (especially slopes) is the number one most important thing you will learn all term, because of how common the use of OLS regression is in social science statistics. You simply cannot pass the class unless you can interpret these numbers. So take the time to be careful in interpretation here. 
 
-####Interpreting Slopes
+#### Interpreting Slopes
 
 In abstract terms, the slope is always the predicted change in $y$ for a one unit increase in $x$. However, this abstract definition will simply not do when you are dealing with specific cases. You need to think about the units of $x$ and $y$ and interpret the slope in concrete terms. There are also a few other caveats to consider.
 
@@ -542,7 +542,7 @@ The slope is 0.41. Runtime is measured in minutes. The tomato meter is the perce
 
 Longer movies tend to have higher ratings. We may rightfully question the assumption of linearity for this relationship however. It seems likely that if a movie can become too long, so its possible the relationship here may be non-linear. We will explore ways of modeling that potential non-linearity later in the term.
 
-####Interpreting Intercepts
+#### Interpreting Intercepts
 
 Intercepts give the predicted value of $y$ when $x$ is zero. Again you should never interpret an intercept in these abstract terms but rather in concrete terms based on the unit scale of the variables involved. What does it mean to be zero on the $x$ variable? 
 
@@ -597,7 +597,7 @@ Its also possible to re-center an independent variable in the `lm` command witho
 coef(lm(Violent~I(MedianAge-35), data=crimes))
 ```
 
-###How good is $x$ as a predictor of $y$?
+### How good is $x$ as a predictor of $y$?
 
 If I selected a random observation from the dataset and asked you to predict the value of $y$ for this observation, what value would you guess? Your best guess would be to guess the mean of y because this is the case where your average error would be smallest. This error is defined by the distance between the mean of y and the selected value, $y_i-\bar{y}$. 
 
@@ -653,7 +653,7 @@ cor(crimes$MedianAge, crimes$Violent)^2
 ```
 About 9% of the variation in violent crime rates across states can be accounted for by variation in the median age across states.  
 
-###Using the `lm` command to calculate OLS regression lines in *R*
+### Using the `lm` command to calculate OLS regression lines in *R*
 
 I want to say a few words about using the `lm` (for "linear model") command to calculate the OLS regression line. We could just use the given formulas to calculate the slope and intercept in *R*, as I showed above with the crime example. However, the `lm` command will become particularly useful later in the term when we extend this basic OLS regression line to more advanced "models."
 
@@ -699,7 +699,7 @@ plot(crimes$Unemployment, crimes$Property,
 abline(model1)
 ```
 
-###Regression Line Cautions
+### Regression Line Cautions
 
 OLS regression models can be very useful for understanding relationships, but they do have some important limitations that you should be aware of when you are doing statistical analysis. 
 
@@ -709,7 +709,7 @@ There are three major limitations/cautions to be aware of when using OLS regress
 2. Outliers can sometimes exert heavy influence on estimates of the relationship
 4. Don't extrapolate beyond the scope of the data.
 
-####Linearity
+#### Linearity
 
 By definition, an OLS regression line is a straight line. If the underlying relationship between x and y is non-linear, then the OLS regression line will do a poor job of measuring that relationship.
 
@@ -742,7 +742,7 @@ Clearly a straight line is a poor fit. We systematically overestimate life expec
 
 Its possible, in some circumstances, to correct for this problem of non-linearity but we will not explore those options in this class. For now, its just important to be aware of the problem and if you see clear non-linearity then you should question the use of an OLS regression line. 
 
-####Outliers and Influential Points
+#### Outliers and Influential Points
 
 An outlier is an **influential point** if removing this observation from the dataset substantially changes the slope of the OLS regression line. You can try this out in [this exercise](https://aarongullickson.shinyapps.io/influentialpoints) on the crime data by clicking on points to remove them. Note how much the line changes when you remove a point. (You can click on a point a second time to add it back again).
 
@@ -754,7 +754,7 @@ In our case, there is no legitimate reason to remove Utah, but there probably is
 
 In large datasets (1000+ observations), its unusual that a single point or even a small cluster of points will exert much influence on the shape of the line. The concern about influential points is mostly a concern in small datasets like the crime dataset. 
 
-####Thou Doth Extrapolate Too Much
+#### Thou Doth Extrapolate Too Much
 
 Its dangerous enough to assume that a linear relationship holds for your data (see the first point in this module). Its doubly dangerous to assume that this linear relationship holds beyond the scope of your data. Lets take the relationship between sexual frequency and age. We saw in the previous module that the slope here is -1.3 and the intercept is 108. The intercept itself is outside the scope of the data because we only have data on the population 18 years and older. It would be problematic to make predictions about the sexual frequency of 12 year olds, let alone zero-year olds. 
 
