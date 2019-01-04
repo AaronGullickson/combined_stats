@@ -560,7 +560,7 @@ We are 95% confident that the true mean property crime rate across states is bet
 
 It doesn't actually make a lot of sense to calculate a confidence interval for this dataset, because the crime data are not a sample. We have all 50 states, so there is no larger population to which we want to infer. The mean crime rate across states is the true population value already.
 
-The movie, crime, and titanic data all share this feature that they are not samples that we can infer to larger populations. The sexual frequency and politics data, however, are both samples of the US population. 
+The movie, crime, and titanic data all share this feature that they are not samples that we can infer to larger populations. The sexual frequency, politics, and Add Health data, however, are all samples of the US population. 
 
 ## Example: Sexual frequency {.smaller}
 <div class="footer">

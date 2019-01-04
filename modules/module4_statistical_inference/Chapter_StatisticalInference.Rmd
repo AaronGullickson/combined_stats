@@ -194,7 +194,8 @@ In the example here, I have focused on the sample mean as the sample statistic o
 1. means
 2. proportions
 3. mean differences
-4. regression slopes
+4. proportion differences
+5. correlation coefficients
 
 all become normal as the sample size increases. Thus, this normal distribution becomes critically important in making statistical inferences. 
 
@@ -321,54 +322,181 @@ $$(sample statistic) \pm t*(standard error)$$
 
 In order to do this for any of the above sample statistics, we only need to know how to calculate that sample statistic's standard error and the degrees of freedom used to look up the t-statistic for that sample statistic. Here is a useful cheat sheet of those formulas:
 
+Type                     SE                                                                                df for $t$
+------                   ------                                                                            ------
+Mean                     $s/\sqrt{n}$                                                                      $n-1$
+Proportion               $\sqrt\frac{\hat{p}*(1-\hat{p})}{n}$                                              $n-1$
+Mean Difference          $\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}$                                      min($n_1-1$,$n_2-1$)
+Proportion Difference    $\sqrt{\frac{\hat{p}_1*(1-\hat{p}_1)}{n_1}+\frac{\hat{p}_2*(1-\hat{p}_2)}{n_2}}$  min($n_1-1$,$n_2-1$)
+Correlation Coefficient  $\sqrt{\frac{1-r^2}{n-2}}$                                                        $n-2$
 
-Type              SE                                                                  df for $t$
-------            ------                                                              ------
-Mean              $s/\sqrt{n}$                                                        $n-1$
-Proportion        $\sqrt\frac{\hat{p}*(1-\hat{p})}{n}$                                $n-1$
-Mean Difference   $\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}$                        min($n_1-1$,$n_2-1$)
-Regression Slope  $\frac{\sqrt{\sum (y_i-\hat{y}_i)^2/(n-1)}}{\sum (x_i-\bar{x})^2}$  $n-2$
-
-Some of these formulas look real nasty. Luckily, we won't spend a lot of time calculating these standard errors by hand. For the regression slope case, where we will spend most of our time in the next module, the SE is already calculated internally by the `lm` command.
+I know some of that math might look intimidating but I will go through an example of each case below to show you how it works for each case. 
 
 ### Example with proportions
 
-The course slides cover examples of the confidence interval for mean differences and regression slopes. Here I will show how to calculate the 95% confidence interval for a proportion. As an example, lets use the proportion of respondents who do not believe in anthropogenic climate change. In our politics sample, we get:
+As an example, lets use the proportion of respondents who do not believe in anthropogenic climate change. In our politics sample, we get:
 
 ```{r}
 table(politics$globalwarm)
-1814+4100
-1814/5914
+n <- 1181+3057
+p_hat <- 1181/n
+n
+p_hat
 ```
 
-About 31% of the respondents in our sample are climate change deniers. What can we conclude about the proportion in the US population? First, lets figure out the t-statistic. We use the same $n-1$ for degrees of freedom:
+About 27.9% of the respondents in our sample are climate change deniers. What can we conclude about the proportion in the US population? First, lets figure out the t-statistic. We use the same $n-1$ for degrees of freedom:
 
 ```{r}
-qt(0.975, 5914-1)
+t_stat <- qt(0.975, n-1)
+t_stat
 ```
 
 Our sample is large enough that we are basically using 1.96. Now we need to calculate the standard error. The formula from above is:
 
 $$\sqrt{\frac{\hat{p}*(1-\hat{p})}{n}}$$
 
-The term $hat{p}$ is the standard way to represent the sample proportion, which in this case is 0.306. So, our formula is:
+The term $hat{p}$ is the standard way to represent the sample proportion, which in this case is 0.279. So, our formula is:
 
-$$\sqrt{\frac{0.3067*(1-0.3067)}{5914}}$$
+$$\sqrt{\frac{0.279*(1-0.279)}{4238}}$$
 
 We can calculate this in *R*:
 
 ```{r}
-sqrt(0.3067*(1-0.3067)/5914)
+se <- sqrt(p_hat*(1-p_hat)/n)
+se
 ```
 
 We now have all the pieces to construct the confidence interval:
 
 ```{r}
-0.3067+1.96*0.00599621
-0.3067-1.96*0.00599621
+p_hat+t_stat*se
+p_hat-t_stat*se
 ```
 
-We are 95% confident that the true percentage of climate change deniers in the the US population is between 29.5% and 31.8%. 
+We are 95% confident that the true percentage of climate change deniers in the the US population is between 26.5% and 29.2%. 
+
+### Example with mean differences
+
+using our Add health data, what is the mean difference in popularity (number of friend nominations) between frequent smokers and those who do not smoke frequently? 
+
+```{r}
+tab <- tapply(addhealth$indegree, addhealth$smoker, mean)
+tab
+mean_diff <- 4.782148 - 4.509636
+mean_diff
+```
+
+In our sample data, frequent smokers had 0.273 more friends on average than those who did not smoke frequently. What is the confidence interval for that value in the population? We start by calculating the t-statitic for this confidence interval. We use the size of the smaller group minus one for the degrees of freedom.
+
+```{r}
+table(addhealth$smoker)
+n1 <- 3736
+n2 <- 661
+t_stat <- qt(.975, n2-1)
+t_stat
+```
+
+The value is pretty close to 1.96 but a little bigger. Now we need to calculate the standard error. The formula is: 
+
+$$\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}$$
+We already have $n_1$ and $n_2$, so we just need to get the standard deviation of friend nominations for the two groups to get $s_1$ and $s_2$. We can do this with another tapply command, but changing from `mean` to `sd` in the third argument.
+
+```{r}
+tapply(addhealth$indegree, addhealth$smoker, sd)
+s1 <- 3.65865
+s2 <- 3.869584
+se <- sqrt(s1^2/n1+s2^2/n2)
+se
+```
+
+Now we have all the pieces to put together the confidence interval:
+
+```{r}
+mean_diff - t_stat*se
+mean_diff + t_stat*se
+```
+We are 95% confident that in the population of US adolescents, those who smoke frequently have between 0.05 fewer to 0.59 more friend nominations, on average, than those who do not smoke frequently. Note that because our confidence interval contains both negative and positive value, we cannot be confident about whether smoking is truly associated with having more or less friends. The direction of the relationship between the two variables is uncertain.
+
+### Example with proportion differences
+
+Lets continue to use the Add Health data. Do we observe a gender difference in smoking behavior in our sample?
+
+```{r}
+prop.table(table(addhealth$smoker, addhealth$sex), 2)
+p_hat_f <- 0.1456
+p_hat_m <- 0.1555
+p_hat_diff <- p_hat_m-p_hat_f
+p_hat_diff
+```
+
+In our sample, about 14.6% of girls were frequent smokers and about 15.6% of boys were frequent smokers. The percentage of boys who smoke is about 1% higher than the percentage of girls. Do we think this moderate difference in the sample is true in the population? 
+
+Lets start again by calculating the appropriate t-statistic for our confidence interval. We use the same procedure as for mean differences above, choosing the size of the smaller group for the degrees of freedom. However, its important to note that our groups are now boys and girls, not smokers and non-smokers.
+
+```{r}
+table(addhealth$sex)
+n_f <- 2307
+n_m <- 2090
+t_stat <- qt(.975, n_m-1)
+t_stat
+```
+
+Now we can calculate the standard error. The formula is:
+
+$$\sqrt{\frac{\hat{p}_1*(1-\hat{p}_1)}{n_1}+\frac{\hat{p}_2*(1-\hat{p}_2)}{n_2}}$$
+
+That looks like a lot, but we just have to focus on pluggin in the right values in R:
+
+```{r}
+se <- sqrt((p_hat_f*(1-p_hat_f)/n_f)+(p_hat_m*(1-p_hat_m)/n_m))
+se
+```
+
+Now we have all the parts to calculate the confidence interval:
+
+```{r}
+p_hat_diff - t_stat*se
+p_hat_diff + t_stat*se
+```
+
+We are 95% confident that in the population of US adolescents, between 1.1% fewer to 3.1% more boys smoke frequently than girls. As above, because our confidence interval includes both negative and positive values, we are not very confident at all about whether boys or girls smoke more frequently. 
+
+### Example with correlation coefficient
+
+Lets stick with the Add Health data. What is the correlation between GPA and the number of friend nominations that a student receives?
+
+```{r}
+r <- cor(addhealth$pseudoGPA, addhealth$indegree)
+r
+```
+
+In our sample, there is a moderately positive correlation between a student's GPA and the number of friend nominations that a student receives. What is our confidence interval for the population? 
+
+For the t-statistic, we use $n-2$ for the degrees of freedom:
+
+```{r}
+n <- nrow(addhealth)
+t_stat <- qt(.975, n-2)
+```
+
+For the standard error, the formula is:
+
+$$\sqrt{\frac{1-r^2}{n-2}}$$
+This is straightforward to calculate in R:
+
+```{r}
+se <- sqrt((1-r^2)/(n-2))
+se
+```
+
+Now we have all the parts we need to calculate the confidence interval:
+
+```{r}
+r - t_stat*se
+r + t_stat*se
+```
+
+We are 95% confident that the true correlation coefficient between GPA and friend nominations in the population of US adolescents is between 0.139 and 0.198. While there is some difference in the strength of that relationship, we are pretty confident that the correlation is moderatly positive.
 
 ------
 
