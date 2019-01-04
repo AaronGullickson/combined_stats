@@ -1,5 +1,5 @@
 library(haven)
-politics <- read_dta("anes_timeseries_2016.dta")
+politics <- read_dta("anes_timeseries_2016_dta/anes_timeseries_2016.dta")
 
 
 
@@ -131,7 +131,11 @@ politics$gaymarriage <- factor(ifelse(politics$V161231<0, NA, politics$V161231),
                                ordered=TRUE)
 table(politics$V161231, politics$gaymarriage, exclude=NULL)
 
-
+## Transgender bathrooms
+politics$trans_bath <- factor(ifelse(politics$V161228<0, NA, politics$V161228),
+                              levels=1:2,
+                              labels=c("No","Yes"))
+table(politics$V161228, politics$trans_bath, exclude=NULL)
 
 # Finalize Dataset --------------------------------------------------------
 
