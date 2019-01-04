@@ -199,6 +199,10 @@ When reading this table and others like it, keep the following issues in mind:
 5. Within each cell with numbers listed there is a lot going on. However, at this point we are only interested in the main number listed at the top. This number is the slope (or intercept in the case of the "Constant" row). We will learn about the number in parenthesis and all those asterisks in the next module. 
 6. At the bottom, you typically get a number of summary measures of the model. The only two we care about are the number of observations and the $R^2$ of the model.
 
+#### Inferential Statistics in Regression Model Tables
+
+In that module I said that we would cover how to interpret the numbers in parenthesis and the asterisks in the next module. We now have the knowledge to do so. The number in parenthesis is the standard error for each slope in the model. You could use this standard error and the slope estimate above it to calculate t-statistics and p-values exactly. However, the asterisks give you an easy visual short cut to determine the rough size of the p-value. These asterisks indicate if the p-value is below a certain level, as shown in the notes at the bottom. The cut-offs of 0.05, 0.01, and 0.001 used here are pretty standard for the discipline. So an asterisks generally means that the result is "statistically significant." However, its important to keep in mind as noted above that these cut-offs are ultimately arbitrary and should never be confused with the substantive size of the effect itself. 
+
 ------
 
 ## Including Categorical Variables as Predictors

@@ -663,32 +663,78 @@ The t-statistic of 0.44 here is not very large. I am only 0.44 standard errors a
 
 In a sample of this size, there is an 66% chance of observing a mean income difference of $1,607 or more between Catholics and members of other religions, just by sampling error, assuming that there is no difference in income in the population. Therefore, I **fail to reject the null hypothesis** that Catholics and members of other religions make the same income. 
 
-#### Example: regression slopes
+#### Example of proportion differences
 
-Lets look at the relationship between sexual frequency and age using an OLS regression line. The `summary` command will give me all the information I need for the hypothesis test.
+Lets look at the difference in smoking behavior between white and black students in the Add Health data. Our null hypothesis is:
 
-```{r}
-model <- lm(sexf~age, data=sex)
-summary(model)$coef
-```
-
-Note that I can use the `$coef` suffix on my `summary` command to just extract the part of the model summary that I want. *R* is neat that way. We have seen this regression line before. The model predicts that a one year increase in age is associated with 1.3 fewer sexual encounters per year. Thus, we observe a negative relationship in our sample. Do we believe that this relationship is true in the population? Our null hypothesis is that the slope is zero in the population:
-
-$$H_0: \beta_1=0$$
-
-We just need to find the standard error of the regression slope and divide our sample regression slope of -1.3 of by this standard error. That will give us the t-statistic from which we can calculate the p-value. 
-
-But wait! If you look above, you will see that all of that hard work has already been done for us. The standard error of the slope is provided for us  in the "Std. Error" column as 0.065. If we take the regression slope divided by this number we will get:
-
-$$\frac{-1.298941}{0065424}=-19.8542$$
-
-However, note that this number was also already calculated in the "t value" column in the output above. Finally, we can take our t-statistic and use it to calculate the p-value:
+$$H_0: \rho_w-\rho_c=0$$
+In simple terms, our null hypothesis is that the same proportion of white and black adolescents smoke frequently. Lets look at the actual numbers from our sample:
 
 ```{r}
-2*pt(-19.85421,nrow(sex)-2)
+prop.table(table(addhealth$smoker, addhealth$race),2)
+p_w <- 0.203
+p_b <- 0.051
+p_diff <- p_w-p_b
+p_diff
 ```
 
-Note that this number is also already calculated in the final column of the output above. But what is this number? It looks kind of weird. This number is so small that *R* is reporting it in scientific notation. To interpret it correctly, we need to move the decimal 80 places to the left. In other words, the probability of getting a regression slope this large or larger in the sample, assuming the true population slope is zero, is incredibly tiny and therefore very, very unlikely. Thus, I **reject the null hypothesis** and conclude that age does have a negative association with sexual frequency in the population. 
+About 20.3% of white students smoked frequently, compared to only 5.1% of black students. The difference in proportion is a large 15.2% in the sample. This would seem to contradict our null hypothesis. However, we need to confirm that a difference this large in a sample of our size is unlikely to happen by random chance. To do that we need to calculate the standard error, just as we learned to do it for proportion differences in the confidence interval section:
+
+```{r}
+table(addhealth$race)
+n_w <- 2637
+n_b <- 1146
+se <- sqrt((p_w*(1-p_w)/n_w)+(p_b*(1-p_b)/n_b))
+se
+```
+
+Now many standard errors is our observed difference in proportion from zero? 
+
+```{r}
+t_stat <- p_diff/se
+t_stat
+```
+
+Wow, thats a lot. We can be pretty confident already without the final step of the p-value, but lets calculate it anyway. Remember ot always take the negative version of the t-statistic you calculated:
+
+```{r}
+2*pt(-14.9345, n_b-1)
+```
+
+The p-value is astronomically small. In a sample of this size, the probability of observing a difference in the proportion frequent smokers between whites and blacks of 15.2% or larger if there is no difference in the population is less than 0.0000001%. Therefore, I **reject the null hypothesis** and conclude that white students are more likely to be frequent smokers than are black students. 
+
+#### Example of correlation coefficient
+
+Lets look at the correlation between the parental income of a student and the number of friend nominations they recieve. Our null hypothesis will be that there is no relationship between parental income and student popularity in the population of US adolescents. Lets look at the data in our sample:
+
+```{r}
+r <- cor(addhealth$parentinc, addhealth$indegree)
+r
+```
+
+In the sample we observe a moderately positive correlation between a student's parental income and the number of friend nominations they receive. How confident are we that we wouldn't observe such a large correlation coefficient in our sample by random chance if the null hypothesis is true? 
+
+First, we need to calculate the standard error:
+
+```{r}
+n <- nrow(addhealth)
+se <- sqrt((1-r^2)/(n-2))
+se
+```
+
+How many standard errors are we away from the assumption of zero correlation?
+
+```{r}
+r/se
+```
+
+What is the probablity of being that far away from zero for a sample of this size?
+
+```{r}
+2*pt(-8.461366, n-2)
+```
+
+The probability is very small. In a sample of this size, the probability is less than 0.00000001% of observing a correlation coefficient between parental income and friend nominations received of an absolute magnitude of 0.127 or higher when the true correlation is zero in the population. Therefore, we **reject the null hypothesis** and conclude that there is a positive correlation between parental income and populatity among US adolescents.
 
 #### Statistical Significance
 
@@ -699,30 +745,3 @@ In practice, it is important to distinguish between substantive and statistical 
 It is important to remember that "statistical significance" is a reference to statistical inference and not a direct measure of the actual magnitude of an association. I prefer the term "statistically distinguishable" to "statistically significant" because it more clearly indicates what is going on. In the previous example, we found that the income differences in our sample between Catholics and members of other religions are not statistically distinguishable from zero. We also found that the negative association in our sample between age and sexual frequency was statistically distinguishable from zero. Establishing whether an association is worthwhile in its substantive effect is a totally different exercise from establishing whether it is statistically distinguishable from zero. 
 
 It is also important to remember that a statistically insignificant finding is not evidence of no relationship because we never accept the null hypothesis. We have just failed to find sufficient evidence of a relationship. No evidence of an association is not evidence of no association. 
-
-#### Inferential Statistics in Regression Model Tables
-
-In the last module, I showed you the typical way in which regression models are presented in research articles:
-
-```{r echo=FALSE, results="asis", warning=FALSE, message=FALSE}
-library(stargazer, quietly=TRUE, verbose=FALSE)
-m1 <- lm(Property~PctLessHS, data=crimes)
-m2 <- lm(Property~PctLessHS+MedianAge, data=crimes)
-m3 <- lm(Property~PctLessHS+MedianAge+Poverty, data=crimes)
-stargazer(m1,m2,m3, type="html",
-          omit.stat=c("adj.rsq","ser","f"), 
-          digits=2, 
-          star.cutoffs =c(0.05,0.01,0.001),
-          dep.var.labels="Property crime rate",
-          covariate.labels = c("Percent Less than HS", 
-                               "Median Age",
-                               "Poverty Rate"),
-          notes=c("Standard errors in parenthesis"),
-          notes.append=TRUE,
-          title="OLS regression models predicting violent crime rates for US states",
-          dep.var.labels.include=FALSE,
-          dep.var.caption="",
-          header=FALSE)
-```
-
-In that module I said that we would cover how to interpret the numbers in parenthesis and the asterisks in the next module. We now have the knowledge to do so. The number in parenthesis is the standard error for each slope in the model. You could use this standard error and the slope estimate above it to calculate t-statistics and p-values exactly. However, the asterisks give you an easy visual short cut to determine the rough size of the p-value. These asterisks indicate if the p-value is below a certain level, as shown in the notes at the bottom. The cut-offs of 0.05, 0.01, and 0.001 used here are pretty standard for the discipline. So an asterisks generally means that the result is "statistically significant." However, its important to keep in mind as noted above that these cut-offs are ultimately arbitrary and should never be confused with the substantive size of the effect itself. 
