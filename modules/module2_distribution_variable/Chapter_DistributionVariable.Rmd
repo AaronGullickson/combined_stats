@@ -49,12 +49,13 @@ emphasize.strong.rows(nrow(tab))
 pander(tab)
 ```
 
-We can calculate this in R by just taking our previous command and dividing by its own sum:
+*R* provides a nice shorthand function titled `prop.table` to conduct this operation:
 
 ```{r}
-classes <- table(titanic$pclass)
-classes/sum(classes)
+prop.table(table(titanic$pclass))
 ```
+
+Note that I had to "wrap" the `prop.table` command around the `table` command here because the `prop.table` command expects a vector of numbers that it will turn into proportions. 
 
 We often convert proportions to percents which most people are more familiar. To convert a proportion to a percent, just multiply by 100:
 
@@ -76,7 +77,7 @@ pander(tab)
 Now that we have proportions/percents, we can use these values to construct a graphical display of the distribution. The **piechart** is a very common technique here. I am sure you have all seen examples of piecharts. In a piechart, you show each category's percentage as a slice of a pie. Here is the R code and output of a piechart for the passenger class variable: 
 
 ```{r piechart_passclass}
-p <- table(titanic$pclass)/sum(table(titanic$pclass))
+p <- prop.table(table(titanic$pclass))
 pie(p)
 ```
 

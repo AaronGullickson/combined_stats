@@ -154,13 +154,11 @@ Male    0.191       0.809     1.0
 <body>Sociology 312, Measuring Association: The Two-Way Table</body>
 </div>
 
-You can easily calculate conditional distributions in *R* using the `prop.table` command on a created table:
+You can easily calculate conditional distributions in *R* using the `prop.table` command on a created table. However, you need to remember to include a second argument to this command that indicates the dimension you want to condition on: `1` to sum to 100% within rows and `2` to sum to 100% within columns.
 
 ```{r}
 prop.table(tab,1)
 ```
-
-Note that I could have calculated the conditional distribution the other way by using `2` rather than `1` in the command. We will return to this later. 
 
 ## Visualizing Differences with Barplots
 

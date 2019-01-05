@@ -70,7 +70,7 @@ Note that the proportions should add up to 1 within each row because we are basi
 
 We can tell if there is an association between the row and column variable if these conditional distributions are different across rows. In this case, they are clearly very different. About 82% of Democrats are believers while only about half (49%) of Republicans are believers. About 70% of Independents are believers, while the proportions of other parties are very similar to those for Republicans. 
 
-R provides a function called `prop.table` that can estimate these conditional distributions. The syntax of `prop.table` is very similar to `margin.table`:
+We can use the `prop.table` command we saw in the last module to estimate these conditional distributions. In order to do that we feed in the crosstab we calculated with tab and one additional argument that indicates which dimension (row or column ) we want to condition across. Like `margin.table` a value of `1` will condition on rows (rows sum to 100%) and a value of `2` will condition on columns (columns sum to 100%). If we condition on rows here, we will get the same table as above.  
 
 ```{r}
 prop.table(tab,1)

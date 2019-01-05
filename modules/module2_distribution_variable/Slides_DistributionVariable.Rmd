@@ -69,10 +69,20 @@ prop <- table(politics$party)/sum(table(politics$party))
 prop
 ```
 
-We are getting a lot of decimal places by default. Lets use a `round` command to trim the number of digits. While we are at it, lets also multiply by 100 to get percentages rather than proportions, and `sort` them from highest to lowest.
+*R* also has a built-in function called `prop.table` that will calculate proportions automatically:
+
+```{r}
+prop.table(table(politics$party))
+```
+
+Note that I still need to run the `table` command and then wrap `prop.table` around that command.
+
+## Rounding and Sorting
+
+We can employ this "wrapping" feature of *R* to do some more tidying up. In this case, I want to `round` the number of digits and multiply by 100 to turn my proportions into percents. I also use the `sort` command to sort values from highest to lowest.
 
 ```{r} 
-percent <- sort(round(100*prop,1), decreasing=TRUE)
+percent <- sort(round(100*prop.table(table(politics$party)),1), decreasing=TRUE)
 percent
 ```
 
