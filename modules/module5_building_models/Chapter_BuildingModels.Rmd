@@ -957,7 +957,7 @@ Lets look at the mean income across these combination of categories:
 tapply(politics$income, politics[,c("nwhite","college")], mean)
 ```
 
-White college graduates make \$94K, on average, while non-white college graduates make \$76K, on average. Whites without a college degree make \$52K, on average, while non-whites without a college degree make \$36K, on average. If we put this in a table, I can show that there are four different ways to make comparisons between these numbers. 
+White college graduates make \$103K, on average, while non-white college graduates make \$96K, on average. Whites without a college degree make \$59K, on average, while non-whites without a college degree make \$43K, on average. If we put this in a table, I can show that there are four different ways to make comparisons between these numbers. 
 
 ```{r echo=FALSE}
 tab <- round(tapply(politics$income, politics[,c("nwhite","college")], mean),1)
@@ -969,11 +969,11 @@ set.alignment(c("right","right","right"))
 pander(tab)
 ```
 
-If we look at the two differences along the far-right column, we are seeing the "returns" in terms of income for a college degree separately for whites and non-whites. The return for whites is \$42.8K and the return for non-whites is slightly lower at \$40.1K. if we look at the differences along the bottom row, we are seeing the racial inequality in income separately for those with no degree and those with a college degree. Among those with no college degree, non-whites make \$15.5K less than whites. Among those with a college degree, non-whites make \$18.2K less than whites. The racial gap in income gets slightly larger at the higher level of education. 
+If we look at the two differences along the far-right column, we are seeing the "returns" in terms of income for a college degree separately for whites and non-whites. The return for whites is \$43.4K and the return for non-whites is higher at \$52K. if we look at the differences along the bottom row, we are seeing the racial inequality in income separately for those with no degree and those with a college degree. Among those with no college degree, non-whites make \$15.9K less than whites. Among those with a college degree, non-whites make \$7.3K less than whites. The racial gap in income gets smaller at the higher level of education. 
 
-Now lets look at the difference in the differences. For the racial gap in income this is given by -15.5-(-18.2)=2.7. For the returns to a college degree this is given by 42.8-40.1=2.7. The difference in the differences is the same! This is because we are looking at the same relationship in two different ways. If non-whites get a weaker return to college than whites, then the racial gap in income must get larger among the college-educated. Similarly, if the racial gap in income gets larger at the college level, it tells us that non-whites must get a weaker return on their college education. 
+Now lets look at the difference in the differences. For the racial gap in income this is given by -7.3-(-15.9)=8.6. For the returns to a college degree this is given by 52-43.4=-8.6. The difference in the differences is the same! This is because we are looking at the same relationship in two different ways. If non-whites get a better return to college than whites, then the racial gap in income must get smaller among the college-educated. Similarly, if the racial gap in income gets smaller at the college level, it tells us that non-whites must get a better return on their college education. 
 
-This 2.7 number is basically an interaction term. We can interpret the number as the difference in returns to income from a college degree between whites and non-whites. Alternatively, we can interpret the number as the difference in the racial income gap between those with no degree and those with a college degree. Either way, we have the same information, with the same somewhat depressing finding: greater educational attainment does not necessarily reduce racial inequality because minorities get less return on their college degrees. 
+This 8.6 number is basically an interaction term. We can interpret the number as the difference in returns to income from a college degree between whites and non-whites. Alternatively, we can interpret the number as the difference in the racial income gap between those with no degree and those with a college degree. Either way, we have the same information, with the same finding: greater educational attainment reduces racial inequality because minorities get greater return on their college degrees. 
 
 Lets try modeling this relationship with an OLS regression model. First lets try a model without interaction terms:
 
@@ -984,21 +984,21 @@ coef(model)
 
 Lets put this into an equation framework:
 
-$$\hat{income}_i=52.0-16.2(nwhite_i)+41.9(college_i)$$
+$$\hat{income}_i=58.5-13.0(nwhite_i)+45.6(college_i)$$
 
 We can use this equation to fill in the predicted valued of the same table we calculated by hand above:
 
 ```{r echo=FALSE}
-tab <- cbind(c(52.0,"52.0-16.2=35.8",-16.2),
-      c("52.0+41.9=93.9","52.0-16.2+41.9=77.7",-16.2),
-      c(41.9,41.9,0))
+tab <- cbind(c(58.5,"58.5-13.0=45.5",-13),
+      c("58.5+45.6=104.1","58.5-13+45.6=91.1",-13),
+      c(45.6,45.6,0))
 colnames(tab) <- c("No degree", "College degree", "Difference")
 rownames(tab) <- c("White","Non-white","Difference")
 set.alignment(c("right","right","right"))
 pander(tab)
 ```
 
-The predicted values do not match the exact values above. More importantly, if you look at the differences, you can see that the returns to education are assumed to be identical for whites and non-whites (41.9) and the racial gap is assumed to be the same for those with no degree and those with a college degree (-16.2). This is the limitation of the additive model. We assume that the effects of race and college completion are not affected by each other. If we want to determine whether returns to college are different by race, we need to model the interaction term, as follows:
+The predicted values do not match the exact values above. More importantly, if you look at the differences, you can see that the returns to education are assumed to be identical for whites and non-whites (45.6) and the racial gap is assumed to be the same for those with no degree and those with a college degree (-13). This is the limitation of the additive model. We assume that the effects of race and college completion are not affected by each other. If we want to determine whether returns to college are different by race, we need to model the interaction term, as follows:
 
 ```{r}
 model <- lm(income~nwhite*college, data=politics)
@@ -1007,28 +1007,28 @@ coef(model)
 
 In equation form:
 
-$$\hat{income}_i=51.7-15.5(nwhite_i)+42.8(college_i)-2.6(nwhite_i*college_i)$$
+$$\hat{income}_i=59.4-15.9(nwhite_i)+43.4(college_i)+8.6(nwhite_i*college_i)$$
 
 Lets use this model to get predicted values in our table:
 
 ```{r echo=FALSE}
-tab <- cbind(c(51.7,"51.7-15.5=36.2",-15.5),
-      c("51.7+42.8=94.5","51.7-15.5+42.8-2.6=76.4",-18.1),
-      c(42.8,40.2,-2.6))
+tab <- cbind(c(59.4,"59.4-15.9=43.5",-15.9),
+      c("59.4+43.4=102.8","59.4-15.9+43.4+8.6=95.5",-7.3),
+      c(43.4,52.0,8.6))
 colnames(tab) <- c("No degree", "College degree", "Difference")
 rownames(tab) <- c("White","Non-white","Difference")
 set.alignment(c("right","right","right"))
 pander(tab)
 ```
 
-Our model now fits the data exactly (except for some rounding error) and the differences are allowed to vary by the other category, so that we can see the differences in returns to college by race and the differences in the racial gap by education level. The interaction term itself of -2.6 is basically the same to what we calculated by hand (adjusted for some rounding error). 
+Our model now fits the data exactly and the differences are allowed to vary by the other category, so that we can see the differences in returns to college by race and the differences in the racial gap by education level. The interaction term itself of 8.6 is basically the same to what we calculated by hand. 
 
 If we were to interpret the intercept and slopes from the model above, we would say:
 
-- Whites with no college degree had a mean income of $51,700. 
-- Among those with no college degree, non-whites earn $15,500 less than whites, on average. 
-- Among whites, those with a college degree have incomes $42,800 higher on average than those without a college degree.
-- The returns to income from a college degree are $2,600 smaller for non-whites than they are for whites, on average. 
+- Whites with no college degree had a mean income of $59,400. 
+- Among those with no college degree, non-whites earn $15,900 less than whites, on average. 
+- Among whites, those with a college degree have incomes $43,400 higher on average than those without a college degree.
+- The returns to income from a college degree are $8,600 larger for non-whites than they are for whites, on average. 
 
 ------
 
