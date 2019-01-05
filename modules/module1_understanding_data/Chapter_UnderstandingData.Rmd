@@ -76,7 +76,7 @@ First, statistical models will allow us to "control" for other variables when we
 
 Second, statistical models will allow us to account for how the relationship between two variables might differ depending on the context of a third variable. This is what we call an **interaction**. For example, lets say we were interested in the relationship between the number of sports played and a student's popularity (measured by friend nominations) in our Add Health data. Because of gender norms, we might expect that this relationship is different for boys and girls. We can use statistical models to empirically examine whether this is true. This kind of contextualization is an important component of sociological practice. 
 
-### Observation Data, Experimental Thinking
+### Observational Data, Experimental Thinking
 
 Much of the data that we use in sociology is **observational** rather than **experimental**. In an experimental design, the researcher randomly selects subjects to receive some sort of treatment and then observes how this treatment affects some outcome. Thus, the research engages in systematic manipulation to observe a response. In observational data, the researcher does not directly manipulate the environment but rather just observes and records the social setting as it is. 
 
