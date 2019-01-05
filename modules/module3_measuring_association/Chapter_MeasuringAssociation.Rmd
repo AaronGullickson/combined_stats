@@ -109,7 +109,7 @@ In this case, I have also added custom colors for the two categories and designe
 
 ------
 
-##Odds ratio (Advanced)
+## Odds ratio (Advanced)
 
 We can also use the **odds ratio** to measure the association between two categorical variables.  The odds ratio is not a term that is common in everyday speech but it is a critical concept in all kinds of scientific research. 
 

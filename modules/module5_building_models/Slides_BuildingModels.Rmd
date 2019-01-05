@@ -389,18 +389,6 @@ cor(crimes$Unemployment, crimes$Property)^2
 
 About 19.7% of the variation in property crime rates across states is explainable by variation in unemployment rates across states. 
 
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Building Models: The OLS Regression Line</body>
-</div>
-
-```{r echo=FALSE}
-shinyAppDir(
-  "shiny_apps/scatterplot",
-  options=list( width="100%", height=700)
-)
-```
-
 ## Inference for OLS regression models
 <div class="footer"> 
 <body>Sociology 312, Building Models: The OLS Regression Line</body>
