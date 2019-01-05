@@ -8,14 +8,17 @@ load("example_datasets/crimes/crimes.RData")
 load("example_datasets/sex/sex.RData")
 load("example_datasets/politics/politics.RData")
 load("example_datasets/titanic/titanic.RData")
+load("example_datasets/add_health/addhealth.RData")
+
 
 description <- c("A dataset of movies produced between 2000 and 2013, compiled from iMDB and Rotten Tomatoes.",
                   "Violent and property crime rates (per 100,000) by state for 2010 (compiled by the FBI) with accompanying socio-demographic data.",
                   "General Social Survey data from 2004 on sexual frequency of US adults.",
                   "National Election Studies data from 2016 on the political attitudes and affiliations of the US voting age population.",
-                  "Compiled data on the characteristics of Titanic passengers, including whether they survived or not.")
+                  "Compiled data on the characteristics of Titanic passengers, including whether they survived or not.",
+                 "National Survey of Adolescent to Adult Health data on school popularity of adolescents, substance use, and academic activities")
 
-names(description) <- c("movies", "crimes","sex","politics","titanic")
+names(description) <- c("movies", "crimes","sex","politics","titanic","popularity")
 
 server <- function(input, output) {
   
@@ -26,7 +29,8 @@ server <- function(input, output) {
            "titanic" = titanic,
            "politics" = politics,
            "sex" = sex,
-           "crimes" = crimes)
+           "crimes" = crimes,
+           "popularity" = addhealth)
   })
 
   # Show 20 random observations
@@ -60,7 +64,8 @@ ui <- shinyUI(fluidPage(
                                         "Crime"="crimes",
                                         "Sex"="sex",
                                         "Politics"="politics",
-                                        "Movies"="movies"
+                                        "Movies"="movies",
+                                        "Popularity"="popularity"
                          ), 
                          selected = "titanic"))
     ),
