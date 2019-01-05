@@ -448,16 +448,17 @@ summary(model)$coef
 </div>
 
 ```{r echo=FALSE, fig.width=7, fig.height=4.5, out.width='700px', out.height='450px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-preston <- read.csv("example_datasets/misc/preston.csv")
+library(gapminder)
+gapminder <- subset(gapminder, year==2007)
 par(mar=c(4,4,0.1,1))
-plot(preston$inc, preston$lifeexp,
-     xlab="national income, 1960",
-     ylab="life expectancy, 1960", pch=21, bg="grey", las=1)
-abline(lm(lifeexp~inc,data=preston), lwd=2, col="blue")
-text(800,68,label="Underestimate", col="red")
-text(200,40,label="Over\nestimate", col="red")
-text(2300,68,label="Overestimate", col="red")
-
+plot(gapminder$gdpPercap, gapminder$lifeExp,
+     xlab="GDP per capita, 2007",
+     ylab="life expectancy, 2007", pch=21, bg="grey", las=1,
+     ylim=c(30,90))
+abline(lm(lifeExp~gdpPercap,data=gapminder), lwd=2, col="blue")
+text(10000,75,label="Underestimate", col="red")
+text(2000,50,label="Over\nestimate", col="red")
+text(45000,80,label="Overestimate", col="red")
 ```
 
 ----
