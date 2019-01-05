@@ -11,7 +11,7 @@ tab <- table(politics$party, politics$globalwarm)
 tab
 ```
 
-The two-way table gives us the **joint distribution** of the two variables, which is the number of respondents who fell into both categories. For example, we can see that 429 democrats did not believe in anthropogenic climate change while 1932 did. 
+The two-way table gives us the **joint distribution** of the two variables, which is the number of respondents who fell into both categories. For example, we can see that 234 democrats did not believe in anthropogenic climate change while 1230 did. 
 
 From this table, we can also calculate the **marginal distribution** of each of the variables, which are just the distributions of each of the variables separately. We can do that by adding up across the rows and down the columns:
 
@@ -28,7 +28,7 @@ emphasize.italics.cols(3)
 pander(tab.full)
 ```
 
-The marginal distribution of party affiliation is given by the Total column on the right and the marginal distribution of climate change belief is given by the Total row at the bottom. Looking at the column marginal, we can see that there were a total of 2361 Democrats, 1389 Republicans, and so on. Looking at the row marginal, we can see that there were 11814 anthropogenic climate change deniers and 4100 anthropogenic climate change believers. The final number (5914) in the far right corner is the total number of respondents altogether. You can get this number by summing up the column marginals (1814+4100) or row marginals (2361+1389+2003+161). 
+The marginal distribution of party affiliation is given by the Total column on the right and the marginal distribution of climate change belief is given by the Total row at the bottom. Looking at the column marginal, we can see that there were a total of 1464 Democrats, 1239 Republicans, and so on. Looking at the row marginal, we can see that there were 1181 anthropogenic climate change deniers and 3057 anthropogenic climate change believers. The final number (4238) in the far right corner is the total number of respondents altogether. You can get this number by summing up the column marginals (1181+3057) or row marginals (1464+1239+1383+152). 
 
 The `margin.table` command in *R* will also calculate marginals for us. I can use the `margin.table` command on the table I created and saved above as *tab*  to calculate the same marginals as above. Note that you need to indicate which marginal you want by a number, where 1=row and 2=column, as the second option to `margin.table`:
 
@@ -66,11 +66,11 @@ set.alignment(c("right","right","right"))
 pander(tab.prop)
 ```
 
-Note that the proportions should add up to 1 within each row because we are basically calculating the share of each row that belongs to each column category. **To understand these conditional distributions, you need to look at the numbers within each row.** For example, the first row tells us that 18% of Democrats are deniers and 82% of Democrats are believers. The second row tells us that 51% of Republicans are deniers and 49% of Republicans are believers.
+Note that the proportions should add up to 1 within each row because we are basically calculating the share of each row that belongs to each column category. **To understand these conditional distributions, you need to look at the numbers within each row.** For example, the first row tells us that 16% of Democrats are deniers and 84% of Democrats are believers. The second row tells us that 46% of Republicans are deniers and 54% of Republicans are believers.
 
-We can tell if there is an association between the row and column variable if these conditional distributions are different across rows. In this case, they are clearly very different. About 82% of Democrats are believers while only about half (49%) of Republicans are believers. About 70% of Independents are believers, while the proportions of other parties are very similar to those for Republicans. 
+We can tell if there is an association between the row and column variable if these conditional distributions are different across rows. In this case, they are clearly very different. About 84% of Democrats are believers while only about half (54%) of Republicans are believers. About 76% of Independents are believers, while about 68% of members of other parties are believers. 
 
-We can use the `prop.table` command we saw in the last module to estimate these conditional distributions. In order to do that we feed in the crosstab we calculated with tab and one additional argument that indicates which dimension (row or column ) we want to condition across. Like `margin.table` a value of `1` will condition on rows (rows sum to 100%) and a value of `2` will condition on columns (columns sum to 100%). If we condition on rows here, we will get the same table as above.  
+We can use the `prop.table` command we saw in the last module to estimate these conditional distributions. In order to do that we feed in the crosstab we calculated with tab and one additional argument that indicates which dimension (row or column ) we want to condition across. Like `margin.table` a value of `1` will condition on rows (rows sum to 1) and a value of `2` will condition on columns (columns sum to 1). If we condition on rows here, we will get the same table as above.  
 
 ```{r}
 prop.table(tab,1)
@@ -82,7 +82,7 @@ Its important to remember which way you did the conditional distribution and get
 prop.table(tab,2)
 ```
 
-Note that this table looks deceptively similar to the table above. But look again. The numbers now don't add up to one within each row. They do however add up to one within each column. In order to read this table properly, we have to understand that it is giving us the distribution within each column: the proportion of respondents who have a given belief who belong to a given political party. So we can see in the first number that 23.6% of deniers are Democrats, 39.0% are Republicans, 32.9% are Independents, and 4.5% belong to other parties. This distribution is very different from the party affiliation distribution of believers in the second column which tells us that there is an association. However, the large party cleavages on the issue are not as immediately obvious here as they were with the previous conditional distribution. Always think carefully about which conditional distribution is more sensible to interpret and always make sure that you are interpreting them in the correct way. 
+Note that this table looks deceptively similar to the table above. But look again. The numbers now don't add up to one within each row. They do however add up to one within each column. In order to read this table properly, we have to understand that it is giving us the distribution within each column: the proportion of respondents who have a given belief who belong to a given political party. So we can see in the first number that 19.8% of deniers are Democrats, 48.2% are Republicans, 27.9% are Independents, and 4.1% belong to other parties. This distribution is very different from the party affiliation distribution of believers in the second column which tells us that there is an association. However, the large party cleavages on the issue are not as immediately obvious here as they were with the previous conditional distribution. Always think carefully about which conditional distribution is more sensible to interpret and always make sure that you are interpreting them in the correct way. 
 
 It is also possible to graph the conditional distribution as a set of barplots. First, lets save the output of our prop.table into a new object.
 
