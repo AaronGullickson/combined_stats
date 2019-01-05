@@ -113,7 +113,7 @@ In this case, I have also added custom colors for the two categories and designe
 
 We can also use the **odds ratio** to measure the association between two categorical variables.  The odds ratio is not a term that is common in everyday speech but it is a critical concept in all kinds of scientific research. 
 
-Lets take the different distributions of climate change belief for Democrats and Republicans. About 82% of Democrats were believers, but only 49% of Republicans were believers. How can we talk about how different these two numbers are from one another? We could subtract one from the other or we could take the ratio by dividing one by the other. However, both of these approaches have a major problem. Because the percents (and proportions) have minimum and maximum values of 0 and 100, as you approach those boundaries the differences necessarily have to shrink because one group is hitting its upper or lower limit. This makes it difficult to compare percentage or proportional differences across different groups because the overall average proportion across groups will affect the differences in proportion.
+Lets take the different distributions of climate change belief for Democrats and Republicans. About 84% of Democrats were believers, but only 54% of Republicans were believers. How can we talk about how different these two numbers are from one another? We could subtract one from the other or we could take the ratio by dividing one by the other. However, both of these approaches have a major problem. Because the percents (and proportions) have minimum and maximum values of 0 and 100, as you approach those boundaries the differences necessarily have to shrink because one group is hitting its upper or lower limit. This makes it difficult to compare percentage or proportional differences across different groups because the overall average proportion across groups will affect the differences in proportion.
 
 Odds ratios are a way to get around this problem. To understand odds ratios, you first have to understand what odds are. All probabilities (or proportions) can be converted to a corresponding odds. If you have a $p$ probability of success on a task, then your odds $O$ of success are given by:
 
@@ -127,26 +127,26 @@ The hitter will get on average 0.33 hits for every one out. Alternatively, you c
 
 Re-calculating probabilities in this way is useful because unlike the probability, the odds has no upper limit. As the probability of success approaches one, the odds will just get larger and larger.
 
-We can use this same logic to construct the odds that a Democratic and Republican respondent, respectively, will be climate change believers. For the Democrat, the probability is 0.82, so the odds are:
+We can use this same logic to construct the odds that a Democratic and Republican respondent, respectively, will be climate change believers. For the Democrat, the probability is 0.84, so the odds are:
 
-$$O=\frac{0.82}{1-0.82}=\frac{0.82}{0.18}=4.56$$
+$$O=\frac{0.84}{1-0.84}=\frac{0.84}{0.16}=5.250$$
 
-Among Democrats, there are 4.56 believers for every one denier. Among Republicans, the probability is 0.49, so the odds are:
+Among Democrats, there are 5.25 believers for every one denier. Among Republicans, the probability is 0.541, so the odds are:
 
-$$O=\frac{0.49}{1-0.49}=\frac{0.49}{0.51}=0.96$$
+$$O=\frac{0.541}{1-0.541}=\frac{0.541}{0.459}=1.179$$
 
-Among Republicans, there are 0.96 believers for every one denier. This number is very close to "even" odds of 1, which happen when the probability is 50%. 
+Among Republicans, there are 1.17 believers for every one denier. This number is close to "even" odds of 1, which happen when the probability is 50%. 
 
 The final step here is to compare those two odds. We do this by taking their **ratio**, which means we divide one number by the other:
 
-$$\frac{4.56}{0.95}=4.75$$
+$$\frac{5.25}{1.179}=4.45$$
 
-This is our odds ratio. How do we interpret it? This odds ratio tells us how much more or less likely climate change belief is among Democrats relative to Republicans. In this case, I would say that "the odds of belief in anthropogenic climate change are 4.75 times higher among Democrats than Republicans." Note the "times" here. This 4.75 is a multiplicative factor because we are taking a ratio of the two numbers. 
+This is our odds ratio. How do we interpret it? This odds ratio tells us how much more or less likely climate change belief is among Democrats relative to Republicans. In this case, I would say that "the odds of belief in anthropogenic climate change are 4.45 times higher among Democrats than Republicans." Note the "times" here. This 4.45 is a multiplicative factor because we are taking a ratio of the two numbers. 
 
 You can calculate odds ratios from conditional distributions just as I have done above, but there is also a short cut technique called the **cross-product**. Lets look at the two-way table of party affiliation but this time just for Democrats and Republicans. For reasons I will explain below, I am going to reverse the ordering of the columns so that believers come first. 
 
 ```{r echo=FALSE}
-tab <- cbind(c(1887,672),c(413,698))
+tab <- cbind(c(1230,670),c(234,569))
 colnames(tab) <- c("Believer","Denier")
 rownames(tab) <- c("Democrat","Republican")
 set.alignment(c("right","right"))
@@ -157,12 +157,12 @@ pander(tab)
 
 The two bolded numbers are called the **diagonal** and the two italicized numbers are the **reverse diagonal**. The cross-product is calculated by multiplying the two numbers in the diagonal by each other and multiplying the two numbers in the reverse diagonal together and then dividing the former product by the latter:
 
-$$\frac{1887*698}{672*413}=4.75$$
+$$\frac{1230*569}{670*234}=4.46$$
 
-I get the exact same odds ratio as above, without having to calculate the proportions and odds themselves. This is a useful shortcut for calculating odds ratios. There is one thing to keep in mind, however. The odds ratio that you calculate is always the odds of the first row being in the first column relative to those odds for the second row. Its easy to show how this would be different if I had kept the original ordering of believers and deniers:
+I get the exact same odds ratio as above (except for rounding error), without having to calculate the proportions and odds themselves. This is a useful shortcut for calculating odds ratios. There is one thing to keep in mind, however. The odds ratio that you calculate is always the odds of the first row being in the first column relative to those odds for the second row. Its easy to show how this would be different if I had kept the original ordering of believers and deniers:
 
 ```{r echo=FALSE}
-tab <- cbind(c(413,698),c(1887,672))
+tab <- cbind(tab[,2],tab[,1])
 colnames(tab) <- c("Denier","Believer")
 rownames(tab) <- c("Democrat","Republican")
 set.alignment(c("right","right"))
@@ -171,11 +171,11 @@ emphasize.italics.cells(rbind(c(1,2),c(2,1)))
 pander(tab)
 ```
 
-$$\frac{672*413}{1887*698}=0.21$$
+$$\frac{234*670}{569*1230}=0.22$$
 
-I get a very different odds ratio, but that is because I am calculating something different. I am now calculating the odds ratio of being a denier rather than a believer. So I would say that the "the odds of denial of anthropogenic climate change among Democrats are only 21% of the odds for Republicans." In other words, the odds of being a denier are much lower among Democrats. 
+I get a very different odds ratio, but that is because I am calculating something different. I am now calculating the odds ratio of being a denier rather than a believer. So I would say that the "the odds of denial of anthropogenic climate change among Democrats are only 22% of the odds for Republicans." In other words, the odds of being a denier are much lower among Democrats. 
 
-Note, however, that the information here is the same because the 0.21 here is exactly equal to 1/4.75. In other words, the odds ratio of denial is just the inverted mirror image of the odds ratio of belief. Its just important that you remember that when you calculate the cross-product, you are always calculating the odds ratio of being in the category of the first column, whatever category that may be. 
+Note, however, that the information here is the same because the 0.22 here is exactly equal to 1/4.46. In other words, the odds ratio of denial is just the inverted mirror image of the odds ratio of belief. Its just important that you remember that when you calculate the cross-product, you are always calculating the odds ratio of being in the category of the first column, whatever category that may be. 
 
 ------
 
