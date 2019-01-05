@@ -1,0 +1,17 @@
+---
+title: "Cheat Sheet for SE and df, Sociology 312"
+output: pdf_document
+classoption: landscape
+---
+
+\pagenumbering{gobble}
+
+\Large
+
+Type                     SE                                                                                df for $t$
+------                   ------                                                                            ------
+Mean                     $s/\sqrt{n}$                                                                      $n-1$
+Proportion               $\sqrt\frac{\hat{p}*(1-\hat{p})}{n}$                                              $n-1$
+Mean Difference          $\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}$                                      min($n_1-1$,$n_2-1$)
+Proportion Difference    $\sqrt{\frac{\hat{p}_1*(1-\hat{p}_1)}{n_1}+\frac{\hat{p}_2*(1-\hat{p}_2)}{n_2}}$  min($n_1-1$,$n_2-1$)
+Correlation Coefficient  $\sqrt{\frac{1-r^2}{n-2}}$                                                        $n-2$
