@@ -15,16 +15,14 @@ politics$educ <- factor(ifelse(politics$V161270<0, NA,
                                       ifelse(politics$V161270==9,"High school diploma",
                                              ifelse(politics$V161270<13,"Some college",
                                                     ifelse(politics$V161270<14,"Bachelors degree", "Graduate degree"))))),
-                        levels=c("Less than HS","High school diploma","Some college","Bachelors degree","Graduate degree"),
-                        ordered=TRUE)
+                        levels=c("Less than HS","High school diploma","Some college","Bachelors degree","Graduate degree"))
 table(politics$V161270, politics$educ, exclude=NULL)
 
 
 ## Military Service
 politics$military <- factor(ifelse(politics$V161274a<0, NA, 
                                    ifelse(politics$V161274a==0, "No","Yes")),
-                            levels=c("No","Yes"),
-                            ordered=TRUE)
+                            levels=c("No","Yes"))
 table(politics$V161274a, politics$military, exclude=NULL)
 
 
@@ -127,8 +125,7 @@ table(politics$V161194x, politics$brcitizen, exclude=NULL)
 ## Gay Marriage
 politics$gaymarriage <- factor(ifelse(politics$V161231<0, NA, politics$V161231),
                                levels=c(3:1),
-                               labels=c("No legal recognition","Civil unions","Support gay marriage"),
-                               ordered=TRUE)
+                               labels=c("No legal recognition","Civil unions","Support gay marriage"))
 table(politics$V161231, politics$gaymarriage, exclude=NULL)
 
 ## Transgender bathrooms
@@ -149,4 +146,4 @@ library(mice)
 politics <- complete(mice(politics, 1))
 
 #save the new data
-save(politics, file="../politics.RData")
+save(politics, file="politics.RData")
