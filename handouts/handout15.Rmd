@@ -1,0 +1,36 @@
+---
+output: pdf_document
+classoption: landscape
+---
+
+\pagenumbering{gobble}
+
+```{r setup13, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+load("../example_datasets/movies//movies.RData")
+```
+
+# Handout 15: Plot two lines showing movie ratings over time for popular and niche movies
+
+```{r}
+movies$popular <- movies$Genre=="Action" | movies$Genre=="Animation" |
+  movies$Genre=="Comedy" | movies$Genre=="Family" | movies$Genre=="SciFi/Fantasy"
+round(summary(lm(movies$TomatoMeter~movies$popular*I(movies$Year-2001)))$coef,3)[,1:2]
+```
+
+```{r echo=FALSE, fig.width=6, fig.height=4, out.width='600px', out.height='400px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+par(cex.axis=0.5, cex.lab=0.5)
+plot(-10,-10,
+     xlab="", ylab="predicted tomato meter",
+     xaxt="n", yaxt="n",
+     xlim=c(2001, 2013), ylim=c(42,58))
+axis(1, at=2001:2013)
+axis(2, at=42:58, las=1)
+abline(h=42:58, lty=2, lwd=0.5, col="grey")
+abline(v=2001:2013, lty=2, lwd=0.5, col="grey")
+abline(v=2001, lty=1, lwd=1, col="black")
+```
+
+&nbsp;
+
+Name (Print and Sign): ________________________________________

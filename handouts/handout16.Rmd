@@ -1,0 +1,42 @@
+---
+output: pdf_document
+classoption: landscape
+---
+
+\pagenumbering{gobble}
+
+```{r setup14, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+load("../example_datasets/movies/movies.RData")
+```
+
+# Handout 16: Interpret the slope and intercept of regression model with interactions
+
+```{r}
+round(summary(lm(BoxOffice~I(Runtime-90)*Rating, data=movies))$coef,2)
+```
+\Large
+
+&nbsp;
+
+Interpret the slope on Runtime in a single sentence:
+
+&nbsp;
+
+&nbsp;
+
+Interpret the slope on RatingR in a single sentence:
+
+&nbsp;
+
+&nbsp;
+
+Interpret the interaction term Runtime:RatingR in a single sentence:
+
+&nbsp;
+
+&nbsp;
+
+
+\normalsize 
+Name (Print and Sign): ________________________________________

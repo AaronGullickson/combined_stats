@@ -1,0 +1,47 @@
+---
+output: pdf_document
+classoption: landscape
+---
+
+\pagenumbering{gobble}
+
+```{r setup10, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+load("../example_datasets/movies/movies.RData")
+```
+# Handout 12: Interpret a slope and intercept from a multivariate regression model
+
+```{r}
+round(summary(lm(TomatoMeter~I(Year-2001)+I(Runtime-90)+I(BoxOffice-45), data=movies))$coef,3)
+```
+
+\Large
+
+&nbsp;
+
+Interpret the slope on year in a single sentence:
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+Interpret the slope on runtime in a single sentence:
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+Interpret the intercept in a single sentence:
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+\normalsize 
+Name (Print and Sign): ________________________________________

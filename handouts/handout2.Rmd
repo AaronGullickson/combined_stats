@@ -1,0 +1,33 @@
+---
+output: pdf_document
+classoption: landscape
+---
+
+\pagenumbering{gobble}
+
+```{r setup2, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+load("../example_datasets/titanic/titanic.RData")
+```
+
+# Handout 2: Draw a histogram of age on the Titanic
+
+```{r}
+table(cut(titanic$age, breaks=seq(from=0, to=80, by=10)))
+```
+
+```{r echo=FALSE, fig.width=6, fig.height=4, out.width='600px', out.height='400px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+par(cex.lab=0.6, cex.axis=0.6)
+plot(-10,-10, xlim=c(0,80), ylim=c(0,480),
+     xaxt="n", yaxt="n", bty="n", xlab="age", ylab="frequency")
+axis(1, at=seq(from=0,to=80,by=5))
+axis(2, at=seq(from=0,to=480,by=40), las=1)
+abline(h=seq(from=0,to=480,by=20), lty=2, lwd=0.5, col="grey")
+abline(h=0, lty=1)
+abline(v=seq(from=0, to=80, by=10), lty=2, lwd=0.5, col="grey")
+```
+
+&nbsp;
+
+
+Name (Print and Sign): ________________________________________

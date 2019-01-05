@@ -1,0 +1,41 @@
+---
+output: pdf_document
+classoption: landscape
+---
+
+\pagenumbering{gobble}
+
+```{r setup3, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+load("../example_datasets/sex/sex.RData")
+load("../example_datasets/movies/movies.RData")
+load("../example_datasets/crimes/crimes.RData")
+```
+
+# Handout 3: Estimate and draw the balancing point of each distribution
+
+```{r echo=FALSE, fig.width=6, fig.height=4, out.width='600px', out.height='400px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+par(cex.main=0.8, mfrow=c(2,2), mar=c(2,1,2,1))
+hist(sex$age, breaks=seq(from=15,to=90,by=5),
+     xlab="", ylab="", yaxt="n", main="Age of respondents (sex survey)",
+     col="grey70", border="grey40")
+legend(60,225,legend=c("Median"), lty=2, lwd=2, cex=0.85, bty="n")
+abline(v=median(sex$age), lty=2, lwd=2)
+hist(movies$TomatoRating, 
+      xlab="", ylab="", yaxt="n", main="Movie tomato rating",
+     col="grey70", border="grey40")
+abline(v=median(movies$TomatoRating), lty=2, lwd=2)
+hist(crimes$MedianIncomeHH, breaks=seq(from=35,75,by=2.5),
+      xlab="", ylab="", yaxt="n", main="Median income by state (crime data)",
+     col="grey70", border="grey40")
+abline(v=median(crimes$MedianIncomeHH), lty=2, lwd=2)
+hist(movies$Runtime[movies$Genre=="SciFi/Fantasy"], 
+      xlab="", ylab="", yaxt="n", main="SciFi/Fantasy movie runtime",
+     col="grey70", border="grey40")
+abline(v=median(movies$Runtime[movies$Genre=="SciFi/Fantasy"]), lty=2, lwd=2)
+```
+
+&nbsp;
+
+
+Name (Print and Sign): ________________________________________

@@ -1,0 +1,44 @@
+---
+output: pdf_document
+classoption: landscape
+---
+
+\pagenumbering{gobble}
+
+```{r setup5, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+load("../example_datasets/sex/sex.RData")
+```
+
+# Handout 5: Calculate variance and standard deviation of runtime for 2010 mystery movies
+
+\huge
+
+| Movie            | $x$ | $x-\bar{x}$ | $(x-\bar{x})^2$ | 
+|:-----------------|----:|------------:|----------------:|
+| All Good Things  | 101 |             |                 |
+| Edge of Darkness | 117 |             |                 |
+| Wrecked          |  91 |             |                 |
+|------------------|-----|-------------|-----------------|
+| Sum              |  309|             |                 |
+
+
+$$\bar{x} = 309/3 = 103$$
+
+$$s_x = \sqrt{\sum_{i=1}^n(x-\bar{x})^2}/(3-1) = $$
+
+\normalsize
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+Name (Print and Sign): ________________________________________

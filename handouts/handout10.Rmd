@@ -1,0 +1,34 @@
+---
+output: pdf_document
+classoption: landscape
+---
+
+\pagenumbering{gobble}
+
+```{r setup8, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(pander)
+load("../example_datasets/crimes/crimes.RData")
+```
+
+# Handout 10: Draw a straight line through the scatterplot and measure slope and intercept
+```{r echo=FALSE, fig.width=6, fig.height=4.75, out.width='600px', out.height='475px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+par(cex.lab=0.8, cex.axis=0.6)
+plot(-10,-10,
+     xlim=c(0,15),
+     ylim=c(-1000,5500),
+     xlab="Unemployment Rate",
+     ylab="Property crimes (per 100,000)",
+     xaxt="n", yaxt="n", bty="n")
+axis(1, at=seq(from=0, to=15, by=1))
+axis(2, at=seq(from=-1000, to=5000, by=500), las=1)
+abline(v=seq(from=0,to=15,by=1), lty=2, col="grey")
+abline(h=seq(from=-1000,to=5000,by=500), lty=2, col="grey")
+abline(v=0, lty=1, lwd=3)
+abline(h=0, lty=1, lwd=3)
+points(crimes$Unemployment,crimes$Property, pch=21, bg="grey70", cex=1.2)
+```
+
+&nbsp; 
+
+Name (Print and Sign): ________________________________________

@@ -1,0 +1,33 @@
+---
+output: pdf_document
+classoption: landscape
+---
+
+\pagenumbering{gobble}
+
+```{r setup1, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+load("../example_datasets/sex/sex.RData")
+```
+
+# Handout 1: Draw a barplot of the distribution of religious affiliation
+
+```{r}
+round(table(sex$relig)/sum(table(sex$relig)),2)*100
+```
+
+&nbsp;
+
+
+```{r echo=FALSE, fig.width=6, fig.height=4, out.width='600px', out.height='400px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+par(cex.lab=0.6, cex.axis=0.6)
+barplot(rep(NA, 6), ylim=c(0,30), las=1, ylab="Percent",
+        names.arg=c("Fund\nProtestant","Mainline\nProtestant","Catholic","Jewish","Other","None"))
+abline(h=0, lty=1)
+abline(h=seq(from=1,to=29,by=1), lty=2, lwd=0.5, col="grey")
+```
+
+&nbsp;
+
+
+Name (Print and Sign): ________________________________________

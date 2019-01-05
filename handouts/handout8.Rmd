@@ -1,0 +1,39 @@
+---
+output: pdf_document
+classoption: landscape
+---
+
+\pagenumbering{gobble}
+
+```{r setup15, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+load("../example_datasets/politics/politics.RData")
+```
+
+#Handout 8: Confidence interval for proportion supporting gay marriage
+
+```{r} 
+table(politics$gaymarriage)
+#sum up to get n
+1543+1989+2382
+#estimate p-hat
+round(2382/5914,2)
+#t-stat
+qt(0.975, 5914-1)
+```
+
+\Large
+
+$$\texttt{standard error} = \sqrt{\hat{p}*(1-\hat{p})/n} = $$
+
+&nbsp;
+
+$$\texttt{confidence interval} = \hat{p} \pm t * (\texttt{standard error}) = $$
+
+&nbsp;
+
+&nbsp;
+
+\normalsize
+Name (Print and Sign): ________________________________________
+

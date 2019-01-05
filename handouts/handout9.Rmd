@@ -1,0 +1,48 @@
+---
+output: pdf_document
+classoption: landscape
+---
+
+\pagenumbering{gobble}
+
+```{r setup16, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+load("../example_datasets/politics//politics.RData")
+```
+
+# Handout 9: Hypothesis test for a slope
+
+```{r}
+round(summary(lm(income~age, data=politics))$coef[,1:2],3)
+```
+
+&nbsp;
+
+```{r echo=FALSE, fig.width=6, fig.height=3, out.width='600px', out.height='300px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+x <- seq(from=-5,to=5,by=0.01)
+se <- 1
+y <- (1/(se*sqrt(2*pi)))*exp(-1*(x)^2/(2*se^2))
+par(cex.lab=0.8, cex.axis=0.25, cex.main=0.7)
+plot(x,y,type="l",xlab="",yaxt="n",ylab="", 
+     main="Sampling distribution of regression slope, assuming null hypothesis is true",
+     bty="n", xaxt="n", yaxt="n")
+tstats <- seq(from=-5,to=5,by=0.5)
+xticks <- round(tstats*0.042,3)
+axis(1, at=tstats, labels=paste(xticks,"\n(t=",tstats,")",sep=""))
+abline(v=1.96,lwd=1,col="black", lty=2)
+abline(v=-1.96,lwd=1,col="black", lty=2)
+polygon(c(x[1],x[1:305],-1.96),c(-0.005, y[1:305],-0.005), col="grey")
+polygon(c(x[1001],x[1001:697],1.96),c(-0.005, y[1001:697],-0.005), col="grey")
+abline(h=0-0.005)
+mtext(expression(H[0]: beta[1]==0),3)
+```
+
+&nbsp;
+
+\Large
+Reject&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;Fail to Reject
+
+&nbsp;
+
+\normalsize
+Name (Print and Sign): ________________________________________

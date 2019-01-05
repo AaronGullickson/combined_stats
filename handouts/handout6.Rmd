@@ -1,0 +1,43 @@
+---
+output: pdf_document
+classoption: landscape
+---
+
+\pagenumbering{gobble}
+
+# Handout 6: Calculate marginal distributions, conditional distribution of rating by genre, and odds ratio
+
+\huge 
+
+|**Rating**    |**SciFi/Fantasy**| **Action**| **Total** |
+|:-------------|----------------:|----------:|----------:|
+|R or greater  |66               |    106    |           |
+|PG 13 or less |196              |   101     |           | 
+|**Total**     |                 |           |           |      
+
+\Large
+
+Distribution of ratings for sciFi/fantasy movies: 
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+Distribution of ratings for action movies:
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+Odds ratio:
+
+&nbsp;
+
+&nbsp;
+
+\normalsize
+Name (Print and Sign): ________________________________________

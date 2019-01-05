@@ -1,0 +1,50 @@
+---
+output: pdf_document
+classoption: landscape
+---
+
+\pagenumbering{gobble}
+
+```{r setup9, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+load("../example_datasets/politics/politics.RData")
+```
+
+# Handout 11: Interpret a slope and intercept
+
+\Large
+
+```{r}
+coef(lm(income~I(age-18), data=politics))
+```
+
+&nbsp;
+
+Interpret the slope in a single sentence:
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+Interpret the intercept in a single sentence:
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+&nbsp;
+
+
+&nbsp;
+
+\normalsize 
+Name (Print and Sign): ________________________________________
+

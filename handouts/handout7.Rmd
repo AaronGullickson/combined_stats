@@ -1,0 +1,41 @@
+---
+output: pdf_document
+classoption: landscape
+---
+
+\pagenumbering{gobble}
+
+```{r setup7, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(pander)
+load("../example_datasets/sex/sex.RData")
+```
+
+# Handout 7: Draw comparative boxplots of age by religious affiliation
+
+\large
+
+```{r echo=FALSE}
+x <- tapply(sex$age, sex$relig, quantile)
+x <- round(as.data.frame(cbind(x[[1]],x[[2]],x[[3]],x[[4]],x[[5]],x[[6]])),0)
+colnames(x) <- levels(sex$relig)
+colnames(x)[[1]] <- "Fund P"
+colnames(x)[[2]] <- "Main P"
+#knitr::kable(x)
+pander(x)
+```
+
+\normalsize
+
+```{r echo=FALSE, fig.width=6, fig.height=4, out.width='600px', out.height='400px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+par(cex.lab=0.6, cex.axis=0.6)
+barplot(rep(NA, 6), ylim=c(15,90), las=1, ylab="Age", yaxt="n",
+        names.arg=c("Fund\nProtestant","Mainline\nProtestant","Catholic","Jewish","Other","None"))
+abline(h=0)
+axis(2, at=seq(from=10,to=90,by=10))
+abline(h=seq(from=15,to=90,by=5), lty=2, lwd=0.5, col="grey")
+```
+
+&nbsp; 
+
+Name (Print and Sign): ________________________________________

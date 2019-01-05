@@ -1,0 +1,33 @@
+---
+output: pdf_document
+classoption: landscape
+---
+
+\pagenumbering{gobble}
+
+```{r setup4, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+load("../example_datasets/sex/sex.RData")
+```
+
+# Handout 4: Draw a boxplot of age distribution
+
+```{r}
+quantile(sex$age)
+```
+
+
+&nbsp;
+
+
+```{r echo=FALSE, fig.width=6, fig.height=3, out.width='600px', out.height='300px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+par(cex.lab=0.6, cex.axis=0.6, mar=c(2,10,2,10))
+barplot(rep(NA, 1), ylim=c(10,90), las=1, ylab="age in years", yaxt="n")
+axis(2, at=seq(from=10,to=90,by=10), las=1)
+abline(h=0)
+abline(h=seq(from=15,to=90,by=5), lty=2, lwd=0.5, col="grey")
+```
+
+&nbsp;
+
+Name (Print and Sign): ________________________________________

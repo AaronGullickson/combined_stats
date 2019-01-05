@@ -1,0 +1,58 @@
+---
+output: pdf_document
+classoption: landscape
+---
+
+\pagenumbering{gobble}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r child = 'handout1.Rmd'}
+```
+
+```{r child = 'handout2.Rmd'}
+```
+
+```{r child = 'handout3.Rmd'}
+```
+
+```{r child = 'handout4.Rmd'}
+```
+
+```{r child = 'handout5.Rmd'}
+```
+
+```{r child = 'handout6.Rmd'}
+```
+
+```{r child = 'handout7.Rmd'}
+```
+
+```{r child = 'handout8.Rmd'}
+```
+
+```{r child = 'handout9.Rmd'}
+```
+
+```{r child = 'handout10.Rmd'}
+```
+
+```{r child = 'handout11.Rmd'}
+```
+
+```{r child = 'handout12.Rmd'}
+```
+
+```{r child = 'handout13.Rmd'}
+```
+
+```{r child = 'handout14.Rmd'}
+```
+
+```{r child = 'handout15.Rmd'}
+```
+
+```{r child = 'handout16.Rmd'}
+```
