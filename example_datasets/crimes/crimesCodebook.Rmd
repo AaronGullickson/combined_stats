@@ -30,9 +30,9 @@ stargazer(crimes, summary.stat=c("n","mean","sd","min","p25","median","p75","max
           type="latex", title="Summary statistics for all quantitative variables in the crimes dataset")
 ```
 
-#Variable Descriptions
+# Variable Descriptions
 
-##Violent
+## Violent
 
 The violent crime rate. This includes the crimes of murder, rape, robbery, and aggravated assault. Both of our crime rates are determined by taking the number of crimes and dividing by the population of the state and then multiplying by 100,000 like so:
 
@@ -45,7 +45,7 @@ hist(crimes$Violent, col="red", breaks=seq(from=100,to=1400,by=100),
      xlab="crime rate per 100,000", main="histogram of violent crime rate", ylab="frequency")
 ```
 
-##Property
+## Property
 
 The property crime rate. This includes the crimes of burglarly, larceny, and motor vehicle theft. Like the violent crime rate, the property crime rate can be intrepreted as the number of property crimes per year per 100,000 population. 
 
@@ -54,7 +54,7 @@ hist(crimes$Property, col="darkgreen", breaks=seq(from=1500,to=5000,by=100),
      xlab="crime rate per 100,000", main="histogram of property crime rate", ylab="frequency")
 ```
 
-##MedianAge
+## MedianAge
 
 The median age of the population in the state. This is potentially important because we know that criminal behavior is strongly related to age. People commit far less crime as they get older. Can you guess what the youngest state is? (hint: populations tend to be younger when fertility is higher) 
 
