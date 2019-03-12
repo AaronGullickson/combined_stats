@@ -192,7 +192,7 @@ Try interpreting these numbers from a regression model where the dependent varia
 $$boxo\hat{f}fice_i=18.32+0.56(meter_i)$$
 
 >- Intercept: The model predicts that movies that receive a zero on the Tomato Meter will make 18.32 million dollars, on average.
->- Slope: The model predicts that a one percentage point increase in the Tomato Meter is associated with a \$56sum0,000 increase in box office returns, on average.  
+>- Slope: The model predicts that a one percentage point increase in the Tomato Meter is associated with a \$560,000 increase in box office returns, on average.  
 >- How much more money do we expect you to make when you go from the worst rated movie (Tomato Meter=0) to the best (Tomato Meter=100)?
 
 ##   Nonsensical Intercepts

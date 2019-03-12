@@ -26,7 +26,7 @@ load("example_datasets/sex/sex.RData")
 load("example_datasets/crimes/crimes.RData")
 load("example_datasets/titanic/titanic.RData")
 load("example_datasets/politics/politics.RData")
-load("example_datasets/students/studentsCurrent.RData")
+load("example_datasets/students/studentsFall2017.RData")
 load("example_datasets/students/studentsamplingdist.RData")
 ```
 
@@ -58,7 +58,7 @@ I can use `prop.table` and `table` to quickly get this proportion.
 round(prop.table(table(politics$brcitizen)),3)
 ```
 
-About 31.9% of respondents to the ANES sample favored ending birthright citizenship.
+About 31.7% of respondents to the ANES sample favored ending birthright citizenship.
 
 ----
 <div class="footer" style="top:575px;">

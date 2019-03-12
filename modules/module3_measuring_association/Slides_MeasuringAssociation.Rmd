@@ -338,10 +338,10 @@ boxplot(income~president, data=politics, ylab="income ($1000s)", col="darkgreen"
 
 ```{r}
 tapply(politics$income,politics$president,mean)
-79.62903-76.93815
+80.23021-77.33414
 ```
 
-Respondents who voted for Hillary Clinton come from households with incomes $2691 higher than those who voted for Donald Trump, on average. 
+Respondents who voted for Hillary Clinton come from households with incomes $2896 higher than those who voted for Donald Trump, on average. 
 
 ## Calculating median differences
 <div class="footer">
