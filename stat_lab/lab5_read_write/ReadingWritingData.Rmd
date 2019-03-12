@@ -117,7 +117,7 @@ census1980 <- read_fwf("resources/usa_00074.dat.gz",
                                                                    "bpl_sp","yrimmig_sp","language_sp",
                                                                    "educd_sp")),
                        col_types = cols(.default = "i"), #ensure that all variables are read in as integers
-                       progress = FALSE)
+                       progress = TRUE)
 census1980
 ```
 
