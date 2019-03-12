@@ -1,0 +1,668 @@
+R00001.00    [PUBID]                                        Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             PUBID, YOUTH CASE IDENTIFICATION CODE
+ 
+COMMENT: YOUTH CASE IDENTIFICATION CODE
+ 
+       0           0
+     998           1 TO 999
+     999        1000 TO 1999
+     997        2000 TO 2999
+     996        3000 TO 3999
+     998        4000 TO 4999
+     996        5000 TO 5999
+     994        6000 TO 6999
+     994        7000 TO 7999
+     989        8000 TO 8999
+      23        9000 TO 9999
+  -------
+    8984
+ 
+Refusal(-1)            0
+Don't Know(-2)         0
+TOTAL =========>    8984   VALID SKIP(-4)       0     NON-INTERVIEW(-5)       0
+ 
+Min:              1        Max:           9022        Mean:              4504.3
+ 
+Hard Minimum: [0]  Hard Maximum: [99999999]
+ 
+Lead In: R72976.00[Default]
+Default Next Question: R05363.00
+--------------------------------------------------------------------------------
+R03236.00    [YSAQ-007]                                     Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             # DAYS PER WEEK TYPICALLY EAT DINNER WITH FAMILY
+ 
+In a typical week, how many days from 0 to 7 do you eat dinner with your family?
+ 
+UNIVERSE: R <= 14 at end of prev year; lives with parent/guardian
+ 
+     461           0
+     164           1
+     240           2
+     337           3
+     393           4
+     843           5
+     669           6
+    2249           7
+  -------
+    5356
+ 
+Refusal(-1)           12
+Don't Know(-2)        11
+Invalid Skip(-3)       2
+TOTAL =========>    5381   VALID SKIP(-4)    3603     NON-INTERVIEW(-5)       0
+ 
+Min:              0        Max:              7        Mean:                5.08
+ 
+Hard Minimum: [0]  Hard Maximum: [7]
+Soft Minimum: [0]  Soft Maximum: [7]
+ 
+Lead In: R03235.00[1:1]
+Default Next Question: R03237.00
+--------------------------------------------------------------------------------
+R03238.00    [YSAQ-009]                                     Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             # DAYS PER WEEK TYPICALLY HAVE FUN WITH FAMILY
+ 
+In a typical week, how many days from 0 to 7 do you do something fun as a family
+such as play a game, go to a sporting event, go swimming and so forth?
+ 
+UNIVERSE: R <= 14 at end of prev year; lives with parent/guardian
+ 
+     894           0
+     870           1
+    1005           2
+     821           3
+     627           4
+     568           5
+     173           6
+     398           7
+  -------
+    5356
+ 
+Refusal(-1)            7
+Don't Know(-2)        15
+Invalid Skip(-3)       2
+TOTAL =========>    5380   VALID SKIP(-4)    3604     NON-INTERVIEW(-5)       0
+ 
+Min:              0        Max:              7        Mean:                2.71
+ 
+Hard Minimum: [0]  Hard Maximum: [7]
+Soft Minimum: [0]  Soft Maximum: [7]
+ 
+Lead In: R03237.00[Default]
+Default Next Question: R03239.00
+--------------------------------------------------------------------------------
+R05363.00    [KEY!SEX]                                      Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             KEY!SEX, RS GENDER (SYMBOL)
+ 
+COMMENT: Gender of Youth
+ 
+    4599       1 Male
+    4385       2 Female
+       0       0 No Information
+  -------
+    8984
+ 
+Refusal(-1)            0
+Don't Know(-2)         0
+TOTAL =========>    8984   VALID SKIP(-4)       0     NON-INTERVIEW(-5)       0
+ 
+Lead In: R00001.00[Default]
+Default Next Question: R05364.00
+--------------------------------------------------------------------------------
+R05364.01    [KEY!BDATE_M]                                  Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             KEY!BDATE, RS BIRTHDATE MONTH/YEAR (SYMBOL)
+ 
+COMMENT: Birthdate of Youth
+ 
+     816           1: January
+     693           2: February
+     760           3: March
+     659           4: April
+     689           5: May
+     720           6: June
+     762           7: July
+     782           8: August
+     839           9: September
+     765          10: October
+     763          11: November
+     736          12: December
+  -------
+    8984
+ 
+Refusal(-1)            0
+Don't Know(-2)         0
+TOTAL =========>    8984   VALID SKIP(-4)       0     NON-INTERVIEW(-5)       0
+ 
+Min:              1        Max:             12        Mean:                6.56
+ 
+Earliest (NonMissing): JANUARY/1980
+Latest   (NonMissing): DECEMBER/1984
+ 
+Hard Minimum: [01/01/1880]  Hard Maximum: [the current date]
+ 
+Lead In: R05363.00[Default]
+Default Next Question: R05366.00
+--------------------------------------------------------------------------------
+R05364.02    [KEY!BDATE_Y]                                  Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             KEY!BDATE, RS BIRTHDATE MONTH/YEAR (SYMBOL)
+ 
+COMMENT: Birthdate of Youth
+ 
+Refusal(-1)            0
+Don't Know(-2)         0
+TOTAL =========>    8984   VALID SKIP(-4)       0     NON-INTERVIEW(-5)       0
+ 
+Min:           1980        Max:           1984        Mean:             1982.01
+ 
+Earliest (NonMissing): JANUARY/1980
+Latest   (NonMissing): DECEMBER/1984
+ 
+Hard Minimum: [01/01/1880]  Hard Maximum: [the current date]
+ 
+Lead In: R05363.00[Default]
+Default Next Question: R05366.00
+--------------------------------------------------------------------------------
+R05386.00    [KEY!ETHNICITY]                                Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             KEY!ETHNICITY, IS R HISPANIC (SYMBOL)
+ 
+COMMENT: Is R Hispanic?
+ 
+    1899       1 Yes
+    7061       0 No
+  -------
+    8960
+ 
+Refusal(-1)            9
+Don't Know(-2)        15
+TOTAL =========>    8984   VALID SKIP(-4)       0     NON-INTERVIEW(-5)       0
+ 
+Lead In: R05382.00[Default]
+Default Next Question: R05387.00
+--------------------------------------------------------------------------------
+R05387.00    [KEY!RACE]                                     Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             KEY!RACE, RACE OF R (SYMBOL)
+ 
+COMMENT: KEY RACE
+ 
+    5232       1 White
+    2388       2 Black or African American
+      61       3 American Indian, Eskimo, or Aleut
+     160       4 Asian or Pacific Islander
+    1063       5 Something else? (SPECIFY)
+       0       0 No information
+  -------
+    8904
+ 
+Refusal(-1)           17
+Don't Know(-2)        63
+TOTAL =========>    8984   VALID SKIP(-4)       0     NON-INTERVIEW(-5)       0
+ 
+Lead In: R05386.00[Default]
+Default Next Question: R14826.00
+--------------------------------------------------------------------------------
+R12045.00    [CV_INCOME_GROSS_YR]                           Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             GROSS HH INCOME IN PAST YEAR
+ 
+Gross household income in the previous year.
+/*Topcoded at the 2% level.  Truncated values are applied to the top 2 percent 
+of respondents with valid non-missing responses.  The average value of the top 2
+percent of cases is used as the value.  Negative values of -1, -2, -3, -4, or -5
+do not reflect negative monetary amounts; these numbers represent standard 
+NLSY97 codes.*/
+ 
+       3     -999999 TO -3000: < -2999
+       0       -2999 TO -2000
+       0       -1999 TO -1000
+       0        -999 TO -1
+     100           0
+      71           1 TO 1000
+      41        1001 TO 2000
+      98        2001 TO 3000
+     139        3001 TO 5000
+     465        5001 TO 10000
+     925       10001 TO 20000
+     819       20001 TO 30000
+     835       30001 TO 40000
+     765       40001 TO 50000
+     834       50001 TO 65000
+     610       65001 TO 80000
+     397       80001 TO 100000
+     321      100001 TO 150000
+      32      150001 TO 200000
+     133      200001 TO 999999: 200001+
+  -------
+    6588
+ 
+Refusal(-1)            0
+Don't Know(-2)         0
+Invalid Skip(-3)    1458
+TOTAL =========>    8046   VALID SKIP(-4)     938     NON-INTERVIEW(-5)       0
+ 
+Min:         -48100        Max:         246474        Mean:             46361.7
+ 
+Hard Minimum: [0]  Hard Maximum: [9999999]
+ 
+Lead In: R13027.00[Default]
+Default Next Question: R12046.00
+--------------------------------------------------------------------------------
+R12047.00    [CV_HH_NET_WORTH_P]                            Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             NET WORTH OF HOUSEHOLD ACCORDING TO PARENT
+ 
+Household net worth.
+ 
+COMMENT: from parent interview
+/*Topcoded at predetermined values.  Respondents with household net worth values
+above $600,000 were topcoded to a value of $600,000.  Negative values of -1, -2,
+-3, -4, or -5 do not reflect negative monetary amounts; these numbers represent 
+standard NLSY97 codes.*/
+ 
+     286     -999999 TO -3000: < -2999
+      37       -2999 TO -2000
+      56       -1999 TO -1000
+      47        -999 TO -6
+       3           0
+     313           1 TO 1000
+     273        1001 TO 2000
+     160        2001 TO 3000
+     426        3001 TO 5000
+     507        5001 TO 10000
+     602       10001 TO 20000
+     435       20001 TO 30000
+     334       30001 TO 40000
+     285       40001 TO 50000
+     393       50001 TO 65000
+     304       65001 TO 80000
+     321       80001 TO 100000
+     567      100001 TO 150000
+     350      150001 TO 200000
+     677      200001 TO 500000
+     243      500001 TO 1000000
+       0     1000001 TO 1500000
+       0     1500001 TO 2000000
+       0     2000001 TO 999999999: 2000001+
+  -------
+    6619
+ 
+Refusal(-1)            0
+Don't Know(-2)         0
+Invalid Skip(-3)    1314
+TOTAL =========>    7933   VALID SKIP(-4)    1051     NON-INTERVIEW(-5)       0
+ 
+Min:        -935251        Max:         600000        Mean:            90180.98
+ 
+Hard Minimum: [0]  Hard Maximum: [9999999]
+ 
+Lead In: R12046.00[Default]
+Default Next Question: R12048.00
+--------------------------------------------------------------------------------
+R12053.00    [CV_YTH_REL_HH_CURRENT]                        Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             RS RELATIONSHIP TO HOUSEHOLD PARENT FIGURE
+ 
+Relationship of the parent figure(s)/guardian(s) in household to the youth as of
+the survey date.
+Note:  This variable was renamed in round 2; the round 1 name was 
+CV_HH_REL_BIRTH.
+ 
+    4395       1 Both biological parents
+     991       2 Two parents, biological mother
+     214       3 Two parents, biological father
+    2531       4 Biological mother only
+     295       5 Biological father only
+     103       6 Adoptive parent(s)
+      44       7 Foster parent(s)
+     197       8 No parents, grandparents
+     114       9 No parents, other relatives
+      69      10 Anything else
+  -------
+    8953
+ 
+Refusal(-1)            0
+Don't Know(-2)         0
+Invalid Skip(-3)      31
+TOTAL =========>    8984   VALID SKIP(-4)       0     NON-INTERVIEW(-5)       0
+ 
+Lead In: R12052.00[Default]
+Default Next Question: R12054.00
+--------------------------------------------------------------------------------
+R12175.00    [CV_URBAN-RURAL]                               Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             CURRENT RESIDENCE IN URBAN OR RURAL AREA
+ 
+Residence in an urban or a rural area as of the survey date.
+ 
+    2030       0 Rural
+    6574       1 Urban
+     380       2 Unknown
+  -------
+    8984
+ 
+Refusal(-1)            0
+Don't Know(-2)         0
+TOTAL =========>    8984   VALID SKIP(-4)       0     NON-INTERVIEW(-5)       0
+ 
+Lead In: R12135.00[Default]
+Default Next Question: R12176.00
+--------------------------------------------------------------------------------
+R13024.00    [CV_HGC_BIO_DAD]                               Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             BIOLOGICAL FATHERS HIGHEST GRADE COMPLETED
+ 
+Highest grade completed by respondent's biological father (includes both 
+residential and non-residential fathers).
+ 
+       0       0 NONE
+       1       1 1ST GRADE
+      19       2 2ND GRADE
+      68       3 3RD GRADE
+      59       4 4TH GRADE
+      68       5 5TH GRADE
+     188       6 6TH GRADE
+      92       7 7TH GRADE
+     169       8 8TH GRADE
+     240       9 9TH GRADE
+     329      10 10TH GRADE
+     396      11 11TH GRADE
+    2728      12 12TH GRADE
+     381      13 1ST YEAR COLLEGE
+     736      14 2ND YEAR COLLEGE
+     176      15 3RD YEAR COLLEGE
+     840      16 4TH YEAR COLLEGE
+     113      17 5TH YEAR COLLEGE
+     270      18 6TH YEAR COLLEGE
+      85      19 7TH YEAR COLLEGE
+     162      20 8TH YEAR COLLEGE OR MORE
+       8      95 UNGRADED
+  -------
+    7128
+ 
+Refusal(-1)            0
+Don't Know(-2)         0
+Invalid Skip(-3)    1188
+TOTAL =========>    8316   VALID SKIP(-4)     668     NON-INTERVIEW(-5)       0
+ 
+Lead In: R12044.00[Default]
+Default Next Question: R13025.00
+--------------------------------------------------------------------------------
+R13025.00    [CV_HGC_BIO_MOM]                               Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             BIOLOGICAL MOTHERS HIGHEST GRADE COMPLETED
+ 
+Highest grade completed by respondent's biological mother (includes both 
+residential and non-residential mothers).
+ 
+       0       0 NONE
+       6       1 1ST GRADE
+      29       2 2ND GRADE
+      54       3 3RD GRADE
+      52       4 4TH GRADE
+      57       5 5TH GRADE
+     222       6 6TH GRADE
+      69       7 7TH GRADE
+     205       8 8TH GRADE
+     273       9 9TH GRADE
+     428      10 10TH GRADE
+     562      11 11TH GRADE
+    3038      12 12TH GRADE
+     642      13 1ST YEAR COLLEGE
+    1002      14 2ND YEAR COLLEGE
+     248      15 3RD YEAR COLLEGE
+     908      16 4TH YEAR COLLEGE
+     157      17 5TH YEAR COLLEGE
+     227      18 6TH YEAR COLLEGE
+      34      19 7TH YEAR COLLEGE
+      77      20 8TH YEAR COLLEGE OR MORE
+       6      95 UNGRADED
+  -------
+    8296
+ 
+Refusal(-1)            0
+Don't Know(-2)         0
+Invalid Skip(-3)     523
+TOTAL =========>    8819   VALID SKIP(-4)     165     NON-INTERVIEW(-5)       0
+ 
+Lead In: R13024.00[Default]
+Default Next Question: R13026.00
+--------------------------------------------------------------------------------
+R13026.00    [CV_HGC_RES_DAD]                               Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             RESIDENTIAL FATHERS HIGHEST GRADE COMPLETED
+ 
+Highest grade completed by respondent's residential father (includes both 
+biological and non-biological fathers).
+ 
+       0       0 NONE
+       1       1 1ST GRADE
+      12       2 2ND GRADE
+      51       3 3RD GRADE
+      56       4 4TH GRADE
+      51       5 5TH GRADE
+     150       6 6TH GRADE
+      69       7 7TH GRADE
+     117       8 8TH GRADE
+     186       9 9TH GRADE
+     195      10 10TH GRADE
+     277      11 11TH GRADE
+    1917      12 12TH GRADE
+     345      13 1ST YEAR COLLEGE
+     720      14 2ND YEAR COLLEGE
+     164      15 3RD YEAR COLLEGE
+     780      16 4TH YEAR COLLEGE
+     119      17 5TH YEAR COLLEGE
+     255      18 6TH YEAR COLLEGE
+      86      19 7TH YEAR COLLEGE
+     153      20 8TH YEAR COLLEGE OR MORE
+       3      95 UNGRADED
+  -------
+    5707
+ 
+Refusal(-1)            0
+Don't Know(-2)         0
+Invalid Skip(-3)     367
+TOTAL =========>    6074   VALID SKIP(-4)    2910     NON-INTERVIEW(-5)       0
+ 
+Lead In: R13025.00[Default]
+Default Next Question: R13027.00
+--------------------------------------------------------------------------------
+R13027.00    [CV_HGC_RES_MOM]                               Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             RESIDENTIAL MOTHERS HIGHEST GRADE COMPLETED
+ 
+Highest grade completed by respondent's residential mother (includes both 
+biological and non-biological mothers).
+ 
+       0       0 NONE
+       3       1 1ST GRADE
+      28       2 2ND GRADE
+      51       3 3RD GRADE
+      54       4 4TH GRADE
+      54       5 5TH GRADE
+     221       6 6TH GRADE
+      67       7 7TH GRADE
+     183       8 8TH GRADE
+     260       9 9TH GRADE
+     373      10 10TH GRADE
+     517      11 11TH GRADE
+    2870      12 12TH GRADE
+     639      13 1ST YEAR COLLEGE
+     996      14 2ND YEAR COLLEGE
+     251      15 3RD YEAR COLLEGE
+     902      16 4TH YEAR COLLEGE
+     163      17 5TH YEAR COLLEGE
+     246      18 6TH YEAR COLLEGE
+      38      19 7TH YEAR COLLEGE
+      89      20 8TH YEAR COLLEGE OR MORE
+       5      95 UNGRADED
+  -------
+    8010
+ 
+Refusal(-1)            0
+Don't Know(-2)         0
+Invalid Skip(-3)     316
+TOTAL =========>    8326   VALID SKIP(-4)     658     NON-INTERVIEW(-5)       0
+ 
+Lead In: R13026.00[Default]
+Default Next Question: R12045.00
+--------------------------------------------------------------------------------
+R14856.00    [FP_YHROUTIN]                                  Survey Year: 1997
+  PRIMARY VARIABLE
+
+ 
+             INDEX OF FAMILY ROUTINES, YOUTH REPORT
+ 
+Youth Report, Index of Family Routines. Scores range from 0 to 28; higher scores
+indicate more days spent in routine activities with the family.
+ 
+See Appendix 9 of the Codebook Supplement for more information.
+ 
+     221           0 TO 4
+     406           5 TO 8
+     900           9 TO 12
+    1703          13 TO 16
+    1321          17 TO 20
+     603          21 TO 24
+     218          25 TO 28
+  -------
+    5372
+ 
+Refusal(-1)            0
+Don't Know(-2)         0
+TOTAL =========>    5372   VALID SKIP(-4)    3612     NON-INTERVIEW(-5)       0
+ 
+Min:              0        Max:             28        Mean:               15.04
+ 
+Hard Minimum: [0]  Hard Maximum: [28]
+ 
+Lead In: R14855.00[Default]
+Default Next Question: R14857.00
+--------------------------------------------------------------------------------
+S49210.00    [YPOL-105]                                     Survey Year: 2004
+  PRIMARY VARIABLE
+
+ 
+             INTEREST IN GOVERNMENT AND PUBLIC AFFAIRS
+ 
+Some people seem to follow what's going on in government and public affairs most
+of the time, whether there's an election going on or not. Others aren't that 
+interested. Would you say you follow what's going on in government and public 
+affairs most of the time, some of the time, only now and then, or hardly at all?
+ 
+UNIVERSE: All
+ 
+    1589       1 MOST OF THE TIME
+    2522       2 SOME OF THE TIME
+    1617       3 ONLY NOW AND THEN
+    1756       4 HARDLY AT ALL
+  -------
+    7484
+ 
+Refusal(-1)           11
+Don't Know(-2)         6
+TOTAL =========>    7501   VALID SKIP(-4)       1     NON-INTERVIEW(-5)    1482
+ 
+Lead In: S49202.00[Default] S49209.00[Default]  S49204.00[1:2]
+Default Next Question: S49211.00
+--------------------------------------------------------------------------------
+S49211.00    [YPOL-110]                                     Survey Year: 2004
+  PRIMARY VARIABLE
+
+ 
+             DID R VOTE IN NOVEMBER, 2004?
+ 
+Let's talk about [the recent election/the election last November]. In talking to
+people about elections, we often find that a lot of people were not able to vote
+because they weren't registered, they were sick, or they just didn't have time. 
+Which of the following statements best describes you:
+ 
+One, I did not vote (in the election [this/last] November);
+Two, I thought about voting this time, but didn't;
+Three, I usually vote, but didn't this time; or
+Four, I am sure I voted?
+ 
+UNIVERSE: All
+ 
+    2013       1 I DID NOT VOTE (IN THE ELECTION THIS NOVEMBER)
+    1067       2 I THOUGHT ABOUT VOTING THIS TIME, BUT DIDN'T
+     330       3 I USUALLY VOTE, BUT DIDN'T THIS TIME
+    3768       4 I AM SURE I VOTED   (Go To S49246.00)
+     298       5 R NOT ELIGIBLE TO VOTE   (Go To S49246.00)
+  -------
+    7476
+ 
+Refusal(-1)           21
+Don't Know(-2)         4
+TOTAL =========>    7501   VALID SKIP(-4)       1     NON-INTERVIEW(-5)    1482
+ 
+Lead In: S49210.00[Default]
+Default Next Question: S49214.00
+--------------------------------------------------------------------------------
+Z90839.00    [CVC_HIGHEST_DEGREE_EVER]                      Survey Year: XRND
+  PRIMARY VARIABLE
+
+ 
+             HIGHEST DEGREE RECEIVED
+ 
+CUMULATIVE VARIABLE: The highest degree received. This variable is created for 
+all respondents regardless of interview status in the current round; CVC_RND 
+provides the actual round of the respondent's most recent interview.
+ 
+    1000       0 None
+    1127       1 GED
+    3767       2 High school diploma (Regular 12 year program)
+     703       3 Associate/Junior college (AA)
+    1674       4 Bachelor's degree (BA, BS)
+     532       5 Master's degree (MA, MS)
+      43       6 PhD
+     106       7 Professional degree (DDS, JD, MD)
+  -------
+    8952
+ 
+Refusal(-1)            0
+Don't Know(-2)         0
+Invalid Skip(-3)      32
+TOTAL =========>    8984   VALID SKIP(-4)       0     NON-INTERVIEW(-5)       0
+ 
+Lead In: Z90838.00[Default]
+Default Next Question: Z90840.00

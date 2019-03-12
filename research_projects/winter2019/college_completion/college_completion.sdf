@@ -1,0 +1,25 @@
+
+
+Reference
+Number     Year  Variable Description                                      Question Name            
+------------------------------------------------------------------------------------------------------
+R00001.00  1997  PUBID, YOUTH CASE IDENTIFICATION CODE                     PUBID                    
+R05363.00  1997  KEY!SEX, RS GENDER (SYMBOL)                               KEY!SEX                  
+R05364.01  1997  KEY!BDATE, RS BIRTHDATE MONTH/YEAR (SYMBOL)               KEY!BDATE_M              
+R05364.02  1997  KEY!BDATE, RS BIRTHDATE MONTH/YEAR (SYMBOL)               KEY!BDATE_Y              
+R05386.00  1997  KEY!ETHNICITY, IS R HISPANIC (SYMBOL)                     KEY!ETHNICITY            
+R05387.00  1997  KEY!RACE, RACE OF R (SYMBOL)                              KEY!RACE                 
+R12045.00  1997  GROSS HH INCOME IN PAST YEAR                              CV_INCOME_GROSS_YR       
+R12047.00  1997  NET WORTH OF HOUSEHOLD ACCORDING TO PARENT                CV_HH_NET_WORTH_P        
+R12053.00  1997  RS RELATIONSHIP TO HOUSEHOLD PARENT FIGURE                CV_YTH_REL_HH_CURRENT    
+R12358.00  1997  SAMPLE TYPE.  CROSS-SECTIONAL OR OVERSAMPLE               CV_SAMPLE_TYPE           
+R13024.00  1997  BIOLOGICAL FATHERS HIGHEST GRADE COMPLETED                CV_HGC_BIO_DAD           
+R13025.00  1997  BIOLOGICAL MOTHERS HIGHEST GRADE COMPLETED                CV_HGC_BIO_MOM           
+R13026.00  1997  RESIDENTIAL FATHERS HIGHEST GRADE COMPLETED               CV_HGC_RES_DAD           
+R13027.00  1997  RESIDENTIAL MOTHERS HIGHEST GRADE COMPLETED               CV_HGC_RES_MOM           
+R14826.00  1997  KEY!RACE_ETHNICITY, COMBINED RACE AND ETHNICITY (SYMBOL)  KEY!RACE_ETHNICITY       
+Z90838.00  XRND  RS HIGHEST GRADE COMPLETED                                CVC_HGC_EVER             
+Z90839.00  XRND  HIGHEST DEGREE RECEIVED                                   CVC_HIGHEST_DEGREE_EVER  
+Z90842.00  XRND  DATE RECEIVED HIGH SCHOOL DIPLOMA                         CVC_HS_DIPLOMA           
+Z90844.00  XRND  DATE RECEIVED BACHELORS DEGREE                            CVC_BA_DEGREE            
+Z90851.00  XRND  ROUND LAST INTERVIEWED                                    CVC_RND                  
