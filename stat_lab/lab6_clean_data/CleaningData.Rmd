@@ -6,9 +6,9 @@ output:
 # Cleaning Data
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-load("ExampleDatasets/sex.RData")
-load("ExampleDatasets/crimes.RData")
-load("ExampleDatasets/movies.RData")
+load("../../example_datasets/sex/sex.RData")
+load("../../example_datasets/crimes/crimes.RData")
+load("../../example_datasets/movies/movies.RData")
 ```
 
 Cleaning data is a major component of any quantitative project. Rarely will data come to you in exactly the form that you want for your research question. In this section, we will focus on two of the most important components of data cleaning: (1) assigning and handling missing values, (2) recoding variables, and (3) aggregating data.
@@ -18,9 +18,9 @@ For this analysis, we will use a data extract from the 2015 [American Community 
 The data is a sample of individuals in the US. Here is what the data looks like:
 
 ```{r}
-library(readstata13)
-census <- read.dta13("resources/rawdata_ipums.dta")
-head(census)
+library(haven)
+census <- read_dta("../resources/rawdata_ipums.dta")
+census
 ```
 
 
@@ -48,7 +48,7 @@ The bracket-and-boolean approach is one of the standard ways to re-code certain 
 
 ```{r}
 #re-load the data to get the original SEI values
-census <- read.dta13("resources/rawdata_ipums.dta")
+census <- read_dta("../resources/rawdata_ipums.dta")
 census$sei <- ifelse(census$sei==0, NA, census$sei)
 summary(census$sei)
 ```
