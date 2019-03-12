@@ -81,6 +81,10 @@ Finally,  I will rename the variables to something more intuitive.
 colnames(ilo.sub) <- c("code","country_name","unemployment")
 dim(ilo.sub)
 head(ilo.sub)
+
+colnames(worldbank)[[1]] <- "wb_name"
+colnames(ilo.sub)[[2]] <- "ilo_name"
+ilo.sub <- ilo.sub[,c("ilo_name","code","unemployment")]
 ```
 
 ## Merging data
