@@ -27,7 +27,7 @@ plot(x,y,type="l",xlab="",yaxt="n",ylab="",
      main="Sampling distribution of regression slope, assuming null hypothesis is true",
      bty="n", xaxt="n", yaxt="n")
 tstats <- seq(from=-5,to=5,by=0.5)
-xticks <- round(tstats*0.042,3)
+xticks <- round(tstats*0.055,3)
 axis(1, at=tstats, labels=paste(xticks,"\n(t=",tstats,")",sep=""))
 abline(v=1.96,lwd=1,col="black", lty=2)
 abline(v=-1.96,lwd=1,col="black", lty=2)
