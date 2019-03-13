@@ -1,7 +1,0 @@
-rmd_files: ["index.Rmd","../modules/module1_understanding_data/Chapter_UnderstandingData.Rmd",
-            "../modules/module2_distribution_variable/Chapter_DistributionVariable.Rmd",
-            "../modules/module3_measuring_association/Chapter_MeasuringAssociation.Rmd",
-            "../modules/module4_statistical_inference/Chapter_StatisticalInference.Rmd",
-            "../modules/module5_building_models/Chapter_BuildingModels.Rmd",
-            "../stat_lab/lab1_using_scripts/UsingScripts.Rmd",
-            "../stat_lab/lab2_object_types/ObjectTypes.Rmd"]
