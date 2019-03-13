@@ -3,3 +3,4 @@
 **/.DS_Store
 textbook/_book/
 .Rproj.user
+modules/_*
