@@ -1,4 +1,4 @@
-\appendix
+# (APPENDIX) R Stat Lab (Advanced) {-}
 
 # Using Scripts
 

@@ -1,16 +1,15 @@
-#!/usr/bin/env Rscript
+#!/bin/bash
 
 ### Compile PDF of book 
-bookdown::render_book("index.Rmd", bookdown::pdf_book(number_section=FALSE),
-                      output_dir=".")
+rm stat_book.pdf
+Rscript -e 'bookdown::render_book("index.Rmd", bookdown::pdf_book(number_section=FALSE), output_dir=".")'
 
 ### Compile GitBook on blog
 
 # remove existing stat_book
 rm -r ~/Professional/blog/stat_book
 #create new stat_book
-bookdown::render_book("index.Rmd", 
-                      bookdown::gitbook(split_by="section+number", number_section=FALSE),
-                      output_dir="~/Professional/blog/stat_book")
-                      
+Rscript -e 'bookdown::render_book("index.Rmd", bookdown::gitbook(split_by="section+number", number_section=FALSE), output_dir="~/Professional/blog/stat_book")'
+
+#a little cleanup
 rm -r _bookdown_files

@@ -9,11 +9,7 @@ output:
   bookdown::gitbook:
     split_by: "section+number"
     number_section: false
-  bookdown::html_book:
-    split_by: "section+number"
-    number_section: false
-    toc: false
-#site: bookdown::bookdown_site
+site: bookdown::bookdown_site
 documentclass: book
 #bibliography: [book.bib, packages.bib]
 biblio-style: apalike
