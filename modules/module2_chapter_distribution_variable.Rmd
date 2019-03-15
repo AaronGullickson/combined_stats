@@ -76,14 +76,14 @@ pander(tab)
 
 Now that we have proportions/percents, we can use these values to construct a graphical display of the distribution. The **piechart** is a very common technique here. I am sure you have all seen examples of piecharts. In a piechart, you show each category's percentage as a slice of a pie. Here is the R code and output of a piechart for the passenger class variable: 
 
-```{r piechart_passclass}
+```{r piechart-passclass, fig.cap='Piechart of passenger class distribution on Titanic', fig.align='center'}
 p <- prop.table(table(titanic$pclass))
 pie(p)
 ```
 
 Although piecharts are popular, they are actually not a very good tool. In order to judge the relative size of the slices, your eye has to make judgments in two dimensions and it can often be difficult to decide which slice is bigger. In this case, for example, the relative size of first and second class are quite close. A better way to display the distribution is by using a **barplot** in which vertical (or horizontal) bars give the proportion or percent:
 
-```{r barplot_passclass, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+```{r barplot-passclass, fig.cap='Barplot of passenger class distribution on the Titanic', fig.align='center'}
 barplot(p, col="skyblue", las=1)
 ```
 
