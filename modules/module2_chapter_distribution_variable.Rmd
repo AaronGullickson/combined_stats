@@ -72,22 +72,31 @@ pander(tab)
 
 24.7% of passengers were first class, 21.2% of passengers were second class, and 54.2% of passengers were third class. So, just over half of passengers were third class and the remaining passengers were fairly evenly split between first and second class.
 
-#### Barplots and piecharts
+#### Don't make a piechart
 
-Now that we have proportions/percents, we can use these values to construct a graphical display of the distribution. The **piechart** is a very common technique here. I am sure you have all seen examples of piecharts. In a piechart, you show each category's percentage as a slice of a pie. Here is the R code and output of a piechart for the passenger class variable: 
+Now that we have proportions/percents, we can use these values to construct a graphical display of the distribution. One of the most common techniques for doing this is a **piechart**. Figure \@ref(fig:piechart) shows a piechart of the distribution of passengers on the Titanic. 
 
-```{r piechart-passclass, fig.cap='Piechart of passenger class distribution on Titanic', fig.align='center'}
+```{r piechart, echo=FALSE, fig.cap='Piechart of passenger class distribution on Titanic', fig.align='center'}
 p <- prop.table(table(titanic$pclass))
 pie(p)
 ```
 
-Although piecharts are popular, they are actually not a very good tool. In order to judge the relative size of the slices, your eye has to make judgments in two dimensions and it can often be difficult to decide which slice is bigger. In this case, for example, the relative size of first and second class are quite close. A better way to display the distribution is by using a **barplot** in which vertical (or horizontal) bars give the proportion or percent:
+Notice that I am not showing you the code for how to construct this piechart. That is because I don't ever want you to construct a piechart. Despite their popularity, piecharts are a poor tool for visualizing distributions. In order to judge the relative size of the slices on a piechart, your eye has to make judgments in two dimensions and with an unusual pie-shaped slice ($\pi*r^2$, anyone?) As a result, it can often be difficult to decide which slice is bigger and to properly evaluate the relative sizes of each of the slices. In this case, for example, the relative size of first and second class are quite close and it is not immediately obvious which category is larger. 
+
+#### Make a barplot
+
+A better way to display the distribution is by using a **barplot** in which vertical (or horizontal) bars give the proportion or percent. Figure \@ref(fig:barplot-passclass) shows a barplot for the distribution of passengers on the Titanic. 
 
 ```{r barplot-passclass, fig.cap='Barplot of passenger class distribution on the Titanic', fig.align='center'}
-barplot(p, col="skyblue", las=1)
+ggplot(titanic, aes(x=pclass, y=..prop.., group=1))+
+  geom_bar()+
+  labs(x="passenger class", y="proportion")+
+  theme_bw()
 ```
 
-Now your eye only has to work in one dimension to identify the relative size of each share. In this case, we can clearly see that the first class bar is higher than the second class bar. Barplots are almost always better at displaying distributions than piecharts.
+Figure \@ref(fig:barplot-passclass) is our first code example of the `ggplot` library that we will use to make figures in R, so I will spend some time talking about how this code works, but first I want to focus on what the figure itself tells us. Unlike the piechart, our eye only has to work in one dimension (in this case, vertical). We can clearly see that third class is the largest and we also can see that it is more than twice as large as either of the other two categories. We can also see that slightly more passengers were in first class than second class simply by comparing the heights of the bars. 
+
+So how did I create this graph? The `ggplot` syntax is a little different than most of the other R syntax we will look at this term. With `ggplot` we add several commands together with the + sign to create our overall plot. The first command is always the `ggplot` command itself which defines the dataset we will use (in this case, `titanic`) and the "aesthetics" that are listed in the `aes` argument. In this case, we defined an x (horizontal) variable as the `pclass` variable itself and the y (vertical) variable as a proportion (which in ggplot-speak is ..prop..). The next command is `geom_bar` which defines what geometrict shape (in this case a bar) to actually plot. That would be enough for a basic plot, but I also use the `labs` command to add in some nice labels for our x and y axes and I use `theme_bw` to define an overall theme for the graph that I like better than the default theme. Ggplot is a very flexible system. In an appendix to this book, you can see examples of all the common ways we will we use it to create figures throughout the term. 
 
 ### Looking at the distribution of a quantitative variable
 
@@ -109,25 +118,27 @@ Because the survey was only administered to adults, I have zero individuals from
 
 Now that we have the frequencies for each bin, we can plot the histogram. The histogram looks much like a barplot except for two important differences. First, on the x-axis we have a numeric scale for the quantitative variable rather than categories. Second, we don't put any space between our bars. 
 
-Here is some *R* code and output for creating a histogram. First, we define our intervals using the `seq` command to define our bins and then we use the `hist` command to make the plot. Notice, I am adding a few other options to the `hist` command in order to produce some nice labeling and colors. 
+Below I show some *R* code for producing the histogram shown in Figure \@ref(fig:hist-agepol) using `ggplot`. This code is simpler than the barplot code. We only need to define an x aesthetic in our `ggplot` command. Then instead of a `geom_bar` we use a `geom_histogram`. I can specify different bin widths in this command with the `binwidth` argument. Here I have specified a binwidth of ten years. I have also specified two different colors. The `col` argument is the color the bar borders and the `fill` argument is the color of the bars themselves. 
 
-```{r hist_agepol, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-bins <- seq(from=0, to=90, by=10)
-hist(politics$age, breaks=bins, col="darkgreen", xlab="age",
-     main="Histogram of age in politics data", las=1)
+```{r hist-agepol, fig.cap='Histogram of age in the politics data', fig.align='center'}
+ggplot(politics, aes(x=age))+
+  geom_histogram(binwidth=10, col="black", fill="grey")+
+  labs(x="age")+
+  theme_bw()
 ```
 
-I can see the peak in the distribution in the 50's (the baby boomers) with a long fat tail to the right and steeper drop off (due to smaller cohorts and higher mortality) on the left.
+Looking at Figure \@ref(fig:hist-agepol), I can see the peak in the distribution in the 50's (the baby boomers) with a long fat tail to the right and steeper drop off on the left, due to smaller cohorts and old age mortality.
 
 What would this histogram look like if I had used 5-year bin widths instead of 10-year bins? Lets try it:
 
-```{r hist_agepol_bin5, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-bins <- seq(from=0, to=90, by=5)
-hist(politics$age, breaks=bins, col="darkgreen", xlab="age",
-     main="Histogram of age in politics data", las=1)
+```{r hist-agepol-bin5, fig.cap='Histogram of age in the politics data with five year bins', fig.align='center'}
+ggplot(politics, aes(x=age))+
+  geom_histogram(binwidth=5, col="black", fill="grey")+
+  labs(x="age")+
+  theme_bw()
 ```
 
-I get more or less the same overall impression but a more fine-grained view. Sometimes adjusting bin width can reveal or hide important trends and sometimes it can just make it more difficult to read. As an exercise, [try adjusting the bin width in this example histogram for movie runtime from our movie dataset](https://aarongullickson.shinyapps.io/histogram/). 
+As Figure \@ref(fig:hist-agepol-bin5) shows, I get more or less the same overall impression but a more fine-grained view. In particular, in this case, I can more easily pick out the two distinct "humps" in the distribution that correspond to the baby boomers and their children. Sometimes adjusting bin width can reveal or hide important trends and sometimes it can just make it more difficult to read. As an exercise, [try adjusting the bin width in this example histogram for movie runtime from our movie dataset](https://aarongullickson.shinyapps.io/histogram/). 
 
 ```{r echo=FALSE}
 #shinyAppDir(
@@ -146,7 +157,7 @@ There are four general things to be on the lookout for when examining a histogra
 
 The figure below shows some examples of each of these concepts from the various datasets we are using in class.  
 
-```{r hist_examples, echo=FALSE, error=FALSE, warning=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+```{r hist-examples, echo=FALSE, error=FALSE, warning=FALSE, fig.cap='Several histograms with different interesting features', fig.align='center', fig.height=4}
 invisible(split.screen(figs=c(3,1)))
 invisible(split.screen(figs=c(1,3), screen=1))
 invisible(split.screen(figs=c(1,2), screen=2))
