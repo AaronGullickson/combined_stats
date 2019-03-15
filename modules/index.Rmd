@@ -19,7 +19,7 @@ description: "Textbook for Statistical Analysis for University of Oregon Sociolo
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.height = 4)
 ```
 
 ```{r echo=FALSE}
@@ -33,7 +33,8 @@ load("../example_datasets/students/studentsamplingdist.RData")
 load("../example_datasets/add_health/addhealth.RData")
 preston <- read.csv("../example_datasets/misc/preston.csv")
 election <- read.csv("../example_datasets/misc/ecofallacy.csv")
-library(pander) 
+library(pander)
+library(ggplot2)
 ```
  
 # Preface {-}

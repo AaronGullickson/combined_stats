@@ -9,4 +9,3 @@ rmd_files: ["index.Rmd",
             "lab2_object_types.Rmd",
             "lab3_pretty_pictures.Rmd",
             "lab5_reading_writing_data.Rmd"]
-            
