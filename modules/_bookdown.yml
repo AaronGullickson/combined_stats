@@ -5,7 +5,4 @@ rmd_files: ["index.Rmd",
             "module3_chapter_measuring_association.Rmd",
             "module4_chapter_statistical_inference.Rmd",
             "module5_chapter_building_models.Rmd",
-            "lab1_using_scripts.Rmd",
-            "lab2_object_types.Rmd",
-            "lab3_pretty_pictures.Rmd",
-            "lab5_reading_writing_data.Rmd"]
+            "stat_lab.Rmd"]

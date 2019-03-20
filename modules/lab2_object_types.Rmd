@@ -1,10 +1,10 @@
-# Object Types
+## Object Types
 
 R is an object-oriented programming language. This means that within R, you can save a variety of objects to memory. These objects will show up in the upper right panel in the environment tab in RStudio when you create them. A variety of functions can be applied to objects and in many cases, the same function may produce different results when applied to different kinds of objects. We will work most commonly with the `data.frame` object, but it is useful to know some other basic object types to understand how R works. 
 
 Objects can have different types and R will often handle them differently depending on their type. However, type is defined in two different ways. Each object has a `mode` and a `class`. The class of an object is typically what determines how it is handled by other functions. The `mode` is most important in terms of the "atomic" or "basic" modes of R objects. These are the basic-building blocks of everything else. 
 
-## Atomic Modes
+### Atomic Modes
 
 The three most important atomic modes for our purposes are:
 
@@ -31,9 +31,9 @@ class(c)
 
 note that for these simple objects the mode is the same as the class. These objects will now show up in my upper right panel. However, programming with these simple objects with one value is not very useful. What we usually really want is an aggregation of many of these values. There are a variety of ways we can do this. 
 
-## Vectors and Matrices
+### Vectors and Matrices
 
-### Vectors
+#### Vectors
 
 If you want to put a bunch of values of the same mode together (don't call it a "list" because that means something else, see below), you can do that with a `vector`. You can create a vector with the concatenation function `c`. Lets do that below:
 
@@ -71,7 +71,7 @@ as.numeric(name)
 
 Note that this didn't work so well when converting a character string to a number and I ended up with a set of missing values (NA). 
 
-### Matrices
+#### Matrices
 
 A `matrix` is just an extention of a vector, but two dimensional instead of one dimensional. We can use the `matrix` command to turn a vector into a matrix, by speficying the number of rows and columns.
 
@@ -103,7 +103,7 @@ A matrix has to have values of the same atomic mode. In most cases, if there is 
 
 Note there is an extension to the matrix object called the `array` which generalizes it to n-dimensions rather than two. However, we will not make much use of that in this class. 
 
-### Indexing Vectors and Matrices
+#### Indexing Vectors and Matrices
 
 What if I want to know a specific value in my vector or matrix. Lets say I want to know the name of the fourth person in my `name` vector. You can easily get this value by indexing the vector or matrix with square brackets. In my case:
 
@@ -125,7 +125,7 @@ x[,1]
 x[c(1,2),]
 ```
 
-## Factors
+### Factors
 
 You will note that we don't yet have a representation for categorical variables. Lets say for example that I wanted to include highest degree received for my respondents from above. I could create this as a character variable:
 
@@ -150,7 +150,7 @@ class(high_degree_fctr)
 
 Now the summary command gives me a table of frequencies for each category. 
 
-### Re-ordering categories in factors
+#### Re-ordering categories in factors
 
 The only problem with my factor is that this is an ordinal variable and the categories are backwards with "College" first and "Less than HS" last. This is because R sorts alphabetically by default. In order to ensure a specific order to the categories in the factor, I will need to specify the `levels` argument in the `factor` function and explicitly write out the order I want:
 
@@ -168,7 +168,7 @@ levels(high_degree_fctr)
 levels(relevel(high_degree_fctr,"HS Diploma"))
 ```
 
-## Logical Values and Boolean Statements
+### Logical Values and Boolean Statements
 
 One of the most important features of  all computer programming languages is the ability to create statements that will either evaluate to a "boolean" value of TRUE or FALSE (a "logical" value in R parlance). These kinds of statements are called boolean statements. The following basic operators will allow you to make boolean statements in R.  
 
@@ -219,7 +219,7 @@ Another useful option is the ability to put a `!` sign in front of a boolean var
 !ate_breakfast
 ```
 
-## Missing Values
+### Missing Values
 
 Missing values are a common feature of most real-world data. They can exist for a variety of reasons, but *item non-response* (i.e. respondent declined to answer a specific question) is one of the most common reasons. In R, missing values are represented with the `NA` value. missing values can exist for any of the modes we have discussed. 
 
@@ -254,7 +254,7 @@ Combining this with the `!` from the previous section, we can easily create a fu
 !is.na(age)
 ```
 
-## Lists
+### Lists
 
 Lists are one of the most flexible types of standard objects. Lists are just collections of different objects and the objects can be of different types and dimensions. You can even put lists into lists and end up with lists of lists.
 
@@ -269,7 +269,7 @@ class(my_list)
 
 In this case, each item in the list is a vector of the same length but they don't need to be. 
 
-### Accessing elements of the list
+#### Accessing elements of the list
 
 You will notice a lot of brackets in the list output above. To access an object at a specific index of the list, I need to use double square brackets. Lets say, I wanted to access the third object (ate_breakfast):
 
@@ -300,7 +300,7 @@ mean(my_list$age, na.rm=TRUE)
 
 You will notice in RStudio that when you type the "$", it brings up a list of all the names you could want. You can select the one you want and tab to complete. Thanks, RStudio!
 
-### The `lapply` command is awesome
+#### The `lapply` command is awesome
 
 Lets say that I just want to get a summary of each object in my list:
 
@@ -316,7 +316,7 @@ lapply(my_list, summary)
 
 Thats much better. It won't be immediately obvious, but `lapply` turns out to be a very powerful and helpful tool. We will learn more about it later this term. 
 
-## Data Frames
+### Data Frames
 
 The list was a nice way to organize my data, but it wasn't ideal because it didn't represent data in the two-dimensional observations-on-the-row and variables-on-the-columns way we expect most datasets to be typical organized. This is where the `data.frame` object comes in. This is the object that we will mostly work directly with in this class and the one you are most likely to work with in real projects. 
 
@@ -351,7 +351,7 @@ I can also use the same indexing as for matrices to retrieve particular values:
 my_data[3,2]
 ```
 
-### Renaming Variables in a `data.frame`
+#### Renaming Variables in a `data.frame`
 
 Vectors, matrices, lists, and data.frames can all have names associated with their elements. You have already seen an example of specifying names in the creation of the list and data.frame objects. But you can also change names of elements after creation. We will focus here specifically on the case of data frames, but much of this is generalizable to other objects as well.
 
@@ -375,7 +375,7 @@ colnames(my_data)[3] <- "Breakfast"
 my_data
 ```
 
-### Subsetting Data Frames
+#### Subsetting Data Frames
 
 One of the most common tasks of organizing data is slicing and dicing datat into smaller subsets. There are two cases that are common. 
 
@@ -407,7 +407,7 @@ subset(my_data, Age>=18)
 
 Notice that I did not have to use the full `my_data$Age` specification in my boolean statement, because the subset command knows that this variable must be in the dataset that I fed in. I also did not have to deal with the whole business of missing values. In general, the `subset` command produces cleaner and more readable code than bracketing and indexing. 
 
-### Subsetting by variables
+#### Subsetting by variables
 
 Sometimes you want to drop variables. This may be because you have used those variables to construct another variable and you don't need them any longer or maybe your data source just contains a lot more variables than you need. I am a big proponent of dropping irrelevant variables. It keeps your dataset cleaner and easier to read for others. 
 

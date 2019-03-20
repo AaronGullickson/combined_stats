@@ -1,10 +1,9 @@
-# (APPENDIX) R Stat Lab (Advanced) {-}
-
-# Using Scripts
+ 
+## Using Scripts
 
 One of the primary advantages of using statistical software like *R* or *Stata* is the ability to perform your analysis in a script. A script is a text file of commands that can be run to reproduce a data cleaning exercise, an analysis, a simulation, etc. It is a good practice to **always** do your statistical work using scripts. The advantage of scripting is that you will have an easily reproducible record of exactly what you did. Lets say that I did a thorough and time-consuming statistical analysis in Excel or (god forbid) SPSS using pull-down menus and buttons and I found The Best Result Ever. I quickly put together a paper and submit it to a flagship journal. My R&R comes back several months later and the reviewers say that my results look great, but they want to see if the results hold up if I limit my sample in some way. Now I have to (a) try to remember exactly what I did months ago, and (b) re-run that entire time-consuming analysis from scratch. That is horribly inefficient and is likely to lead to inconsistencies between the two analyses. Imagine that instead of cowboying my analysis, I had written everything into an R or Stata script. Now, I only have to add a line of code at the top that subsets my sample and processes the script. This will take a few minutes at most. 
 
-## Getting Started with Scripts
+### Getting Started with Scripts
 
 Lets put together a simple script in R. In RStudio, you can go to `File > New File > R Script` to get a new script up and running. This will open a text pane in the upper left corner of RStudio. This is your R script. Lets start by writing a simple "Hello World" script. Type the following command into your script:
 
