@@ -1,20 +1,20 @@
 # The Distribution of a Variable
 
+The **distribution** of a variable refers to how the different values of that variable are spread out across observations. This distribution gives us a sense of what the most common values are for a given variable and how much these values vary. It can also alert us to unusual patterns in the data. Intuitively, we think about distributions in our personal life any time we think about how we "measure" up relative to everyone else on something (income, number of Facebook friends, GRE scores, etc.). We want to know where we "fall" in the distribution of one of these variables. 
+
+In this chapter we will first learn graphical techniques that allow us to visualize what the distribution of a variable looks like. For quantitative variables we will then move on to calculate important summary statistics that measure the center and spread of a distribution.  
+
 ---
 
-## What is a Distribution? 
+## Looking at Distributions
 
-We will hear the term **distribution** a lot during this class. When we think about the distribution of a variable, we are referring to how the different values of the variables are distributed across observations. This distribution gives us a sense of how much variation there is and what the most common values are for a given variable. Intuitively, we think about distributions in our personal life any time we think about how we "measure" up relative to everyone else on something (income, number of Facebook friends, GRE scores, etc.). We want to know where we "fall" in the distribution of these variables. 
-
-A distribution can be represented graphically. However, the technique we use to graph the distribution will depend on whether we have a categorical or a quantitative variable. For categorical variables, we will use a **barplot**, while for quantitative variables, we will use a **histogram**. 
-
-For quantitative variables, we can also calculate summary statistics that will give us information about the distribution, such as its center and spread. We will save those calculations for later modules. For this module, we will focus on graphical techniques. 
+One of the best ways to understand the distribution of a variable is to visualize that distribution with a graph. However, the technique we use to graph the distribution will depend on whether we have a categorical or a quantitative variable. For categorical variables, we will use a **barplot**, while for quantitative variables, we will use a **histogram**. 
 
 ### Looking at the distribution of a categorical variable
 
 #### Calculating the frequency
 
-In order to graph the distribution of a categorical variable, we first need to calculate its frequency. The frequency is just the number of observations that fall into a given category of a categorical variable. We could, for example, count up the number of passengers who were in the various passenger classes on the Titanic. Doing so would give us the following:
+In order to graph the distribution of a categorical variable, we first need to calculate its **frequency**. The frequency is just the number of observations that fall into a given category of a categorical variable. We could, for example, count up the number of passengers who were in the various passenger classes on the Titanic. Doing so would give us the following:
 
 ```{r echo=FALSE}
 x <- table(titanic$pclass)
@@ -37,7 +37,7 @@ table(titanic$pclass)
 
 #### Frequency, proportion, and percent
 
-The frequency we just calculated is sometimes called the "absolute" frequency because it just provides the raw number of observations. It is typically more useful to represent this frequency in terms of proportions. Proportions go from 0-1 and give us the share of observations that fall into each category. We can calculate the proportion by simply dividing our frequency by the total number of observations:
+The frequency we just calculated is sometimes called the **absolute frequency** because it just counts the raw number of observations. However such raw numbers are not usually very helpful because they will vary by the overall number of observations. Instead, we typically want to calculate the **proportion** of observations that fall within each category. These proportions are sometimes also called the **relative frequency**.  We can calculate the proportion by simply dividing our absolute frequency by the total number of observations:
 
 ```{r echo=FALSE}
 x <- c(paste(paste(tab[1:3,2],tab[4,2],sep="/"),round(as.numeric(tab[1:3,2])/as.numeric(tab[4,2]),3),sep=c("=")),"")
@@ -49,15 +49,15 @@ emphasize.strong.rows(nrow(tab))
 pander(tab)
 ```
 
-*R* provides a nice shorthand function titled `prop.table` to conduct this operation:
+*R* provides a nice shorthand function titled `prop.table` to conduct this operation. The `prop.table` command should be run on the output from a `table` command. 
 
 ```{r}
 prop.table(table(titanic$pclass))
 ```
 
-Note that I had to "wrap" the `prop.table` command around the `table` command here because the `prop.table` command expects a vector of numbers that it will turn into proportions. 
+Note that I have "wrapped" the `prop.table` command around the `table` command here to do this calculation in a single line. 
 
-We often convert proportions to percents which most people are more familiar. To convert a proportion to a percent, just multiply by 100:
+We often convert proportions to percents which are more familiar to most people. To convert a proportion to a percent, just multiply by 100:
 
 ```{r echo=FALSE}
 prop <- round(as.numeric(tab[1:3,2])/as.numeric(tab[4,2]),3)
@@ -70,7 +70,7 @@ emphasize.strong.rows(nrow(tab))
 pander(tab)
 ```
 
-24.7% of passengers were first class, 21.2% of passengers were second class, and 54.2% of passengers were third class. So, just over half of passengers were third class and the remaining passengers were fairly evenly split between first and second class.
+24.7% of passengers were first class, 21.2% of passengers were second class, and 54.2% of passengers were third class. Just over half of passengers were third class and the remaining passengers were fairly evenly split between first and second class.
 
 #### Don't make a piechart
 
@@ -81,22 +81,33 @@ p <- prop.table(table(titanic$pclass))
 pie(p)
 ```
 
-Notice that I am not showing you the code for how to construct this piechart. That is because I don't ever want you to construct a piechart. Despite their popularity, piecharts are a poor tool for visualizing distributions. In order to judge the relative size of the slices on a piechart, your eye has to make judgments in two dimensions and with an unusual pie-shaped slice ($\pi*r^2$, anyone?) As a result, it can often be difficult to decide which slice is bigger and to properly evaluate the relative sizes of each of the slices. In this case, for example, the relative size of first and second class are quite close and it is not immediately obvious which category is larger. 
+You will notice that I do not show you the code for constructing this piechart. I hid this code because I don't ever want you to construct a piechart. Despite their popularity, piecharts are a poor tool for visualizing distributions. In order to judge the relative size of the slices on a piechart, your eye has to make judgments in two dimensions and with an unusual pie-shaped slice ($\pi*r^2$ anyone?). As a result, it can often be difficult to decide which slice is bigger and to properly evaluate the relative sizes of each of the slices. In this case, for example, the relative size of first and second class are quite close and it is not immediately obvious which category is larger. 
 
 #### Make a barplot
 
-A better way to display the distribution is by using a **barplot** in which vertical (or horizontal) bars give the proportion or percent. Figure \@ref(fig:barplot-passclass) shows a barplot for the distribution of passengers on the Titanic. 
+A better way to display the distribution is by using a **barplot** in which vertical or horizontal bars give the proportion or percent. Figure \@ref(fig:barplot-passclass) shows a barplot for the distribution of passengers on the Titanic. 
 
 ```{r barplot-passclass, fig.cap='Barplot of passenger class distribution on the Titanic', fig.align='center'}
 ggplot(titanic, aes(x=pclass, y=..prop.., group=1))+
   geom_bar()+
-  labs(x="passenger class", y="proportion")+
+  labs(x="passenger class", y="percent")+
+  scale_y_continuous(labels=scales::percent)+
+  coord_flip()+
   theme_bw()
 ```
 
-Figure \@ref(fig:barplot-passclass) is our first code example of the `ggplot` library that we will use to make figures in R, so I will spend some time talking about how this code works, but first I want to focus on what the figure itself tells us. Unlike the piechart, our eye only has to work in one dimension (in this case, vertical). We can clearly see that third class is the largest and we also can see that it is more than twice as large as either of the other two categories. We can also see that slightly more passengers were in first class than second class simply by comparing the heights of the bars. 
+Figure \@ref(fig:barplot-passclass) is our first code example of the `ggplot` library that we will use to make figures in *R*. I will discuss how this code works below, but first I want to focus on the figure itself. Unlike the piechart, our eye only has to work in one dimension (in this case, horizontal). We can clearly see that third class is the largest passenger class with slightly more than 50% of all passengers. We also can see easily determine visually that thrid class passengers are at more than twice as common as either of the other two categories, simply by comparing the height of the bars. We can also see that slightly more passengers were in first class than second class simply by comparing the heights of those two bars. 
 
-So how did I create this graph? The `ggplot` syntax is a little different than most of the other R syntax we will look at this term. With `ggplot` we add several commands together with the + sign to create our overall plot. The first command is always the `ggplot` command itself which defines the dataset we will use (in this case, `titanic`) and the "aesthetics" that are listed in the `aes` argument. In this case, we defined an x (horizontal) variable as the `pclass` variable itself and the y (vertical) variable as a proportion (which in ggplot-speak is ..prop..). The next command is `geom_bar` which defines what geometrict shape (in this case a bar) to actually plot. That would be enough for a basic plot, but I also use the `labs` command to add in some nice labels for our x and y axes and I use `theme_bw` to define an overall theme for the graph that I like better than the default theme. Ggplot is a very flexible system. In an appendix to this book, you can see examples of all the common ways we will we use it to create figures throughout the term. 
+So how did I create this graph? The `ggplot` syntax is a little different than most of the other R syntax we will look at this term. With `ggplot`, we add several commands together with the `+` sign to create our overall plot. Each command adds a "layer" to our plot. These layers are:
+
+1. `ggplot(titanic, aes(x=pclass, y=..prop.., group=1))`: The first command is always the `ggplot` command itself which defines the dataset we will use (in this case, `titanic`) and the "aesthetics" that are listed in the `aes` argument. In this case, we defined an x (horizontal) variable as the `pclass` variable itself and the y (vertical) variable as a proportion (which in ggplot-speak is ..prop..). The `group=1` argument is a trick for barplots that makes sure our proportions add up to 1 across all categories. 
+2. `geom_bar()`: This command defines what geometric shape (in this case a bar) to actually plot. These two layers would be enough for a figure, but I also add four more layers that make for a nicer looking figure. You can try the command above with only the first two elements to see how it is different. 
+3. `labs(x="passenger class", y="percent")`: The `labs` command allows me to add a variety of nice labels to my graph. In this case I labeled my x and y axes. 
+4. `scale_y_continuous(labels=scales::percent)`: This is not a necessary command but it is useful to get better labels on my y-axis tickmarks. Without this command, the tickmarks would just show proportions (e.g. 0.2, 0.4). This command allows me define custom labels for those tickmarks that show them as percents rather than proportions. 
+5. `coord_flip`: This does exactly what it sounds like. It flips the x and y axes of the graph. This causes the bars to display horizontally rather than vertically. This is not necessary, but is often a useful feature to avoid problems with long category names overlapping on the x-axis. Note that even though passenger class looks like it is on the y-axis, ggplot still treats it as the "x" variable for things like defining aesthetics and labeling with the `labs` layer. 
+6. `theme_bw()`: This last command is for the "theme" layer that just defines a variety of characteristics for the overall look of the figure. I like the `theme_bw` (bw for black and white) theme over the default theme that comes with `ggplot`. 
+
+Ggplot is a very flexible system that repeats these same basic layer elements in all the graphs it creates. In an appendix to this book, you can see cookbook examples of all the ways we will we use it to create figures throughout the term. 
 
 ### Looking at the distribution of a quantitative variable
 
@@ -118,7 +129,7 @@ Because the survey was only administered to adults, I have zero individuals from
 
 Now that we have the frequencies for each bin, we can plot the histogram. The histogram looks much like a barplot except for two important differences. First, on the x-axis we have a numeric scale for the quantitative variable rather than categories. Second, we don't put any space between our bars. 
 
-Below I show some *R* code for producing the histogram shown in Figure \@ref(fig:hist-agepol) using `ggplot`. This code is simpler than the barplot code. We only need to define an x aesthetic in our `ggplot` command. Then instead of a `geom_bar` we use a `geom_histogram`. I can specify different bin widths in this command with the `binwidth` argument. Here I have specified a binwidth of ten years. I have also specified two different colors. The `col` argument is the color the bar borders and the `fill` argument is the color of the bars themselves. 
+Below I show some *R* code for producing the histogram shown in Figure \@ref(fig:hist-agepol) using `ggplot`. This code is simpler than the barplot code. We only need to define an x aesthetic in our `ggplot` command. Instead of a `geom_bar` we use a `geom_histogram`. I can specify different bin widths in this command with the `binwidth` argument. Here I have specified a binwidth of ten years. I have also specified two different colors. The `col` argument is the color of the border for each bar and the `fill` argument is the color of the bars themselves. 
 
 ```{r hist-agepol, fig.cap='Histogram of age in the politics data', fig.align='center'}
 ggplot(politics, aes(x=age))+
@@ -127,7 +138,7 @@ ggplot(politics, aes(x=age))+
   theme_bw()
 ```
 
-Looking at Figure \@ref(fig:hist-agepol), I can see the peak in the distribution in the 50's (the baby boomers) with a long fat tail to the right and steeper drop off on the left, due to smaller cohorts and old age mortality.
+Looking at Figure \@ref(fig:hist-agepol), I can see the peak in the distribution in the 50's (the baby boomers) with a long fat tail to the right and a steeper drop off at older ages, due to smaller cohorts and old age mortality.I can also sort of see a smaller peack in the 25-35 range which is largely the children of the baby boomers. 
 
 What would this histogram look like if I had used 5-year bin widths instead of 10-year bins? Lets try it:
 
@@ -138,108 +149,76 @@ ggplot(politics, aes(x=age))+
   theme_bw()
 ```
 
-As Figure \@ref(fig:hist-agepol-bin5) shows, I get more or less the same overall impression but a more fine-grained view. In particular, in this case, I can more easily pick out the two distinct "humps" in the distribution that correspond to the baby boomers and their children. Sometimes adjusting bin width can reveal or hide important trends and sometimes it can just make it more difficult to read. As an exercise, [try adjusting the bin width in this example histogram for movie runtime from our movie dataset](https://aarongullickson.shinyapps.io/histogram/). 
+As Figure \@ref(fig:hist-agepol-bin5) shows, I get more or less the same overall impression but a more fine-grained view. I can more easily pick out the two distinct "humps" in the distribution that correspond to the baby boomers and their children. Sometimes adjusting bin width can reveal or hide important trends and sometimes it can just make it more difficult to visualize the distribution. As an exercise, you can play around with the interactive example below. 
 
 ```{r echo=FALSE}
-#shinyAppDir(
-#  "ShinyApps/histogram",
-#  options=list( width="100%", height=500)
-#)
+knitr::include_app("https://aarongullickson.shinyapps.io/histogram/", height="800px")
 ```
 
 
-There are four general things to be on the lookout for when examining a histogram.
+What kinds of things should you be looking for in your histogram? There are four general things to be on the lookout for when you examine a histogram.
 
-1. **Shape**. Is the shape symmetric or is one of the tails longer than the other? When the  long tail is on the right, we refer to this distribution as **right skewed**. When the long tail is on the left, we refer to the distribution as **left skewed**.
-2. **Center**. Where is the center of the distribution? This center is often the same as the peak in the data. Does the histogram have a single peak or multiple peaks? When a distribution has one peak, we call it **unimodal**. When it has two peaks, we call it **bimodal** and so on. 
-3. **Spread**. How spread out are the values around the center? Do they cluster tightly around the center or are they widely spread out? The answer to this question is generally a relative one, which is to say you can only say how spread out a variable is in relation to the spread of some other variable.
-4. **Outliers**. Are there extreme values which fall outside the range of the rest of the data? We want to pay attention to these values because they may have a strong influence on the statistics we calculate to summarize a distribution. They might also help identify data input errors. 
+#### Center
 
-The figure below shows some examples of each of these concepts from the various datasets we are using in class.  
+Where is the center of the distribution? Loosely we can think of the center as the peak in the data, although we will develop some more technical terms for center in the next section. Some distributions might have more than one distinct peak. When a distribution has one peak, we call it a **unimodal** distribution. Figure \@ref(fig:hist-unimodal) shows a clear unimodal distribution for the runtime of movies. We can clearly see that the peak is somewhere between 90 and 100 minutes. When a distribution has two distinct peaks, we call it a **bimodal** distribution. Figure \@ref(fig:hist-bimodal) shows that the distribution of violent crime rates aross states is bimodal. The first peak is around 2200-2700 crimes per 100,000 and the second is around 3500 crimes per 100,000. This suggests that there are two distinctive clusters of states: in the first cluster are states with a moderate crime rate and in the second cluster, states with high crime rate states. You can probably guess what we call a distribution with three peaks (and so on), but its fairly rare to see more than two distinct peaks in a distribution.
 
-```{r hist-examples, echo=FALSE, error=FALSE, warning=FALSE, fig.cap='Several histograms with different interesting features', fig.align='center', fig.height=4}
-invisible(split.screen(figs=c(3,1)))
-invisible(split.screen(figs=c(1,3), screen=1))
-invisible(split.screen(figs=c(1,2), screen=2))
-invisible(split.screen(figs=c(1,2), screen=3))
-
-screen(4)
-par(mar=c(1.5,0.1,1,0.1))
-par(cex.main=0.7, cex.lab=0.5, cex.axis=0.5, las=1)
-h <- hist(crimes$MedianAge, col="skyblue", yaxt="n", xaxt="n",
-     main="Left-skewed")
-axis(1, pos=0, padj=-3, at=seq(from=28,to=44, by=2))
-title(xlab="Median age (crime data)", line=0.5)
-arrows(29,1,30,5, code=1, length=0.03)
-text(30,5.5,labels=c("Utah"),cex=0.5)
-
-screen(5)
-par(cex.main=0.7, cex.lab=0.5, cex.axis=0.5, las=1)
-par(mar=c(1.5,0.1,1,0.1))
-hist(movies$TomatoRating, col="red", 
-     yaxt="n", xaxt="n",
-     main="Roughly Symmetric",
-     xlab="Tomato Rating (movie data)")
-axis(1, pos=0, padj=-3, at=seq(from=1,to=10, by=1))
-title(xlab="Tomato Rating (movie data)", line=0.5)
-
-
-screen(6)
-par(cex.main=0.7, cex.lab=0.5, cex.axis=0.5, las=1)
-par(mar=c(1.5,0.1,1,0.1))
-h <- hist(movies$BoxOffice, col="orange",
-        yaxt="n", xaxt="n",
-     main="Right-skewed")
-axis(1, pos=0, padj=-3, at=seq(from=0,to=800, by=100))
-title(xlab="Box Office returns (movies data)", line=0.5)
-
-screen(7)
-par(cex.main=0.7, cex.lab=0.5, cex.axis=0.5, las=1)
-par(mar=c(1.5,0.1,1,0.1))
-hist(crimes$Violent, breaks=15, col="darkgreen",
-             yaxt="n", xaxt="n",
-     main="Unimodal")
-axis(1, pos=0, padj=-3, at=seq(from=100,to=1400, by=200))
-title(xlab="Violent crime rate (crime data)", line=0.5)
-arrows(1350,1,1250,8, code=1, length=0.03)
-text(1250,9,labels=c("Washington DC"),cex=0.5)
-
-screen(9)
-par(cex.main=0.7, cex.lab=0.5, cex.axis=0.5, las=1)
-par(mar=c(1.5,0.1,1,0.1))
-hist(crimes$Property, breaks=15, col="gold",
-                  yaxt="n", xaxt="n",
-     main="Bimodal",
-     xlab="Property crime rate (crime data)")
-axis(1, pos=0, padj=-3, at=seq(from=1500,to=5000, by=500))
-title(xlab="Property crime rate (crime data)", line=0.5)
-arrows(4700,1,4500,5, code=1, length=0.03)
-text(4500,5.8,labels=c("Washington DC"),cex=0.5)
-
-screen(8)
-par(cex.main=0.7, cex.lab=0.5, cex.axis=0.5, las=1)
-par(mar=c(1.5,0.1,1,0.1))
-bins <- seq(from=70,to=205, by=5)
-hist(movies$Runtime[movies$Genre=="Comedy"], breaks=bins,
-                       yaxt="n", xaxt="n",
-     col="pink",
-     main="Lower spread")
-axis(1, pos=0, padj=-3, at=seq(from=70,to=220, by=30))
-title(xlab="Comedy runtime (movie data)", line=0.5)
-
-screen(10)
-par(cex.main=0.7, cex.lab=0.5, cex.axis=0.5, las=1)
-par(mar=c(1.5,0.1,1,0.1))
-hist(movies$Runtime[movies$Genre=="SciFi/Fantasy"], breaks=bins,
-                            yaxt="n", xaxt="n",
-     col="blue",
-     main="Higher spread")
-axis(1, pos=0, padj=-3, at=seq(from=70,to=220, by=30))
-title(xlab="SciFi/Fantasy runtime (movie data)", line=0.5)
-arrows(203,1,180,20, code=1, length=0.03)
-text(180,22,labels=c("Return of the King"),cex=0.5)
-
+```{r hist-unimodal, message=FALSE, warning=FALSE, echo=FALSE, fig.cap='The distribution of movie runtimes is unimodal with one clear peak around 90-100 minutes', fig.align='center'}
+ggplot(movies, aes(x=Runtime))+
+  geom_histogram(binwidth=5, color="black", fill="lavender")+
+  labs(x="Movie Runtime (in minutes)")+
+  theme_bw()
 ```
+
+```{r hist-bimodal, message=FALSE, warning=FALSE, echo=FALSE, fig.cap='The distribution of property crimes by states is bimodal with a two separate peaks.', fig.align='center'}
+ggplot(crimes, aes(x=Property))+
+  geom_histogram(binwidth=250, color="black", fill="firebrick")+
+  labs(x="Property crimes per 100,000")+
+  annotate(geom="text", x=4750, y=1.5, label="Washington\nDC", size=3)+
+  theme_bw()
+```
+
+#### Shape
+
+Is the shape symmetric or is one of the tails longer than the other? When the  long tail is on the right, we refer to this distribution as **right skewed**. When the long tail is on the left, we refer to the distribution as **left skewed**. Figures \@ref(fig:hist-symmetric) and \@ref(fig:hist-skewed) show examples of roughly symmetric and heavily right-skewed distributions, respectively, from the movies dataset. The Tomato Rating that movies receive (a score from 1-10) is roughly symmetric with about equal numbers of movies above and below the peak. Box office returns on the other hand are heavily right-skewed. Most movies make less than \$100 million at the box office but there are few "blockbusters" that rake in far more. Right-skewness to some degree or another is common in social science data, partially because many variables can't logically have values below zero and thus the left tail of the distribution is truncated. Left-skewed distributions are rare. In fact, they are so rare that I don't really have a very good example to show you from our datasets. 
+
+
+```{r hist-symmetric, message=FALSE, warning=FALSE, echo=FALSE, fig.cap='The distribution of movie tomato ratings is roughly symmetric', fig.align='center'}
+ggplot(movies, aes(x=TomatoRating))+
+  geom_histogram(binwidth=0.5, color="black", fill="skyblue")+
+  labs(x="Movie Tomato Rating")+
+  theme_bw()
+```
+
+```{r hist-skewed, message=FALSE, warning=FALSE, echo=FALSE, fig.cap='The distribution of movie box office returns is heavily right skewed', fig.align='center'}
+ggplot(movies, aes(x=BoxOffice))+
+  geom_histogram(binwidth=20, color="black", fill="darkgreen")+
+  labs(x="Movie Box Office Returns (millions USD)")+
+  theme_bw()
+```
+
+#### Spread
+
+How spread out are the values around the center? Do they cluster tightly around the center or are they spread out more widely? Typically this is a question that can only be asked in relative terms. We can only say that the spread of a distribution is larger or smaller than some comparable distribution. We might be interested for example in the spread of the income distribution in the US compared to Sweden, because this spread is one measure of income inequality.  
+
+Figure \@ref(fig:hist-spread) compares the distribution of movie runtime for comedy movies and sci-fi/fantasy movies. The figure clearly shows that the spread of movie runtime is much greater for sci-fi/fantasy movies. Comedy movies are all tightly clustered between 90 and 120 minutes while longer movies are more common for sci-fi/fantasy movies leading to a longer right tail and a correspondingly higher spread. 
+
+```{r hist-spread, message=FALSE, warning=FALSE, echo=FALSE, fig.cap='The distribution of movie runtime is much more spread out for sci-fi/fantasy films than it is for comedies.', fig.align='center'}
+ggplot(movies, aes(x=Runtime, fill=Genre, y=..density..))+
+  geom_histogram(data=subset(movies, Genre=="Comedy"), binwidth=10, alpha=0.5)+
+  geom_histogram(data=subset(movies, Genre=="SciFi/Fantasy"), binwidth=10, alpha=0.5)+
+  annotate(geom="text", x=200, y=0.002, label="Return of\nthe King", size=3)+
+  labs(x="Movie runtime (in minutes)")+
+  theme_bw()
+```
+
+#### Outliers
+
+Are there extreme values which fall outside the range of the rest of the data? We want to pay attention to these values because they may have a strong influence on the statistics that we will learn to calculate to summarize a distribution. They might also influence some of the measures of association that we will learn later. Finally, extreme outliers may help identify data coding errors. 
+
+In Figure \@ref(fig:hist-bimodal) above, we can see a clear outlier in the violent crime rate for Washington DC. Washington DC's crime rate is such an outlier relative to the other states that we will pay attention to it throughout this term as we conduct our analysis. Figure \@ref(fig:hist-spread) above shows that Peter Jackson's Return of the King was an outlier for the runtime of sci-fi/fantasy movies, although it doesn't seem quite as exterme as for the case of Washington DC. 
+
+In large datasets, it can sometimes be very difficult to detect a single outlier on a histogram because the height of its bar will be so small. Later in this chapter, we will learn another graphical technique called the boxplot that can be more useful for detecting outliers in a quantitative variable.
+
 
 ---
 

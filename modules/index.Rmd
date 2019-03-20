@@ -35,6 +35,7 @@ preston <- read.csv("../example_datasets/misc/preston.csv")
 election <- read.csv("../example_datasets/misc/ecofallacy.csv")
 library(pander)
 library(ggplot2)
+library(scales)
 ```
  
 # Preface {-}
