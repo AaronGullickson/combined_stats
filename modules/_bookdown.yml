@@ -5,4 +5,6 @@ rmd_files: ["index.Rmd",
             "module3_chapter_measuring_association.Rmd",
             "module4_chapter_statistical_inference.Rmd",
             "module5_chapter_building_models.Rmd",
+            "module6_chapter_model_complications.Rmd",
+            "module7_chapter_glm.Rmd",
             "stat_lab.Rmd"]
