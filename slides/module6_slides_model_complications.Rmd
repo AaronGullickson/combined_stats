@@ -1,6 +1,6 @@
 ---
 title: "Model Complications"
-author: "Prof. Gullickson, University of Oregon, Winter 2019"
+author: "Prof. Gullickson, University of Oregon, Spring 2019"
 resource_files:
 output:
   ioslides_presentation:
@@ -10,7 +10,7 @@ output:
     fig_width: 6
     logo: images/slides/logo.png
     widescreen: yes
-subtitle: Sociology 512, Statistical Analysis I
+subtitle: Sociology 513, Statistical Analysis II
 runtime: shiny
 ---
 
@@ -27,9 +27,10 @@ load("example_datasets/sex/sex.RData")
 load("example_datasets/crimes/crimes.RData")
 load("example_datasets/titanic/titanic.RData")
 load("example_datasets/politics/politics.RData")
-load("example_datasets/add_health/addhealthwweights.RData")
+load("example_datasets/add_health/addhealth_missing.RData")
 load("example_datasets/nyc_nonprofit/nyc.RData")
 load("example_datasets/misc/relig.RData")
+load("example_datasets/esping_anderson/espinganderson.RData")
 ```
 
 # Violation of Assumptions and Robust Standard Errors
@@ -38,7 +39,7 @@ Model Complications
 ##   Assumptions of OLS regression models {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
+<body>Sociology 513, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
 </div>
 
 >- **Linearity**: the relationship between the $x$ variables and $y$ is best described as a linear function. It is often possible to correct for a non-linear functional form through the use of transformations or polynomial terms. Interaction terms can also be seen as a form of non-linearity. If you fit a model with the wrong functional form, it is considered a *specification error*. 
@@ -48,7 +49,7 @@ Model Complications
 ##  The i.i.d. assumption {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
+<body>Sociology 513, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
 </div>
 
 Think of regression model as data-generating process
@@ -64,7 +65,7 @@ $$y_i=\hat{y}_i+\epsilon_i$$
 ## Heteroscedasticity {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
+<body>Sociology 513, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
 </div>
 
 Heteroscedasticity means that the variance of the residuals is not constant but depends on the values of $x_i$, and therefore, implicitly, $\hat{y}_i$. A classic example of heteroscedasticity is a cone shape in a residual by fitted value plot. You can see this cone shape in the residual plot from a model predicting movie box office returns by tomato rating. At higher predicted values of box office returns, the variance of the residuals is much larger. 
@@ -84,7 +85,7 @@ arrows(60,-80,60,340, col="red", lwd=3, code=3, length=0.1)
 ## Autocorrelation
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
+<body>Sociology 513, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
 </div>
 
 Violation of independence occurs when the residuals are correlated across observations in some patterned way. The two most common ways that this happens are:
@@ -95,7 +96,7 @@ Violation of independence occurs when the residuals are correlated across observ
 ##  Serial autocorrelation example {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
+<body>Sociology 513, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
 </div>
 
 As an example of serial autocorrelation, I will use the `longley` time series dataset in R to fit the following model predicting the number of people employed by GNP and population size from 1947 to 1962 (n=16):
@@ -117,7 +118,7 @@ text(0.2, 0.5, labels=paste("r=",round(cor(model$residuals[2:16],model$residuals
 ##  Correcting for i.i.d. violations
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
+<body>Sociology 513, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
 </div>
 
 Violating the i.i.d. assumption does not bias your results, but it will lead to inefficient estimates and poorly estimated standard errors. There are a number of potential solutions to the i.i.d. problem. These include:
@@ -130,7 +131,7 @@ Violating the i.i.d. assumption does not bias your results, but it will lead to 
 ##  Fixing heteroscedasticity with a transformation {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
+<body>Sociology 513, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
 </div>
 
 ```{r heteroscedasticityfix, echo=FALSE, fig.width=8.5, fig.height=4, fig.align='center', out.width='850px', out.height='400px', dpi=300, dev.args = list(bg = 'transparent')}
@@ -149,7 +150,7 @@ plot(model2$fitted.values, model2$residuals, pch=21, bg="grey",
 ##  Using Weighted Least Squares {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
+<body>Sociology 513, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
 </div>
 
 The weighted least squares technique uses a weighting matrix $\mathbf{W}$ in its calculation of regression slopes like so:
@@ -163,7 +164,7 @@ The exact form of this weighting matrix depends on the nature of the i.i.d. viol
 ##  GLS Example {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
+<body>Sociology 513, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
 </div>
 
 We can use the `gls` command in the `nmle` package to adjust for serial autocorrelation in the prior model.We will assume that the autocorrelation follows an "AR1" pattern in which each subsequent residual is only correlated with its immediate predecessor (AR1 stands for auto-regressive 1, where 1 indicates the lag). 
@@ -178,7 +179,7 @@ summary(model.ar1)$tTable
 ## Robust Standard Errors {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
+<body>Sociology 513, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
 </div>
 
 Robust standard errors have become popular in recent years, partly due (I believe) to how easy they are to add to standard regression models in Stata. We won't delve into the math behind the robust standard error, but the general idea is that robust standard errors will give you "correct" standard errors even when the model is mis-specified due to issues such a non-linearity, heteroscedasticity, and autocorrelation. 
@@ -190,7 +191,7 @@ Robust standard errors can be estimated in R using the `sandwich` and `lmtest` p
 ## Robust SE Example: box office returns {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
+<body>Sociology 513, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
 </div>
 
 ```{r robustse, message=FALSE, error=FALSE}
@@ -205,7 +206,7 @@ We already know this model suffers from heteroscedasticity so that its estimates
 ## Robust SE Example: box office returns {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
+<body>Sociology 513, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
 </div>
 
 Lets apply robust standard errors to the model
@@ -219,7 +220,7 @@ Note that the estimates are the same, but the robust standard errors are conside
 ##  Robust SE Example: box office returns {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
+<body>Sociology 513, Model Complications: Violation of Assumptions and Robust Standard Errors</body>
 </div>
 
 ```{r robustse3}
@@ -230,7 +231,7 @@ coeftest(model, vcov=vcovHC(model, "HC1"))
 
 When log-transformed, the robust SE are no longer larger than the regular SE, indicating that we may have eliminated problems of mis-specification. 
 
-# Transformations (Advanced)
+# Transformations
 Model Complications
 
 ## Transforming variables
@@ -463,7 +464,7 @@ Model Complications
 ##  The reality of survey sampling
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Sample Design and Weighting</body>
+<body>Sociology 513, Model Complications: Sample Design and Weighting</body>
 </div>
 
 >- We have treated all of our sample data as if it was collected using simple random sampling (SRS) where every possible combination of $n$ respondents from the population had an equally likely chance of being drawn. In this case, all of the statistics (e.g. means, proportions, regression slopes) we calculcate should be representative of the population of interest, except for random sampling bias. 
@@ -473,7 +474,7 @@ Model Complications
 ##  Clustering
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Sample Design and Weighting</body>
+<body>Sociology 513, Model Complications: Sample Design and Weighting</body>
 </div>
 
 >- When you take a cluster or multi-stage sample, you first aggregate observations into larger groupings identified as the Primary Sampling Unit (PSU) and then sample some of these PSUs before sampling individual observations within the sampled PSUs.
@@ -484,7 +485,7 @@ Model Complications
 ##  What percent of the US population is Mormon? {.smaller} 
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Sample Design and Weighting</body>
+<body>Sociology 513, Model Complications: Sample Design and Weighting</body>
 </div>
 
 Because the GSS takes a first stage sample of MSAs and rural counties and Mormons are heavily concentrated in certain places, the percent of Mormons from year to year varies substantially by whether certain PSUs were sampled or not. Red lines indicate expected 95% interval for sampling variability without clustering, assuming the average percent across all years (dotted line).
@@ -507,7 +508,7 @@ lines(as.numeric(names(mormons)), 100*(mormonmean-2*errormargin), col="red")
 ##  Stratification {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Sample Design and Weighting</body>
+<body>Sociology 513, Model Complications: Sample Design and Weighting</body>
 </div>
 
 >- Stratification in sampling operates in a manner somewhat similar to cluster sampling except that once the observations are aggregated into strata by some characteristic (e.g. income, race, age), observations are sampled from *every* stratum. 
@@ -520,7 +521,7 @@ lines(as.numeric(names(mormons)), 100*(mormonmean-2*errormargin), col="red")
 ##  Weighting {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Sample Design and Weighting</body>
+<body>Sociology 513, Model Complications: Sample Design and Weighting</body>
 </div>
 
 >- Numerous factors can lead to a sample being unrepresentative such as sampling strata with different probabilities, differential non-response rates, and a lack of fit between sample frame and population. 
@@ -533,7 +534,7 @@ lines(as.numeric(names(mormons)), 100*(mormonmean-2*errormargin), col="red")
 ##  Weights in Sneetchville {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Sample Design and Weighting</body>
+<body>Sociology 513, Model Complications: Sample Design and Weighting</body>
 </div>
 
 In Sneetchville, there are 3 star-bellied and 7 regular sneetches. Lets say I take a stratified sample of two star-bellied and two regular sneetches. Here is the population data:
@@ -548,7 +549,7 @@ sneetches
 ##  Weights in Sneetchville {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Sample Design and Weighting</body>
+<body>Sociology 513, Model Complications: Sample Design and Weighting</body>
 </div>
 
 ```{r starbellied2}
@@ -565,7 +566,7 @@ x
 ##   The consequences of survey design
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Sample Design and Weighting</body>
+<body>Sociology 513, Model Complications: Sample Design and Weighting</body>
 </div>
 
 +------------------+--------------------------+----------------------------------+
@@ -590,7 +591,7 @@ x
 ##  Correcting for survey design 
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Sample Design and Weighting</body>
+<body>Sociology 513, Model Complications: Sample Design and Weighting</body>
 </div>
 
 >- R and Stata both have syntax in many commands to apply sampling weights to get representative statistics (e.g. `weighted.mean`, the `weight` option in the `lm` command), but this approach will not correctly adjust standard errors for design effects. 
@@ -601,7 +602,7 @@ x
 ## Add Health survey design {.centered}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Sample Design and Weighting</body>
+<body>Sociology 513, Model Complications: Sample Design and Weighting</body>
 </div>
 
 ![](images/addhealthdesign.jpeg)
@@ -609,7 +610,7 @@ x
 ##  Add Health survey design {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Sample Design and Weighting</body>
+<body>Sociology 513, Model Complications: Sample Design and Weighting</body>
 </div>
 
 >- A sampling frame was developed of 26,666 U.S. high schools from the Quality Education Database. 
@@ -625,7 +626,7 @@ x
 ##  Variability in Add Health weights
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Sample Design and Weighting</body>
+<body>Sociology 513, Model Complications: Sample Design and Weighting</body>
 </div>
 
 ```{r addhealthweight_dist, echo=FALSE, fig.width=8, fig.height=5, fig.align='center', out.width='800px', out.height='500px', dpi=300, dev.args = list(bg = 'transparent')}
@@ -636,7 +637,7 @@ hist(addhealth$sweight, xlab="sampling weights",las=1, main="Distribution of Add
 ##  Add Health example, naive approach {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Sample Design and Weighting</body>
+<body>Sociology 513, Model Complications: Sample Design and Weighting</body>
 </div>
 
 Lets start with a model that makes no adjustment.
@@ -656,7 +657,7 @@ summary(model.weight)$coef
 ##  Add Health example, robust SE approach {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Sample Design and Weighting</body>
+<body>Sociology 513, Model Complications: Sample Design and Weighting</body>
 </div>
 
 Adding weights to the `lm` command gives me representative values for the slope and intercept, but my SEs do not correct for the substantial variation in weights. I can correct for this design issue by using robust standard errors:
@@ -673,7 +674,7 @@ Estimates are identical but standard errors are slightly larger. However, this t
 ##  Add Health example, using `survey` library {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Sample Design and Weighting</body>
+<body>Sociology 513, Model Complications: Sample Design and Weighting</body>
 </div>
 
 I can use the `svydesign` command in the `survey` package to correctly specify both the weights and the clustering in Add Health. The `ids` argument expects a variable name that identifies the clusters by id (in this case, the school id) and the `weight` argument expects a variable name for the weights used. 
@@ -690,7 +691,7 @@ Estimates are identical to the weighted regression model before, but standard er
 ##  Comparison of methods
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Sample Design and Weighting</body>
+<body>Sociology 513, Model Complications: Sample Design and Weighting</body>
 </div>
 
 <div class="stargazer">
@@ -715,7 +716,7 @@ Model Complications
 ##  The reality of missing data
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 >- Missing data exists in most real-world data sets. Therefore, its important to know how to handle missing data in order to know how to properly conduct an analysis.
@@ -726,7 +727,7 @@ Model Complications
 ##  Example of a valid skip {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 
@@ -741,7 +742,7 @@ There are a lot of missing values for `denom` and `other`, but these are all val
 ##  Kinds of missingness {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 >- A variable is **missing completely at random** (MCAR) if every observation has the same probability of missingness. In other words, the missingness of a variable has no relationship to other observed or unobserved variables. If this is true, then removing observations with missing values will not bias results. Of course, this is highly unlikely to be true.
@@ -752,7 +753,7 @@ There are a lot of missing values for `denom` and `other`, but these are all val
 ##  Add Health income example
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 As an example, I will use parental income from the Add Health data to predict popularity. Income is recorded in thousands of dollars, and I have top-coded the values to \$200,000. Income is notorious as a variable that will typically have a high non-response rate. The Add Health data are no different:
@@ -767,7 +768,7 @@ Income is missing for 1027 cases which is roughly a quarter of the dataset.
 ##  Removing cases {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 
@@ -780,7 +781,7 @@ Income is missing for 1027 cases which is roughly a quarter of the dataset.
 ##  Removing cases, Add Health example {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 **Available-Case analysis**
@@ -807,7 +808,7 @@ model3.complete <- update(model2.complete, .~.+parentinc)
 ##  Available-Case Results {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 <div class="stargazer">
@@ -825,7 +826,7 @@ stargazer(model1.avail, model2.avail, model3.avail, type="html",
 ##  Complete-Case Results {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 <div class="stargazer">
@@ -843,7 +844,7 @@ stargazer(model1.complete, model2.complete, model3.complete, type="html",
 ##  Imputation {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 >- Imputation typically improves on case deletion because it allows you to use more data and, depending on how it is done, may move from the assumption of MCAR to MAR. The cost is the extra labor involved, although some poor imputation techniques may actually increase bias as well. 
@@ -854,7 +855,7 @@ stargazer(model1.complete, model2.complete, model3.complete, type="html",
 ##  Some Imputation Techniques
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 +-------------------+------------------+---------------------+
@@ -870,7 +871,7 @@ stargazer(model1.complete, model2.complete, model3.complete, type="html",
 ##  Mean and Random Imputation
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 A very simple (and poor) technique would be just to substitute the mean for valid responses for all missing values. 
@@ -893,7 +894,7 @@ addhealth$parentinc.randi[addhealth$incmiss]<-sample(addhealth$parentinc[!addhea
 ##  Mean and Random Imputation, Add Health
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 ```{r meanimpute_plot, echo=FALSE, fig.width=8.5, fig.height=4.5, fig.align='center', out.width='850px', out.height='450px', dpi=300, dev.args = list(bg = 'transparent')}
@@ -911,7 +912,7 @@ with(subset(addhealth,incmiss), points(parentinc.randi, indegree, pch=21, bg="re
 ##  Mean and Random Imputation == Bad
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 | Sample              | $r$ (indegree and income) | SD (income)        |
@@ -926,7 +927,7 @@ with(subset(addhealth,incmiss), points(parentinc.randi, indegree, pch=21, bg="re
 ##  Quick and Dirty Method {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 If I do a mean imputation, I can also add the boolean variable indicating missingness as a predictor in my model. When I do this, the effect of the imputed variable will be the same as if if I had thrown out missing values (because we are controlling for missingness), but I can use the full data. 
@@ -941,7 +942,7 @@ This model assumes MCAR and slightly underestimates the standard error. Its prim
 ##  Mean imputation with dummy, Add Health {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 The coefficient on the missingness dummy tells me how far the mean indegree value for missing cases was from what I would have expected it to be for someone at the mean parental income. 
@@ -972,7 +973,7 @@ legend(43,5, cex=0.7,
 ##  Regression Imputation {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 First, I predict the value of parental income by other independent variables (but never the dependent variable) using a regression model. In this case, I will transform parental income by the square root as well since it is heavily right skewed. Then, I use the `predict` command to get predicted values for all observations and impute the predicted values (or their square, technically) for missing values. 
@@ -991,7 +992,7 @@ I still have some missing values, because there were missing values on the varia
 ##  Random Regression Imputation {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 The previous model is deterministic, and will underestimate standard errors but I can add a random component to this by sampling from a normal distribution with a mean of zero and standard deviation equal to that of the model residuals. 
@@ -1009,7 +1010,7 @@ sd(addhealth$parentinc.rregi, na.rm=TRUE)
 ##  Regression Imputation, Add Health
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 ```{r regimpute_plot, echo=FALSE, fig.width=8.5, fig.height=4.5, fig.align='center', out.width='850px', out.height='450px', dpi=300, dev.args = list(bg = 'transparent')}
@@ -1030,7 +1031,7 @@ points(predicted[addhealth$incmiss]^2, addhealth$parentinc.rregi[addhealth$incmi
 ##  Matching
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 >- There are a variety of matching techniques, but the underlying rationale is the same for all of them. For a given missing value, find a non-missing observation that is similar on all of the other observed variables and replace the missing value with this value. 
@@ -1042,7 +1043,7 @@ points(predicted[addhealth$incmiss]^2, addhealth$parentinc.rregi[addhealth$incmi
 ##  Using `mice` to impute a single dataset {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 The `mice` command will use chained equations to impute missing values on *all* variables when a dataset is fed in. I can then use the `complete` command to extract a full dataset with no missing values. 
@@ -1061,7 +1062,7 @@ I can then use this new dataset `addhealth.ce` to run my models.
 ##  Comparison of methods {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 <div class="stargazer">
@@ -1078,8 +1079,6 @@ model5 <- lm(indegree~parentinc.chosen+smoker+alcoholuse+nsports, data=addhealth
 addhealth$parentinc.chosen <- addhealth$parentinc.rregi
 model6 <- lm(indegree~parentinc.chosen+smoker+alcoholuse+nsports, data=addhealth)
 addhealth.ce$parentinc.chosen <- addhealth.ce$parentinc
-addhealth.ce$smoker <- as.logical(addhealth.ce$smoker)
-addhealth.ce$alcoholuse <- as.logical(addhealth.ce$alcoholuse)
 model7 <- lm(indegree~parentinc.chosen+smoker+alcoholuse+nsports, data=addhealth.ce)
 stargazer(model1, model2, model3, model4, model5, model6, model7, type="html",
           keep.stat=c("n"),
@@ -1093,7 +1092,7 @@ stargazer(model1, model2, model3, model4, model5, model6, model7, type="html",
 ##  Multiple Imputation
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 >- The methods of random imputation have the benefit of preserving the standard deviation of the imputed variable and therefore calculating correct standard errors, but they also introduce a new source of uncertainty. 
@@ -1103,7 +1102,7 @@ stargazer(model1, model2, model3, model4, model5, model6, model7, type="html",
 ## Multiple Imputation Process {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 1. Use imputation process with random component to impute missing values and repeat this process to produce $m$ separate complete datasets. Each of these datasets will be somewhat different due to the randomization of imputation. Usually $m=5$ is sufficient.
@@ -1117,7 +1116,7 @@ Where $W$ is the squared average standard error across all $m$ datasets, and $B$
 ## Multiple imputation with the `mice` package {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 This process may seem intimidating but it is actually ridiculously easy with the `mice` package and because of the object-oriented nature of R. The `mice` command that we ran before can generate multiple imputed datasets, like so:
@@ -1132,7 +1131,7 @@ The imputations object now contains five fully complete imputed datasets. Its po
 ##  Easy way: let `mice` do the hard work {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 The `mice` package has a lot of nice features, including an object specific function for the `with` command and a `pool` command that make multiple imputation as easy as falling off a log:
@@ -1145,7 +1144,7 @@ summary(model.mi)
 ##  Hard way: for-loop {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 The hard way isn't really that hard. It is useful to know for cases where the easy way won't work, such as when you need to run complicated models (using `svydesign` would be an example).
@@ -1166,7 +1165,7 @@ The `b` and `se` objects are matrices that contain the coefficients and standard
 ##  Hard way: pool the results {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Missing Data</body>
+<body>Sociology 513, Model Complications: Missing Data</body>
 </div>
 
 Now we can pool the results using the `b` and `se` matrices and some creative use of `apply` commands. 
@@ -1186,7 +1185,7 @@ data.frame(b.pool, se.pool, t.pool, pvalue.pool)
 ##  The problem of multicollinearity
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 >- Given that adding more independent variables to your model allows you to account for potential omitted variable bias, why wouldn't you just put in as many variables as you can?
@@ -1197,7 +1196,7 @@ data.frame(b.pool, se.pool, t.pool, pvalue.pool)
 ##  Two kinds of multicollinearity
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 >- **Structural multicollinearity**: Structural multicollinearity occurs when one independent variable is completely determined by another independent variable or set of independent variables. This really isn't an issue with the data, but rather a specification error by the researcher. 
@@ -1206,7 +1205,7 @@ data.frame(b.pool, se.pool, t.pool, pvalue.pool)
 ##  Example of structural multicollinearity {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 Lets predict violent crime by % female and % male.
@@ -1220,7 +1219,7 @@ summary(lm(Violent~PctMale+PctFemale, data=crimes))
 ##  Singularity! Not as cool as it sounds. {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 One of the terms was dropped from the model because the terms are perfectly collinear.
@@ -1239,7 +1238,7 @@ coef(lm(Violent~PctFemale, data=crimes))
 ##  Detecting Data-based Multicollinearity
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 >- Standard errors increase substantially across nested models with more covariates. 
@@ -1250,7 +1249,7 @@ coef(lm(Violent~PctFemale, data=crimes))
 ##  Multicollinearity example: NYC non-profits {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 For an example of multicollinearity, we will look at data collected by myself and Nicole Marwell on the spatial distribution of money for social services by the City of New York from 1997-2001. Money is distributed by contracting out social services to non-profit organizations. The unit of analysis is a NYC health area, which can loosely be thought of as a neighborhood. We are interested in the relationship between socioeconomic disadvantage and the amount of money provided to a neighborhood. The variables are:
@@ -1263,12 +1262,12 @@ For an example of multicollinearity, we will look at data collected by myself an
 ##  Building the models, NYC example
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 ```{r nycmodels}
 nyc$lincome <- log(nyc$income)
-model.pov <- lm(log(amountcapita)~poverty, data=nyc)
+model.pov <- lm(log(amtcapita)~poverty, data=nyc)
 model.unemp <- update(model.pov,.~.-poverty+unemployed)
 model.income <- update(model.pov,.~.-poverty+lincome)
 model.povunemp <- update(model.pov, .~.+unemployed)
@@ -1280,7 +1279,7 @@ model.allthree <- update(model.povunemp, .~.+lincome)
 ## Model results, NYC example {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 <div class="stargazer">
@@ -1305,7 +1304,7 @@ The models exhibit classic signs of multicollinearity:
 ##  The correlation matrix as diagnostic
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 ```{r correlation_nyc}
@@ -1319,7 +1318,7 @@ Note that, while the correlation matrix is often helpful, it may not reveal the 
 ##  Variance inflation factors {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 The **variance inflation factor** (VIF) is the multiplicative factor by which the variance in the estimation of any one coefficient from the current model is increased due to multicollinearity relative to variance in the estimation of that coefficient from the bivariate model. The square root of the VIF is roughly the expected factor increase in the standard error. It can be shown that the VIF for the $i$th variable is given by:
@@ -1331,12 +1330,12 @@ Where $R_i^2$ is the r-squared value when the given independent variable is pred
 1/(1-summary(lm(poverty~unemployed+lincome, data=nyc))$r.squared)
 ```
 
-The square root of this VIF is 3.41, indicating that the standard error for poverty is more than tripled due to multicollinearity in the full model. 
+The square root of this VIF is 2.45, indicating that the standard error for poverty is almost tripled due to multicollinearity in the full model. 
 
 ##  Estimating VIF with the `vif` command
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 We can also use the `vif` function in the `car` package to quickly estimate all VIFs for a given model:
@@ -1346,12 +1345,12 @@ library(car)
 vif(model.allthree)
 ```
 
-The general rule of thumb is that a VIF over four is problematic enough that it needs to be addressed in some manner. Clearly, multicollinearity is a huge problem here. 
+The general rule of thumb is that a VIF over four is problematic enough that it needs to be addressed in some manner. Clearly, multicollinearity is a big problem here. 
 
 ##  What to do about multicollinearity? 
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 >- A simple approach is to remove some of the highly correlated covariates. However, because the variables are not perfectly correlated, you are basically throwing out some information. 
@@ -1361,7 +1360,7 @@ The general rule of thumb is that a VIF over four is problematic enough that it 
 ##  Standardization and reverse ordering 
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 >- In many cases, the variables that are thought to make up a scale might be measured in the same manner. This is true of many variables in psychological research (where scale construction was largely developed) where each item might be a likert scale variable or a simple yes/no variable. 
@@ -1371,7 +1370,7 @@ The general rule of thumb is that a VIF over four is problematic enough that it 
 ##  Standardization, NYC example
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 The `scale` command will perform z-score standardization, but its also easy enough to do by hand. Note that I am multiplying the `lincome` result by -1 to reverse code it. 
@@ -1385,7 +1384,7 @@ nyc$lincome.z <- -1*(nyc$lincome-mean(nyc$lincome))/sd(nyc$lincome)
 ##  Cronbach's Alpha {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 Cronbach's Alpha ($\alpha$) is a statistic developed in psychology to test the degree to which different variables (or "items" in psych speak) measure the same underlying concept. It is thought of as a test of the *internal reliability* of a scale. You can think about it as a summary measure of the correlation matrix we saw earlier. It goes from 0 to 1, with 0 indicating no shared correlation, and 1 indicating perfect correlation between all items. The `pysch` package includes and `alpha` command that will calculate $\alpha$. Note that I need to standardize and reverse code my variables before entering them here. 
@@ -1400,14 +1399,14 @@ The $\alpha$ of 0.96 indicates a very high level of shared covariance between th
 ##  Summated scale {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 Once I have standardized and (if necessary) reverse coded all of the variables for my scale, I can create a simple scale (called a **summated scale**) by simply adding them up. I am also going to scale this variable with the `scale` command so that it has a mean of zero and a standard deviation of one. 
 
 ```{r summatedscale}
 nyc$deprivation.summated <- scale(nyc$poverty.z+nyc$unemployed.z+nyc$lincome.z)
-summary(lm(log(amountcapita)~deprivation.summated, data=nyc))$coef
+summary(lm(log(amtcapita)~deprivation.summated, data=nyc))$coef
 ```
 
 A one standard deviation increase on my deprivation scale is associated with a 30% increase in the amount for social services in a neighborhood. Remember that because the dependent variable is logged and the slope is large, I need to exponentiate it to interpret the result. 
@@ -1416,7 +1415,7 @@ A one standard deviation increase on my deprivation scale is associated with a 3
 ##  Factor Analysis {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 Another approach to creating a scale is **factor analysis**. Factor analysis is a method to extract the underlying latent variables (the factors) from a set of observed variables. We will start with an example where we assume a single underlying latent factor. 
@@ -1431,7 +1430,7 @@ The $F_i$ are called the **factor scores** and are the values of the common fact
 ## Estimation in Factor Analysis
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 The factor scores and factor loadings for a factor analysis can be estimated by mathematical manipulation of the observed correlation matrix between variables, but we won't get into the mathematical details here. 
@@ -1444,7 +1443,7 @@ There are several different related techniques for factor analysis estimation in
 ##  PCF factor Analysis, NYC data 
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 ```{r factoranal_nyc}
@@ -1461,7 +1460,7 @@ The resulting object `factor.nyc` contains information about both the factor loa
 ## Factor Loadings {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 ```{r factorloading_nyc}
@@ -1475,14 +1474,14 @@ The loadings themselves show the correlation coefficient ($r$) between each obse
 ##  Factor Scores
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 I can easily extract my factor scores from the the factor analysis object and use them as my scale measure of deprivation. 
 
 ```{r factormodel_nyc}
 nyc$deprivation.factor <- factor.nyc$scores
-summary(lm(log(amountcapita)~deprivation.factor, data=nyc))$coef
+summary(lm(log(amtcapita)~deprivation.factor, data=nyc))$coef
 ```
 
 A one standard deviation increase on my deprivation scale is associated with a 30% increase in the amount for social services in a neighborhood. The results here are virtually identical to those for my summated scale because the correlation between them is over 0.9999.
@@ -1490,7 +1489,7 @@ A one standard deviation increase on my deprivation scale is associated with a 3
 ##  Using `pairs` to visualize correlations {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 ```{r pairs_example, fig.width=7.5, fig.height=4, fig.align='center', out.width='750px', out.height='400px', dpi=300, dev.args = list(bg = 'transparent')}
@@ -1501,7 +1500,7 @@ pairs(nyc[,c("poverty","unemployed","lincome",
 ##  Factor Analysis with Multiple Factors {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 The previous example only used one factor and produced results that were virtually identical to a simple summated scale. However, it is also possible to use factor analysis to identify more than one common factor shared among a set of variables. 
@@ -1518,7 +1517,7 @@ There will be a set of $J$ factor loadings for each of the $m$ factors. The key 
 ##  Example: Esping-Anderson data {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 Esping-Anderson has argued that modern welfare states can be divided into three different types that are driven by different logics. 
@@ -1538,19 +1537,17 @@ We can use factor analysis to see if these six variables are well described by t
 ##  Correlation matrix of Esping-Anderson data {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 ```{r espinganderson_cormatrix}
-esping <- read.csv("example_datasets/misc/espinganderson.csv",
-                   row.names=1)[,-7]
 round(cor(esping),3)
 ```
 
 ## Scree plot for Esping-Anderson data {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 A **scree test** will show how much adding another factor will contribute to explaining the remaining variance. Values of y (eigenvalues) below one  account for less variance than a single observed variable and so the cutoff is usually made at this level.
@@ -1562,7 +1559,7 @@ scree(esping, factors = FALSE)
 ## Factor loadings for Esping-Anderson data {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 ```{r loading_espinganderson}
@@ -1575,7 +1572,7 @@ Three factors explain 83% of the variance. The factor loadings correspond well t
 ##  Visualization of countries by identified factors
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 ```{r espinganderson_3d, echo=FALSE, fig.width=8.5, fig.height=5, fig.align='center', out.width='850px', out.height='500px', dpi=300, dev.args = list(bg = 'transparent')}
@@ -1592,7 +1589,7 @@ text(s3d.coords$x, s3d.coords$y, labels=rownames(esping),
 ##  Extending Factor Analysis
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 >- Factor analysis is part of a larger family of methods that are often described as **data reduction** techniques: How can you reduce the amount of information in a given set of variables into a smaller set of variables. 
@@ -1602,7 +1599,7 @@ text(s3d.coords$x, s3d.coords$y, labels=rownames(esping),
 ##  Clustering on observations {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 >- Factor analysis can also be thought of as a way to identify **clusters** of *variables* that are highly correlated across observations.
@@ -1614,7 +1611,7 @@ text(s3d.coords$x, s3d.coords$y, labels=rownames(esping),
 ##  Dendrograms of Welfare States
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Multicollinearity and Scales</body>
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 ```{r dendrogram_espinganderson, fig.width=7, fig.height=4, fig.align='center', out.width='700px', out.height='400px', dpi=300, dev.args = list(bg = 'transparent')}
@@ -1628,7 +1625,7 @@ Model Complications
 ##  Predicting violent crime rates
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 Lets predict violent crime rates in US States by a variety of characteristics. Note that some of these models are **nested** within other models, meaning that the more complex models just add additional variables to earlier models. Other models are non-nested. 
@@ -1645,7 +1642,7 @@ model.another <- update(model.justunemp,.~.+Gini+MedianAge)
 ## Which model is best? {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 <div class="stargazer">
@@ -1669,7 +1666,7 @@ stargazer(model.demog, model.ineq, model.pov, model.unemp,
 ##  Accuracy vs. Parsimony
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 >- We want our models to be accurate, or more formally we want them to have high **goodness of fit**. This is measured in OLS regression models primarily by the $R^2$ value. A more accurate model explains more of the variation in the dependent variable. 
@@ -1679,7 +1676,7 @@ stargazer(model.demog, model.ineq, model.pov, model.unemp,
 ##  How **Not** to Choose a Model
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 >- **Do not** choose a model based on all of the coefficients being statistically significant. Thats a misuse of statistical inference based on an incorrect interpretation of a p-value.
@@ -1690,7 +1687,7 @@ stargazer(model.demog, model.ineq, model.pov, model.unemp,
 ##  Good Practices for Choosing a Model
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 >- **Do** think theoretically about what is the best model for the question at hand. Maybe the contol variable needs to be in there because prior work or theory says its important, regardless of what the model fit statistics say. Perhaps interactions need to be in the model because your key interest is in intersectionality. And so on. 
@@ -1701,7 +1698,7 @@ stargazer(model.demog, model.ineq, model.pov, model.unemp,
 ##  Some model selection tools
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 - The F-Test
@@ -1712,7 +1709,7 @@ stargazer(model.demog, model.ineq, model.pov, model.unemp,
 ##  Null vs. saturated model
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 >- Many model selection tools utilize a distinction between the **null model** and the **saturated model**.
@@ -1722,7 +1719,7 @@ stargazer(model.demog, model.ineq, model.pov, model.unemp,
 ##  The F-Test {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 The F-test is a classical hypothesis test for comparing two different models in which one model is nested within the other. This means that the second model includes all of the same independent variables as model 1 as well as an additional $g$ independent variables. The null hypothesis for the F-test is that the effects for all of the additional $g$ variables are zero. 
@@ -1738,7 +1735,7 @@ Assuming the null hypothesis is true, the F-statistic will come from an F-distri
 ## Calculating F-statistic {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 ```{r ftest}
@@ -1758,7 +1755,7 @@ The p-value for the hypothesis test is 0.094. So, I would likely not reject the 
 ##  F-distribution assuming $H_0$
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 ```{r anovaplot, echo=FALSE, fig.width=8, fig.height=5, fig.align='center', out.width='800px', out.height='500px', dpi=300, dev.args = list(bg = 'transparent')}
@@ -1776,7 +1773,7 @@ text(3,0.2,labels="p-value=0.094")
 ##  Using `anova` command for F-test
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 Rather than do this by hand, you can feed both models into the `anova` command.
@@ -1788,7 +1785,7 @@ anova(model.null, model.demog)
 ## Multiple model comparisons {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 The `anova` command is not limited to two models. We can feed in a list of models **so long as they are nested models.**
@@ -1802,7 +1799,7 @@ The F-statistic is somewhat different than the two model comparison because the 
 ##  F-test for adding one variable {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 ```{r ftest_anova_onevar}
@@ -1815,7 +1812,7 @@ The p-value for an F-test where only one variable is added is identical to the p
 ##  Limitations of the F-test
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 >- The F-test can only be used to compare nested models. This limits its use substantially because we can imagine that it might be theoretically important to compare non-nested models. 
@@ -1825,7 +1822,7 @@ The p-value for an F-test where only one variable is added is identical to the p
 ##  Methods for penalizing goodness of fit
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 >- $R^2$ can be thought of as a goodness-of-fit statistic. It measures the accuracy of the model in predicting the dependent variable.
@@ -1837,7 +1834,7 @@ The p-value for an F-test where only one variable is added is identical to the p
 ##  Adjusted $R^2$
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 The formula for adjusted $R^2$ is:
@@ -1851,7 +1848,7 @@ This value is calculated by default by the `summary` command for a linear model 
 ## Bayesian Information Criterion {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 There are two common forms of BIC:
@@ -1871,7 +1868,7 @@ You can directly compare the values of any two given models by BIC' or BIC, and 
 ##  Calculating BIC' {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 ```{r bicfunction}
@@ -1889,7 +1886,7 @@ BIC(model.demog)-BIC(model.null)
 ##  BIC or BIC' give the same difference
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 ```{r biccompare}
@@ -1904,7 +1901,7 @@ A general rule of thumb is that BIC differences less than two give weak preferen
 ## Model comparison {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 <div class="stargazer">
@@ -1929,7 +1926,7 @@ BIC prefers model 6, while adjusted $R^2$ prefers model 7 and is indifferent bet
 ## Model uncertainty
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 >- Given a set of potential independent variables, there is a very large number of potential models that could be chosen, even if we don't consider added complications like interaction or polynomial terms. 
@@ -1940,7 +1937,7 @@ BIC prefers model 6, while adjusted $R^2$ prefers model 7 and is indifferent bet
 ## Bayesian Model Averaging {.smaller}
 
 <div class="footer">
-<body>Sociology 512, Model Complications: Model Selection</body>
+<body>Sociology 513, Model Complications: Model Selection</body>
 </div>
 
 ```{r bma_input, message=FALSE, error=FALSE, eval=FALSE}
