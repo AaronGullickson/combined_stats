@@ -1,0 +1,32 @@
+
+# Modeling Categorical Outcomes
+
+---
+
+## Dichotomous Outcomes and The Binomial Distribution
+
+---
+
+## Linear Probability Model
+
+---
+
+## Generalized Linear Model
+
+---
+
+## Maximum Likelihood Estimation
+
+---
+
+## Logistic Regression Model
+
+---
+
+## Models for Nominal Polytomous Outcomes
+
+---
+
+## Models for Ordinal Polytomous Outcomes
+
+---
