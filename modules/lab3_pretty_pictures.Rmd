@@ -1,14 +1,4 @@
----
-output: html_document
----
-# Pretty Pictures
-
-```{r echo=FALSE}
-load("example_datasets/nyc_nonprofit/nyc.RData")
-load("example_datasets/movies/movies.RData")
-library(ggplot2)
-library(scales)
-```
+## Pretty Pictures
 
 One of the best features of R is the ability to make beautiful graphs. R gives the user an incredible amount of control over exactly how your graphs appear. If you know enough, you can virtually make any graph that you can imagine in your head. This flexibility comes at a cost, however. The curve in learning graphics is quite substantial, because of the number of parameters that can be controlled. Nonetheless, if you intend to do quantitative data analysis, then its well worth the effort. In my opinion, figures are almost always a better way to express a result than a table. If the figure is well-designed it will make your results much more intelligible to a broader audience because you have literally helped them to visualize it. 
 
@@ -27,7 +17,7 @@ head(nyc)
 ```
 We have the numeric code of the health area, the amount of funding per capita, the poverty rate as a percentage of the population, a numeric code for borough (Manhattan, Brooklyn, Bronx, Queens, Staten Island), and the population size. You can download this data in the files section of Canvas. 
 
-## Base Plot
+### Base Plot
 
 For this example, we are going to use a scatterplot to look at the association between funding per capita and poverty rates. Here is the ultimate figure that we want to end up with:
 
@@ -336,7 +326,7 @@ legend(2001, 120, legend=c("G","PG","PG-13","R"), lty=1, lwd=2,
 
 The plot command here basically creates an empty canvas because I give a single point coordinate (-1,-1) that is outside the range of my xlim and ylim values. I can then use the `lines` command to write specific lines onto this blank canvas. 
 
-## ggplot 
+### ggplot 
 
 Now, I want to show you how to plot that same scatterplot of non-profit funding in NYC using ggplot. First you will need to install ggplot and load the library:
 
