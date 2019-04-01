@@ -107,9 +107,7 @@ legend(4, 0.8, legend=c("Denial","Belief"), fill=c("darkgreen","yellow"), bty="n
 
 In this case, I have also added custom colors for the two categories and designed my own legend that I can place better than the automated one. 
 
-------
-
-## Odds ratio (Advanced)
+### Odds ratio
 
 We can also use the **odds ratio** to measure the association between two categorical variables.  The odds ratio is not a term that is common in everyday speech but it is a critical concept in all kinds of scientific research. 
 
