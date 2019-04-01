@@ -1,10 +1,16 @@
 
 # (APPENDIX) Appendices {-}
 
-# R Stat Lab (Advanced)
+# R Stat Lab
 
 ```{r child="lab1_using_scripts.Rmd", echo=FALSE}
 ```
 
 ```{r child="lab2_object_types.Rmd", echo=FALSE}
+```
+
+```{r child="lab3_pretty_pictures.Rmd", echo=FALSE}
+```
+
+```{r child="lab5_reading_writing_data.Rmd", echo=FALSE}
 ```
