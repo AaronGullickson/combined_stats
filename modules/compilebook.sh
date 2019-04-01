@@ -1,8 +1,10 @@
 #!/bin/bash
 
 ### Compile PDF of book 
-rm stat_book.pdf
-Rscript -e 'bookdown::render_book("index.Rmd", bookdown::pdf_book(number_section=FALSE), output_dir=".")'
+if [ -f stat_book.pdf ]; then
+    rm stat_book.pdf
+fi
+#Rscript -e 'bookdown::render_book("index.Rmd", bookdown::pdf_book(number_section=FALSE), output_dir=".")'
 
 ### Compile GitBook on blog
 
