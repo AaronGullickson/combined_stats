@@ -1,9 +1,9 @@
-# Reading and Writing Data
+## Reading and Writing Data
 
 Students often get hung up at the start of a quantitative research project with the simple task of getting their data loaded into the statistical software package they are using. This is frequently a problem because data are distributed in inconsistent and often confusing ways by the agencies that release them. Knowing how to work with raw data in multiple formats is an important skill in being able to quickly get up and running with the more important parts of your analysis. 
 
 
-## Data Formats
+### Data Formats
 
 Data typically come to us in one of two general formats: (1) plain text, or (2) binary. R also has tools for accessing data that is loaded into some kind of database format (e.g. SQL, MS Access) and R also has tools for "scraping" your own data from online sources. However, the vast majority of data comes in either text or binary format and so that is what we will focus on in this class. 
 
@@ -19,7 +19,7 @@ All three of these packages read data into an object called a [tibble](https://t
 df <- as.data.frame(df)
 ```
 
-## plain text files
+### plain text files
 
 Plain text files (also known as [ASCII](http://www.asciitable.com/) files), in contrast to binary files, are easily readable across any platform without specialized (and often proprietary) software. When you write a document in WordPad in Windows or TextEdit in OSX, you are writing a plain text file. When you write a document in Microsoft Word, you are writing a binary file. Plain text files are easily transportable across a variety of different program formats, usually take up less memory, and are better for tracking changes in version control systems. If you want to share data with others, plain text is the best format to use because it is accessible regardless of statistical software or computer platform. 
 
@@ -27,7 +27,7 @@ While plain text has the advantage of accessibility and portability, it has the 
 
 Data in plain text files usually comes in one of two formats: comma-separated values (CSV) files or fixed-width files. In both cases, one line of text corresponds to an observation, or a row of data. The difference between the two formats is how to distinguish the values for different variables within a line of text (i.e. the columns). 
 
-### Working with CSV files
+#### Working with CSV files
 
 In a comma-separated values format, the columns in the data are separated by commas. Here is an example with a very small CSV data file named "data.csv".
 
@@ -75,7 +75,7 @@ mydata
 ```
 Note that because I used the `comment` argument I only specify `skip=1` . 
 
-### Working with fixed-width text files
+#### Working with fixed-width text files
 
 The second form that data in text format can take is "fixed-width" format where the specific length of each variable in terms of the number of characters is specified. For example, here is the same dataset in fixed-width format, saved as "data_fw.txt":
 
@@ -123,7 +123,7 @@ census1980
 
 If you look closely, you will see that I am skipping some index positions in my data because I don't want to bother with some variables. I am also using the `col_types` argument to force `read_fwf` to read in all variables as numeric integers because this is how all the data come from IPUMS. Finally, I set `progress=FALSE` for the output here, but I can ghange that to the `progress=TRUE` option to get a progresss bar as my data is read in that lets me know how long I can expect to wait.
 
-## Data in binary format
+### Data in binary format
 
 As a result of initiatives to make science more open, data is increasingly becoming available in simple text format, which improves its portability and accessibility. However, there are still many cases where data is available in a binary format that is readable only by a specific statistical software program. For example, the [quick download](https://gssdataexplorer.norc.org/pages/show?page=gss%2Fgss_data) page for the General Social Survey provides the comprehensive GSS data files but only in Stata and SPSS formats. Thats fine if you have purchased that software, but you are out of luck if you have not. This approach is Bad For Science, but you will still run into it quite a bit.  
 
@@ -144,7 +144,7 @@ mydata$gender <- factor(mydata$gender)
 summary(mydata$gender)
 ```
 
-## Saving data
+### Saving data
 
 R has its own binary format for keeping track of data. You can save any object or set of objects to your filesystem with the `save` command. This will save a file in a binary \*.RData format. These objects can then be loaded back into R with the `load` command: 
 
