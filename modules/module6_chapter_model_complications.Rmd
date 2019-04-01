@@ -1,7 +1,13 @@
 
-------
+# Model Complications
 
-## Transformations (Advanced)
+---
+
+## Violation of Model Assumptions
+
+---
+
+## Modeling Non-Linearity
 
 You **transform** your data when you apply a mathematical function to a variable to transform its values into different values. There are a variety of different transformations that are commonly used in statistics, but for this class we will focus on the one transformation that is most common in the social sciences: the log transformation.
 
@@ -347,3 +353,19 @@ In this case, that gives us an inflection point of:
 $$0.4060329/(2*0.0004635)=438$$
 
 However, because we subtracted 90 from each value, the actual runtime minutes for the inflection is equal to $438+90=528$. Note that this value is show on the graph above. 
+
+---
+
+## Sample Design and Weighting
+
+---
+
+## Missing Values
+
+---
+
+## Multicollinearity and Scale Creation
+
+---
+
+## Model Selection
