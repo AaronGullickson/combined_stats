@@ -31,6 +31,7 @@ load("../example_datasets/politics/politics.RData")
 load("../example_datasets/students/studentsCurrent.RData")
 load("../example_datasets/students/studentsamplingdist.RData")
 load("../example_datasets/add_health/addhealth.RData")
+load("../example_datasets/nyc_nonprofit/nyc.RData")
 preston <- read.csv("../example_datasets/misc/preston.csv")
 election <- read.csv("../example_datasets/misc/ecofallacy.csv")
 library(pander)
@@ -40,4 +41,4 @@ library(scales)
  
 # Preface {-}
 
-This PDF combines all of the module sections on Canvas for Sociology 312 into a single document. 
+This online textbook combines all of the information taught in my undergraduate statistics course as well as both terms of my introductory graduate statistics course. It is very much a work in progress at the moment. I am adding new chapters and transitioning most of my figures to `ggplot` so you will likely notice many quirks. 
