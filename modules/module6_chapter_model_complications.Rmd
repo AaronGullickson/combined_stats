@@ -1,9 +1,274 @@
 
 # Model Complications
 
+In this chapter, we will expand our understanding of the linear model to address many issues that the practical researcher must face. We begin with a review and reformulation of the linear model. We then move on to discuss how to address violations of assumptions such as non-linearity and heteroskedasticity (yes, this is a real word), sample design and weithing, missing values, multicollinearity, and model selection. By the end of this chapter, you will be well-supplied with the tools for conducting a real-world analysis using the linear model framework. 
+
 ---
 
-## Violation of Model Assumptions
+## The Linear Model, Revisited
+
+### Reformulating the linear model
+
+Up until now, we have used the following equation to describe the linear model mathematically:
+
+$$\hat{y}_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$
+In this formulation, $\hat{y}_i$ is the predicted value of the dependent variable for the $i$th observation and $x_{i1}$, $x_{i2}$. through $x_{ip}$ are the values of $p$ independent variables that predict $\hat{y}_i$ by a linear function. $\beta_0$ is the y-intercept which is the predicted value of dependent variable when all the independent variables are zero. $\beta_1$ through $\beta_p$ are the slopes giving the predicted change in the dependent variable for a one unit increase in a given independent variable holding all of the other variables constant. 
+
+This formulation is useful, but we can now expand and re-formulate it in a way that will help us understand some of the more advanced topics we will discuss in this and later chapters. The formula is above is only the "structural" part of the full linear model. The full linear model is given by:
+
+$$y_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}+\epsilon_i$$
+
+I have changed two things in this new formula. On the left-hand side, we have the actual value of the dependent variable for the $i$th observation. In order to make things balance on the right-hand side of the equation, I have added $\epsilon_i$ which is simply the residual or error term for the $i$th observation. We now have a full model that predicts the actual values of $y$ from the actual values of $x$. 
+
+If we compare this to the first formula, it should become clear that every term except the residual term can be substituted for by $\hat{y}_i$. So, we can restate our linear model using two separate formulas as follows:
+
+$$\hat{y}_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$
+
+$$y_i=\hat{y}_i+\epsilon_i$$
+
+By dividing up the formula into two separate components, we can begin to think of our linear model as containing a structural component and a random (or stochastic) component. The structural component is the linear equation predicting $\hat{y}_i$. This is the formal relationship we are trying to fit between the dependent and independent variables. The stochastic component on the other hand is given by the $\epsilon_i$ term in the second formula. In order to get back to the actual values of the dependent variable, we have to add in the residual component that is not accounted for by the linear model. 
+
+From this perspective, we can rethink our entire linear model as a partition of the total variation in the dependent variable into the structural component that can be accounted for by our linear model and the residual component that is unnaccounted for by the model. This is exactly as we envisioned things when we learned to calculate $R^2$ in previous chapters. 
+
+### Estimating a linear model
+
+Up until now, we have not discussed how R actually calculates all of the slopes and intercept for a linear model with multiple independent variables. We only know the equations for a linear model with one independent variable. 
+
+Even though we don't know the math yet behind how linear model parameters are estimated, we do know the rationale for why they are selected. We choose the parameters that minimized the sum of squared residuals given by:
+
+$$\sum_{i=1}^n (y_i-\hat{y}_i)^2$$
+In this section, we will learn the formal math that underlies how this esimtation occurs, but first a warning: there is a lot of math ahead. In normal everyday practice, you don't have to do any of this math, because R will do it for you. However, it is useful to know how linear model estimating works "under the hood" and it will help with some of the techniques we will learn later in the book. 
+
+#### Matrix algebra crash course
+
+In order to learn how to estimate linear model parameters, we will need to learn a little bit of matrix algebra. In matrix algebra we can collect numbers into **vectors** which are single dimension arrays of numbrers and **matrices** which are two-dimensional arrays of numbers. We can use matrix algebra to represent our linear regression model equation using one-dimensional **vectors** and two-dimensional **matrices**. We can imagine $y$ below as a vector of dimension 3x1 and $\mathbf{X}$ as a matrix of dimension 3x3. 
+
+$$
+\mathbf{y}=\begin{pmatrix}
+4\\
+5\\
+3\\
+\end{pmatrix}
+\mathbf{X}=
+\begin{pmatrix}
+1 & 7 & 4\\
+1 & 3 & 2\\
+1 & 1 & 6\\
+\end{pmatrix}
+$$
+
+We can multiply vectors and matrices together by taking each element in the row of a matrix by the corresponding element in the vector and summing them up:
+
+$$\begin{pmatrix}
+1 & 7 & 4\\
+1 & 3 & 2\\
+1 & 1 & 6\\
+\end{pmatrix}
+\begin{pmatrix}
+4\\
+5\\
+3\\
+\end{pmatrix}=
+\begin{pmatrix}
+1*4+7*5+3*4\\
+1*4+3*5+2*3\\
+1*4+1*5+6*3\\
+\end{pmatrix}=
+\begin{pmatrix}
+51\\
+25\\
+27\\
+\end{pmatrix}$$
+
+You can also transpose a vector or matrix by flipping its rows and columns. My transposed version of $\mathbf{X}$ is $\mathbf{X}'$ which is:
+
+$$\mathbf{X}=
+\begin{pmatrix}
+1 & 1 & 1\\
+7 & 3 & 1\\
+4 & 2 & 6\\
+\end{pmatrix}$$
+
+You can also multiple matrices by each other using the same pattern as for multiplying vectors and matrices but now you start a new column each time you move down a row of the first matrix. So to "square" my \mathbf{X} matrix:
+
+$$
+\begin{eqnarray*}
+\mathbf{X}'\mathbf{X}&=&
+\begin{pmatrix}
+1 & 1 & 1\\
+7 & 3 & 1\\
+4 & 2 & 6\\
+\end{pmatrix}
+\begin{pmatrix}
+1 & 7 & 4\\
+1 & 3 & 2\\
+1 & 1 & 6\\
+\end{pmatrix}&\\
+& =& \begin{pmatrix}
+1*1+1*1+1*1 & 1*7+1*3+1*1 & 1*4+1*2+1*6\\
+7*1+3*1+1*1 & 7*7+3*3+1*1 & 7*4+3*2+1*6\\
+4*1+2*1+6*1 & 4*7+2*3+6*1 & 4*4+2*2+6*6\\
+\end{pmatrix}\\
+& =&  \begin{pmatrix}
+3 & 11 & 12\\
+11 & 59 & 40\\
+12 & 40 & 56\\
+\end{pmatrix}
+\end{eqnarray*}
+$$
+
+R can help us with these calculations. the `t` command will transpose a matrix or vector and the `%*%` operator will to matrix algebra multiplation.
+
+```{r matrix-algebra}
+y <- c(4,5,3)
+X <- rbind(c(1,7,4),c(1,3,2),c(1,1,6))
+X
+t(X)
+X%*%y
+t(X)%*%X
+#a shortcut for squaring a matrix
+crossprod(X)
+```
+
+We can also calculate the **inverse** of a matrix. The inverse of a matrix ($\mathbf{X}^{-1}$) is the matrix that when multiplied by the original matrix produces the **identity** matrix which is just a matrix of ones along the diagonal cells and zeroes elsewhere. Anything multiplied by the identity matrix is just itself, so the identity matrix is like 1 at the matrix algebra level. Calculating an inverse is a difficult calculation that I won't go through here, but R can do it for us easily with the `solve` command:
+
+```{r inverse-matrix}
+inverse.X <- solve(X)
+inverse.X
+round(inverse.X %*% X,0)
+```
+
+#### Linear model in matrix form
+
+We now have enough matrix algebra under our belt that we can re-specify the linear model equation in matrix algebra format: 
+
+$$\mathbf{y}=\mathbf{X\beta+\epsilon}$$
+
+$\begin{gather*}
+\mathbf{y}=\begin{pmatrix}
+y_{1}\\
+y_{2}\\
+\vdots\\
+y_{n}\\
+\end{pmatrix}
+\end{gather*}$,
+$\begin{gather*}
+\mathbf{X}=
+\begin{pmatrix}
+1 & x_{11} & x_{12} & \ldots & x_{1p}\\
+1 & x_{21} & x_{22} & \ldots & x_{2p}\\
+\vdots & \vdots & \ldots & \vdots\\
+1 & x_{n1} & x_{n2} & \ldots & x_{np}\\
+\end{pmatrix}
+\end{gather*}$,
+$\begin{gather*}
+\mathbf{\epsilon}=\begin{pmatrix}
+\epsilon_{1}\\
+\epsilon_{2}\\
+\vdots\\
+\epsilon_{n}\\
+\end{pmatrix}
+\end{gather*}$,
+$\begin{gather*}
+\mathbf{\beta}=\begin{pmatrix}
+\beta_{1}\\
+\beta_{2}\\
+\vdots\\
+\beta_{p}\\
+\end{pmatrix}
+\end{gather*}$
+
+Where:
+
+- $\mathbf{y}$ is a vector of known values of the independent variable of length $n$.
+- $\mathbf{X}$ is a matrix of known values of the independent variables of dimensions $n$ by $p+1$. This matrix is sometimes referred to as the **design matrix**. 
+- $\mathbf{\beta}$ is a vector of to-be-estimated values of intercepts and slopes of length $p+1$.
+- $\mathbf{\epsilon}$ is a vector of residuals of length $n$ that will be equal to $\mathbf{y-X\beta}$.
+
+Note that we only know $\mathbf{y}$ and $\mathbf{X}$. We need to estimate a $\mathbf{\beta}$ vector from these known quantities. Once we know the $\mathbf{\beta}$ vector, we can calculate $\mathbf{\epsilon}$ by just taking $\mathbf{y-X\beta}$. 
+
+We want to esimate $\mathbf{\beta}$ in order to minimize the sum of squared residuals. We can represent this sum of squared residuals in matrix algebra format as a function of $\mathbf{\beta}$: 
+
+$$\begin{eqnarray*}
+SSR(\beta)&=&(\mathbf{y}-\mathbf{X\beta})'(\mathbf{y}-\mathbf{X\beta})\\
+&=&\mathbf{y}'\mathbf{y}-2\mathbf{y}'\mathbf{X\beta}+\mathbf{\beta}'\mathbf{X'X\beta}
+\end{eqnarray*}$$
+
+If you remember the old FOIL technique from high school algebra (first, outside, inside, last) that is exactly what we are doing here, in matrix algebra form. 
+
+We now have a function that defines our sum of squared residuals. We want to choose the values of $\mathbf{\beta}$ that minimize the value of this function. In order to do that, I need to introduce a teensy bit of calculus. To find the minimum (or maximum) value of a function, you calculate the derivative of the function with respect to the variable you care about and then solve for zero. Technically, you also need to calculate second derivatives in order to determine if its a minimum or maximum, but since this function has no maximum value, we know that the result has to be a minimum. I don't expect you to learn calculus for this course, so I will just mathemagically tell you that the derivative of $SSR(\beta)$ with respect to $\mathbf{\beta}$ is given by: 
+
+$$-2\mathbf{X'y}+2\mathbf{X'X\beta}$$
+
+We can now set this to zero and solve for $\mathbf{\beta}$:
+
+$$\begin{eqnarray*}
+0&=&-2\mathbf{X'y}+2\mathbf{X'X\beta}\\
+-2\mathbf{X'X\beta}&=&-2\mathbf{X'y}\\
+(\mathbf{X'X})^{-1}\mathbf{X'X\beta}&=&(\mathbf{X'X})^{-1}\mathbf{X'y}\\
+\mathbf{\beta}&=&(\mathbf{X'X})^{-1}\mathbf{X'y}\\
+\end{eqnarray*}$$
+
+Ta-dah! We have arrived at the matrix algebra solution for the best fitting parameters for a linear model with any number of independent variables. Lets try this formula out in R:
+
+```{r matrix-lm}
+X <- as.matrix(cbind(rep(1, nrow(movies)), movies[,c("Runtime","BoxOffice")]))
+head(X)
+y <- movies$TomatoMeter 
+beta <- solve(crossprod(X))%*%crossprod(X,y) 
+beta
+model <- lm(TomatoMeter~Runtime+BoxOffice, data=movies)
+coef(model)
+```
+
+It works!
+
+We can also estimate standard errors using this matrix algebra format. To get the standard errors, we first need to calculate the **covariance matrix**. 
+
+$$\sigma^{2}(\mathbf{X'X})^{-1}$$
+
+The $\sigma^2$ here is the variance of our residuals. Technically, this is the variance of the residuals in the population but since we usually only have a sample we actually calculate:
+
+$$s^2=\frac{\sum(y_i-\hat{y}_i)^2}{n-p-1}$$
+
+based on the fitted values of $\hat{y}_i$ from our linear model. $p$ is the number of independent variables in our model. 
+
+The covariance matrix actually provides us with some interesting information about the correlation of our independent variables. For our purposes we just want the square root of the diagonal elements, which gives us the standard error for our model. Continuing with the example estimating tomato meter ratings by run time and box office returns in our movies dataset, lets calculate all the numbers we need for an inference test:
+
+```{r matrix-se}
+#get the predicted values of y
+y.hat <- X%*%beta 
+df <- length(y)-ncol(X) 
+#calculate our sample variance of the residual terms
+s.sq <- sum((y-y.hat)^2)/df 
+#calculate the covariance matrix
+covar.matrix <- s.sq*solve(crossprod(X)) 
+#extract SEs from the square root of the diagonal
+se <- sqrt(diag(covar.matrix)) 
+## calculate t-stats from our betas and SEs
+t.stat <- beta/se 
+#calculate p-values from the t-stat
+p.value <- 2*pt(-1*abs(t.stat), df) 
+data.frame(beta,se,t.stat,p.value)
+#compare to the lm command
+summary(model)$coef
+```
+
+And it all works. As I said at the beginning, this is a lot of math and not something you need to think about every day. I am not expecting all of this will stick the first time around, but I want it to be here for you as a handy reference for the future.
+
+### Linear model assumptions
+
+Two important assumptions underlie the linear model. The first assumption is the assumption of **linearity**. In short, we assume that the the relationship between the dependent and independent variables is best described by a linear function. In prior chapters, we have seen examples where this assumption of linearity was clearly violated. When we choose the wrong model for the given relationship, we have made a *specification error*. Fitting a linear model to a non-linear relationship is one of the most common forms of specification error. However, this assumption is not as deadly as it sounds. Provided that we correctly diagnose the problem, there are a variety of tools that we can use to fit a non-linear relationship within the linear model framework. We will cover this techniques in the next section. 
+
+The second assumption of linear models is that the residual or error terms $\epsilon_i$ are **independent** of one another and **identically distributed**. This is often called the **i.i.d. assumption**, for short. This assumption is a little more subtle. In order to understand, we need to return to this equation from earlier:
+
+$$y_i=\hat{y}_i+\epsilon_i$$
+
+One way to think about what is going on here is that in order to get an actual value of $y_i$ you feed in all of the independent variables into your linear model equation to get $\hat{y}_i$ and then you reach into some distribution of numbers (or a bag of numbers if you need something more concrete to visualize) to pull out a random value of $\epsilon_i$ which you add to the end of your predicted value to get the actual value. When we think about the equation this way, we are thinking about it as a **data generating process** in which we get $y_i$ values from completing the equation on the right. 
+
+The i.i.d. assumption comes into play when we reach into that distribution (or bag) to draw out our random values. **Independence** assumes that what we drew previously won't affect what we draw in the future. The most common violation of this assumption is in time series data in which peaks and valleys in the time series tend to come clustered in time, so that when you have a high (or low) error in one year, you are likely to have a similar error in the next year. **Identically distributed** means that you are drawn from the same distribution (or bag) each time you make a draw. One of the most common violation of this assumption is when error terms tend to get larger in absolute size as the predicted value grows in size. 
+
+In later sections of this chapter, we will cover the i.i.d. assumption in more detail including the consequences of violating it, diagnostics for detecting it, and some corrections for when it does occur. 
 
 ---
 
@@ -353,6 +618,10 @@ In this case, that gives us an inflection point of:
 $$0.4060329/(2*0.0004635)=438$$
 
 However, because we subtracted 90 from each value, the actual runtime minutes for the inflection is equal to $438+90=528$. Note that this value is show on the graph above. 
+
+---
+
+## The i.i.d. Violation and Robust Standard Errors
 
 ---
 
