@@ -99,7 +99,7 @@ Now I want to show you an example from my own work that demonstrates how flexibl
 
 One of the nice features of all of the tidyverse input packages is that they can read in data directly from zipped files without having to unzip them first. This saves you room on your computer and in your git repository (GitHub has a limit of 100MB for files). I am going to use that feature here as well as a couple of other nifty features. Here is my input command:
 
-```{r}
+```{r read-ipums}
 census1980 <- read_fwf("resources/usa_00074.dat.gz", 
                        col_positions = fwf_positions(start = c(1, 7,15,25,33,37,47,48,51,52,53,
                                                                56,60,63,71,75,83,86,90,
