@@ -29,6 +29,6 @@ I limited the data only to those individuals between the ages of 18 and 65 in or
 - **nchild**: Number of own children living in the household with the respondent. 
 - **foreign_born**: A variable indicating whether the respondent is foreign born or not. Recorded as "Yes" or "No". 
 - **earn_type**: This variable indicates whether the respondent reported being paid hourly wages or by salary. 
-- *earningwt**: A technical weighting variable for use with any CPS analysis of earnings. 
+- **earningwt**: A technical weighting variable for use with any CPS analysis of earnings. 
 
 
