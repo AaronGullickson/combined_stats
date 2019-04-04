@@ -274,11 +274,144 @@ In later sections of this chapter, we will cover the i.i.d. assumption in more d
 
 ## Modeling Non-Linearity
 
+By definition, a linear model is only appropriate if the underlying relationship being modeled can accurately be described as linear. To begin, lets revisit a very clear example of non-linearity introduced in an earlier chapter. The example is the relationship between GDP per capita in a country and that country's life expectancy. We use data from Gapminder to show this relationship with 2007 data.
+
+```{r life-exp-non-linear, fig.cap="The scatterplot of life expectancy and GDP per capita from 2007 shows a clear non-linear diminishing returns relationship", fig.align="center"}
+library(gapminder)
+library(ggrepel)
+ggplot(subset(gapminder, year==2007), aes(x=gdpPercap, y=lifeExp))+
+  geom_point(alpha=0.7)+
+  geom_smooth(method="lm", se=FALSE)+
+  geom_text_repel(data=subset(gapminder, year==2007 & gdpPercap>5000 & lifeExp<60), 
+                  aes(label=country), size=2)+
+  labs(x="GDP per capita", y="Life expectancy at birth", subtitle = "2007 data from Gapminder")+
+  scale_x_continuous(labels=scales::dollar)+
+  theme_bw()
+```
+
+Figure \@ref(fig:life-exp-non-linear) shows a scatterplot of this relationship. The relationship is so strong that its non-linearity is readily apparent. Although GDP per capita is positively related to life expectancy, the strength of this relationship diminishes substantial at higher levels of GDP. This is a particular form of non-linearity that is often called a "diminishing returns" relationship. The greater the level of GDP already, the less return you get on life expectancy for an additional dollar. 
+
+Figure \@ref(fig:life-exp-non-linear) also shows the best fitting line for this scatterplot in blue. This line is added with the `geom_smooth(method="lm")` argument in `ggplot`. We can see that this line does not represent the relationship very well. How could it really, given that the underlying relationship clearly curves in a way that a straight line cannot? Even more problematic, the linear fit will produce systematic patterns in the error terms for the linear model. for countries in the middle range of GDP per capita, the line will consistently underestimate life expectancy. At the low and high ends of GDP per capita, the line will consistently overestimate life expectancy. This identifiable pattern in the residuals is an important consequence of fitting a non-linear relationship with a linear model and is in fact one of the ways we will learn to diagnose non-linearity below. 
+
+Non-linearity is not always this obvious. One of the reasons that it is so clear in Figure @\ref(fig:life-exp-non-linear) is that the relationship between GDP per capita and life expectancy is so strong. When the relationship is weaker, then points tend to be more dispersed and non-linearity might not be so easily diagnosed from the scatterplot. Figure \@ref(fig:non-linear-movies) and Figure \@ref(fig:non-linear-wages) show two examples that are a bit more difficult to diagnose.
+
+```{r non-linear-movies, fig.cap="Is this scatterplot of tomato rating by box office returns non-linear?", fig.align="center"}
+ggplot(movies, aes(x=TomatoRating, y=BoxOffice))+
+  geom_jitter(alpha=0.2)+
+  scale_y_continuous(labels = scales::dollar)+
+  labs(x="Rotten Tomatoes Rating", y="Box Office Returns (millions)")+
+  theme_bw()
+```
+
+Figure \@ref(fig:non-linear-movies) shows a scatterplot of the relationship between tomato rating and box office returns in the movies dataset. I have already made a few additions to this plot to help with the visual display. The tomato rating only comes rounded to the first decimal place, so I use `geom_jitter` rather than `geom_point` to perturb the points slightly and reduce overplotting. I also use `alpha=0.2` to set the planets as semi-transparent. This is also helps with identifying areas of the scatterplot that are dense with points because they turn darker. 
+
+The linearity of this plot is hard to determine. This is partially because of the heavy right-skew of the box office returns. Many of the points are densely packed along the x-axis because the scale of the y-axis is so large to deal with outliers. Nonetheless, visually it appears there might be some evidence of an increasing slope as tomato rating gets higher - this is an exponential relationship which is the inverse of the diminishing returns relationship we saw earlier. Still, its hard to know if we are really seeing it or not with the data in this form. 
+
+```{r non-linear-wages, fig.cap="Is the relationship between age and hourly wage non-linear?", fig.align="center"}
+ggplot(earnings, aes(x=age, y=wages))+
+  geom_jitter(alpha=0.01, width=1)+
+  scale_y_continuous(labels = scales::dollar)+
+  labs(x="age", y="hourly wages")+
+  theme_bw()
+```
+
+Figure \@ref(fig:non-linear-wages) shows the relationship between a respondent's age and their hourly wages from the earnings data. There are so many observations here that I reduce `alpha` all the way to 0.01 to address overplotting. We also have a problem of a right-skewed dependent variable here. Nonetheless, you can make out a fairly clear dark band across the plot that seems to show a positive relationship. It also appears that this relationship may be of a diminishing returns type with a lower reeturn to age after age 30 or so. However, with the wide dispersion of the data, it is difficult to feel very confident about the results. 
+
+The kind of uncertainty inherent in Figures \@ref(fig:non-linear-movies) and \@ref(fig:non-linear-wages) is far more common in practice than the clarity in Figure \@ref(fig:life-exp-non-linear). Scatterplots can be a first step to detecting non-linearity, but usually we need some additional diagnostics. In the next two sections, I will cover two diagnostic approaches to identifying non-linearity: smoothing and residual plots. 
+
+### Smoothing
+
+Smoothing is a technique for estimating the relationship in a scatterplot without the assumption that this relationship be linear. In order to understand what smoothing does, it will be first helpful to draw a non-smoothed line between all the points in the scatterplot, starting with the smallest value of the independent variable to the largest value. I do that in Figure \@ref(fig:connect-dots). As you can see this produces a very jagged line that does not give us much sense of the relationship because it bounces around so much. 
+
+```{r connect-dots, fig.cap="Connecting the dots in our scatterplot leads to a very jagged line", fig.align="center"}
+movies <- movies[order(movies$TomatoRating),]
+ggplot(movies, aes(x=TomatoRating, y=BoxOffice))+
+  geom_point(alpha=0.05)+
+  geom_line()+
+  scale_y_continuous(labels = scales::dollar)+
+  labs(x="Rotten Tomatoes Rating", y="Box Office Returns (millions)")+
+  theme_bw()
+```
+
+The basic idea of smoothing is to smooth out that jagged line. This is done by replacing each actual value of $y$ with a predicted value $\hat{y}$ that is determined by that point and its nearby neighbors. The simplest kind of smoother is often called a "running average." In this type of smoother, you simply take $k$ observations above and below the given point and calculate the mean or median. For example, lets say we wanted to smooth the box office return value for the movie *Rush Hour 3*. We want to do this by reaching out to the two neighbors above and below this movie in terms of the tomato rating. After sorting movies by tomato rating, here are the values for *Rush Hour 3* and the two movies closest to it:
+
+```{r rush-hour-three, echo=FALSE}
+i <- which(movies$Title=="Rush Hour 3")
+temp <- movies[(i-2):(i+2),c("Title","TomatoRating","BoxOffice")]
+rownames(temp) <- NULL
+pander(temp)
+```
+
+To smooth the value for Rush Hour 3, we can take either the median or the mean of the box office returns for these five values:
+
+```{r rush-hour-smooth}
+box_office <- c(14.3, 115.8, 140.1, 32.8, 0.3)
+mean(box_office)
+median(box_office)
+```
+
+The mean smoother would give us a value of \$60.66 million and the median smoother a value of \$32.8 million. In either case, the value for *Rush Hour 3* is pulled far away from its outlier position at \$140.1 million, thus smoothing the display.
+
+To get a smoothed line, we need to repeat this process for every point in the dataset. The `runmed` command will do this for us once we have the data sorted correclty by the independent variable. Figure \@ref(fig:median-smoothing) shows two different smoothed lines applied to the movie scatterplot, with different windows. 
+
+```{r median-smoothing, fig.cap="Two different median smoothers are shown. The one in blue uses a window of two neighbors to each side while the one one in red uses a window of 250 neighbors on each side.", fig.align="center"}
+movies$BoxOffice.smooth1 <- runmed(movies$BoxOffice, 5)
+movies$BoxOffice.smooth2 <- runmed(movies$BoxOffice, 501)
+ggplot(movies, aes(x=TomatoRating, y=BoxOffice))+
+  geom_point(alpha=0.2)+
+  geom_line(col="grey", size=1, alpha=0.7)+
+  geom_line(aes(y=BoxOffice.smooth1), col="blue", size=1, alpha=0.7)+
+  geom_line(aes(y=BoxOffice.smooth2), col="red", size=1, alpha=0.7)+
+  scale_y_continuous(labels = scales::dollar)+
+  labs(x="Rotten Tomatoes Rating", y="Box Office Returns (millions)")+
+  theme_bw()
+```
+
+It is clear here that using two neighbors on each side is not sufficient in a dataset of this size. With 250 neighbors on each side, we get something much smoother, but it also reveals a sharp uptick at the high end of the dataset, which suggests some possibile non-linearity. 
+
+A more sophisticated smoothing procedure is available via the LOESS (locally estimated scatterplot smoothing) smoother. The LOESS smoother uses a regression model with polynomial terms (discussed below) on a local subset of the data to estimate a predicted value for each observation. The regression model also typically weights values so that observations closer to the index observation count more in the estimation. This technique tends to produce better results than meidan or mean smoothing. 
+
+You can easily fit a LOESS smoother to a scatterplot in `ggplot` by specifying `method="loess"` in the `geom_smooth` function. In fact, this is the default method for `geom_smooth` for datasets smaller than a thousand observations. Figure \@ref(fig:lowess-movies) plots this loess smoother as well as a linear fit for comparison.
+
+```{r lowess-movies, fig.cap="A loess smoother to the data is shown in blue while a linear fit is shown in red.", fig.align="center"}
+ggplot(movies, aes(x=TomatoRating, y=BoxOffice))+
+  geom_jitter(alpha=0.2)+
+  geom_smooth(method="lm", color="red", se=FALSE)+
+  geom_smooth(se=FALSE, method="loess")+
+  scale_y_continuous(labels = scales::dollar)+
+  labs(x="Rotten Tomatoes Rating", y="Box Office Returns (millions)")+
+  theme_bw()
+```
+
+Again we see the exponential relationship in the loess smoother. The loess smoother is also much smoother than the median smoothers we calculated before. 
+
+By default the loess smoother in `geom_smooth` will use 75% of the full data in its subset for calculating the smoothed value of each point. This may seem like a lot, but remember that it weights values closer to the index point. You can adjust this percentage using the `span` argument in `geom_smooth`. 
+
+SHINY APP
+
+Move on to a discussion of GAM when data too big for LOESS. 
+
+```{r lowess-wages, fig.cap="Is the relationship between age and hourly wage non-linear?", fig.align="center"}
+ggplot(earnings, aes(x=age, y=wages))+
+  geom_jitter(alpha=0.01, width=1)+
+  geom_smooth(method="lm", color="red", se=FALSE)+
+  geom_smooth(se=FALSE)+
+  scale_y_continuous(labels = scales::dollar)+
+  labs(x="age", y="hourly wages")+
+  theme_bw()
+```
+
+
+### Residual Plots
+
+
+### Transformations
+
 You **transform** your data when you apply a mathematical function to a variable to transform its values into different values. There are a variety of different transformations that are commonly used in statistics, but for this class we will focus on the one transformation that is most common in the social sciences: the log transformation.
 
 Why would you want to transform your data? There are two important potential benefits that transformations can provide. First, a transformation can often resolve the problem of non-linear relationships. If the relationship between $x$ and $y$ is non-linear, then by transforming one or both variables, you may be able to recover a linear relationship. Second, transformation can reduce skewness in a variable and will pull in extreme outliers so that they are less influential. For these reasons, transformations can be useful in regression models. However, it is important to also remember that a transformation changes the way in which x and y relate to one another and thus requires us to adjust our interpretation of results. 
 
-### The natural log transformation
+#### The natural log transformation
 
 When I talk about the "log" transformation, I am talking about what you probably learned as the "natural log" transformation. This transformation is given to you by the "ln" button on your calculator. For our purposes, this is the only "log" we care about. Just remember that in Eugene, we go natural. 
 
@@ -306,8 +439,6 @@ log(5*4)
 log(5)+log(4)
 ```
 This is really all you need to know about the log transformation to understand this section.
-
-### Log-transformations allow us to estimate multiplicative models
 
 Take a look at the histogram of the income variable from our politics dataset. 
 
@@ -367,7 +498,7 @@ I could go ahead and finish that multiplication, but I want to leave it here to 
 $$\hat{y}_i=(26.8)*(1.005)^{2}=(26.8)(1.005)(1.005)$$
 Each additional year leads to a 0.5% increase in predicted income. This is what I mean by a multiplicative increase. We are no longer talking about the predicted change in income in terms of **absolute** numbers of dollars, but rather in **relative** terms of percentage increase. 
 
-###  General form and interpretation
+####  General form and interpretation
 
 In general, you have the following equation when you transform your dependent variable:
 
@@ -436,7 +567,7 @@ Always keep in mind that regardless of the type of variable involved and the dir
 
 *Note: from here on out, I am throwing together information discussed in class, so the descriptions may be a bit rough. Apologies in advance*
 
-###  Logging the independent variable 
+####  Logging the independent variable 
 
 Lets revisit the data from Preston that we looked at earlier in the term. 
 
@@ -477,7 +608,7 @@ $$
 
 Now, it turns out that $log(1.01)$ almost exactly equals 0.01, so this is roughly equivalent to $7.54*0.01=0.0754$. This same math will be true regardless of the starting value of income chosen, so roughly speaking a 1% increase in $x$ is associated with a $b_1/100$ change in $y$. 
 
-###  Logging both independent and dependent variables: The elasticity model
+####  Logging both independent and dependent variables: The elasticity model
 
 So, now we have seen that logging the dependent variable will make change in the dependent relative, and logging the independent variable will make change in the independent variable relative. It makes sense to think that if you log them both, you would get relative change in $x$ predicting relative change in $y$. Correct! This is what is called an "elasticity" model because the predicted slopes are equivalent to the concept of elasticity in economics: how much does of a percent change in $y$ results from a 1% increase in $x$. 
 
@@ -512,7 +643,7 @@ The third model (the elasticity model) is the easiest to interpret. It turns out
 
 Why is this the case? We can work this out from a similar mathematical exercise above. On the independent variable side a 1% increase in $x$ is still associated with a $b_1/100$ increase in the dependent variable, but that independent variable is still the log of $y$. Thus, technically you should get the result by taking $e^{b_1/100}$. However, since you are dividing by 100 that number will almost always be small enough that you can use the approximation that $b_1$ itself is the percentage increase in $y$ for the given change in $x$. 
 
-###  The square root transformation
+####  The square root transformation
 
 The log transformation is very flexible and solves multiple problems at once (non-linearity, outliers, skewness), which explains its popularity. But it breaks down in one important situation: you cannot log a variable that has zero or negative values. The negative case is not as important because generally the log transformation fixes things for variables that only take non-negative values. However, there are numerous cases where a quantitative variable can be zero as well as a positive. Lets run the same elasticity model as above on box office returns, but this time lets predict returns by the Tomato Meter rather than the Tomato Rating.
 
@@ -529,55 +660,7 @@ summary(lm(log(BoxOffice)~sqrt(TomatoMeter), data=movies))
 
 Now we can get a result. The downside, however, is that there is [no clear and easy interpretation of how to intepret this effect](http://stats.stackexchange.com/questions/35982/how-to-interpret-regression-coefficients-when-response-was-transformed-by-the-4t).  
 
-###  Other methods to deal with non-linearity
-
-Transformations are one way to handle non-linearity in the relationship between $x$ and $y$. There are other common ways that this non-linearity can also be handled. We will cover the case of smoothing and polynomial regression here. Another case that we will not cover here is the use of splines, although some of the smoothing techniques covered here will use splines implicitly. 
-
-####  Smoothing
-
-Smoothing is primarily a graphical technique that can be used to diagnostically detect non-linearity in a relationship. Lets plot the relationship between movie tomato rating and box office returns. 
-
-```{r echo=FALSE}
-plot(movies$TomatoRating, movies$BoxOffice, pch=21, bg="grey", col=NULL,
-     las=1, xlab="Tomato Rating", ylab="Box Office Returns (millions)")
-```
-There is so much overplotting and box office returns are so skewed here that it is quite difficult to visually see the relationship. Smoothing will help us do that. There are numerous ways that one can smooth data, but the basic idea is that you replace the $y$ value for an observation with a substitute value that incorporates information about the adjacent neighbors (in terms of $x$) for this observation. 
-
-To see how this works, the figure below picks out one movie that had particularly anomalous box office returns given its tomato rating (shown in red) and the two movies that were most immediately adjacent to this value in terms of their tomato rating. It then takes the mean box office returns between the three movies and plots this as the smoothed mean value for the selected movie in green. 
-
-```{r echo=FALSE}
-movies2 <- movies[order(movies$TomatoRating),]
-plot(movies$TomatoRating, movies$BoxOffice, pch=21, bg="grey90", col=NULL,
-     las=1, xlab="Tomato Rating", ylab="Box Office Returns (millions)")
-points(movies2$TomatoRating[450], movies2$BoxOffice[450], pch=21, bg="red")
-text(movies2$TomatoRating[450], movies2$BoxOffice[450], movies2$Title[450], cex=0.5, pos=1)
-points(movies2$TomatoRating[c(449,451)], movies2$BoxOffice[c(449,451)], pch=21, bg="grey10")
-text(movies2$TomatoRating[c(449,451)], movies2$BoxOffice[c(449,451)], movies2$Title[c(449,451)], cex=0.5, pos=2)
-points(movies2$TomatoRating[450], mean(movies2$BoxOffice[449:451]), pch=21, bg="green")
-```
-
-In practice this kind of mean smoothing (also called a "running average") or median smoothing only works well for time series values where there is only one unique value of $x$ for each observation, whereas we have many movies with the exact same tomato rating. In practice, a better smoothing approach for data like this is to use more complex methods for smoothing that involve splines and local polynomial regression to get predicted values. Three methods that will do this in R are shown below. For the `loess` and `smooth.spline` functions, you have to declare how many adjacent observations you want to consider as a proportion of the total dataset. I have chosen 10% and 75%. The wider you make this span, the smoother the line will get at the cost of potentially losing important spikes and dips. The "supersmoother" function `supsmu` is simpler and tries to determine the best span internally. 
-
-```{r}
-#for loess its important to first order the movies by x
-movies <- movies[order(movies$TomatoRating),]
-plot(movies$TomatoRating, movies$BoxOffice, pch=21, bg="grey90", col=NULL,
-     las=1, xlab="Tomato Rating", ylab="Box Office Returns (millions)")
-smooth.loess <- loess(BoxOffice~TomatoRating, data=movies, span=0.1)
-lines(smooth.loess$x, smooth.loess$fitted, col="red", lwd=3)
-smooth.loess <- loess(BoxOffice~TomatoRating, data=movies, span=0.75)
-lines(smooth.loess$x, smooth.loess$fitted, col="orange", lwd=3)
-lines(smooth.spline(movies$TomatoRating, movies$BoxOffice, spar=0.1), lwd=2, col="blue")
-lines(smooth.spline(movies$TomatoRating, movies$BoxOffice, spar=0.75), lwd=2, col="darkgreen")
-lines(supsmu(movies$TomatoRating, movies$BoxOffice), col="yellow", lwd=2)
-legend(2, 700, legend=c("Lowess, 10% span", "Lowess, 75% span", "Spline smoothing, 10%", 
-                        "Spline smoothing, 75%", "Supersmoother"),
-       lwd=1, lty=1, col=c("red","orange","blue","darkgreen","yellow"), cex=0.6)
-```
-
-All the smoothers here indicate an exponential type relationship that would be better fit by logging the dependent variable. 
-
-####  Polynomial Regression
+### Polynomial Regression
 
 A final method that can be used to fit non-linear relationships is to fit *polynomial* terms. Recall, for example, the formula:
 
@@ -618,6 +701,8 @@ In this case, that gives us an inflection point of:
 $$0.4060329/(2*0.0004635)=438$$
 
 However, because we subtracted 90 from each value, the actual runtime minutes for the inflection is equal to $438+90=528$. Note that this value is show on the graph above. 
+
+### Splines
 
 ---
 
