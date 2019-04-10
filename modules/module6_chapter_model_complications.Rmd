@@ -321,7 +321,7 @@ The kind of uncertainty inherent in Figures \@ref(fig:non-linear-movies) and \@r
 
 ### Smoothing
 
-Smoothing is a technique for estimating the relationship in a scatterplot without the assumption that this relationship be linear. In order to understand what smoothing does, it will be first helpful to draw a non-smoothed line between all the points in the scatterplot, starting with the smallest value of the independent variable to the largest value. I do that in Figure \@ref(fig:connect-dots). As you can see this produces a very jagged line that does not give us much sense of the relationship because it bounces around so much. 
+Smoothing is a technique for estimating the relationship in a scatterplot without the assumption that this relationship be linear. In order to understand what smoothing does, it will be first helpful to draw a non-smoothed line between all the points in a scatterplot, starting with the smallest value of the independent variable to the largest value. I do that in Figure \@ref(fig:connect-dots). As you can see this produces a very jagged line that does not give us much sense of the relationship because it bounces around so much. 
 
 ```{r connect-dots, fig.cap="Connecting the dots in our scatterplot leads to a very jagged line", fig.align="center"}
 movies <- movies[order(movies$TomatoRating),]
@@ -371,9 +371,9 @@ It is clear here that using two neighbors on each side is not sufficient in a da
 
 A more sophisticated smoothing procedure is available via the LOESS (locally estimated scatterplot smoothing) smoother. The LOESS smoother uses a regression model with polynomial terms (discussed below) on a local subset of the data to estimate a predicted value for each observation. The regression model also typically weights values so that observations closer to the index observation count more in the estimation. This technique tends to produce better results than meidan or mean smoothing. 
 
-You can easily fit a LOESS smoother to a scatterplot in `ggplot` by specifying `method="loess"` in the `geom_smooth` function. In fact, this is the default method for `geom_smooth` for datasets smaller than a thousand observations. Figure \@ref(fig:lowess-movies) plots this loess smoother as well as a linear fit for comparison.
+You can easily fit a LOESS smoother to a scatterplot in `ggplot` by specifying `method="loess"` in the `geom_smooth` function. In fact, this is the default method for `geom_smooth` for datasets smaller than a thousand observations. Figure \@ref(fig:smooth-movies) plots this LOESS smoother as well as a linear fit for comparison.
 
-```{r lowess-movies, fig.cap="A loess smoother to the data is shown in blue while a linear fit is shown in red.", fig.align="center"}
+```{r smooth-movies, fig.cap="A LOESS smoother to the data is shown in blue while a linear fit is shown in red.", fig.align="center"}
 ggplot(movies, aes(x=TomatoRating, y=BoxOffice))+
   geom_jitter(alpha=0.2)+
   geom_smooth(method="lm", color="red", se=FALSE)+
@@ -383,15 +383,15 @@ ggplot(movies, aes(x=TomatoRating, y=BoxOffice))+
   theme_bw()
 ```
 
-Again we see the exponential relationship in the loess smoother. The loess smoother is also much smoother than the median smoothers we calculated before. 
+Again we see the exponential relationship in the LOESS smoother. The LOESS smoother is also much smoother than the median smoothers we calculated before. 
 
-By default the loess smoother in `geom_smooth` will use 75% of the full data in its subset for calculating the smoothed value of each point. This may seem like a lot, but remember that it weights values closer to the index point. You can adjust this percentage using the `span` argument in `geom_smooth`. 
+By default the LOESS smoother in `geom_smooth` will use 75% of the full data in its subset for calculating the smoothed value of each point. This may seem like a lot, but remember that it weights values closer to the index point. You can adjust this percentage using the `span` argument in `geom_smooth`. 
 
 SHINY APP
 
-Move on to a discussion of GAM when data too big for LOESS. 
+The main disadvantage of the LOESS smoother is that it becomes computationally inefficient as the number of observations increases. If I were to apply the LOESS smoother to the 145,647 observations in the earnings data, it would kill R before producing a result. For larger dataset, another option for smoothing is the general additive model (GAM). This model is complex and I won't go into the details here, but it provides the same kinds of smoothing as LOESS but is much less computationally expensive. GAM smoothing is the default in `geom_smooth` for datasets larger than a thousand observations, so you do not need to include a method. Figure \@ref(fig:smooth-wages) shows A GAM smoother applied to the relationship between wages and age. The non-linear diminishing returns relationship is clearly visible in the data. 
 
-```{r lowess-wages, fig.cap="Is the relationship between age and hourly wage non-linear?", fig.align="center"}
+```{r smooth-wages, fig.cap="A GAM smoother (shown in blue) applied to the relationship between age and wages in the earnings data. A linear fit is shown in red.", fig.align="center"}
 ggplot(earnings, aes(x=age, y=wages))+
   geom_jitter(alpha=0.01, width=1)+
   geom_smooth(method="lm", color="red", se=FALSE)+
@@ -404,32 +404,135 @@ ggplot(earnings, aes(x=age, y=wages))+
 
 ### Residual Plots
 
+Another technique for detecting non-linearity is the to plot the fitted values of a model by the residuals. To demonstrate how this works, lets first calculate a model predicting life expectancy by GDP per capita from the gapminder data earlier.
+
+```{r}
+model <- lm(lifeExp~gdpPercap, data=subset(gapminder, year==2007))
+```
+
+If you type `plot(model)`, you will get a series of model diagnostic plots in base R. The first of these plots is the residual vs. fitted values plot. We are going to make the same plot, but in `ggplot`. In order to do that, I need to introduce a new package called `broom` that has some nice features for summarizing results from your model. It is part of the Tidyverse set of packages. To install it type `install.packages("broom")`. You can then load it with `library(broom)`. The broom package has only three commands:
+
+- `tidy` which shows the key results from the model including coefficients, standard errors and the like. 
+- `augment` which adds a variety of diagnostic information to the original data used to calculate the model. This includes residuals, cooks distance, fitted values, etc.
+- `glance` which gives a summary of model level goodness of fit statistics. 
+
+At the moment, we want to use `augment`. Here is what the it looks like:
+
+```{r augment-broom}
+library(broom)
+augment(model)
+```
+
+We can use the dataset returned here to build a plot of the fitted values (`.fitted`) by the residuals (`.resid`) like this:
+
+```{r resid-fitted, fig.cap="A residual vs. fitted values plot for a model predicting life expectancy by GDP per capita. Their is a clear trend here whigh signifies non-linearity.", fig.align="center"}
+ggplot(augment(model), aes(x=.fitted, y=.resid))+
+  geom_point()+
+  geom_hline(yintercept = 0, linetype=2)+
+  geom_smooth(se=FALSE)+
+  labs(x="fitted values of life expectancy", y="model residuals")+
+  theme_bw()
+```
+
+If a linear model fitted the data well, then we would expect to see no evidence of a pattern in the scatterplot of \@ref(fig:resid-fitted). We should just see a cloud of points centered around the value of zero. The smoothing line helps us see patterns, but in this case the non-linearity is so strong that we would be able to detect it even without the smoothing. This clear pattern indicates that we non-linearity in our model and we should probably reconsider our approach. 
+
+Figures \@ref(fig:resid-fitted-movies) and \@ref(fig:resid-fitted-wages) show residual vs fitted value plots for the two other cases of movie box office returns and wages that we have been examining. In these cases, the patterns are somewhat less apparent without the smoothing. The movie case does not appear particularly problematic although there is some argument for exponential increase at very high values of tomato rating. The results for wages suggest a similar diminishing returns type problem. 
+
+```{r resid-fitted-movies, echo=FALSE, fig.cap="A residual vs. fitted values plot for a model predicting movie box office returns by tomato rating.", fig.align="center"}
+model <- lm(BoxOffice~TomatoRating, data=movies)
+ggplot(augment(model), aes(x=.fitted, y=.resid))+
+  geom_jitter(alpha=0.2)+
+  geom_hline(yintercept = 0, linetype=2)+
+  geom_smooth(se=FALSE)+
+  labs(x="fitted values of box office returns", y="model residuals")+
+  theme_bw()
+```
+
+```{r resid-fitted-wages, echo=FALSE, fig.cap="A residual vs. fitted values plot for a model predicting movie box office returns by tomato rating.", fig.align="center"}
+model <- lm(wages~age, data=earnings)
+ggplot(augment(model), aes(x=.fitted, y=.resid))+
+  geom_jitter(alpha=0.01)+
+  geom_hline(yintercept = 0, linetype=2)+
+  geom_smooth(se=FALSE)+
+  labs(x="fitted values of hourly wages", y="model residuals")+
+  theme_bw()
+```
+
+Both of these figures also reveal an additional problem unrelated to non-linearity. Both figures show something of a cone shape to the scatterplot in which the variance of the residuals gets larger at higher fitted values. This is the problem of heteroskedasticity that we will return to in the next section. 
+
+Now that we have diagnosed the problem of non-linearity, what can we do about it? There are several ways that we can make adjustments to our models to allow for non-linearity. The most common technique is to use **transformations** to change the relationship between independent and dependent variables. Another approach is to include **polynomial terms** into the model that can simulate a parabola. A third, less common, option is to create a *spline* term that allows for non-linearity at specific points. I cover each of these techniques below. 
 
 ### Transformations
 
-You **transform** your data when you apply a mathematical function to a variable to transform its values into different values. There are a variety of different transformations that are commonly used in statistics, but for this class we will focus on the one transformation that is most common in the social sciences: the log transformation.
+You **transform** your data when you apply a mathematical function to a variable to transform its values into different values. There are a variety of different transformations that are commonly used in statistics, but we will focus on the one transformation that is most common in the social sciences: the log transformation.
 
-Why would you want to transform your data? There are two important potential benefits that transformations can provide. First, a transformation can often resolve the problem of non-linear relationships. If the relationship between $x$ and $y$ is non-linear, then by transforming one or both variables, you may be able to recover a linear relationship. Second, transformation can reduce skewness in a variable and will pull in extreme outliers so that they are less influential. For these reasons, transformations can be useful in regression models. However, it is important to also remember that a transformation changes the way in which x and y relate to one another and thus requires us to adjust our interpretation of results. 
+Transformations can directly address issues of non-linearity. By definition if you transform the independent variable, the dependent variable, or both variables in your model, then the linear relationship assumed by the model between the transformed variables. On the original scale of the variabes, the relationship is non-linear.
 
-#### The natural log transformation
+Transformations can also have additional side benefits besides fitting non-linear relationships. The log transformation, for example, will pull in extreme values and skewness in a distribution, reducing the potential for outliers to exert a strong influence on results. Take Figure \@ref(fig:wages-skew) for example. This figure shows the distribution of hourly wages in the earnings data. This distribution is heavily right-skewed, despite the fact that wages have been top-coded at \$100. Any model of wages is likely to be influenced considerably by the relatively small but still numerically substantial number of respondents with high wages. 
 
-When I talk about the "log" transformation, I am talking about what you probably learned as the "natural log" transformation. This transformation is given to you by the "ln" button on your calculator. For our purposes, this is the only "log" we care about. Just remember that in Eugene, we go natural. 
-
-Any positive number can be logged. For example, I can calculate the log of the number 7:
-
-```{r}
-log(7)
-```
-OK, the natural log of 7 is `r log(7)`. But what does that mean? The natural log of a number is defined as the value you would have to raise the constant $e$ (2.718282) to in order to get back the original number. To raise $e$ by some number, you can use the `exp` function in R ("exp" for "exponential"):
-
-```{r}
-exp(log(7))
+```{r wages-skew, echo=FALSE, fig.cap="Hourly wages are heavily right skewed even after top-coding the data at a wage of $100.", fig.align="center"}
+ggplot(earnings, aes(x=wages))+
+  geom_histogram(fill="grey", color="black")+
+  labs(x="hourly wages")+
+  theme_bw()
 ```
 
-Ta-da! If I raise $e$ to the log of 7, I get back 7. The number $e$ is a very special number like $\pi$ having to do with what happens when you compound interest continually over time, but none of that matters for our purposes. For our purposes, what matters is that by logging a number you can make a multiplicative relationship into an additive relationship. This is because of a basic mathematical relationship where:
+Lets look at that distribution again, but this time on the log-scale. We will cover in more detail below what the mathematical log means, but for now you can just think of the log-scale as converting from an additive scale to a multiplicative scale. On the absolute scale, we want to have equally spaced intervals on the axes of our graph to represent a constant absolute amount difference. You can see in Figure \@ref(fig:wages-skew) that the tick-marks for wages are at evenly spaced ingervals of \$25. On the log-scale we want evenly-spaced intervals on the axes of our graph to correspond to multiplicative changes. So on a log base 10 scale, we would want the numbers 1, 10, and 100, to be evenly spaced because each one represents a 10 fold increase multiplicative increase. In `ggplot`, you can change the axis to a log-scale with the argument `scale_x_log10`. Figure \@ref(fig:wages-skew-log) shows the same distribtion of hourly wages, but this time using the log-scale. 
+
+```{r wages-skew-log, echo=FALSE, fig.cap="On the log-scale, hourly wages is less skewed, although now we have a slight problem of a left-skew", fig.align="center"}
+ggplot(earnings, aes(x=wages))+
+  geom_histogram(fill="grey", color="black")+
+  scale_x_log10()+
+  labs(x="hourly wages")+
+  theme_bw()
+```
+
+You can clearly see in Figure \@ref(fig:wages-skew-log) that we have pulled in the extreme right tail of the disgtribution and have a somewhat more symmetric distribution. The transformation here hasn't perferctly solved things, because now we have a slight left-skew for very low hourly wages. Nonetheless, even these values are closer in absolute value after the transformation and so will be less likely to substantially influence our model. This transformation can also help us with the cone-shaped residual issue we saw earlier (i.e. heteroskedasticity), but we will discuss that more in the next section.
+
+Because transformations can often solve multiple problems at once, they are very popular. In fact, for some common analysis like estimating wages or CO2 emissions, log transformations are virtually universal. The difficult part about transformations is understanding exactly what kind of non-linear relationship you are estimating by transforming and how to interpret the results from models with transformed variables. We will develop this understanding using the natural log transformation on the examples we have been looking at in this section.
+
+#### The log transformation
+
+Before getting into the mathematical details of the log transformation, lets first demonstrate its power. Figure \@ref(fig:log-scale-movies) shows the relationship between Rotten Tomatoes rating and box office returns in our movies data. However, this time I have applied a log-scale to box office returns. Although we still see some evidence of non-linearity in the LOESS estimator, the relationship looks much more clearly linear than before. But the big question is how do we interpret the slope and intercept for the linear model fit to this log-transformed data? 
+
+```{r log-scale-movies, fig.cap="Scatterplot of the relationship between rotten tomatoes rating and box office returns, with a log-scale applied to box office returns.", fig.align="center"}
+ggplot(movies, aes(x=TomatoRating, y=BoxOffice))+
+  geom_jitter(alpha=0.2)+
+  geom_smooth(method="lm", color="red", se=FALSE)+
+  geom_smooth(se=FALSE, method="loess")+
+  scale_y_log10(labels = scales::dollar)+
+  labs(x="Rotten Tomatoes Rating", y="Box Office Returns (millions)")+
+  theme_bw()
+```
+
+In order to understand the model implied by this scatterplot, we need to delve a little more deeply into the math of the log transformation. In general, the log equation means converting some number into the exponential value of some base multiplier. So, if we wanted to know what the log base 10 value of 27 is, we need to know what exponential value applied to 10 would produce 27:
+
+$$27=10^x$$
+
+We can calculate this number easily in R:
+
+```{r log-base-ten}
+x <- log(27, base=10)
+x
+10^x
+```
+
+Log base 10 and log base 2 are both common values used in teaching log transformations, but the standard base we use in statistics is the mathematical constant $e$ (2.718282). This number is of similar importance in mathematics as $\pi$ and is based on the idea of what happens to compound interest as the period of interest accumulation approaches zero. This has a vasriety of applications from finance to population growth, but none of this concerns us directly. We are interested in $e$ as a base for our log function because of certain other useful properties discussed further below that ease interpretation.
+
+When we use $e$ as the base for our log function, then we are using what is often called the "natural log." We can ask the same question about 27 as before but now with the natural log:
+
+```{r log-naturale}
+x <- log(27)
+x
+exp(x)
+```
+
+I didn't have to specify a base here because R defaults to the natural log. The `exp` function calculates $e^x$. 
+
+For our purposes, the most important characteristic of the log transformation is that it converts multiplicative relationships into additive relationships.This is because of a basic mathematical relationship where:
 
 $$e^a*a^b=e^{a+b}$$
-$$log(x+y) = log(x)+log(y)$$
+$$log(x*y) = log(x)+log(y)$$
 You can try this out in R to see that it works:
 
 ```{r}
@@ -438,231 +541,234 @@ exp(2+3)
 log(5*4)
 log(5)+log(4)
 ```
-This is really all you need to know about the log transformation to understand this section.
 
-Take a look at the histogram of the income variable from our politics dataset. 
+We can use these mathematical relationships to help understand a model with log-transformed variables. First lets calculate the model implied by the scatterplot above. We can just use the `log` command to directly transform box office returns in the `lm` formula:
 
-```{r echo=FALSE}
-hist(politics$income, breaks=seq(from=0,to=300,by=10), col="red", las=1, 
-     xlab="income in 1000s", main="Histogram of income")
+```{r movies-log-model}
+model <- lm(log(BoxOffice)~TomatoRating, data=movies)
+coef(model)
 ```
 
-This variable is heavily right skewed, with a few very high earners at the top end of the distribution, and the vast majority of individuals making less than \$100,000 per year. The heavy skew makes this distribution is an ideal candidate for the log transformation. Lets go ahead and log-transform it and save our log-transformation as another variable called "lincome."
+OK, so what does that mean? It might be tempting to interpret the results here as you normally would. We can see that tomato rating has a positive effect on box office returns. So, a one point increase in tomato rating is associated with a 0.241 increase in ... what? Remember that our dependent variable here is now the natural log of box office returns, not box office returns itself. We could literally say that it is a 0.241 increase in log box office returns, but that is not a very helpful or intuitive way to think about the result. Similarly the intercept gives us the predicted log box office returns when tomato rating is zero. Thats not helpful for two reasons: its outside the scope of the data, and we don't really know how to think about a log box office returns of 0.973. 
+
+In order to translate this into something meaningful, lets try looking at this in equation format. Here is what we have:
+
+$$\hat{\log(y_i)}=0.973+0.241*x_i$$
+
+What we really want is to be able to understand this equation back on the original scale of the dependent variable, which in this case is box office returns in millions of dollars. Keep in mind that taking $e^{\log(y)}$ just gives us back $y$. We can use that logic here. If we "exponentiate" (take $e$ to the power of the values) the left-hand side of the equation, then we can get back to $\hat{y}_i$. However, remember from algebra, that what we do to one side of the equation, we have to do to both sides. That means:
+
+$$e^{\hat{\log(y_i)}}=e^{0.973+0.241*x_i}$$
+$$\hat{y}_i=(e^{0.971})*(e^{0.241})^{x_i}$$
+We now have quite a different looking equation for predicting box office returnbs. The good news is that we now just have our predicted box office returns back on the left-hand side of the equation. The bad news is that the right hand side looks a bit complex. Since $e$ is just a constant value, we can go ahead and calculate the values in those parentheses (called "exponentiating"):
 
 ```{r}
-politics$lincome = log(politics$income)
-```
-
-Now lets look at the distribution of this log-transformed income data:
-
-```{r echo=FALSE}
-hist(politics$lincome, col="red", las=1, breaks=20, 
-     xlab="income in 1000s (log-scale)", main="Histogram of income (logged)")
-```
-
-Now we are getting a slight outlier in the opposite direction, but in general the tail ends of our distribution are pulled in considerably. This suggests that we have to worry less about how outliers might affect our results. 
-
-Now lets try putting this log-transformed income variable in as the dependent variable and lets predict it by the age of the respondent. 
-
-```{r}
-summary(lm(lincome~age, data=politics))$coef
-```
-OK, so what does that mean? It might be tempting to interpret the results here as you normally would. We can see age has a positive effect. So, a one year increase in age is associated with a 0.005 increase in ... what? Remember that our dependent variable here is log-income. We could literally say that it is a 0.005 increase in log-income, but that is not a very helpful or intuitive way to think about the result. Similarly the intercept gives us the predicted log-income when age is zero. Thats not helpful for two reasons: its outside the scope of the data, and we don't really know how to think about a log-income of 3.29. 
-
-In order to translate this into something meaningful, lets try looking at this in our equation format. Here is what we have:
-
-$$\log(\hat{y}_i)=3.29+0.005*x_i$$
-
-What we really want is to be able to understand this equation back on the original scale of the dependent variable, which in this case is income. Remember that taking $e^{\log(y)}$ just gives us back $y$. We can use that logic here. If we "exponentiate" (take $e$ to the power of the values) the left-hand side of the equation, then we can get back to $\hat{y}_i$. However, remember from algebra, that what we do to one side of the equation, we have to do to both sides. That means:
-
-$$e^{\log(\hat{y}_i)}=e^{3.29+0.005*x_i}$$
-$$\hat{y}_i=(e^{3.29})*(e^{0.005})^{x_i}$$
-The good news is that we now just have our predicted income on the left-hand side. The bad news is that the right hand side looks a bit complex. Since $e$ is just a number we can go ahead and calculate the values in those parentheses (called "exponentiating"):
-
-```{r}
-exp(3.29)
-exp(0.005)
+exp(0.971)
+exp(0.241)
 ```
 
 That means:
 
-$$\hat{y}_i=(26.8)*(1.005)^{x_i}$$
-What we have here is a **multiplicative** relationship rather than an additive relationship. How does this changes things? Well, to see lets plug in some values for $x_i$ and see how it changes our predicted income value. An age of zero is outside the scope of our data, but lets plug it in for instructional purposes anyway:
+$$\hat{y}_i=(2.64)*(1.27)^{x_i}$$
+We now have a **multiplicative** relationship rather than an additive relationship. How does this changes our understanding of the results? To see, lets plug in some values for $x_i$ and see how it changes our predicted income value. A tomato rationg of zero is outside the scope of our data, but lets plug it in for instructional purposes anyway:
 
-$$\hat{y}_i=(26.8)*(1.005)^{0}=(26.8)(1)=26.8$$
-So, the predicted income when $x$ is zero is just given by exponentiating the intercept. Lets try increasing age by one year:
+$$\hat{y}_i=(2.64)*(1,27)^{0}=(2.64)(1)=2.64$$
+So, the predicted box office returns when $x$ is zero is just given by exponentiating the intercept. Lets try increasing tomato rating by one point:
 
-$$\hat{y}_i=(26.8)*(1.005)^{1}=(26.8)(1.005)$$
-I could go ahead and finish that multiplication, but I want to leave it here to better show the change. A one year increase increases income by a **multiplicative** factor of 1.005. In other words, a one year increase in age is associated with a 0.5% increase in income, on average. What happens if I add another year?
+$$\hat{y}_i=(2.64)*(1.27)^{1}=(2.64)(1.27)$$
+I could go ahead and finish that multiplication, but I want to leave it here to better show how to think about the change. A one point increase in tomato rating is associated with an increase in box office returns by a **multiplicative** factor of 1.27. In other words, a one point increase in tomato rating is associated with a 27% increase in income, on average. What happens if I add another point?
 
-$$\hat{y}_i=(26.8)*(1.005)^{2}=(26.8)(1.005)(1.005)$$
-Each additional year leads to a 0.5% increase in predicted income. This is what I mean by a multiplicative increase. We are no longer talking about the predicted change in income in terms of **absolute** numbers of dollars, but rather in **relative** terms of percentage increase. 
+$$\hat{y}_i=(2.64)*(1.27)^{2}=(2.64)(1.27)(1.27)$$
+Each additional point leads to a 27% increase in predicted box office returns. This is what I mean by a multiplicative increase. We are no longer talking about the predicted change in box office returns in terms of **absolute** numbers of dollars, but rather in **relative** terms of percentage increase. 
 
-####  General form and interpretation
-
-In general, you have the following equation when you transform your dependent variable:
-
-$$\log(\hat{y}_i)=b_0+b_1(x_{i1})+b_2(x_{i2})+\ldots+b_p(x_{ip})$$
-
-In order to properly interpret your results, you must exponentiate all of your slopes and the intercept. Your slopes can be interpreted as:
+In general, in order to properly interpret your results when you log the dependent variable, you must exponentiate all of your slopes and the intercept. You can then interpret them as:
 
 > The model predicts that a one-unit increase in $x_j$ is associated with a $e^{b_j}$ multiplicative increase in $y$, on average while holding all other independent variables constant. 
 > The model predicts that $y$ will be $e^{b_0}$ on average when all independent variables are zero. 
 
 Of course, just like all of our prior examples, you are responsible for converting this into sensible English. 
 
-Lets try a fuller example where we predict log income by age, education and race at the same time:
+Lets try a more complex model in which we predict log box office returns by tomato rating, runtime and movie maturity rating:
 
 ```{r}
-round(summary(lm(lincome~age+educ+race, data=politics))$coef,3)
+model <- lm(log(BoxOffice)~TomatoRating+Runtime+Rating, data=movies)
+coef(model)
 ```
 
-Lets start by interpreting the intercept. Two of our variables, education and race, are categorical with reference categories of less than high school and white, respectively and age is a quantitative variable. In order to interpret our intercept of 2.73, we first need to exponentiate it:
+We have a couple of added complexities here. We now have results for categorical variables as well as negative numbers to interpret. In all cases, we want to exponentiate to interpret correctly, so lets go ahead and do that:
 
 ```{r}
-exp(2.73)
+exp(coef(model))
 ```
 
-So we would say:
+The tomato rating effect can be interpreted as before but now with control variables:
 
-> The model predicts that a zero-year old white person with less than a high school degree will make \$15,333, on average. 
+> The model predicts that a one point increase in the tomato rating is associated with a 19% increase in box office returns, on average, holding constant movie runtime and maturity rating. 
 
-Of course, because an age of zero is outside the scope of our data, we don't put much any stock in this prediction. The more interesting numbers are the various slopes. 
+The runtime effect can be interpreted in a similar way.
 
-Lets interpret, the age slope of 0.004. First, exponentiate:
+> The model predicts that a one minute increase in movie runtime is associated with a 3.9% increase in box office returns, on average, holding constant movie tomato rating and maturity rating. 
+
+In both of these cases, it makes sense to take the multiplicative effect and convert that into a percentage increase. If I multiply the predicted box office returns by 1.039, then I am increasing it by 3.9%. When effects get large, however, it sometimes makes more sense to just interpret it as a multiplicative factor. For example, if the exponentiated coefficient was 3, I could interpret this as a 200% increase. However, it probably makes more sense in this case to just say something along the lines of the "predicted value of $y$ triples in size for a one point increase in $x$."
+
+The categorical variables can be interpreted as we normally do in terms of the average difference between the indicated category and the reference category. However, now it is the multiplicative difference. So, taking the PG effect of 0.468, we could just say:
+
+> The model predicts that, controlling for tomato rating and runtime, PG-rated movies make 46.8% as much as G-rated movies at the box office, on average.
+
+However, its also possible to talk about how much less a PG-rated movie makes than a G-rated movie. If a PG  movie makes 46.8% as much, then it equivalently makes 52.2% less. We get this number by just subtracting the original percentage from 100. So I could have said:
+
+> The model predicts that, controlling for tomato rating and runtime, PG-rated movies make 52.2% less than G-rated movies, on average. 
+
+In general to convert any coefficient $\beta_j$ from a model with a logged dependent variable to a percentage change scale we can follow this formula:
+
+$$(e^{\beta_j}-1)*100$$
+
+This will give us the percentage change and the corret direction of the relationship.
+
+You may have noted that the effect of runtime in the model above before exponentiating was 0.0386 and after we exponentiated the result, we concluded that the effect of one minute increase in runtime was 3.9%. If you move over the decimal place two, those numbers are very similar. This is not a coincidence. It follows from what is known as the Taylors series expansion for the exponential:
+
+$$e^x=1+x-\frac{x^2}{2!}+\frac{x^3}{3!}-\frac{x^4}{4!}+\ldots$$
+Any exponential value $e^x$ can be calculated from this Taylor series expansion which continues indefinitely. However, when $x$ is a small value less than one, note that you are squaring, cubing, and so forth, which results in an even smaller number that is divided by an increasingly large number. So for, small values of $x$ the following approximation works reasonably well:
+
+WHAT IS LATEX APPROXIMATELY EQUAL TO SYMBOL?
+
+$$e^x=1+x$$
+
+In the case I just noted where $x=0.0386$, the actual value of $e^{0.0386}$ is 1.0394 while the approximation gives us 1.0386. Thats pretty close. This approximation starts to break down around $x=0.2$. The actual value of $e^{0.2}$ is 1.221 or about a 22.1% increase, whereas the approximation gives us 1.2 or a straight 20% increase. 
+
+You can use this approximation to get a ballpark estimate of the effect size in percentage change terms for coefficients that are not too large without having to exponentiate. So I can see that the coefficient of 0.177 for tomato rating is going to be roughly a 18-19% increase and the coefficient of 0.0386 is going to be a little under a 4% increase, all without having to exponentiate. Notice that this doesn' work at all well for the very large coefficients for movie maturity rating. 
+
+#####  Logging the independent variable 
+
+The previous example showed how to interpret results when you log the dependent variables. Logging the dependent variable will help address exponential type relationships. However in cases of a diminishing returns type relationship, we instead need to log the independent variable. Figure \@ref(fig:gapminder-log-scale) shows the GDP per capita by life expectancy scatterplot from before but now with GDP per capita on a log scale. 
+
+```{r gapminder-log-scale, echo=FALSE, fig.cap="Scatterplot of life expectancy by GDP per capita, with a log-scale applied to GDP per capita. Look how much more linear the relationship looks."}
+ggplot(subset(gapminder, year==2007), aes(x=gdpPercap, y=lifeExp))+
+  geom_point(alpha=0.7)+
+  geom_smooth(se=FALSE, method="lm", color="red")+
+  geom_smooth(se=FALSE)+
+  labs(x="GDP per capita", y="Life expectancy at birth", subtitle = "2007 data from Gapminder")+
+  scale_x_log10(labels=scales::dollar)+
+  theme_bw()
+```
+
+It is really quite impressive how this simple transformation straightened out that very clear diminishing returns type relationship we observed before. This is because on the log-scale a one unit increase means a multiplicative change so, you have to make a much larger absolute change when you are already high in GDP per capita to get the same return in life expectancy. 
+
+Models with logged independent variables are a little trickier to interpet. To understand how it works, lets go ahead and calculate the model:
 
 ```{r}
-exp(0.004)
+model <- lm(lifeExp~log(gdpPercap), data=gapminder)
+round(coef(model), 5)
 ```
 
-So, we would say:
+So our model is:
 
-> The model predicts that a one year increase in age is associated with a 0.4% increase in income, on average, among individuals of the same race and educational level. 
+$$\hat{y}_i=-9.1+8.4\log{x_i}$$
 
-What about the effect for a BA degree? This is a categorical variable with less than high school as the reference, but again we need to exponentiate to get a meaningful number:
+Because the log transformation is on the right hand side we can no longer use the trick of exponentiating its value because that would just give us $e^{\hat{y}_i}$ on the left hand side. It would also be impractical if we added other independent variables to the model.
 
-```{r}
-exp(1.19)
-```
+Instead, we can interpret our slope by thinking about how a 1% increase in $x$ would change the predicted value of $y$. For ease of interpretation, lets start with $x=1$. The log of 1 is always zero, so:
 
-This is a pretty big increase! We might say:
+$$\hat{y}_i=-9.1+8.4\log{1}=-9.1+8.4*0=\beta_0$$
 
-> The model predicts that the incomes of college graduates are 3.28 times higher than the incomes of those with less than a high school diploma, on average, holding constant race and age. 
+So, the intercept here is actually the predicted value of when GDP per capita is \$1. This is not a terribly realistic value for GDP per capita where the lowest value in your dataset is \$241, so its not surprising that we get a negative life expectancy value here.  
 
-How would we describe negative effects. Lets look at the effect of -0.23 for Hispanics. First, lets exponentiate it:
+Now what happens if we raise GDP per capita by 1%. A 1% increase from a value of 1 would give us a value of 1.01. So:
 
-```{r}
-exp(-0.23)
-```
+$$\hat{y}_i=-9.1+8.4\log{1.01}$$
 
-There are two ways we could describe this. Let me try both ways:
+From the Taylor series above, we can deduce that the $\log{1.01}$ is roughly equal to 0.01. So:
 
-> The model predicts that the incomes of Hispanics will be 79% as high as the incomes of whites, on average, holding constant age and education.
+$$\hat{y}_i=-9.1+8.4*0.01=-9.1+0.084$$
 
-Keep in mind that 79% as high means you are making less. If your boss comes and offers you to change your salary to 90% of what it is now, don't be fooled -- thats not a good deal. Alternatively, I could have taken 100-79=21 and said:
+This same logic will apply to any 1% increase in GDP per capita. So, the model predicts that a 1% increase in GDP per capita is associated with a 0.084 year increase in the life expectancy. 
 
-> The model predicts that the income of Hispanics is 21% less than the income of whites, on average, holding constant age and education. 
+In general, you can interpret any coefficient $\beta_j$ with a logged independent variable but not logged dependent variable as:
 
-Always keep in mind that regardless of the type of variable involved and the direction of the relationship, we are always talking about a relative, multiplicative change in the dependent variable. In some cases, it may make more sense to describe this as a percentage gain or loss (as in the age and Hispanic case), while in other cases it may make sense to describe it in terms of how many "times more or less" (as in the case of the BA degree).
+$$The model predicts that a a 1% increase in x is associated with a $\beta_j/100$ unit increase in y.$$
 
-*Note: from here on out, I am throwing together information discussed in class, so the descriptions may be a bit rough. Apologies in advance*
+One easy way to remember what the log transformation does is that it makes your measure of change relative rather than absolute for the variable transformed. When we logged the dependent variable before then our slope could be interpreted as the percentage change in the dependent variable (relative) for a one unit increase (absolute) in the independent variable. When we log the independent variable, the slope can be intrepreted as the unit change in the dependent variable (absolutee) for a 1% increase (relative) in the independent variable. 
 
-####  Logging the independent variable 
 
-Lets revisit the data from Preston that we looked at earlier in the term. 
-
-```{r preston2, echo=FALSE}
-par(mar=c(4,4,0.1,1))
-plot(preston$inc, preston$lifeexp,
-     xlab="national income, 1960",
-     ylab="life expectancy, 1960", pch=21, bg="grey", las=1)
-```
-These data show a clearly non-linear relationship. More specifically, this is a "diminishing returns" relationship where a positive effect gets smaller in magnitude at higher levels of the independent variable. Logging the dependent variable will not help us make this relationship look more linear, but logging the independent variable will:
-
-```{r preston3, echo=FALSE}
-par(mar=c(4,4,0.1,1))
-plot(log(preston$inc), preston$lifeexp,
-     xlab="national income, 1960",
-     ylab="life expectancy, 1960", pch=21, bg="grey", las=1)
-```
-
-How does this transformation of the independent variable affect how we interpret the results? Lets run the model:
-
-```{r prestonmodel}
-summary(lm(lifeexp~log(inc), data=preston))
-```
-
-Interpreting the slope here can be tricky. The basic point is that by logging the independent variable, the change in the independent variable is now relative as measured by a 1% increase in the independent variable (national income per capita here). The change in the dependent variable is still in absolute terms (years of life expectancy here), but in order to interpret the slope correctly you must divide it by 100 (i.e. move the decimal place two places to the left). In this case, I would say:
-
-> The model predicts that a 1% increase in national income per capita in a country is associated with a 0.075 year increase in life expectancy on average. 
-
-Why did I have to move the decimal place two to the left? Lets use the model to compare the predicted values of two cases, where one case has exactly 1% higher national income per capita, to see how this works. I will start the lower country at a national income per capita of \$20,000, but the results here apply regardless of what number I choose here. To see the change I subtract one predicted value from the other. 
-
-$$
-\begin{aligned} 
-((14.93+7.54*\log(20200))-(14.93+7.54*\log(20000))&=7.54(\log(20200)-\log(20000))\\
-&=7.54*\log(20200/20000)\\ 
-&=7.54*\log(1.01)
-\end{aligned}
-$$
-
-Now, it turns out that $log(1.01)$ almost exactly equals 0.01, so this is roughly equivalent to $7.54*0.01=0.0754$. This same math will be true regardless of the starting value of income chosen, so roughly speaking a 1% increase in $x$ is associated with a $b_1/100$ change in $y$. 
 
 ####  Logging both independent and dependent variables: The elasticity model
 
-So, now we have seen that logging the dependent variable will make change in the dependent relative, and logging the independent variable will make change in the independent variable relative. It makes sense to think that if you log them both, you would get relative change in $x$ predicting relative change in $y$. Correct! This is what is called an "elasticity" model because the predicted slopes are equivalent to the concept of elasticity in economics: how much does of a percent change in $y$ results from a 1% increase in $x$. 
+If logging the dependent variable will make change in the dependent varaible relative, and logging the independent variable will make change in the independent variable relative, then what happens if you log transform both. Then you get a model which predicts relative change by relative change. This model is often called an "elasticity" model because the predicted slopes are equivalent to the concept of elasticity in economics: how much does of a percent change in $y$ results from a 1% increase in $x$. 
 
-To show you how this works, lets try to predict movie box office returns by tomato ratings where we apply all three types of models.
+The relationship between age and wages may benefit from logging both variables. We have already seen a diminishing returns type relationship which suggests logging the independent variable. We also know that wages are highly right-skewed and so might also benefit from being logged. 
 
-```{r}
-model.logy <- lm(log(BoxOffice)~TomatoRating, data=movies)
-model.logx <- lm(BoxOffice~log(TomatoRating), data=movies)
-model.logboth <- lm(log(BoxOffice)~log(TomatoRating), data=movies)
-coef(model.logy)[2]
-coef(model.logx)[2]
-coef(model.logboth)[2]
+```{r tranform-wages, fig.cap="Is the relationship between age and hourly wage non-linear?", fig.align="center"}
+ggplot(earnings, aes(x=age, y=wages))+
+  geom_jitter(alpha=0.01, width=0.1)+
+  geom_smooth(se=FALSE, method="lm", color="red")+
+  geom_smooth(se=FALSE)+
+  scale_y_log10(labels = scales::dollar)+
+  scale_x_log10()+
+  labs(x="age", y="hourly wages")+
+  theme_bw()
 ```
 
-In the first model, I am logging $y$ so I nee to exponentiate the result to interpret it. 
+Figure \@ref{fig:transform-wages} shows the relationship between age and wages when we apply a log scale to both variables. It looks a little better although there is still some evidence of diminishing returns even on this scale. Lets go with it for now though. 
+
+Lets take a look at the coefficients from this model:
 
 ```{r}
-exp(0.2012)
+model <- lm(log(wages)~log(age), data=earnings)
+coef(model)
 ```
 
-So, I would say:
+One of the advantages of the elasticity model is that slopes can be easily interpreted. We can use the same techniques when logging independent variables to divide our slope by 100 to see that a one percent increase in age is associated with a 0.0051 increase in the dependent variable. However this dependent variable is the log of wages. T interpret the effect on wages, we need to exponentiate this value, subtract 1, and multiply by 100. However since the value is small, we know that this is going to ber roughly a 0.51% increase. So:
 
-> The model predicts that a one point increase in a movie's tomato rating is associated with a 22% increase in box office returns on average. 
+> The model predicts that a one percent increase in age is associated with a 0.51% increase in wages, on average. 
 
-In the second model, I need to move over the decimal place to the left and then say:
+In other words, we don't have to make any changes at all. The slope is already the expected percent change in $y$ for a one percent increase in $x$. 
 
-> The model predicts that a 1% increase in a movie's tomato rating is associated with a \$500,000 increase in box office returns. 
-
-The third model (the elasticity model) is the easiest to interpret. It turns out that the number can be interpreted directly as the percentage change in $y$ expected for a 1 percent increase in $x$, so:
-
-> The model predicts that a 1% increase in a movie's tomato rating is associated with a 0.85% increase in box office returns. 
-
-Why is this the case? We can work this out from a similar mathematical exercise above. On the independent variable side a 1% increase in $x$ is still associated with a $b_1/100$ increase in the dependent variable, but that independent variable is still the log of $y$. Thus, technically you should get the result by taking $e^{b_1/100}$. However, since you are dividing by 100 that number will almost always be small enough that you can use the approximation that $b_1$ itself is the percentage increase in $y$ for the given change in $x$. 
+The STRIPAT model that Richard York helped to develop is an example of an elasticity model that is popular in environmental sociology. In this model, the dependent variable is some measure of environmental degradation, such as CO2 emissions. The independent variable can be things like GDP per capita, population size and growth, etc. All variables are logged so that model parameters can be interpreted as elasticities. 
 
 ####  The square root transformation
 
-The log transformation is very flexible and solves multiple problems at once (non-linearity, outliers, skewness), which explains its popularity. But it breaks down in one important situation: you cannot log a variable that has zero or negative values. The negative case is not as important because generally the log transformation fixes things for variables that only take non-negative values. However, there are numerous cases where a quantitative variable can be zero as well as a positive. Lets run the same elasticity model as above on box office returns, but this time lets predict returns by the Tomato Meter rather than the Tomato Rating.
+The log transformation is very flexible and solves multiple problems at once (non-linearity, outliers, skewness), which explains its popularity. But it breaks down in one important situation: you cannot log a variable that has zero or negative values. The negative case is generally not as important although there are som exceptions (like net worth). On the other hand, there are numerous cases where a quantitative variable can be zero as well as positive. Lets run an elasticity model on box office returns, but this time lets predict returns by the Tomato Meter rather than the Tomato Rating.
 
 ```{r error=TRUE}
 summary(lm(log(BoxOffice)~log(TomatoMeter), data=movies))
 ```
 Oh no! We got an error. The problem is that the Tomato Meter has a few cases of zero values (when a movie received zero positive reviews). The log of zero is negative infinity and that simply won't work when fitting a linear model. What can you do?
 
-Well it turns out that the square root transformation can do much the same work as the natural logarithm. It will pull in skewness and can make non-linear relationships more linear. Since the square root of zero is a real number (zero to be precise), it will also work on variables that have legitimate zeroes. So,
+It turns out that the square root transformation can do much the same work as the natural logarithm. It will pull in skewness and can make non-linear relationships more linear. Since the square root of zero is a real number (zero to be precise), it will also work on variables that have legitimate zero values. Figure \@ref(fig:log-transform-tomato-meter) shows a scatterplot of tomato meter by box office returns with both variables on the log scale. Movies with a tomato meter of zero have been removed. Figure \@ref(fig:sqrt-transform) shows the same figure but now with Tomato Meter on the square root scale. The figures looks pretty similar and fit a similar trend but the square root transformation can also include the zero values. 
 
-```{r}
-summary(lm(log(BoxOffice)~sqrt(TomatoMeter), data=movies))
+```{r log-transform-tomato-meter, fig.cap="Scatterplot of tomato meter by box office returns, using a log transformation of tomato meter ratings."}
+ggplot(subset(movies, TomatoMeter>0), aes(x=TomatoMeter, y=BoxOffice))+
+  geom_vline(xintercept = 0, linetype=2)+
+  geom_jitter(alpha=0.5)+
+  scale_y_log10()+
+  scale_x_log10()+
+  geom_smooth(se=FALSE)+
+  labs(x="Tomato Meter (square root scale)", y="Box Office Returns (log scale)")+
+  theme_bw()
 ```
 
-Now we can get a result. The downside, however, is that there is [no clear and easy interpretation of how to intepret this effect](http://stats.stackexchange.com/questions/35982/how-to-interpret-regression-coefficients-when-response-was-transformed-by-the-4t).  
+```{r sqrt-transform, fig.cap="Scatterplot of tomato meter by box office returns, using a square root transformation of tomato meter ratings. The dotted vertical line shows cases with a zero tomato meter."}
+ggplot(movies, aes(x=TomatoMeter, y=BoxOffice))+
+  geom_vline(xintercept = 0, linetype=2)+
+  geom_jitter(alpha=0.5)+
+  scale_y_log10()+
+  scale_x_sqrt()+
+  geom_smooth(se=FALSE)+
+  labs(x="Tomato Meter (square root scale)", y="Box Office Returns (log scale)")+
+  theme_bw()
+```
+
+We can esimtate this model easily enough in R:
+
+```{r}
+model <- lm(log(BoxOffice)~sqrt(TomatoMeter), data=movies)
+coef(model)
+```
+
+There is one big downside to this transformation. Unlike log transformations, there is [no clear and easy interpretation of how to intepret this effect](http://stats.stackexchange.com/questions/35982/how-to-interpret-regression-coefficients-when-response-was-transformed-by-the-4t). Since we know that the square root transformation is doing something close to a log transformation, we can think of this result as loosely close to an elasticity in this case, but that is only a loose approximation and may deteriorate as you get larger and larger values of the independent variable. 
 
 ### Polynomial Regression
 
-A final method that can be used to fit non-linear relationships is to fit *polynomial* terms. Recall, for example, the formula:
+Another method that can be used to fit non-linear relationships is to fit *polynomial* terms. Recall, for example, the formula:
 
 $$y=a+bx+cx^2$$
 
@@ -703,6 +809,23 @@ $$0.4060329/(2*0.0004635)=438$$
 However, because we subtracted 90 from each value, the actual runtime minutes for the inflection is equal to $438+90=528$. Note that this value is show on the graph above. 
 
 ### Splines
+
+```{r}
+earnings$age.spline <- ifelse(earnings$age<35, 0, earnings$age-35)
+model <- lm(wages~age+age.spline, data=earnings)
+pander(tidy(model))
+```
+
+```{r}
+predict_df <- data.frame(age=18:65)
+predict_df$age.spline <- ifelse(predict_df$age<35, 0, predict_df$age-35)
+predict_df$wages <- predict(model, newdata=predict_df)
+ggplot(earnings, aes(x=age, y=wages))+
+  geom_jitter(alpha=0.01, width = 1)+
+  geom_smooth()+
+  geom_line(data=predict_df, color="red")+
+  theme_bw()
+```
 
 ---
 
