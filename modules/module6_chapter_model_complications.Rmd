@@ -373,7 +373,7 @@ A more sophisticated smoothing procedure is available via the LOESS (locally est
 
 You can easily fit a LOESS smoother to a scatterplot in `ggplot` by specifying `method="loess"` in the `geom_smooth` function. In fact, this is the default method for `geom_smooth` for datasets smaller than a thousand observations. Figure \@ref(fig:smooth-movies) plots this LOESS smoother as well as a linear fit for comparison.
 
-```{r smooth-movies, fig.cap="A LOESS smoother to the data is shown in blue while a linear fit is shown in red.", fig.align="center"}
+```{r smooth-movies, message=FALSE, fig.cap="A LOESS smoother to the data is shown in blue while a linear fit is shown in red.", fig.align="center"}
 ggplot(movies, aes(x=TomatoRating, y=BoxOffice))+
   geom_jitter(alpha=0.2)+
   geom_smooth(method="lm", color="red", se=FALSE)+
@@ -391,7 +391,7 @@ SHINY APP
 
 The main disadvantage of the LOESS smoother is that it becomes computationally inefficient as the number of observations increases. If I were to apply the LOESS smoother to the 145,647 observations in the earnings data, it would kill R before producing a result. For larger dataset, another option for smoothing is the general additive model (GAM). This model is complex and I won't go into the details here, but it provides the same kinds of smoothing as LOESS but is much less computationally expensive. GAM smoothing is the default in `geom_smooth` for datasets larger than a thousand observations, so you do not need to include a method. Figure \@ref(fig:smooth-wages) shows A GAM smoother applied to the relationship between wages and age. The non-linear diminishing returns relationship is clearly visible in the data. 
 
-```{r smooth-wages, fig.cap="A GAM smoother (shown in blue) applied to the relationship between age and wages in the earnings data. A linear fit is shown in red.", fig.align="center"}
+```{r smooth-wages, message=FALSE, fig.cap="A GAM smoother (shown in blue) applied to the relationship between age and wages in the earnings data. A linear fit is shown in red.", fig.align="center"}
 ggplot(earnings, aes(x=age, y=wages))+
   geom_jitter(alpha=0.01, width=1)+
   geom_smooth(method="lm", color="red", se=FALSE)+
@@ -406,7 +406,7 @@ ggplot(earnings, aes(x=age, y=wages))+
 
 Another technique for detecting non-linearity is the to plot the fitted values of a model by the residuals. To demonstrate how this works, lets first calculate a model predicting life expectancy by GDP per capita from the gapminder data earlier.
 
-```{r}
+```{r model-le-gdp}
 model <- lm(lifeExp~gdpPercap, data=subset(gapminder, year==2007))
 ```
 
@@ -425,7 +425,7 @@ augment(model)
 
 We can use the dataset returned here to build a plot of the fitted values (`.fitted`) by the residuals (`.resid`) like this:
 
-```{r resid-fitted, fig.cap="A residual vs. fitted values plot for a model predicting life expectancy by GDP per capita. Their is a clear trend here whigh signifies non-linearity.", fig.align="center"}
+```{r resid-fitted, message=FALSE, fig.cap="A residual vs. fitted values plot for a model predicting life expectancy by GDP per capita. Their is a clear trend here whigh signifies non-linearity.", fig.align="center"}
 ggplot(augment(model), aes(x=.fitted, y=.resid))+
   geom_point()+
   geom_hline(yintercept = 0, linetype=2)+
@@ -438,7 +438,7 @@ If a linear model fitted the data well, then we would expect to see no evidence 
 
 Figures \@ref(fig:resid-fitted-movies) and \@ref(fig:resid-fitted-wages) show residual vs fitted value plots for the two other cases of movie box office returns and wages that we have been examining. In these cases, the patterns are somewhat less apparent without the smoothing. The movie case does not appear particularly problematic although there is some argument for exponential increase at very high values of tomato rating. The results for wages suggest a similar diminishing returns type problem. 
 
-```{r resid-fitted-movies, echo=FALSE, fig.cap="A residual vs. fitted values plot for a model predicting movie box office returns by tomato rating.", fig.align="center"}
+```{r resid-fitted-movies, echo=FALSE, message=FALSE, fig.cap="A residual vs. fitted values plot for a model predicting movie box office returns by tomato rating.", fig.align="center"}
 model <- lm(BoxOffice~TomatoRating, data=movies)
 ggplot(augment(model), aes(x=.fitted, y=.resid))+
   geom_jitter(alpha=0.2)+
@@ -448,7 +448,7 @@ ggplot(augment(model), aes(x=.fitted, y=.resid))+
   theme_bw()
 ```
 
-```{r resid-fitted-wages, echo=FALSE, fig.cap="A residual vs. fitted values plot for a model predicting movie box office returns by tomato rating.", fig.align="center"}
+```{r resid-fitted-wages, echo=FALSE, message=FALSE, fig.cap="A residual vs. fitted values plot for a model predicting movie box office returns by tomato rating.", fig.align="center"}
 model <- lm(wages~age, data=earnings)
 ggplot(augment(model), aes(x=.fitted, y=.resid))+
   geom_jitter(alpha=0.01)+
@@ -495,7 +495,7 @@ Because transformations can often solve multiple problems at once, they are very
 
 Before getting into the mathematical details of the log transformation, lets first demonstrate its power. Figure \@ref(fig:log-scale-movies) shows the relationship between Rotten Tomatoes rating and box office returns in our movies data. However, this time I have applied a log-scale to box office returns. Although we still see some evidence of non-linearity in the LOESS estimator, the relationship looks much more clearly linear than before. But the big question is how do we interpret the slope and intercept for the linear model fit to this log-transformed data? 
 
-```{r log-scale-movies, fig.cap="Scatterplot of the relationship between rotten tomatoes rating and box office returns, with a log-scale applied to box office returns.", fig.align="center"}
+```{r log-scale-movies, message=FALSE, fig.cap="Scatterplot of the relationship between rotten tomatoes rating and box office returns, with a log-scale applied to box office returns.", fig.align="center"}
 ggplot(movies, aes(x=TomatoRating, y=BoxOffice))+
   geom_jitter(alpha=0.2)+
   geom_smooth(method="lm", color="red", se=FALSE)+
@@ -535,7 +535,7 @@ $$e^a*a^b=e^{a+b}$$
 $$log(x*y) = log(x)+log(y)$$
 You can try this out in R to see that it works:
 
-```{r}
+```{r how-logs-work}
 exp(2)*exp(3)
 exp(2+3)
 log(5*4)
@@ -561,7 +561,7 @@ $$e^{\hat{\log(y_i)}}=e^{0.973+0.241*x_i}$$
 $$\hat{y}_i=(e^{0.971})*(e^{0.241})^{x_i}$$
 We now have quite a different looking equation for predicting box office returnbs. The good news is that we now just have our predicted box office returns back on the left-hand side of the equation. The bad news is that the right hand side looks a bit complex. Since $e$ is just a constant value, we can go ahead and calculate the values in those parentheses (called "exponentiating"):
 
-```{r}
+```{r exponentiate}
 exp(0.971)
 exp(0.241)
 ```
@@ -589,14 +589,14 @@ Of course, just like all of our prior examples, you are responsible for converti
 
 Lets try a more complex model in which we predict log box office returns by tomato rating, runtime and movie maturity rating:
 
-```{r}
+```{r model-log-box-office}
 model <- lm(log(BoxOffice)~TomatoRating+Runtime+Rating, data=movies)
 coef(model)
 ```
 
 We have a couple of added complexities here. We now have results for categorical variables as well as negative numbers to interpret. In all cases, we want to exponentiate to interpret correctly, so lets go ahead and do that:
 
-```{r}
+```{r exponentiate-coefs}
 exp(coef(model))
 ```
 
@@ -641,7 +641,7 @@ You can use this approximation to get a ballpark estimate of the effect size in 
 
 The previous example showed how to interpret results when you log the dependent variables. Logging the dependent variable will help address exponential type relationships. However in cases of a diminishing returns type relationship, we instead need to log the independent variable. Figure \@ref(fig:gapminder-log-scale) shows the GDP per capita by life expectancy scatterplot from before but now with GDP per capita on a log scale. 
 
-```{r gapminder-log-scale, echo=FALSE, fig.cap="Scatterplot of life expectancy by GDP per capita, with a log-scale applied to GDP per capita. Look how much more linear the relationship looks."}
+```{r gapminder-log-scale, echo=FALSE, message=FALSE, fig.cap="Scatterplot of life expectancy by GDP per capita, with a log-scale applied to GDP per capita. Look how much more linear the relationship looks."}
 ggplot(subset(gapminder, year==2007), aes(x=gdpPercap, y=lifeExp))+
   geom_point(alpha=0.7)+
   geom_smooth(se=FALSE, method="lm", color="red")+
@@ -655,7 +655,7 @@ It is really quite impressive how this simple transformation straightened out th
 
 Models with logged independent variables are a little trickier to interpet. To understand how it works, lets go ahead and calculate the model:
 
-```{r}
+```{r log-gdp-model}
 model <- lm(lifeExp~log(gdpPercap), data=gapminder)
 round(coef(model), 5)
 ```
@@ -684,7 +684,7 @@ This same logic will apply to any 1% increase in GDP per capita. So, the model p
 
 In general, you can interpret any coefficient $\beta_j$ with a logged independent variable but not logged dependent variable as:
 
-$$The model predicts that a a 1% increase in x is associated with a $\beta_j/100$ unit increase in y.$$
+> The model predicts that a a 1% increase in x is associated with a $\beta_j/100$ unit increase in y.
 
 One easy way to remember what the log transformation does is that it makes your measure of change relative rather than absolute for the variable transformed. When we logged the dependent variable before then our slope could be interpreted as the percentage change in the dependent variable (relative) for a one unit increase (absolute) in the independent variable. When we log the independent variable, the slope can be intrepreted as the unit change in the dependent variable (absolutee) for a 1% increase (relative) in the independent variable. 
 
@@ -696,7 +696,7 @@ If logging the dependent variable will make change in the dependent varaible rel
 
 The relationship between age and wages may benefit from logging both variables. We have already seen a diminishing returns type relationship which suggests logging the independent variable. We also know that wages are highly right-skewed and so might also benefit from being logged. 
 
-```{r tranform-wages, fig.cap="Is the relationship between age and hourly wage non-linear?", fig.align="center"}
+```{r tranform-wages, message=FALSE, fig.cap="Is the relationship between age and hourly wage non-linear?", fig.align="center"}
 ggplot(earnings, aes(x=age, y=wages))+
   geom_jitter(alpha=0.01, width=0.1)+
   geom_smooth(se=FALSE, method="lm", color="red")+
@@ -711,7 +711,7 @@ Figure \@ref{fig:transform-wages} shows the relationship between age and wages w
 
 Lets take a look at the coefficients from this model:
 
-```{r}
+```{r elasticity-model}
 model <- lm(log(wages)~log(age), data=earnings)
 coef(model)
 ```
@@ -728,14 +728,14 @@ The STRIPAT model that Richard York helped to develop is an example of an elasti
 
 The log transformation is very flexible and solves multiple problems at once (non-linearity, outliers, skewness), which explains its popularity. But it breaks down in one important situation: you cannot log a variable that has zero or negative values. The negative case is generally not as important although there are som exceptions (like net worth). On the other hand, there are numerous cases where a quantitative variable can be zero as well as positive. Lets run an elasticity model on box office returns, but this time lets predict returns by the Tomato Meter rather than the Tomato Rating.
 
-```{r error=TRUE}
+```{r logging-zero, error=TRUE}
 summary(lm(log(BoxOffice)~log(TomatoMeter), data=movies))
 ```
 Oh no! We got an error. The problem is that the Tomato Meter has a few cases of zero values (when a movie received zero positive reviews). The log of zero is negative infinity and that simply won't work when fitting a linear model. What can you do?
 
 It turns out that the square root transformation can do much the same work as the natural logarithm. It will pull in skewness and can make non-linear relationships more linear. Since the square root of zero is a real number (zero to be precise), it will also work on variables that have legitimate zero values. Figure \@ref(fig:log-transform-tomato-meter) shows a scatterplot of tomato meter by box office returns with both variables on the log scale. Movies with a tomato meter of zero have been removed. Figure \@ref(fig:sqrt-transform) shows the same figure but now with Tomato Meter on the square root scale. The figures looks pretty similar and fit a similar trend but the square root transformation can also include the zero values. 
 
-```{r log-transform-tomato-meter, fig.cap="Scatterplot of tomato meter by box office returns, using a log transformation of tomato meter ratings."}
+```{r log-transform-tomato-meter, message=FALSE, fig.cap="Scatterplot of tomato meter by box office returns, using a log transformation of tomato meter ratings."}
 ggplot(subset(movies, TomatoMeter>0), aes(x=TomatoMeter, y=BoxOffice))+
   geom_vline(xintercept = 0, linetype=2)+
   geom_jitter(alpha=0.5)+
@@ -746,7 +746,7 @@ ggplot(subset(movies, TomatoMeter>0), aes(x=TomatoMeter, y=BoxOffice))+
   theme_bw()
 ```
 
-```{r sqrt-transform, fig.cap="Scatterplot of tomato meter by box office returns, using a square root transformation of tomato meter ratings. The dotted vertical line shows cases with a zero tomato meter."}
+```{r sqrt-transform, message=FALSE, fig.cap="Scatterplot of tomato meter by box office returns, using a square root transformation of tomato meter ratings. The dotted vertical line shows cases with a zero tomato meter."}
 ggplot(movies, aes(x=TomatoMeter, y=BoxOffice))+
   geom_vline(xintercept = 0, linetype=2)+
   geom_jitter(alpha=0.5)+
@@ -759,73 +759,106 @@ ggplot(movies, aes(x=TomatoMeter, y=BoxOffice))+
 
 We can esimtate this model easily enough in R:
 
-```{r}
+```{r sqrt-model}
 model <- lm(log(BoxOffice)~sqrt(TomatoMeter), data=movies)
 coef(model)
 ```
 
 There is one big downside to this transformation. Unlike log transformations, there is [no clear and easy interpretation of how to intepret this effect](http://stats.stackexchange.com/questions/35982/how-to-interpret-regression-coefficients-when-response-was-transformed-by-the-4t). Since we know that the square root transformation is doing something close to a log transformation, we can think of this result as loosely close to an elasticity in this case, but that is only a loose approximation and may deteriorate as you get larger and larger values of the independent variable. 
 
-### Polynomial Regression
+### Polynomial Models
 
-Another method that can be used to fit non-linear relationships is to fit *polynomial* terms. Recall, for example, the formula:
+Another method that can be used to fit non-linear relationships is to fit *polynomial* terms. You may recall the the following formula from basic algebra:
 
 $$y=a+bx+cx^2$$
 
-This function defines a parabola which fits not a straight line but a curve with one point of inflection. We can fit this sort of curve in an OLS regression model by simply including the square of a variable as an additional term in the model. Before we do this it is usually a good idea to center the variable to be squared somewhere around the mean because this will reduce collinearity between the original term and its square. 
+This formula defines a parabola which fits not a straight line but a curve with one point of inflection. We can fit this curve in a linear model by simply including the square of a given independent variable as an additional variable in the model. Before we do this it is usually a good idea to re-center the original variable somewhere around the mean because this will reduce the correlation between the original term and its square. 
 
-For example, I could fit a polynomial term to a model that predicts tomato meter by movie runtime. like so:
+For example, I could fit the relationship between age and wages using polynomial terms:
 
-```{r}
-summary(lm(TomatoMeter~I(Runtime-90)+I((Runtime-90)^2), data=movies))
+```{r quadratic-model}
+model <- lm(wages~I(age-40)+I((age-40)^2), data=earnings)
+coef(model)
 ```
 
-Interpreting these numbers directly can be quite tricky. The easiest approach is often to simply graph the resulting parabola for reasonable values of $x$. I can do that here for movies:
+The coefficients for such a model are a little hard to interpret directly. In this case, it might be useful to start thinking about the **marginal effect** of $x$ on $y$. The marginal effect is simply how much we expect $y$ to change for a one unit increase in $x$ at a given value of $x$. We have not had to think much about marginal effects because in a simple linear model the coefficient/slope itself is the marginal effect. But as we move into non-linear relationships, the marginal effect is more complicated. The marginal effect can be calculated by taking the derivative using calculus of the model equation with respect to $x$. I don't expect you to know how to do this, so I will just tell how it turns out. In a model with a squared term:
 
-```{r}
-x <- 70:620-90
-fitted <- 42.256+0.406*x-0.0004635*x^2
-plot(x, fitted, type="l", lwd=2, xaxt="n", las=1,
-     xlab="runtime (in minutes)", ylab="Predicted tomato meter")
-ticks <- seq(from=70, to=620, by=50)-90
-axis(1, at=ticks, labels=ticks+90)
-abline(v=528-90, lty=2)
+$$\hat{y}=\beta_0+\beta_1x+\beta_2x^2$$
+
+The marginal effect (or slope) is given by:
+
+$$\beta_1+2\beta_2x$$
+ 
+Note that the slope of $x$ is itself partially determined by the value of $x$. This is what drives the non-linearity. If we plug in the values for the model above, the relationship will be clearer:
+
+$$0.3171+2(-0.0178)x=0.3171-0.0356x$$
+
+So when $x=0$, which in this case means age 40, a one year increase in age is associated with a \$0.32 increase in hourly wage, on average. For every increase in the year of age past 40, that effect of a one year increase in age on wages decreases in size by \$0.035. For every year below age 40, the effect increases by \$0.035.
+
+Because $\beta_1$ is positive and $\beta_2$ is negative in this case it Tcorresponds to a diminishing returns kind of relationship. Unlike the log transformation however, the relationship can ultimately reverse direction from positive to negative. I can figure out the inflection point at which it will transition from a positive to a negative relationship. I won't delve into the details here, but this point is given by setting the derivative of this equation with respect to age equal to zero and solving for age. In general, this will give me:
+
+$$\beta_j/(-2*\beta_{sq})$$
+
+Where $\beta_j$ is the coefficient for the linear effect of the variable (in this case, age), and $\beta_{sq}$ is the coefficient for the squared effect. In my case, I get:
+
+$$0.3171/(-2*-0.0178)=0.3171/0.0356=8.91$$
+
+Remember that we re-centered age at 40, so this means that the model predict that age will switch from a positive to a negative relationship with wages at age 48.91. 
+
+Often, the easiest way to really get a sense of the parabolic relationship we are modeling is to graph it. This can be done easily with `ggplot` by using the `geom_smooth` function. In the `geom_smooth` function you specify `lm` as the method, but also specify a `formula` argument that specifies this linear model should be fit as a parabola rather than a straight line. 
+
+```{r parabola-wages, fig.cap="A parabolic model fit to the relationship between age and wages. The dotted red line shows the maximum value of the curve where the relationship between wages and age goes from positive to negative", fig.align="center"}
+ggplot(earnings, aes(x=age, y=wages))+
+  geom_jitter(alpha=0.01, width=1)+
+  scale_y_continuous(labels = scales::dollar)+
+  labs(x="age", y="hourly wages")+
+  geom_smooth(se=FALSE, method="lm", formula=y~x+I(x^2))+
+  geom_vline(xintercept = 48.91, linetype=2, color="red")+
+  theme_bw()
 ```
 
-Note that we now get a curvilinear relationship where the positive effect of runtime gets smaller at higher values of runtime much like a diminishing returns relationship. In this case, the effect of runtime can even reverse direction and become negative which is not possible with a log transformation on $x$. However, its worth noting that the effect of runtime doesn't become negative until we are well outside the range of real movie values. 
 
-You can actually mathematically figure out the exact inflection point based on the two "slopes" for the original term and its square. Given the following model:
+Figure \@ref(fig:parabola-wages) shows the relationship between age and wages after adding a squared term to our linear model. I have also added a dashed line to indicate the inflection point at which the relationship shifts from positive to negative. 
 
-$$y=b_0+b_1*x+b_2*x^2$$
+Polynomial models do not need to stop at a squared term. You can also add a cubic term and so on. The more polynomial terms you add, the more inflection points you are allowing for in the data, but also the more complex it will be to interpret. Figure \@ref(fig:cubic-gapminder) shows the predicted relationship between GDP per capita and life expectancy in the gapminder data when using a squared and cubic term in the model. You can see two different inflection points in the data that allow for more complex curves than one could get using transformations.
 
-The inflection point is given by:
-
-$$b_1/(-2 * b_2)$$
-
-In this case, that gives us an inflection point of:
-
-$$0.4060329/(2*0.0004635)=438$$
-
-However, because we subtracted 90 from each value, the actual runtime minutes for the inflection is equal to $438+90=528$. Note that this value is show on the graph above. 
+```{r cubic-gapminder, fig.cap="A model predicting life expectancy from GDP per capita with squared and cubic terms.", fig.align="center"}
+ggplot(subset(gapminder, year==2007), aes(x=gdpPercap, y=lifeExp))+
+  geom_point()+
+  labs(x="GDP per capita", y="life expectancy")+
+  geom_smooth(se=FALSE, method="lm", formula=y~x+I(x^2)+I(x^3))+
+  theme_bw()
+```
 
 ### Splines
 
-```{r}
+Another approach to fitting non-linearity is to fit a **spline**. Splines can become quite complex, but I will focus here on a very simple spline. In a basic spline model, you allow the slope of a variable to have a different linear effect at some specific "hinge" value. Looking at the diminishing returns to wages from age in the earnings data, it might be reasonable to fit this effect with a spline model. It looks like age 35 might be a reasonable value for the hinge. 
+
+In order to fit the spline model, we need to add a spline term. This spline term will be equal to zero for all values where age is equal to or below 35 and will be equal to age minus 35 for all values where age is greater than 35. We then add this variable to the model. I fit this model below. 
+
+```{r spline-model}
 earnings$age.spline <- ifelse(earnings$age<35, 0, earnings$age-35)
 model <- lm(wages~age+age.spline, data=earnings)
 pander(tidy(model))
 ```
 
-```{r}
+This spline will produce two different slopes. For individuals 35 years of age or younger, the predicted change in wages for a one year increase will be given by the main effect of age, because the spline term will be zero. For individuals over 35 years of age, a one year increase in age will produce both the main age effect *and* the spline effect, so the total effect is given by adding the two together. So in this case, I would say the following:
+
+> The model predicts that for individuals 35 years of age and younger, a one year increase in age is associated with a $0.95 increase in wages on average. The model predicts that for individuals over 35 years of age, a one year increase in age is associated with a $0.0077 (0.9742-0.9549). 
+
+We can also graph this spline model, but we cannot do it simply through the `formula` argument in `geom_smooth`.  In order to do that, you will need to learn a new command. The `predict` command can be used to get predicted values from a model for a different dataset. The `predict` command needs at least two arguments: (1) the model object for the model you want to predict, and (2) a data.frame that has the same variables as those used in the model. In this case, we can create a simple "toy" dataset that just has one person of every age from 18 to 65, with only the variables of `age` and `age.spline`. We can then use the `predict` command to get predicted wages for these individuals and add that as a variable to our new dataset. We can than plot these predicted values as a line in `ggplot` by feeding in the new data into the `geom_line` command. The r code chunk below does all of this to produce Figure \@ref(fig:spline-wages). The spline model seems to fit pretty well here and is quite close to the smoothed line. This kind of model is sometimes called a "broken arrow" model because the two different slopes produce a visual effect much like an arrow broken at the hinge point.  
+
+```{r spline-wages, fig.cap="Scatterplot of age and hourly wages, with a spline fit hinged on age 35 shown in red. A smoothing line is also shown in blue.", fig.align="center", message=FALSE}
 predict_df <- data.frame(age=18:65)
 predict_df$age.spline <- ifelse(predict_df$age<35, 0, predict_df$age-35)
 predict_df$wages <- predict(model, newdata=predict_df)
 ggplot(earnings, aes(x=age, y=wages))+
   geom_jitter(alpha=0.01, width = 1)+
-  geom_smooth()+
-  geom_line(data=predict_df, color="red")+
+  geom_smooth(se=FALSE)+
+  geom_line(data=predict_df, color="red", size=1.5, alpha=0.75)+
   theme_bw()
 ```
+
 
 ---
 
