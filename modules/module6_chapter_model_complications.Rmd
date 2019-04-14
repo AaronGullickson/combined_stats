@@ -694,7 +694,7 @@ If logging the dependent variable will make change in the dependent variable rel
 
 The relationship between age and wages may benefit from logging both variables. We have already seen a diminishing returns type relationship which suggests logging the independent variable. We also know that wages are highly right-skewed and so might also benefit from being logged. 
 
-```{r tranform-wages, message=FALSE, fig.cap="Is the relationship between age and hourly wage non-linear?", fig.align="center"}
+```{r transform-wages, message=FALSE, fig.cap="Is the relationship between age and hourly wage non-linear?", fig.align="center"}
 ggplot(earnings, aes(x=age, y=wages))+
   geom_jitter(alpha=0.01, width=0.1)+
   geom_smooth(se=FALSE, method="lm", color="red")+
