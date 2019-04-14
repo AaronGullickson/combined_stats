@@ -96,12 +96,12 @@ base$parentinc[base$parentinc>200] <- 200
 addhealth <- base[,c("indegree","race","sex", "grade","pseudoGPA","honorsociety",
                      "alcoholuse","smoker","bandchoir","academicclub","nsports","parentinc","cluster","sweight")]
 
-save(addhealth, file="addhealth_missing.RData")
+save(addhealth, file="addhealth.RData")
 
 #no missing values, impute with MICE
 library(mice)
 
-addhealth  <- complete(mice(addhealth,1))
+popularity  <- complete(mice(addhealth,1))
 
-save(addhealth, file="addhealth.RData")
+save(popularity, file="popularity.RData")
 
