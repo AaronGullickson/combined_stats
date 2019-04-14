@@ -1,7 +1,7 @@
 
 # Model Complications
 
-In this chapter, we will expand our understanding of the linear model to address many issues that the practical researcher must face. We begin with a review and reformulation of the linear model. We then move on to discuss how to address violations of assumptions such as non-linearity and heteroskedasticity (yes, this is a real word), sample design and weithing, missing values, multicollinearity, and model selection. By the end of this chapter, you will be well-supplied with the tools for conducting a real-world analysis using the linear model framework. 
+In this chapter, we will expand our understanding of the linear model to address many issues that the practical researcher must face. We begin with a review and reformulation of the linear model. We then move on to discuss how to address violations of assumptions such as non-linearity and heteroskedasticity (yes, this is a real word), sample design and weighting, missing values, multicollinearity, and model selection. By the end of this chapter, you will be well-supplied with the tools for conducting a real-world analysis using the linear model framework. 
 
 ---
 
@@ -28,7 +28,7 @@ $$y_i=\hat{y}_i+\epsilon_i$$
 
 By dividing up the formula into two separate components, we can begin to think of our linear model as containing a structural component and a random (or stochastic) component. The structural component is the linear equation predicting $\hat{y}_i$. This is the formal relationship we are trying to fit between the dependent and independent variables. The stochastic component on the other hand is given by the $\epsilon_i$ term in the second formula. In order to get back to the actual values of the dependent variable, we have to add in the residual component that is not accounted for by the linear model. 
 
-From this perspective, we can rethink our entire linear model as a partition of the total variation in the dependent variable into the structural component that can be accounted for by our linear model and the residual component that is unnaccounted for by the model. This is exactly as we envisioned things when we learned to calculate $R^2$ in previous chapters. 
+From this perspective, we can rethink our entire linear model as a partition of the total variation in the dependent variable into the structural component that can be accounted for by our linear model and the residual component that is unaccounted for by the model. This is exactly as we envisioned things when we learned to calculate $R^2$ in previous chapters. 
 
 ### Estimating a linear model
 
@@ -37,11 +37,11 @@ Up until now, we have not discussed how R actually calculates all of the slopes 
 Even though we don't know the math yet behind how linear model parameters are estimated, we do know the rationale for why they are selected. We choose the parameters that minimized the sum of squared residuals given by:
 
 $$\sum_{i=1}^n (y_i-\hat{y}_i)^2$$
-In this section, we will learn the formal math that underlies how this esimtation occurs, but first a warning: there is a lot of math ahead. In normal everyday practice, you don't have to do any of this math, because R will do it for you. However, it is useful to know how linear model estimating works "under the hood" and it will help with some of the techniques we will learn later in the book. 
+In this section, we will learn the formal math that underlies how this estimation occurs, but first a warning: there is a lot of math ahead. In normal everyday practice, you don't have to do any of this math, because R will do it for you. However, it is useful to know how linear model estimating works "under the hood" and it will help with some of the techniques we will learn later in the book. 
 
 #### Matrix algebra crash course
 
-In order to learn how to estimate linear model parameters, we will need to learn a little bit of matrix algebra. In matrix algebra we can collect numbers into **vectors** which are single dimension arrays of numbrers and **matrices** which are two-dimensional arrays of numbers. We can use matrix algebra to represent our linear regression model equation using one-dimensional **vectors** and two-dimensional **matrices**. We can imagine $y$ below as a vector of dimension 3x1 and $\mathbf{X}$ as a matrix of dimension 3x3. 
+In order to learn how to estimate linear model parameters, we will need to learn a little bit of matrix algebra. In matrix algebra we can collect numbers into **vectors** which are single dimension arrays of numbers and **matrices** which are two-dimensional arrays of numbers. We can use matrix algebra to represent our linear regression model equation using one-dimensional **vectors** and two-dimensional **matrices**. We can imagine $y$ below as a vector of dimension 3x1 and $\mathbf{X}$ as a matrix of dimension 3x3. 
 
 $$
 \mathbf{y}=\begin{pmatrix}
@@ -117,7 +117,7 @@ $$
 \end{eqnarray*}
 $$
 
-R can help us with these calculations. the `t` command will transpose a matrix or vector and the `%*%` operator will to matrix algebra multiplation.
+R can help us with these calculations. the `t` command will transpose a matrix or vector and the `%*%` operator will to matrix algebra multiplication.
 
 ```{r matrix-algebra}
 y <- c(4,5,3)
@@ -187,7 +187,7 @@ Where:
 
 Note that we only know $\mathbf{y}$ and $\mathbf{X}$. We need to estimate a $\mathbf{\beta}$ vector from these known quantities. Once we know the $\mathbf{\beta}$ vector, we can calculate $\mathbf{\epsilon}$ by just taking $\mathbf{y-X\beta}$. 
 
-We want to esimate $\mathbf{\beta}$ in order to minimize the sum of squared residuals. We can represent this sum of squared residuals in matrix algebra format as a function of $\mathbf{\beta}$: 
+We want to estimate $\mathbf{\beta}$ in order to minimize the sum of squared residuals. We can represent this sum of squared residuals in matrix algebra format as a function of $\mathbf{\beta}$: 
 
 $$\begin{eqnarray*}
 SSR(\beta)&=&(\mathbf{y}-\mathbf{X\beta})'(\mathbf{y}-\mathbf{X\beta})\\
@@ -315,7 +315,7 @@ ggplot(earnings, aes(x=age, y=wages))+
   theme_bw()
 ```
 
-Figure \@ref(fig:non-linear-wages) shows the relationship between a respondent's age and their hourly wages from the earnings data. There are so many observations here that I reduce `alpha` all the way to 0.01 to address overplotting. We also have a problem of a right-skewed dependent variable here. Nonetheless, you can make out a fairly clear dark band across the plot that seems to show a positive relationship. It also appears that this relationship may be of a diminishing returns type with a lower reeturn to age after age 30 or so. However, with the wide dispersion of the data, it is difficult to feel very confident about the results. 
+Figure \@ref(fig:non-linear-wages) shows the relationship between a respondent's age and their hourly wages from the earnings data. There are so many observations here that I reduce `alpha` all the way to 0.01 to address overplotting. We also have a problem of a right-skewed dependent variable here. Nonetheless, you can make out a fairly clear dark band across the plot that seems to show a positive relationship. It also appears that this relationship may be of a diminishing returns type with a lower return to age after age 30 or so. However, with the wide dispersion of the data, it is difficult to feel very confident about the results. 
 
 The kind of uncertainty inherent in Figures \@ref(fig:non-linear-movies) and \@ref(fig:non-linear-wages) is far more common in practice than the clarity in Figure \@ref(fig:life-exp-non-linear). Scatterplots can be a first step to detecting non-linearity, but usually we need some additional diagnostics. In the next two sections, I will cover two diagnostic approaches to identifying non-linearity: smoothing and residual plots. 
 
@@ -352,7 +352,7 @@ median(box_office)
 
 The mean smoother would give us a value of \$60.66 million and the median smoother a value of \$32.8 million. In either case, the value for *Rush Hour 3* is pulled far away from its outlier position at \$140.1 million, thus smoothing the display.
 
-To get a smoothed line, we need to repeat this process for every point in the dataset. The `runmed` command will do this for us once we have the data sorted correclty by the independent variable. Figure \@ref(fig:median-smoothing) shows two different smoothed lines applied to the movie scatterplot, with different windows. 
+To get a smoothed line, we need to repeat this process for every point in the dataset. The `runmed` command will do this for us once we have the data sorted correctly by the independent variable. Figure \@ref(fig:median-smoothing) shows two different smoothed lines applied to the movie scatterplot, with different windows. 
 
 ```{r median-smoothing, fig.cap="Two different median smoothers are shown. The one in blue uses a window of two neighbors to each side while the one one in red uses a window of 250 neighbors on each side.", fig.align="center"}
 movies$BoxOffice.smooth1 <- runmed(movies$BoxOffice, 5)
@@ -367,9 +367,9 @@ ggplot(movies, aes(x=TomatoRating, y=BoxOffice))+
   theme_bw()
 ```
 
-It is clear here that using two neighbors on each side is not sufficient in a dataset of this size. With 250 neighbors on each side, we get something much smoother, but it also reveals a sharp uptick at the high end of the dataset, which suggests some possibile non-linearity. 
+It is clear here that using two neighbors on each side is not sufficient in a dataset of this size. With 250 neighbors on each side, we get something much smoother, but it also reveals a sharp uptick at the high end of the dataset, which suggests some possible non-linearity. 
 
-A more sophisticated smoothing procedure is available via the LOESS (locally estimated scatterplot smoothing) smoother. The LOESS smoother uses a regression model with polynomial terms (discussed below) on a local subset of the data to estimate a predicted value for each observation. The regression model also typically weights values so that observations closer to the index observation count more in the estimation. This technique tends to produce better results than meidan or mean smoothing. 
+A more sophisticated smoothing procedure is available via the LOESS (locally estimated scatterplot smoothing) smoother. The LOESS smoother uses a regression model with polynomial terms (discussed below) on a local subset of the data to estimate a predicted value for each observation. The regression model also typically weights values so that observations closer to the index observation count more in the estimation. This technique tends to produce better results than median or mean smoothing. 
 
 You can easily fit a LOESS smoother to a scatterplot in `ggplot` by specifying `method="loess"` in the `geom_smooth` function. In fact, this is the default method for `geom_smooth` for datasets smaller than a thousand observations. Figure \@ref(fig:smooth-movies) plots this LOESS smoother as well as a linear fit for comparison.
 
@@ -466,7 +466,7 @@ Now that we have diagnosed the problem of non-linearity, what can we do about it
 
 You **transform** your data when you apply a mathematical function to a variable to transform its values into different values. There are a variety of different transformations that are commonly used in statistics, but we will focus on the one transformation that is most common in the social sciences: the log transformation.
 
-Transformations can directly address issues of non-linearity. By definition if you transform the independent variable, the dependent variable, or both variables in your model, then the linear relationship assumed by the model between the transformed variables. On the original scale of the variabes, the relationship is non-linear.
+Transformations can directly address issues of non-linearity. By definition if you transform the independent variable, the dependent variable, or both variables in your model, then the linear relationship assumed by the model between the transformed variables. On the original scale of the variables, the relationship is non-linear.
 
 Transformations can also have additional side benefits besides fitting non-linear relationships. The log transformation, for example, will pull in extreme values and skewness in a distribution, reducing the potential for outliers to exert a strong influence on results. Take Figure \@ref(fig:wages-skew) for example. This figure shows the distribution of hourly wages in the earnings data. This distribution is heavily right-skewed, despite the fact that wages have been top-coded at \$100. Any model of wages is likely to be influenced considerably by the relatively small but still numerically substantial number of respondents with high wages. 
 
@@ -477,7 +477,7 @@ ggplot(earnings, aes(x=wages))+
   theme_bw()
 ```
 
-Lets look at that distribution again, but this time on the log-scale. We will cover in more detail below what the mathematical log means, but for now you can just think of the log-scale as converting from an additive scale to a multiplicative scale. On the absolute scale, we want to have equally spaced intervals on the axes of our graph to represent a constant absolute amount difference. You can see in Figure \@ref(fig:wages-skew) that the tick-marks for wages are at evenly spaced ingervals of \$25. On the log-scale we want evenly-spaced intervals on the axes of our graph to correspond to multiplicative changes. So on a log base 10 scale, we would want the numbers 1, 10, and 100, to be evenly spaced because each one represents a 10 fold increase multiplicative increase. In `ggplot`, you can change the axis to a log-scale with the argument `scale_x_log10`. Figure \@ref(fig:wages-skew-log) shows the same distribtion of hourly wages, but this time using the log-scale. 
+Lets look at that distribution again, but this time on the log-scale. We will cover in more detail below what the mathematical log means, but for now you can just think of the log-scale as converting from an additive scale to a multiplicative scale. On the absolute scale, we want to have equally spaced intervals on the axes of our graph to represent a constant absolute amount difference. You can see in Figure \@ref(fig:wages-skew) that the tick-marks for wages are at evenly spaced intervals of \$25. On the log-scale we want evenly-spaced intervals on the axes of our graph to correspond to multiplicative changes. So on a log base 10 scale, we would want the numbers 1, 10, and 100, to be evenly spaced because each one represents a 10 fold increase multiplicative increase. In `ggplot`, you can change the axis to a log-scale with the argument `scale_x_log10`. Figure \@ref(fig:wages-skew-log) shows the same distribution of hourly wages, but this time using the log-scale. 
 
 ```{r wages-skew-log, echo=FALSE, fig.cap="On the log-scale, hourly wages is less skewed, although now we have a slight problem of a left-skew", fig.align="center"}
 ggplot(earnings, aes(x=wages))+
@@ -487,7 +487,7 @@ ggplot(earnings, aes(x=wages))+
   theme_bw()
 ```
 
-You can clearly see in Figure \@ref(fig:wages-skew-log) that we have pulled in the extreme right tail of the disgtribution and have a somewhat more symmetric distribution. The transformation here hasn't perferctly solved things, because now we have a slight left-skew for very low hourly wages. Nonetheless, even these values are closer in absolute value after the transformation and so will be less likely to substantially influence our model. This transformation can also help us with the cone-shaped residual issue we saw earlier (i.e. heteroskedasticity), but we will discuss that more in the next section.
+You can clearly see in Figure \@ref(fig:wages-skew-log) that we have pulled in the extreme right tail of the distribution and have a somewhat more symmetric distribution. The transformation here hasn't perfectly solved things, because now we have a slight left-skew for very low hourly wages. Nonetheless, even these values are closer in absolute value after the transformation and so will be less likely to substantially influence our model. This transformation can also help us with the cone-shaped residual issue we saw earlier (i.e. heteroskedasticity), but we will discuss that more in the next section.
 
 Because transformations can often solve multiple problems at once, they are very popular. In fact, for some common analysis like estimating wages or CO2 emissions, log transformations are virtually universal. The difficult part about transformations is understanding exactly what kind of non-linear relationship you are estimating by transforming and how to interpret the results from models with transformed variables. We will develop this understanding using the natural log transformation on the examples we have been looking at in this section.
 
@@ -517,7 +517,7 @@ x
 10^x
 ```
 
-Log base 10 and log base 2 are both common values used in teaching log transformations, but the standard base we use in statistics is the mathematical constant $e$ (2.718282). This number is of similar importance in mathematics as $\pi$ and is based on the idea of what happens to compound interest as the period of interest accumulation approaches zero. This has a vasriety of applications from finance to population growth, but none of this concerns us directly. We are interested in $e$ as a base for our log function because of certain other useful properties discussed further below that ease interpretation.
+Log base 10 and log base 2 are both common values used in teaching log transformations, but the standard base we use in statistics is the mathematical constant $e$ (2.718282). This number is of similar importance in mathematics as $\pi$ and is based on the idea of what happens to compound interest as the period of interest accumulation approaches zero. This has a variety of applications from finance to population growth, but none of this concerns us directly. We are interested in $e$ as a base for our log function because of certain other useful properties discussed further below that ease interpretation.
 
 When we use $e$ as the base for our log function, then we are using what is often called the "natural log." We can ask the same question about 27 as before but now with the natural log:
 
@@ -549,7 +549,7 @@ model <- lm(log(BoxOffice)~TomatoRating, data=movies)
 coef(model)
 ```
 
-OK, so what does that mean? It might be tempting to interpret the results here as you normally would. We can see that tomato rating has a positive effect on box office returns. So, a one point increase in tomato rating is associated with a 0.241 increase in ... what? Remember that our dependent variable here is now the natural log of box office returns, not box office returns itself. We could literally say that it is a 0.241 increase in log box office returns, but that is not a very helpful or intuitive way to think about the result. Similarly the intercept gives us the predicted log box office returns when tomato rating is zero. Thats not helpful for two reasons: its outside the scope of the data, and we don't really know how to think about a log box office returns of 0.973. 
+OK, so what does that mean? It might be tempting to interpret the results here as you normally would. We can see that tomato rating has a positive effect on box office returns. So, a one point increase in tomato rating is associated with a 0.241 increase in ... what? Remember that our dependent variable here is now the natural log of box office returns, not box office returns itself. We could literally say that it is a 0.241 increase in log box office returns, but that is not a very helpful or intuitive way to think about the result. Similarly the intercept gives us the predicted log box office returns when tomato rating is zero. That is not helpful for two reasons: its outside the scope of the data, and we don't really know how to think about a log box office returns of 0.973. 
 
 In order to translate this into something meaningful, lets try looking at this in equation format. Here is what we have:
 
@@ -559,7 +559,7 @@ What we really want is to be able to understand this equation back on the origin
 
 $$e^{\hat{\log(y_i)}}=e^{0.973+0.241*x_i}$$
 $$\hat{y}_i=(e^{0.971})*(e^{0.241})^{x_i}$$
-We now have quite a different looking equation for predicting box office returnbs. The good news is that we now just have our predicted box office returns back on the left-hand side of the equation. The bad news is that the right hand side looks a bit complex. Since $e$ is just a constant value, we can go ahead and calculate the values in those parentheses (called "exponentiating"):
+We now have quite a different looking equation for predicting box office returns. The good news is that we now just have our predicted box office returns back on the left-hand side of the equation. The bad news is that the right hand side looks a bit complex. Since $e$ is just a constant value, we can go ahead and calculate the values in those parentheses (called "exponentiating"):
 
 ```{r exponentiate}
 exp(0.971)
@@ -569,7 +569,7 @@ exp(0.241)
 That means:
 
 $$\hat{y}_i=(2.64)*(1.27)^{x_i}$$
-We now have a **multiplicative** relationship rather than an additive relationship. How does this changes our understanding of the results? To see, lets plug in some values for $x_i$ and see how it changes our predicted income value. A tomato rationg of zero is outside the scope of our data, but lets plug it in for instructional purposes anyway:
+We now have a **multiplicative** relationship rather than an additive relationship. How does this changes our understanding of the results? To see, lets plug in some values for $x_i$ and see how it changes our predicted income value. A tomato rating of zero is outside the scope of our data, but lets plug it in for instructional purposes anyway:
 
 $$\hat{y}_i=(2.64)*(1,27)^{0}=(2.64)(1)=2.64$$
 So, the predicted box office returns when $x$ is zero is just given by exponentiating the intercept. Lets try increasing tomato rating by one point:
@@ -622,20 +622,18 @@ In general to convert any coefficient $\beta_j$ from a model with a logged depen
 
 $$(e^{\beta_j}-1)*100$$
 
-This will give us the percentage change and the corret direction of the relationship.
+This will give us the percentage change and the correct direction of the relationship.
 
 You may have noted that the effect of runtime in the model above before exponentiating was 0.0386 and after we exponentiated the result, we concluded that the effect of one minute increase in runtime was 3.9%. If you move over the decimal place two, those numbers are very similar. This is not a coincidence. It follows from what is known as the Taylors series expansion for the exponential:
 
 $$e^x=1+x-\frac{x^2}{2!}+\frac{x^3}{3!}-\frac{x^4}{4!}+\ldots$$
 Any exponential value $e^x$ can be calculated from this Taylor series expansion which continues indefinitely. However, when $x$ is a small value less than one, note that you are squaring, cubing, and so forth, which results in an even smaller number that is divided by an increasingly large number. So for, small values of $x$ the following approximation works reasonably well:
 
-WHAT IS LATEX APPROXIMATELY EQUAL TO SYMBOL?
+$$e^x\approx1+x$$
 
-$$e^x=1+x$$
+In the case I just noted where $x=0.0386$, the actual value of $e^{0.0386}$ is 1.0394 while the approximation gives us 1.0386. That is pretty close. This approximation starts to break down around $x=0.2$. The actual value of $e^{0.2}$ is 1.221 or about a 22.1% increase, whereas the approximation gives us 1.2 or a straight 20% increase. 
 
-In the case I just noted where $x=0.0386$, the actual value of $e^{0.0386}$ is 1.0394 while the approximation gives us 1.0386. Thats pretty close. This approximation starts to break down around $x=0.2$. The actual value of $e^{0.2}$ is 1.221 or about a 22.1% increase, whereas the approximation gives us 1.2 or a straight 20% increase. 
-
-You can use this approximation to get a ballpark estimate of the effect size in percentage change terms for coefficients that are not too large without having to exponentiate. So I can see that the coefficient of 0.177 for tomato rating is going to be roughly a 18-19% increase and the coefficient of 0.0386 is going to be a little under a 4% increase, all without having to exponentiate. Notice that this doesn' work at all well for the very large coefficients for movie maturity rating. 
+You can use this approximation to get a ballpark estimate of the effect size in percentage change terms for coefficients that are not too large without having to exponentiate. So I can see that the coefficient of 0.177 for tomato rating is going to be roughly a 18-19% increase and the coefficient of 0.0386 is going to be a little under a 4% increase, all without having to exponentiate. Notice that this does not work at all well for the very large coefficients for movie maturity rating. 
 
 #####  Logging the independent variable 
 
@@ -653,7 +651,7 @@ ggplot(subset(gapminder, year==2007), aes(x=gdpPercap, y=lifeExp))+
 
 It is really quite impressive how this simple transformation straightened out that very clear diminishing returns type relationship we observed before. This is because on the log-scale a one unit increase means a multiplicative change so, you have to make a much larger absolute change when you are already high in GDP per capita to get the same return in life expectancy. 
 
-Models with logged independent variables are a little trickier to interpet. To understand how it works, lets go ahead and calculate the model:
+Models with logged independent variables are a little trickier to interpret. To understand how it works, lets go ahead and calculate the model:
 
 ```{r log-gdp-model}
 model <- lm(lifeExp~log(gdpPercap), data=gapminder)
@@ -686,13 +684,13 @@ In general, you can interpret any coefficient $\beta_j$ with a logged independen
 
 > The model predicts that a a 1% increase in x is associated with a $\beta_j/100$ unit increase in y.
 
-One easy way to remember what the log transformation does is that it makes your measure of change relative rather than absolute for the variable transformed. When we logged the dependent variable before then our slope could be interpreted as the percentage change in the dependent variable (relative) for a one unit increase (absolute) in the independent variable. When we log the independent variable, the slope can be intrepreted as the unit change in the dependent variable (absolutee) for a 1% increase (relative) in the independent variable. 
+One easy way to remember what the log transformation does is that it makes your measure of change relative rather than absolute for the variable transformed. When we logged the dependent variable before then our slope could be interpreted as the percentage change in the dependent variable (relative) for a one unit increase (absolute) in the independent variable. When we log the independent variable, the slope can be interpreted as the unit change in the dependent variable (absolute) for a 1% increase (relative) in the independent variable. 
 
 
 
-####  Logging both independent and dependent variables: The elasticity model
+##### Logging both independent and dependent variables: The elasticity model
 
-If logging the dependent variable will make change in the dependent varaible relative, and logging the independent variable will make change in the independent variable relative, then what happens if you log transform both. Then you get a model which predicts relative change by relative change. This model is often called an "elasticity" model because the predicted slopes are equivalent to the concept of elasticity in economics: how much does of a percent change in $y$ results from a 1% increase in $x$. 
+If logging the dependent variable will make change in the dependent variable relative, and logging the independent variable will make change in the independent variable relative, then what happens if you log transform both. Then you get a model which predicts relative change by relative change. This model is often called an "elasticity" model because the predicted slopes are equivalent to the concept of elasticity in economics: how much does of a percent change in $y$ results from a 1% increase in $x$. 
 
 The relationship between age and wages may benefit from logging both variables. We have already seen a diminishing returns type relationship which suggests logging the independent variable. We also know that wages are highly right-skewed and so might also benefit from being logged. 
 
@@ -707,7 +705,7 @@ ggplot(earnings, aes(x=age, y=wages))+
   theme_bw()
 ```
 
-Figure \@ref{fig:transform-wages} shows the relationship between age and wages when we apply a log scale to both variables. It looks a little better although there is still some evidence of diminishing returns even on this scale. Lets go with it for now though. 
+Figure \@ref(fig:transform-wages) shows the relationship between age and wages when we apply a log scale to both variables. It looks a little better although there is still some evidence of diminishing returns even on this scale. Lets go with it for now though. 
 
 Lets take a look at the coefficients from this model:
 
@@ -716,7 +714,7 @@ model <- lm(log(wages)~log(age), data=earnings)
 coef(model)
 ```
 
-One of the advantages of the elasticity model is that slopes can be easily interpreted. We can use the same techniques when logging independent variables to divide our slope by 100 to see that a one percent increase in age is associated with a 0.0051 increase in the dependent variable. However this dependent variable is the log of wages. T interpret the effect on wages, we need to exponentiate this value, subtract 1, and multiply by 100. However since the value is small, we know that this is going to ber roughly a 0.51% increase. So:
+One of the advantages of the elasticity model is that slopes can be easily interpreted. We can use the same techniques when logging independent variables to divide our slope by 100 to see that a one percent increase in age is associated with a 0.0051 increase in the dependent variable. However this dependent variable is the log of wages. T interpret the effect on wages, we need to exponentiate this value, subtract 1, and multiply by 100. However since the value is small, we know that this is going to be roughly a 0.51% increase. So:
 
 > The model predicts that a one percent increase in age is associated with a 0.51% increase in wages, on average. 
 
@@ -726,7 +724,7 @@ The STRIPAT model that Richard York helped to develop is an example of an elasti
 
 ####  The square root transformation
 
-The log transformation is very flexible and solves multiple problems at once (non-linearity, outliers, skewness), which explains its popularity. But it breaks down in one important situation: you cannot log a variable that has zero or negative values. The negative case is generally not as important although there are som exceptions (like net worth). On the other hand, there are numerous cases where a quantitative variable can be zero as well as positive. Lets run an elasticity model on box office returns, but this time lets predict returns by the Tomato Meter rather than the Tomato Rating.
+The log transformation is very flexible and solves multiple problems at once (non-linearity, outliers, skewness), which explains its popularity. But it breaks down in one important situation: you cannot log a variable that has zero or negative values. The negative case is generally not as important although there are some exceptions (like net worth). On the other hand, there are numerous cases where a quantitative variable can be zero as well as positive. Lets run an elasticity model on box office returns, but this time lets predict returns by the Tomato Meter rather than the Tomato Rating.
 
 ```{r logging-zero, error=TRUE}
 summary(lm(log(BoxOffice)~log(TomatoMeter), data=movies))
@@ -757,7 +755,7 @@ ggplot(movies, aes(x=TomatoMeter, y=BoxOffice))+
   theme_bw()
 ```
 
-We can esimtate this model easily enough in R:
+We can estimate this model easily enough in R:
 
 ```{r sqrt-model}
 model <- lm(log(BoxOffice)~sqrt(TomatoMeter), data=movies)
@@ -795,7 +793,7 @@ $$0.3171+2(-0.0178)x=0.3171-0.0356x$$
 
 So when $x=0$, which in this case means age 40, a one year increase in age is associated with a \$0.32 increase in hourly wage, on average. For every increase in the year of age past 40, that effect of a one year increase in age on wages decreases in size by \$0.035. For every year below age 40, the effect increases by \$0.035.
 
-Because $\beta_1$ is positive and $\beta_2$ is negative in this case it Tcorresponds to a diminishing returns kind of relationship. Unlike the log transformation however, the relationship can ultimately reverse direction from positive to negative. I can figure out the inflection point at which it will transition from a positive to a negative relationship. I won't delve into the details here, but this point is given by setting the derivative of this equation with respect to age equal to zero and solving for age. In general, this will give me:
+Because $\beta_1$ is positive and $\beta_2$ is negative in this case it corresponds to a diminishing returns kind of relationship. Unlike the log transformation however, the relationship can ultimately reverse direction from positive to negative. I can figure out the inflection point at which it will transition from a positive to a negative relationship. I won't delve into the details here, but this point is given by setting the derivative of this equation with respect to age equal to zero and solving for age. In general, this will give me:
 
 $$\beta_j/(-2*\beta_{sq})$$
 
