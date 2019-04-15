@@ -654,31 +654,31 @@ It is really quite impressive how this simple transformation straightened out th
 Models with logged independent variables are a little trickier to interpret. To understand how it works, lets go ahead and calculate the model:
 
 ```{r log-gdp-model}
-model <- lm(lifeExp~log(gdpPercap), data=gapminder)
+model <- lm(lifeExp~log(gdpPercap), data=subset(gapminder, year==2007))
 round(coef(model), 5)
 ```
 
 So our model is:
 
-$$\hat{y}_i=-9.1+8.4\log{x_i}$$
+$$\hat{y}_i=4.9+7.2\log{x_i}$$
 
 Because the log transformation is on the right hand side we can no longer use the trick of exponentiating its value because that would just give us $e^{\hat{y}_i}$ on the left hand side. It would also be impractical if we added other independent variables to the model.
 
 Instead, we can interpret our slope by thinking about how a 1% increase in $x$ would change the predicted value of $y$. For ease of interpretation, lets start with $x=1$. The log of 1 is always zero, so:
 
-$$\hat{y}_i=-9.1+8.4\log{1}=-9.1+8.4*0=\beta_0$$
+$$\hat{y}_i=4.9+7.2\log{1}=4.9+7.2*0=\beta_0$$
 
-So, the intercept here is actually the predicted value of when GDP per capita is \$1. This is not a terribly realistic value for GDP per capita where the lowest value in your dataset is \$241, so its not surprising that we get a negative life expectancy value here.  
+So, the intercept here is actually the predicted value of life expectancy when GDP per capita is \$1. This is not a terribly realistic value for GDP per capita where the lowest value in the dataset is \$241, so its not surprising that we get an unrealistically low life expectancy value.  
 
-Now what happens if we raise GDP per capita by 1%. A 1% increase from a value of 1 would give us a value of 1.01. So:
+Now what happens if we raise GDP per capita by 1%? A 1% increase from a value of 1 would give us a value of 1.01. So:
 
-$$\hat{y}_i=-9.1+8.4\log{1.01}$$
+$$\hat{y}_i=4.9+7.2\log{1.01}$$
 
 From the Taylor series above, we can deduce that the $\log{1.01}$ is roughly equal to 0.01. So:
 
-$$\hat{y}_i=-9.1+8.4*0.01=-9.1+0.084$$
+$$\hat{y}_i=4.9+7.2*0.01=4.9+0.072$$
 
-This same logic will apply to any 1% increase in GDP per capita. So, the model predicts that a 1% increase in GDP per capita is associated with a 0.084 year increase in the life expectancy. 
+This same logic will apply to any 1% increase in GDP per capita. So, the model predicts that a 1% increase in GDP per capita is associated with a 0.072 year increase in the life expectancy. 
 
 In general, you can interpret any coefficient $\beta_j$ with a logged independent variable but not logged dependent variable as:
 
