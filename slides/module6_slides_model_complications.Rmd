@@ -1,7 +1,6 @@
 ---
 title: "Model Complications"
 author: "Prof. Gullickson, University of Oregon, Spring 2019"
-resource_files:
 output:
   ioslides_presentation:
     css: lecture_slides.css
@@ -11,7 +10,6 @@ output:
     logo: images/slides/logo.png
     widescreen: yes
 subtitle: Sociology 513, Statistical Analysis II
-runtime: shiny
 ---
 
 <style type="text/css">
@@ -108,7 +106,7 @@ Given this basic equation, we have learned how to:
 >- Include categorical variables as independent variables
 >- Include interaction terms between independent variables
 
-## Jow are linear model parameters estimated?
+## How are linear model parameters estimated?
 <div class="footer">
 <body>Sociology 513, Model Complications: The Linear Model, Revisited</body>
 </div>
