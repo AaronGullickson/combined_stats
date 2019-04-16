@@ -830,7 +830,9 @@ ggplot(subset(gapminder, year==2007), aes(x=gdpPercap, y=lifeExp))+
 
 ### Splines
 
-Another approach to fitting non-linearity is to fit a **spline**. Splines can become quite complex, but I will focus here on a very simple spline. In a basic spline model, you allow the slope of a variable to have a different linear effect at some specific "hinge" value. Looking at the diminishing returns to wages from age in the earnings data, it might be reasonable to fit this effect with a spline model. It looks like age 35 might be a reasonable value for the hinge. 
+Another approach to fitting non-linearity is to fit a **spline**. Splines can become quite complex, but I will focus here on a very simple spline. In a basic spline model, you allow the slope of a variable to have a different linear effect at different cutpoints or "hinge" values of $x$. Within each segment defined by the cutpoints, we simply estimate a linear model (although more complex spline models allow for non-linear effects within segments). 
+
+Looking at the diminishing returns to wages from age in the earnings data, it might be reasonable to fit this effect with a spline model. It looks like age 35 might be a reasonable value for the hinge. 
 
 In order to fit the spline model, we need to add a spline term. This spline term will be equal to zero for all values where age is equal to or below 35 and will be equal to age minus 35 for all values where age is greater than 35. We then add this variable to the model. I fit this model below. 
 
