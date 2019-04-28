@@ -998,10 +998,12 @@ model3.avail <- update(model2.avail, .~.+parentinc)
 
 As a sidenote, I am introducing a new function here called `update` that can be very useful for model building. The `update` funcrtion can be used on a model object to make some changes to it and then re-run it. In this case, I am changing the model formula, but you could also use it to change the data (useful for looking at subsets), add weights, etc. When you want to update the model formula, the syntax `.~.+` will include all of the previous elements of the formula and then you can make additions. I am using it to build nested models without having to repeat the entire model syntax every time. 
 
-```{r avail-case-table, echo=FALSE}
+```{r avail-case-table, echo=FALSE, results='asis'}
 htmlreg(list(model1.avail, model2.avail, model3.avail),
-        caption="Models predicting number of friend nominations in Add Health data, using available-case analysis",
+        caption="(#tab:avail-case-table) Models predicting number of friend nominations in Add Health data, using available-case analysis",
         digits = 3,
+        star.symbol='&#42;',
+        doctype=FALSE,
         caption.above=TRUE, 
         include.rsquared=TRUE,
         include.adjrs=FALSE,
@@ -1028,10 +1030,12 @@ model2.complete <- update(model1.complete, .~.+alcoholuse+smoker)
 model3.complete <- update(model2.complete, .~.+parentinc)
 ```
 
-```{r complete-case-table, echo=FALSE}
+```{r complete-case-table, echo=FALSE, results='asis'}
 htmlreg(list(model1.complete, model2.complete, model3.complete),
-        caption="Models predicting number of friend nominations in Add Health data, using complete-case analysis",
+        caption="(#tab:complete-case-table) Models predicting number of friend nominations in Add Health data, using complete-case analysis",
         digits = 3,
+        doctype=FALSE,
+        star.symbol='&#42;',
         caption.above=TRUE, 
         include.rsquared=TRUE,
         include.adjrs=FALSE,
