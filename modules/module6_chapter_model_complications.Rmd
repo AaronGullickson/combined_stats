@@ -872,6 +872,187 @@ ggplot(earnings, aes(x=age, y=wages))+
 
 ## Missing Values
 
+Up until this point, we have analyzed data that had no missing values. In actuality, the data did have missing values, but I used an imputation technique to remove the missing values to simplify our analyses. However, we now need to think more clearly about the consequences of missing values in datasets, because the reality is that most datasets that you want to use will have some missing data. Howe you handle this missing data can have important implications for your results. 
+
+### Identifying Valid Skips
+
+A missing value occurs when a value is missing for an observation on a particular value. Its important to distinguish in your data between situations in which a missing value is actually a valid response, from situations in which it is invalid and must be addressed.  
+
+It may seem unusual to think of some missing values as valid, but based on the structure of survey quesionnaires is not unusual to run into valid missing values. In particular, **valid skips** are a common form of missing data. Valid skips occur when only a subset of respondents are asked a question that is a follow-up to a previous question. Typically to be asked the follow up question, respondents have to respond to the original question in a certain way. All respondents who weren't asked the follow up question then have **valid skips** for their response.
+
+As an example, lets look at how the General Social Survey asks about a person's religious affiliation. The GSS asks this using a set of three questions. First, all respondents are asked "What is your religious preference? Is it Protestant, Catholic, Jewish, some other religion, or no religion?" After 1996, the GSS also started recording more specific responses for the "some other religion" category, but for simplicity lets just look at the distribution of this variable in 1996. 
+
+```{r gss-relig-setup, echo=FALSE}
+#take older year for simplicity of categories
+gss <- subset(relig, year==1996)
+gss$relig[gss$relig=="na"] <- NA
+gss$relig <- droplevels(gss$relig)
+```
+
+```{r gss-relig-table}
+table(gss$relig, exclude=NULL)
+```
+
+On this variable, we have five cases of **item nonresponse** in which the respondent did not answer the question. They might have refused to answer it or perhaps they just did not know the answer. 
+
+For most of the respondents, this is the only question on religious affiliation. However, those who responded as Protestant are then asked further questions to determine more information about their particular denomination. This `denom` question includes prompts for most of the large denominations in the US. Here is the distribution of that variable.
+
+```{r gss-denom-table}
+table(gss$denom, exclude=NULL)
+```
+
+Notice that we seem to have a lot of missing values here (1246). Did a lot of people just not know their denomination? No, in fact there is very little item nonresponse on this measure. The issue is that all of the people who were not asked this question because they didn't respond as Protestant are listed as missing values here, but they are actually **valid skips**. We can see this more easily by crosstabbing the two variables based on whether the response was `NA` or not. 
+
+```{r gss-denom-relig}
+table(gss$relig, is.na(gss$denom), exclude=NULL)
+```
+
+You can see that almost all of the cases of `NA` here are respondents who did not identify as Protestants and therefore were not asked the `denom` question, i.e. valid skips. We have only six cases of individuals who were asked the denom question and did not respond. 
+
+For Protestants who did not identify with one of the large denominations prompted in `denom` were identified as "other". For this group, a third question (called `other` in the GSS) was asked in which the respondent's could provide any response. I won't show the full table here as the number of denominations is quite large, but we can use the same logic as above to identify all of the valid skips vs. item nonresponses. 
+
+```{r gss-denom-other}
+table(gss$denom, is.na(gss$other), exclude=NULL)
+```
+
+We can see here that of the individuals who identified with an "other" Protestant denomination, only four of those respondents did not provide a write-in response. 
+
+Valid skips are generally not a problem so long as we take account of them when we construct our final variable. In this example, we ultimately would want to use these three questions to create a parsimonious religious affiliation variable, perhaps by separating Protestants into evangelical and "mainline" denominations. In that case, the only item nonresponses will be the five cases for `relig`, the six cases for `denom`, and the four cases for `other` for a total of 15 real missing values. 
+
+### Kinds of Missingness
+
+In statistics, missingness is actually a word. It describes how we think values came to be missing from the data. In particular, we are concerned with whether missingness might be related to other variables that are related to the things we want to study. In this case, our results might be biased as a result of missing values. For example, income is a variable that often has lots of missing data. If missingness on income is related to education, gender, or race, then we might be concerned about how representative our results are in understanding the process. The biases that results from relationships between missingness and other variables can be hard to understand and therefore particularly challenging. 
+
+Missingness is generally considered as one of three types. The best case scenario is that the data are **missing completely at random** (MCAR). A variable is MCAR if every observation has the same probability of missingness. In other words, the missingness of a variable has no relationship to other observed or unobserved variables. If this is true, then removing observations with missing values will not bias results. However, it pretty rare that MCAR is a reasonable assumption for missingness. Perhaps if you randomly spill coffee on a page of your data, you might have MCAR.
+
+A somewhat more realistic assumption is that the data are **missing at random* (MAR). Its totally obvious how this is different, right? A variable is MAR if the different probabilities of missingness can be fully accounted for by other observed variables in the dataset. If this is true, then various techniques can be used to produce unbiased results by imputing values for the missing values. 
+
+A more honest assessment is that the data are **not missing at random** (NMAR). A variable is NMAR if the different probabilities of missingness depend both on observed and unobserved variables. For example, some respondents may not provide income data because they are just naturally more suspicious. This variation in suspiciousness among respondents is not likely to be observed directly even though it may be partially correlated with other observed variables. The key issue here is the unobserved nature of some of the variables that produce missingness. Because they are unobserved, I have no way to account for them in my corrections. Therefore, I can never be certain that bias from missing values has been removed from my results. 
+
+In practice, although NMAR is probably the norm in most datasets, the number of missing values on a single variable may be small enough that even the incorrect assumption of MAR or MCAR might have little effect on the results. In my previous example, I had only 16 missing values on religious affiliation for 2904 respondents. So, its not likely to have a large effect on the results no matter how I deal with the missing values. 
+
+How exactly does one deal with those missing values? The data analyst typically has two choices. You can either remove cases with missing values or you can do some form of imputation. These two techniques are tied to the assumptions above. Removing cases is equivalent to assuming MCAR while imputation is equivalent to MAR. 
+
+To illustrate these different approaches below, we will look at a new example. We are going to examine the Add Health data again, but this time I am going to use a dataset that does not have imputed values for missing values. In particular, we are going to look at the relationship between parental income and popularity. Lets look at how many missing values we have for income.
+
+```{r addhealth-inc-summary}
+summary(addhealth$parentinc)
+```
+
+Yikes! We are missing 1027 cases of parental income. That seems like a lot. Lets go ahead and calculate the percent of missing cases for all of the variables in our data.
+
+```{r}
+temp <- round(apply(is.na(addhealth), 2, mean)*100, 2)
+temp <- data.frame(variable=names(temp), percent_missing=temp)
+rownames(temp) <- NULL
+pander(as.data.frame(temp))
+```
+
+
+For most variables, we only have a very small number of missing values, typically less than 1% of cases. however, for parental income we are missing values for nearly a quarter of respondents. 
+
+### Removing Cases
+
+The simplest approach to dealing with missing values is to just drop observations (cases) that have missing values. In R, this is what will either happen by default or if you give a function the argument `na.rm=TRUE`. For example, lets calculate the mean income in the Add Health data:
+
+```{r mean-inc-miss}
+mean(addhealth$parentinc)
+```
+
+If we don't specify how R should handle the missing values, R will report back a missing value for many basic calculations like the mean, median, and standard deviation. In order to get the mean for observations with valid values of income, we need to include the `na.rm=TRUE` option:
+
+```{r na-rm}
+mean(addhealth$parentinc, na.rm=TRUE)
+```
+
+The `lm` command in R behaves a little differently. It will automatically drop any observartions that are missing values on any of the variables in the model. Lets look at this for a model predicting popularity by parental income and number of sports played:
+
+```{r missing-lm}
+model <- lm(indegree~parentinc+nsports, data=addhealth)
+summary(model)
+```
+
+Note the comment in parenthesis at the bottom that tells us we lost 1027 observartions due to missingness. 
+
+This approach is easy to implement but comes at a significant cost to the actual analysis. First, removing cases is equivalent to assuming MCAR, which is a strong assumption. Second, since most cases that you will remove typically have valid values on most of their variables, you are throwing away a lot of valid information as well as reducing your sample size. For example, all 1027 observations that were dropped in the model above due to missing values on parental income had valid responses the variable on number of sportrs played. If you are using a lot of variables in your analysis, then even with moderate amounts of missingness, you may reduce your sample size substantially. 
+
+In situations where only a very small number of values are missing, then removing cases may be a reasonable strategy for reasons of practicality. For example, in the Add Health data, the race variable has missing values on two observations. Regardless of whether the assumption of MCAR is violated or not, the removal of two observations in a sample of 4,397 is highly unlikely to make much difference. Rather, than use more complicated techniques that are labor intensive, it probably makes much more sense remove them. 
+
+Two strategies are available when you remove cases. You can either do **available-case analysis** or **complete-case analysis**. Both strategies refer to how you treat missing values in an analysis which will include multiple measurements that may use different numbers of variables. The most obvious and frequent case here is when you run multiple nested models in which you include different number of variables. For example, lets say we want to predict a student's popularity by in a series of nested models: 
+- Model 1: predict popularity by number of sports played
+- Model 2: add smoking and drinking behavior as predictors model 1
+- Model 3: add parental income as a predictor to model 2
+
+In this case, my most complex model is model 3 and it includes five variables: popularity, number of sports played, smoking behavior, drinking behavior, and parental income. I need to consider carefully how I am going to go about removing cases.
+
+
+#### Available-case analysis
+
+In available-case analysis (also called **pairwise deletion**) observations are only removed for each particular component of the analysis (e.g. a model) in which they are used. This is what R will do by default when you run nested models because it will only remove cases if a variable in that particular model is missing. 
+
+```{r avail-case-models}
+model1.avail <- lm(indegree~nsports, data=addhealth)
+model2.avail <- update(model1.avail, .~.+alcoholuse+smoker)
+model3.avail <- update(model2.avail, .~.+parentinc)
+```
+
+As a sidenote, I am introducing a new function here called `update` that can be very useful for model building. The `update` funcrtion can be used on a model object to make some changes to it and then re-run it. In this case, I am changing the model formula, but you could also use it to change the data (useful for looking at subsets), add weights, etc. When you want to update the model formula, the syntax `.~.+` will include all of the previous elements of the formula and then you can make additions. I am using it to build nested models without having to repeat the entire model syntax every time. 
+
+```{r avail-case-table, echo=FALSE}
+htmlreg(list(model1.avail, model2.avail, model3.avail),
+        caption="Models predicting number of friend nominations in Add Health data, using available-case analysis",
+        digits = 3,
+        caption.above=TRUE, 
+        include.rsquared=TRUE,
+        include.adjrs=FALSE,
+        include.nobs=TRUE,
+        include.rmse=FALSE)
+```
+
+Table \@ref(tab:avail-case-table) shows the results of the nested models in table form. Pay particular attention to the change in the number of observations in each model. In the first model, there are no missing values on `nsports` or `indegree` so we have the full sample size of 4397. In model 2, we are missing a few values on drinking and smoking behavior, so the sample size drops to 4343. In Model 3, we are missing a large number of observations, so the sample size drops to 3332. We lose nearly a quarter of the data from Model 2 to Model 3. 
+
+The changing sample sizes across models make model comparisons extremely difficult. We don't know if changes from model to model are driven by different combinations of independent variables or changes in sample size. Note for example that the effect of smoking on popularity almost doubles from Model 2 to Model 3. Was that change driven by the fact that we controlled for parental income or was it driven by the exclusion of nearly a quarter of the sample. We have no way of knowing. 
+
+For this reason, available-case analysis is generally not the best way to approach your analysis. You don't want your sample sizes to be changing across models. There are a few special cases (I will discuss one in the next section) where it may be acceptable and sometimes it is just easier in the early exploratory phase of a project, but in general you should use complete-case analysis. 
+
+#### Complete-case analysis
+
+In complete-case analysis (also called **listwise deletion**) you remove observations that are missing on any variables that you will use in the analysis even for some calculations that may not involve those variables. This techniques ensures that you are always working with the same sample throughout your analysis so any comparisons (e.g. across models) are not comparing apples and oranges. 
+
+In our example, I need to restrict my sample to only observations that have valid responses for all five of the variables that will be used in my most complex model. I can do this easily with the `na.omit` command which will remove any observation that is missing any value in a given dataset:
+
+```{r na-omit}
+addhealth.complete <- na.omit(addhealth[,c("indegree","nsports","alcoholuse","smoker","parentinc")])
+model1.complete <- lm(indegree~nsports, data=addhealth.complete)
+model2.complete <- update(model1.complete, .~.+alcoholuse+smoker)
+model3.complete <- update(model2.complete, .~.+parentinc)
+```
+
+```{r complete-case-table, echo=FALSE}
+htmlreg(list(model1.complete, model2.complete, model3.complete),
+        caption="Models predicting number of friend nominations in Add Health data, using complete-case analysis",
+        digits = 3,
+        caption.above=TRUE, 
+        include.rsquared=TRUE,
+        include.adjrs=FALSE,
+        include.nobs=TRUE,
+        include.rmse=FALSE)
+```
+
+Table \@ref(tab:complete-case-table) shows the results for the models using complete-case analysis. Note taht the sample size for each model is the same and is equivalent to that for the most complex model in the available-case analysis above.
+
+It is now apparent that the change in the effect of smoking on popularity above was driven by the removal of cases and not the controls for parental income. I can see this because now that I have performed the same sample restriction on Model 2, I get a similar effect size for smoking. Its worth noting that this is not really a great thing, because it suggests that by dropping cases, I am biasing the sample in some way, but at least I can make consistent comparisons across models. 
+
+When only a small number of cases are missing, then complete-case analysis is a reasonable option that is practical and not labor intensive. For example, I wouldn't worry too much about the 54 cases lost due to the inclusion of smoking and drinking behavior in the models above. However, when you are missing substantial numbers of cases, either from a single variable or from the cumulative effects of dropping a moderate number of observations for lots of variables, then both case removal techniques are suspect. In those cases, it is almost certainly better to move to an imputation strategy. 
+
+### Imputation
+
+#### Non-predictive imputation
+
+#### Predictive imputation
+
+#### Addressing imputation variability
+
 ---
 
 ## Multicollinearity and Scale Creation
