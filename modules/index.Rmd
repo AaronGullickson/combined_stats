@@ -22,7 +22,7 @@ description: "Textbook for Statistical Analysis for University of Oregon Sociolo
 knitr::opts_chunk$set(echo = TRUE, fig.height = 4)
 ```
 
-```{r echo=FALSE}
+```{r include=FALSE}
 load("../example_datasets/movies/movies.RData")
 load("../example_datasets/sex/sex.RData")
 load("../example_datasets/crimes/crimes.RData")
