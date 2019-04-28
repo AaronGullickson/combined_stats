@@ -5,3 +5,4 @@ textbook/_book/
 .Rproj.user
 modules/_book
 modules/_bookdown_files
+slides/*.html
