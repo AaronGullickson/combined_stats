@@ -25,6 +25,8 @@ library(ggrepel)
 library(gapminder)
 library(pander)
 library(broom)
+library(corrgram)
+library(psych)
 load("example_datasets/movies/movies.RData")
 load("example_datasets/sex/sex.RData")
 load("example_datasets/crimes/crimes.RData")
@@ -35,6 +37,7 @@ load("example_datasets/nyc_nonprofit/nyc.RData")
 load("example_datasets/misc/relig.RData")
 load("example_datasets/esping_anderson/espinganderson.RData")
 load("example_datasets/earnings/earnings.RData")
+load("example_datasets/misc/pew.RData")
 ```
 
 # The Linear Model, Revisited
@@ -2009,6 +2012,14 @@ The correlation between the three variables is very high, suggesting strong mult
 
 Note that, while the correlation matrix is often helpful, it may not reveal the full extent of multicollinearity because it only looks at bivariate relationships between the variables.
 
+## Visualize correlation matrix as correlogram
+
+```{r corrgram-nyc, fig.width=7.5, fig.height=4, fig.align='center', out.width='750px', out.height='400px', dpi=300, dev.args = list(bg = 'transparent')}
+library(corrgram)
+corrgram(nyc[,c("poverty","unemployed","lincome")],
+         upper.panel="panel.cor", lower.panel="panel.pts")
+```
+
 ##  Variance inflation factors {.smaller}
 
 <div class="footer">
@@ -2103,7 +2114,7 @@ nyc$deprivation.summated <- scale(nyc$poverty.z+nyc$unemployed.z+nyc$lincome.z)
 summary(lm(log(amtcapita)~deprivation.summated, data=nyc))$coef
 ```
 
-A one standard deviation increase on my deprivation scale is associated with a 30% increase in the amount for social services in a neighborhood. Remember that because the dependent variable is logged and the slope is large, I need to exponentiate it to interpret the result. 
+A one standard deviation increase on my deprivation scale is associated with a 45% increase in the amount for social services in a neighborhood. Remember that because the dependent variable is logged and the slope is large, I need to exponentiate it to interpret the result. 
 
 
 ##  Factor Analysis {.smaller}
@@ -2129,25 +2140,23 @@ The $F_i$ are called the **factor scores** and are the values of the common fact
 
 The factor scores and factor loadings for a factor analysis can be estimated by mathematical manipulation of the observed correlation matrix between variables, but we won't get into the mathematical details here. 
 
-There are several different related techniques for factor analysis estimation including:
+- The `factanal` command in base R will estimate a factor analysis by maximum likelihood estimation (a technique we will learn in the next module).
+- The `fa` command in the `psych` package will also estimate factor analysis using a variety of techniques. It also has some nice additional tools that will make it more useful.
 
-- **principal component factor analysis**: In this form of factor analysis, all the variation in the observed variables is being analyzed in terms of producing factors and factor loadings. This is the kind of factor analysis we will be using. It can be estimated using the `principal` command in the `pysch` package.  
-- **Principal axis factor analysis**: In this form of factor analysis, only the shared variation between variables is analyzed. This can be estimated in R with the `fa` command in the `psych` package and the option `fm="pa"`. 
-
-##  PCF factor Analysis, NYC data 
+##  Factor Analysis, NYC data 
 
 <div class="footer">
 <body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
 ```{r factoranal_nyc}
-factor.nyc <- principal(nyc[,c("poverty","unemployed","lincome")],1,
-                        rotate="varimax")
+factor.nyc <- fa(nyc[,c("poverty","unemployed","lincome")], 1,
+                        rotate="oblimin")
 ```
 
-The second argument specifies that we want only one common factor. It is not necessary to standardize or reverse-code variables prior to feeding them into `principal`.
+The second argument specifies that we want only one common factor. It is not necessary to standardize or reverse-code variables prior to feeding them into `fa`.
 
-We also need to specify a technique of *rotation* for the factor loadings because there are an infinite number of possible ways to express them. The varimax method is a standard approach that expresses factor loadings so that they are either high or close to zero for a given factor. 
+We also need to specify a technique of *rotation* for the factor loadings because there are an infinite number of possible ways to express them. The oblimin method is a standard approach that helps to maximize differences between factors without forcing them to be uncorrelated. 
 
 The resulting object `factor.nyc` contains information about both the factor loadings and scores. 
 
@@ -2161,9 +2170,17 @@ The resulting object `factor.nyc` contains information about both the factor loa
 loadings(factor.nyc)
 ```
 
-The bottom part shows that 92.5% of the variation in the three variables is accounted for by the common factor. 
+The bottom part shows that 79.9% of the variation in the three variables is accounted for by the common factor. 
 
 The loadings themselves show the correlation coefficient ($r$) between each observed variable and the common factor. The weakest correlation is between `unemployed` and the common factor, but even in this case, its a very high correlation. 
+
+## Visualize Factor Loadings {.smaller}
+
+The `fa.diagram` function in the `psych` library can be used to visualize the factor loadings.
+
+```{r visualize-factor-loading, fig.width=7.5, fig.height=4, fig.align='center', out.width='750px', out.height='400px', dpi=300, dev.args = list(bg = 'transparent')}
+fa.diagram(factor.nyc)
+```
 
 ##  Factor Scores
 
@@ -2174,22 +2191,35 @@ The loadings themselves show the correlation coefficient ($r$) between each obse
 I can easily extract my factor scores from the the factor analysis object and use them as my scale measure of deprivation. 
 
 ```{r factormodel_nyc}
-nyc$deprivation.factor <- factor.nyc$scores
+nyc$deprivation.factor <- factor.nyc$scores[,"MR1"]
 summary(lm(log(amtcapita)~deprivation.factor, data=nyc))$coef
 ```
 
-A one standard deviation increase on my deprivation scale is associated with a 30% increase in the amount for social services in a neighborhood. The results here are virtually identical to those for my summated scale because the correlation between them is over 0.9999.
+A one standard deviation increase on my deprivation scale is associated with a 30% increase in the amount for social services in a neighborhood.
 
-##  Using `pairs` to visualize correlations {.smaller}
+## Whats the Difference? 
 
 <div class="footer">
 <body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
-```{r pairs_example, fig.width=7.5, fig.height=4, fig.align='center', out.width='750px', out.height='400px', dpi=300, dev.args = list(bg = 'transparent')}
-pairs(nyc[,c("poverty","unemployed","lincome",
-             "deprivation.summated","deprivation.factor")])
+```{r compare-factor-summated, fig.width=7.5, fig.height=4, fig.align='center', out.width='750px', out.height='400px', dpi=300, dev.args = list(bg = 'transparent'), message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(nyc, aes(x=deprivation.summated, y=deprivation.factor))+
+  geom_point()+
+  geom_smooth(se=FALSE)+
+  labs(x="deprivation score, summated", y="deprivation score, factor analysis")+
+  theme_bw()
 ```
+
+## Whats the Difference? 
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+>- The summated scale uses all the variation in the three variables to generate the score.
+>- The factor analysis only uses the shared component to generate the score. The unique component is left out. 
+>- A closely related technique to factor analysis called **principal component analysis** uses all of the variation in the items and will produce results virtually identical to the summated score. 
 
 ##  Factor Analysis with Multiple Factors {.smaller}
 
@@ -2197,7 +2227,7 @@ pairs(nyc[,c("poverty","unemployed","lincome",
 <body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
-The previous example only used one factor and produced results that were virtually identical to a simple summated scale. However, it is also possible to use factor analysis to identify more than one common factor shared among a set of variables. 
+The previous example only used one factor and produced results that were very similar to a simple summated scale. However, it is also possible to use factor analysis to identify more than one common factor shared among a set of variables. 
 
 The formulas for factor analysis above can be generalized to a set of $J$ observed variables and $m$ factors by a set of $J$ equations. For the $j$th observed variable:
 
@@ -2208,76 +2238,98 @@ There will be a set of $J$ factor loadings for each of the $m$ factors. The key 
 - how much total variation is explained by a given number of factors.
 - whether the factor loadings for a given number of factors make theoretical sense. 
 
-##  Example: Esping-Anderson data {.smaller}
+##  Example: Social Conservatism among Muslims {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
-Esping-Anderson has argued that modern welfare states can be divided into three different types that are driven by different logics. 
+In 2008-2008 and 2011-12, The Pew Research Center surveyed Muslims from numerous countries around the world on a variety of attitudinal questions. Among the questions asked, respondents were asked about the moral acceptability of these practices:
+
+- divorce
+- polygamy
+- fertility
+- alcohol
+- euthansia
+- suicide
+- abortion
+- prostitution
+- premarital sex
+- homosexuality
+
+We might expect that responses reflect some underlying measure of "social conservatism" but do all of these individual items represent the same construct?
+
+## Setting up the data {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+The data are coded as an ordinal response:
+
+- Morally acceptable
+- Depends/Not a moral issue
+- Morally wrong
+
+I re-code the data on a numeric scale from 1 to 3.
+
+```{r}
+morality <- cbind(moral_divorce=as.numeric(pew$moral_divorce),
+                  moral_fertility=as.numeric(pew$moral_fertility),
+                  moral_alcohol=as.numeric(pew$moral_alcohol),
+                  moral_euthansia=as.numeric(pew$moral_euthanasia),
+                  moral_suicide=as.numeric(pew$moral_suicide),
+                  moral_abortion=as.numeric(pew$moral_abortion),
+                  moral_prostitution=as.numeric(pew$moral_prostitution),
+                  moral_premar_sex=as.numeric(pew$moral_premar_sex),
+                  moral_gay=as.numeric(pew$moral_gay))
+```
+
+## Correlogram of responses
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+```{r correlogram_moral, fig.width=8, fig.height=4.5, fig.align='center', out.width='800px', out.height='450px', dpi=300, dev.args = list(bg = 'transparent')}
+corrgram(morality, upper.panel="panel.cor", order="PCA")
+```
+
+## Using the correlation matrix as data
+
+- Factor analysis only needs the correlation matrix between variables rather than the original data itself. 
+- This is one case, where available-case analysis makes sense. I can maximize the number of cases on each pairwise correlation coefficient to use all of the available data.
+
+- The `use="pairwise.complete.obs"` argument in the `cor` function will use available-case analysis when it computes the correlation coefficient between each pair of variables.
+
+```{r}
+morality_r <- cor(morality, use="pairwise.complete.obs")
+```
+
+## Try factor analysis with up to three factors
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
  
-- **Liberal**: Driven by market demands and a weak state with a high level of privatization and strong means testing of programs. Archetype: USA
-- **Conservatism**: Driven by a strong state that maintains status differentials between citizens but minimizes the role of privatization. Archetype: France
-- **Social Democratic**: Principles of de-commidification and universalism are strong. Archetype: Sweden
-
-Esping-Anderson developed a dataset of seven characteristics across 18 countries.
-
-- Two characteristics, *corporatism* and *etatism* indicate conservatism. 
-- Three characteristics, *means-testing*, *private pensions*, and *private health spending* indicate liberalism.
-- One characteristic, *universalism* indicates social democratic ideology. 
-
-We can use factor analysis to see if these six variables are well described by three common factors and if the factor loadings of those common factors correspond to Esping-Anderson's expectation. 
-
-##  Correlation matrix of Esping-Anderson data {.smaller}
-
-<div class="footer">
-<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
-</div>
-
-```{r espinganderson_cormatrix}
-round(cor(esping),3)
+```{r, message=FALSE, warning=FALSE}
+morality_fa1 <- fa(morality_r, 1)
+morality_fa2 <- fa(morality_r, 2)
+morality_fa3 <- fa(morality_r, 3)
 ```
+ 
 
-## Scree plot for Esping-Anderson data {.smaller}
-
-<div class="footer">
-<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
-</div>
-
-A **scree test** will show how much adding another factor will contribute to explaining the remaining variance. Values of y (eigenvalues) below one  account for less variance than a single observed variable and so the cutoff is usually made at this level.
-
-```{r scree_espinganderson, fig.width=6, fig.height=3.5, fig.align='center', out.width='600px', out.height='350px', dpi=300, dev.args = list(bg = 'transparent')}
-scree(esping, factors = FALSE)
-```
-
-## Factor loadings for Esping-Anderson data {.smaller}
+## Comparing models with `fa.diagram`
 
 <div class="footer">
 <body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
 </div>
 
-```{r loading_espinganderson}
-fact.esping <- principal(esping, 3)
-loadings(fact.esping)
-```
-
-Three factors explain 83% of the variance. The factor loadings correspond well to conservatism, liberalism, and social democracy, although there are a few discrepancies such as the high negative factor loading on pensions for the first (conservative) factor.
-
-##  Visualization of countries by identified factors
-
-<div class="footer">
-<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
-</div>
-
-```{r espinganderson_3d, echo=FALSE, fig.width=8.5, fig.height=5, fig.align='center', out.width='850px', out.height='500px', dpi=300, dev.args = list(bg = 'transparent')}
-esping <- cbind(esping, fact.esping$scores)
-library(scatterplot3d)
-s3d <- scatterplot3d(esping$RC1, esping$RC2, esping$RC3,
-              pch=21, bg="red", type="h",
-              xlab="Corporatist (factor 1)",ylab="Liberal (factor 2)",zlab="Social D (factor 3)")
-s3d.coords <- s3d$xyz.convert(esping$RC1, esping$RC2, esping$RC3)
-text(s3d.coords$x, s3d.coords$y, labels=rownames(esping),
-     cex=0.5, pos=2)
+```{r nfactors, echo=FALSE, fig.width=8.5, fig.height=4.5, fig.align='center', out.width='850px', out.height='450px', dpi=300, dev.args = list(bg = 'transparent'), message=FALSE}
+par(mfrow=c(1,3), mar=c(0,0,0,0))
+fa.diagram(morality_fa1, main="Single factor")
+fa.diagram(morality_fa2, main="Two factors")
+fa.diagram(morality_fa3, main="Three factors")
 ```
 
 ##  Extending Factor Analysis
@@ -2289,29 +2341,6 @@ text(s3d.coords$x, s3d.coords$y, labels=rownames(esping),
 >- Factor analysis is part of a larger family of methods that are often described as **data reduction** techniques: How can you reduce the amount of information in a given set of variables into a smaller set of variables. 
 >- One important cousin of factor analysis is **latent class analysis** which can be used for categorical variables. 
 >- The idea of factor analysis can be generalized to construct entire systems of equations that involve both latent and observed variables. This is called **structural equation modeling**. Typically, the researcher has a set of observed variables that measure a certain number of latent constructs and the researcher is really interested in the relationship between the latent constructs. 
-
-##  Clustering on observations {.smaller}
-
-<div class="footer">
-<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
-</div>
-
->- Factor analysis can also be thought of as a way to identify **clusters** of *variables* that are highly correlated across observations.
->- We can turn this around and also ask how observations might be clustered based on similar values on a set of variables. This approach is known as **cluster analysis**. 
->- The product of cluster analysis is often a **dendrogram** which is a tree-like branching plot showing the relative distance of observations based on the given variables. We can calculate these dendrograms in R with the `dist` and `hclust` command. 
->- The `dist` function will calculate the overall distance between each pair of observations from a set of variables. Its generally best to scale variables to a standard scale such as z-scores prior to computing the distance. 
->- The `hclust` command will attempt to sort observations into clusters based on the pairwise distances. There are multiple options for how this algorithm makes its clustering decision.
-
-##  Dendrograms of Welfare States
-
-<div class="footer">
-<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
-</div>
-
-```{r dendrogram_espinganderson, fig.width=7, fig.height=4, fig.align='center', out.width='700px', out.height='400px', dpi=300, dev.args = list(bg = 'transparent')}
-par(mar=c(1,4,1,1))
-plot(hclust(dist(scale(esping)), method="complete"), main="complete method")
-```
 
 # Model Selection
 Model Complications
