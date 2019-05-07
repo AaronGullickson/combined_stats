@@ -7,7 +7,7 @@ date: "`r Sys.Date()`"
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    css: [default, uo, uol-fonts]
+    css: [default, uo, uol-fonts, lecture_slides.css]
     self_contained: false
     nature:
       highlightStyle: github
@@ -43,12 +43,6 @@ theme_myslides <- theme_bw()+
 theme_set(theme_myslides)
 ```
 
-layout: true
-
-background-image: url(images/logo.png)
-background-position: 0% 100%
-background-size: 5%
-
 ---
 
 class: inverse, center, middle
@@ -57,6 +51,15 @@ background-image: url(images/markus-spiske-666905-unsplash.jpg)
 background-size: cover
 
 # What Does Data Look Like?
+
+---
+
+layout: true
+
+background-image: url(images/logo.png)
+background-position: 0% 100%
+background-size: 5%
+.footer[Sociology 312: Understanding Data, What Does Data Look Like?]
 
 ---
 
@@ -258,11 +261,22 @@ class: inverse, middle
 
 ---
 
+layout: false
 class: middle, center, inverse
 background-image: url(images/isaac-smith-1182057-unsplash.jpg)
 background-size: cover
 
 # What Can We Do With Data?
+
+---
+
+layout: true
+
+background-image: url(images/logo.png)
+background-position: 0% 100%
+background-size: 5%
+.footer[Sociology 312: Understanding Data, What Can We Do With Data?]
+
 
 ---
 
