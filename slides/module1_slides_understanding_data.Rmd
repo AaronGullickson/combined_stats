@@ -253,7 +253,7 @@ class: inverse, middle
 
 ---
 
-## Lets explore our class data
+class: center, middle
 
 <iframe src="https://aarongullickson.shinyapps.io/datasets/">
 
