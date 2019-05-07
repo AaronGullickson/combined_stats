@@ -45,7 +45,7 @@ theme_set(theme_myslides)
 
 layout: true
 
-background-image: url(images/slides/logo.png)
+background-image: url(images/logo.png)
 background-position: 0% 100%
 background-size: 5%
 
@@ -53,7 +53,7 @@ background-size: 5%
 
 class: inverse, center, middle
 
-background-image: url(images/slides/markus-spiske-666905-unsplash.jpg)
+background-image: url(images/markus-spiske-666905-unsplash.jpg)
 background-size: cover
 
 # What Does Data Look Like?
@@ -85,7 +85,7 @@ The **unit of analysis** simply tells you what your observations actually are. W
 
 |  Individual People | Countries | Corporations | Universities |
 | --- | ----------- | ------ | 
-| ![crowd](images/slides/crowd.jpg) | ![countries](images/slides/countries.jpg) | ![logos](images/slides/logos.jpg) | ![pac12](images/slides/pac12.png)|
+| ![crowd](images/crowd.jpg) | ![countries](images/countries.jpg) | ![logos](images/logos.jpg) | ![pac12](images/pac12.png)|
 
 
 ---
@@ -105,7 +105,7 @@ The **unit of analysis** simply tells you what your observations actually are. W
 .center[
 **Individual Passengers** 
 
-![titanic passengers](images/slides/titanic-passengers.jpg)]
+![titanic passengers](images/titanic-passengers.jpg)]
 ] 
 
 
@@ -118,7 +118,7 @@ The **unit of analysis** simply tells you what your observations actually are. W
 .center[
 **Countries**
 
-![countries-co2](images/slides/country-co2.png)]
+![countries-co2](images/country-co2.png)]
 ]
 
 ---
@@ -132,7 +132,7 @@ A quantitative variable measures quantities of something. A quantitative variabl
 .pull-left[
 ### Discrete
 
-.center[![scale](images/slides/counter.jpg)] 
+.center[![scale](images/counter.jpg)] 
 
 A **discrete** variable can only take certain values within a range. 
 
@@ -147,7 +147,7 @@ A **discrete** variable can only take certain values within a range.
 .pull-right[
 ### Continous 
 
-.center[![scale](images/slides/scale.jpg)] 
+.center[![scale](images/scale.jpg)] 
 
 A **continuous** variable can take any value within a given range. 
 
@@ -177,7 +177,7 @@ Categorical variables indicate which category an observation belongs to from a m
 .pull-left[
 ### Ordinal
 
-.center[![scale](images/slides/pepper-scale.jpg)] 
+.center[![scale](images/pepper-scale.jpg)] 
 
 An **ordinal** variable is a categorical variables whose values have a clear ordering. 
 
@@ -192,7 +192,7 @@ An **ordinal** variable is a categorical variables whose values have a clear ord
 .pull-right[
 ### Nominal
 
-.center[![scale](images/slides/gender-nominal.png)] 
+.center[![scale](images/gender-nominal.png)] 
 
 A **nominal** variable is a categorical variable whose values are unordered. 
 
@@ -259,7 +259,7 @@ class: inverse, middle
 ---
 
 class: middle, center, inverse
-background-image: url(images/slides/isaac-smith-1182057-unsplash.jpg)
+background-image: url(images/isaac-smith-1182057-unsplash.jpg)
 background-size: cover
 
 # What Can We Do With Data?
