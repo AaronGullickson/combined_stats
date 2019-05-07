@@ -1,6 +1,6 @@
 ---
 title: "Understanding Data"
-subtitle: "Sociology 513"
+subtitle: "Sociology 312"
 author: "Aaron Gullickson"
 institute: "University of Oregon"
 date: "`r Sys.Date()`"
@@ -19,7 +19,7 @@ output:
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
-knitr::opts_chunk$set(fig.retina = 3, message=FALSE, warning=FALSE)
+knitr::opts_chunk$set(fig.retina = 3, message=FALSE, warning=FALSE, fig.height=6.5)
 ```
 
 ```{r load-stuff, include=FALSE}
@@ -30,6 +30,7 @@ load("example_datasets/titanic/titanic.RData")
 load("example_datasets/politics/politics.RData")
 load("example_datasets/add_health/popularity.RData")
 library(ggplot2)
+library(latex2exp)
 ```
 
 
@@ -72,7 +73,7 @@ knitr::kable(titanic[c(13, 1238, 2, 306),], row.names=FALSE, format="html",
 
 --
 
-- **Variables** are on the columns. Variables measure specific attributes of your observations. Variables can either be **categorical** or **quantitative**.
+- **Variables** are on the columns. Variables measure specific attributes of your observations.
 
 ---
 
@@ -80,21 +81,11 @@ knitr::kable(titanic[c(13, 1238, 2, 306),], row.names=FALSE, format="html",
 
 The **unit of analysis** simply tells you what your observations actually are. We can collect data on many different types of units.
 
---
+.center[Some examples, but the possibilities are endless]
 
-- individual people
-
---
-
-- countries
-
---
-
-- corporations
-
---
-
-- Universities
+|  Individual People | Countries | Corporations | Universities |
+| --- | ----------- | ------ | 
+| ![crowd](images/slides/crowd.jpg) | ![countries](images/slides/countries.jpg) | ![logos](images/slides/logos.jpg) | ![pac12](images/slides/pac12.png)|
 
 
 ---
@@ -247,18 +238,23 @@ class: inverse, middle
 
 .left-column[## `r icon::fa("pen-square")` Your Turn]
 .right-column[
-- Think of a dataset measuring something you might care about.
+
+### Think of a dataset measuring something you might care about.
 
 - What are the units of analysis?
-
 - What might a continuous variable in this dataset be?
-
 - What might a discrete variable in this dataset be?
-
 - What might a nominal variable in this dataset be?
-
 - What might an ordinal variable in this dataset be?
 ]
+
+---
+
+## Lets explore our class data
+
+<iframe src="https://aarongullickson.shinyapps.io/datasets/">
+
+</iframe>
 
 ---
 
@@ -288,10 +284,10 @@ ggplot(popularity, aes(x=indegree))+
 
 .pull-right[
 ```{r dist-variable2, echo=FALSE}
-ggplot(politics, aes(x=president, y=..prop.., group=1))+
+ggplot(subset(politics, president!="No Vote"), aes(x=president, y=..prop.., group=1))+
   geom_bar(fill="goldenrod")+
   scale_y_continuous(labels = scales::percent)+
-  labs(x="presidential choice", y=NULL,
+  labs(x="presidential choice among voters", y=NULL,
        title="The distribution of a categorical variable",
        caption="ANES data, 2016")
 ```
@@ -329,7 +325,7 @@ ggplot(crimes, aes(x=Poverty/100, y=Property))+
 
 .pull-right[
 ```{r measure-assoc2, echo=FALSE}
-ggplot(subset(politics, gender!="Other"), 
+ggplot(subset(politics, gender!="Other" & president!="No Vote"), 
        aes(x=president, y=..prop.., group=1))+
   geom_bar(aes(fill=gender))+
   facet_wrap(~gender)+
@@ -353,6 +349,47 @@ We are generally most interested in questions about the relationship or associat
 
 ## We can make statistical inferences
 
+--
+
+.pull-left[
+```{r stat-infer1, echo=FALSE}
+ggplot(crimes, aes(x=Poverty/100, y=Property))+
+  geom_point()+
+  geom_smooth(method="lm", se=TRUE)+
+  scale_x_continuous(labels = scales::percent)+
+  annotate(geom="text", x=0.21, y=3800,
+           label="95% confidence\ninterval")+
+  labs(x="state poverty rate",
+       y="property crimes per 100,000 population",
+       title="Confidence inteval on a slope",
+       caption = "FBI crime data and Census data, 2010")
+```
+]
+
+--
+
+.pull-right[
+```{r stat-infer2, echo=FALSE}
+p <- prop.table(table(politics$president, politics$gender)[1:3,],2)["Trump",c("Male","Female")]
+n <- table(politics$gender)[c("Male","Female")]
+se <- sqrt(p*(1-p)/n)
+
+president <- data.frame(gender=c("Male","Female"),
+                        percent=p*100,
+                        se=c(se)*100)
+
+ggplot(president, aes(x=gender, y=percent))+
+  geom_linerange(aes(ymin=percent-1.96*se, ymax=percent+1.96*se),
+                 color="blue", size=2)+
+  geom_point(size=4)+
+  geom_hline(yintercept=50, linetype=2)+
+  coord_flip()+
+  labs(x=NULL, y="Percent of voters voting for Trump",
+       title="Confidence intervals on voting by gender",
+       caption="ANES data, 2016")
+```
+]
+
 ???
 
 - If I told you that in a sample of twenty people, brown-eyed individuals made $5 more an hour than people with other eye color, would you believe that I had found an important source of inequality? 
@@ -362,6 +399,43 @@ We are generally most interested in questions about the relationship or associat
 ---
 
 ## We can build models
+
+--
+
+.center[
+
+```{r build-models, echo=FALSE, fig.width=12}
+model <- lm(Property~Poverty, data=crimes)
+df <- predict(model, newdata=data.frame(Poverty=c(15,20)))
+
+ggplot(crimes, aes(x=Poverty/100, y=Property))+
+  geom_point()+
+  geom_smooth(method="lm", se=FALSE, fullrange=TRUE)+
+  scale_x_continuous(labels = scales::percent)+
+  geom_segment(x = 0.15, y = df[1], xend = 0.2, yend =df[1])+
+  geom_segment(x = 0.2, y = df[1], xend = 0.2, yend =df[2])+
+  geom_hline(yintercept=0, linetype=2)+
+  geom_vline(xintercept=0, linetype=2)+
+  ylim(0,5000)+
+  annotate(geom="text",
+           x=0.18, df[1]*0.95, label="Run")+
+  annotate(geom="text",
+           x=0.185, df[1]*1.07, label="Slope")+
+  annotate(geom="text",
+           x=0.2*1.01, df[1]+(df[2]-df[1])/2, label="Rise", hjust=0)+
+  annotate(geom="text",
+           x=0, y=coef(model)[1]*0.92, label="Y-intercept", hjust=0)+
+  annotate(geom="text",
+           x=.025, y=4250, hjust=0,
+           label=TeX("$\\hat{y}_i=1337.8+108.5x_i$"), parse=TRUE,
+           size=10, color="red")+
+  labs(x="state poverty rate",
+       y="property crimes per 100,000 population",
+       title="A simple model",
+       caption = "FBI crime data and Census data, 2010")
+```
+
+]
 
 ???
 
@@ -375,17 +449,60 @@ confounders?
 
 ---
 
-## The problem of confounders
+## Models can get more complex
+
+--
+
+.pull-left[
+```{r confounders, echo=FALSE}
+x_group1 <- rnorm(200, 10, 4)
+x_group2 <- rnorm(200, 20, 4)
+#y=5+2*x+4*group2
+df <- data.frame(x=c(x_group1, x_group2),
+                 group=factor(c(rep("Group 1",200),
+                                rep("Group 2",200))))
+df$y <- 5+-0.25*df$x+12*(df$group=="Group 2")+rnorm(400, 0, 3)
+
+ggplot(df, aes(x=x, y=y))+
+  geom_point(aes(color=group))+
+  geom_smooth(method="lm", se=FALSE)+
+  geom_smooth(method="lm", aes(color=group), se=FALSE)+
+  labs(x="Some explanatory variable of interest",
+       y="Some outcome variable of interest",
+       title="The problem of confounding")
+
+```
+]
+
+--
+
+.pull-right[
+```{r interactions, echo=FALSE}
+x_group1 <- rnorm(200, 10, 4)
+x_group2 <- rnorm(200, 20, 4)
+#y=5+2*x+4*group2
+df <- data.frame(x=c(x_group1, x_group2),
+                 group=factor(c(rep("Group 1",200),
+                                rep("Group 2",200))))
+df$y <- 5+-0.25*df$x+12*(df$group=="Group 2")+0.5*df$x*(df$group=="Group 2")+rnorm(400, 0, 3)
+
+ggplot(df, aes(x=x, y=y))+
+  geom_point(aes(color=group))+
+  geom_smooth(method="lm", aes(color=group), se=FALSE)+
+  labs(x="Some explanatory variable of interest",
+       y="Some outcome variable of interest",
+       title="Interactions")
+
+```
+]
+
+???
 
 Confounders are variables that might account for the relationship between two other variables and thus produce a **spurious** non-causal relationship. Some real questions we might ask:
 
 - Does the gender advantage in surviving the Titanic hold even after accounting for differences in gender and survival by passenger class? 
 - Do racial differences in the probability of being shot by the police hold even after accounting for situational factors such as the type of violation, time of day, place of interaction? 
 - Are differences in sexual frequency by marital status a product of age differences by marital status?
-
----
-
-## Interactions
 
 We can also go beyond simple statements about the association between two variables and begin to ask how the association between two variables might differ depending on the level or value of a third variable. Some real questions we might ask:
 
@@ -397,25 +514,24 @@ We can also go beyond simple statements about the association between two variab
 
 ## Two views on using observational data
 
-Most of the data we use in the social sciences is **observational** rather than **experimental**. We observe what actually happens rather than manipulate "treatments" in order to observe a response. There are two different views of exactly what the use of statistics contributes to observational data analysis:
+Most of the data we use in the social sciences is **observational** rather than **experimental**. We observe what actually happens rather than manipulate "treatments" in order to observe a response. 
+
+There are two different views of exactly what the use of statistics contributes to observational data analysis:
 
 --
 
 .pull-left[
-### Pseudo-Experimental
+### `r icon::fa("flask")` Pseudo-Experimental
 
-- In this model of research, we can use statistical modeling to try to mimic the stronger causal claims of experimental research. 
+- We use statistical modeling to try to mimic the stronger causal claims of experimental research. 
 - This can be as simple as "controlling" for other variables to mimic random assignment of a treatment, to the use of "natural" experiments.
 ]
-
 
 --
 
 .pull-right[
-### Formal Description
+### `r icon::fa("binoculars")` Formal Description
 
-- In this model of research, we use statistical modeling to describe what we observe in the data in a formal, systematic, and replicable way. 
-- We derive expectations drawn from theory to show how the data are either consistent or inconsistent with certain views of a social process. 
-- This approach has more in common with qualitative forms of research in the social sciences than with the experimental approach.
+- We use statistical modeling to describe what we observe in the data in a formal, systematic, and replicable way. 
+- We show how the data are either consistent or inconsistent with certain views of a social process as derived from theory. 
 ]
-
