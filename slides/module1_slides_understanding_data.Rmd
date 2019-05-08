@@ -448,13 +448,14 @@ confounders?
 
 .pull-left[
 ```{r confounders, echo=FALSE}
+set.seed(7)
 x_group1 <- rnorm(200, 10, 4)
-x_group2 <- rnorm(200, 20, 4)
+x_group2 <- rnorm(200, 18, 4)
 #y=5+2*x+4*group2
 df <- data.frame(x=c(x_group1, x_group2),
                  group=factor(c(rep("Group 1",200),
                                 rep("Group 2",200))))
-df$y <- 5+-0.25*df$x+12*(df$group=="Group 2")+rnorm(400, 0, 3)
+df$y <- 5-0.2*df$x+8*(df$group=="Group 2")+rnorm(400, 0, 3)
 
 ggplot(df, aes(x=x, y=y))+
   geom_point(aes(color=group))+
