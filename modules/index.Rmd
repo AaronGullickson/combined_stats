@@ -51,3 +51,5 @@ library(car)
 This online textbook combines all of the information taught in my undergraduate statistics course as well as both terms of my introductory graduate statistics course. It is very much a work in progress at the moment. I am adding new chapters and transitioning most of my figures to `ggplot` so you will likely notice many quirks. 
 
 &copy; Aaron Gullickson, 2017
+
+This material is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International Public License. Users are free to remix tweak, and build upon this work for non-commercial purposes, although new work must acknowledge the original author and use the same license. Full license is available [here](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
