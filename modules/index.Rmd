@@ -34,6 +34,7 @@ load("../example_datasets/add_health/addhealth.RData")
 load("../example_datasets/nyc_nonprofit/nyc.RData")
 load("../example_datasets/earnings/earnings.RData")
 load("example_datasets/misc/relig.RData")
+load("example_datasets/misc/pew.RData")
 preston <- read.csv("../example_datasets/misc/preston.csv")
 election <- read.csv("../example_datasets/misc/ecofallacy.csv")
 library(pander)
@@ -41,6 +42,8 @@ library(ggplot2)
 library(scales)
 library(broom)
 library(texreg)
+library(psych)
+library(car)
 ```
  
 # Preface {-}
