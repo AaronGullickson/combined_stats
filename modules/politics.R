@@ -1,4 +1,3 @@
-load("example_datasets/politics/politics.RData")
 politics$supportgmar <- politics$gaymarriage=="Support gay marriage"
 politics$evangelical <- politics$relig=="Evangelical Protestant"
 tab <- table(politics$supportgmar, politics$evangelical)
