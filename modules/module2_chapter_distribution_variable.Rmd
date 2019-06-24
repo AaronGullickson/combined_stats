@@ -23,10 +23,11 @@ nam <- c("First","Second","Third","Total")
 tab <- cbind(nam,x)
 colnames(tab) <- c("Passenger class", "Frequency")
 rownames(tab) <- NULL
-#knitr::kable(tab, align=c("l","r"))
-set.alignment(c("left","right"))
-emphasize.strong.rows(nrow(tab))
-pander(tab)
+kable(tab, align=c("l","r"),
+      caption="Passengers on the Titanic by passenger class") %>% 
+  kable_styling(bootstrap_options = c("striped","hover"),
+                full_width = FALSE) %>%
+  row_spec(4, bold=TRUE, color="white",background="#666")
 ```
 
 There were 323 first class passengers, 277 second class passengers, and 709 third class passengers. Adding those numbers up gives us 1,309 total passengers. *R* will calculate these numbers for us easily using the `table` command: 
@@ -42,11 +43,13 @@ The frequency we just calculated is sometimes called the **absolute frequency** 
 ```{r pclass-table-props, echo=FALSE}
 x <- c(paste(paste(tab[1:3,2],tab[4,2],sep="/"),round(as.numeric(tab[1:3,2])/as.numeric(tab[4,2]),3),sep=c("=")),"")
 tab <- cbind(tab,x)
+tab[4,3] <- "1.0"
 colnames(tab) <- c("Passenger class", "Frequency","Proportion")
-#knitr::kable(tab, align=c("l","r","r"))
-set.alignment(c("left","right","right"))
-emphasize.strong.rows(nrow(tab))
-pander(tab)
+kable(tab, align=c("l","r","r"),
+      caption="Passengers on the Titanic by passenger class") %>% 
+  kable_styling(bootstrap_options = c("striped","hover"),
+                full_width = FALSE) %>%
+  row_spec(4, bold=TRUE, color="white",background="#666")
 ```
 
 *R* provides a nice shorthand function titled `prop.table` to conduct this operation. The `prop.table` command should be run on the output from a `table` command. 
@@ -63,11 +66,14 @@ We often convert proportions to percents which are more familiar to most people.
 prop <- round(as.numeric(tab[1:3,2])/as.numeric(tab[4,2]),3)
 x <- c(paste(prop,"*100=",prop*100,"%",sep=""),"")
 tab <- cbind(tab,x)
+tab[4,3] <- "1.0"
+tab[4,4] <- "100%"
 colnames(tab) <- c("Passenger class", "Frequency","Proportion", "Percent")
-#knitr::kable(tab, align=c("l","r","r","r"))
-set.alignment(c("left","right","right","right"))
-emphasize.strong.rows(nrow(tab))
-pander(tab)
+kable(tab, align=c("l","r","r","r"),
+      caption="Passengers on the Titanic by passenger class") %>% 
+  kable_styling(bootstrap_options = c("striped","hover"),
+                full_width = FALSE) %>%
+  row_spec(4, bold=TRUE, color="white",background="#666")
 ```
 
 24.7% of passengers were first class, 21.2% of passengers were second class, and 54.2% of passengers were third class. Just over half of passengers were third class and the remaining passengers were fairly evenly split between first and second class.
@@ -113,19 +119,20 @@ Ggplot is a very flexible system that repeats these same basic layer elements in
 
 Barplots won't work for quantitative variables because quantitative variables don't have categories. However, we can do something quite similar with the **histogram**. 
 
-One way to think about the histogram is that we are imposing a set of categories on a quantitative variable by breaking our quantitative variable into a set of equally wide intervals that we call bins. The most important decision with a quantitative variable is how wide to make these bins. As an example, lets take the age variable from our politics dataset. I could break this variable into five-year intervals that go from 0-5, 5-10, 10-15, 15-20, and so on. Alternatively, I could use 10-year intervals from 0-10, 10-20, 20-30, and so on. I could also use any other interval I like such as 1-year, 3-year, and so on. Lets use 10-year intervals for this example. I then just have to count up the number of observations that fall into each 10 year interval. 
+One way to think about the histogram is that we are imposing a set of categories on a quantitative variable by breaking our quantitative variable into a set of equally wide intervals that we call bins. The most important decision with a quantitative variable is how wide to make these bins. As an example, lets take the age variable from our politics dataset. I could break this variable into five-year intervals that go from 0-5, 5-10, 10-15, 15-20, and so on. Alternatively, I could use 10-year intervals from 0-9, 10-19, 20-29, and so on. I could also use any other interval I like such as 1-year, 3-year, and so on. Lets use 10-year intervals for this example. I then just have to count up the number of observations that fall into each 10 year interval. 
 
 ```{r age-dist-table, echo=FALSE}
 x <- as.numeric(table(cut(politics$age, seq(from=0,to=90,by=10))))
-nam <- (paste(seq(from=0,to=80,by=10),seq(from=10,to=90,by=10),sep="-"))
+nam <- (paste(seq(from=0,to=80,by=10),seq(from=9,to=89,by=10),sep="-"))
 tab <- cbind(nam,x)
-colnames(tab) <- c("Age","Frequency")
-#knitr::kable(tab, align=c("l","r"))
-set.alignment(c("left","right"))
-pander(tab)
+colnames(tab) <- c("Age Group","Frequency")
+kable(tab, align=c("l","r"),
+      caption="Age distribution in politics datatset in 10 year groups") %>%
+  kable_styling(bootstrap_options = c("striped","hover"),
+                full_width = FALSE)
 ```
 
-Because the survey was only administered to adults, I have zero individuals from 0-10 and only a few in the 10-20 age range. Note that I have to make a decision on how to handle "edge" cases that are on the border between two bins. For example, does someone who is age 20 go in the 10-20 bin or the 20-30 bin? In this case, I have assigned all of these cases to the higher bin (e.g. 20-30 in the case of 20-year olds) because this is the default behavior in *R*. 
+Because the survey was only administered to adults, I have zero individuals from 0-9 and only a few in the 10-19 age range.
 
 Now that we have the frequencies for each bin, we can plot the histogram. The histogram looks much like a barplot except for two important differences. First, on the x-axis we have a numeric scale for the quantitative variable rather than categories. Second, we don't put any space between our bars. 
 
@@ -138,7 +145,7 @@ ggplot(politics, aes(x=age))+
   theme_bw()
 ```
 
-Looking at Figure \@ref(fig:hist-agepol), I can see the peak in the distribution in the 50's (the baby boomers) with a long fat tail to the right and a steeper drop off at older ages, due to smaller cohorts and old age mortality.I can also sort of see a smaller peack in the 25-35 range which is largely the children of the baby boomers. 
+Looking at Figure \@ref(fig:hist-agepol), I can see the peak in the distribution in the 50's (the baby boomers) with a long fat tail to the right and a steeper drop off at older ages, due to smaller cohorts and old age mortality.I can also sort of see a smaller peack in the 25-34 range which is largely the children of the baby boomers. 
 
 What would this histogram look like if I had used 5-year bin widths instead of 10-year bins? Lets try it:
 
@@ -242,9 +249,10 @@ tab <- movies[movies$Genre=="Romance" & movies$Year==2013,c("Title","TomatoMeter
 rownames(tab) <- NULL
 tab <- rbind(tab, c("Sum",sum(tab$TomatoMeter)))
 colnames(tab) <- c("Title","Tomato Meter")
-emphasize.strong.rows(nrow(tab))
-set.alignment(c("left","right"))
-pander(tab)
+kable(tab, align=c("l","r"),
+      caption="Tomato meter of pure romance movies released in 2013") %>%
+  kable_styling(bootstrap_options = c("striped"), full_width = FALSE) %>%
+  row_spec(10, bold=TRUE, color="white", background="#666")
 ```
 
 In the very last row, I show the sum of the Tomato Meter rating which simply sums up the Tomato Meter rating of each movie. To calculate the mean, I simply divide this sum by the number of movies which is 9.
@@ -297,9 +305,10 @@ tab <- tab[order(tab$TomatoMeter),]
 tab$Order <- 1:nrow(tab)
 colnames(tab) <- c("Title","Tomato Meter", "Order")
 rownames(tab) <- NULL
-set.alignment(c("left","right","right"))
-emphasize.strong.rows(5)
-pander(tab)
+kable(tab, align=c("l","r","r"),
+      caption="Tomato meter of pure romance movies released in 2013, sorted from worst to best") %>%
+  kable_styling(bootstrap_options = c("striped"), full_width = FALSE) %>%
+  row_spec(5, bold=TRUE, color="white", background="#666")
 ```
 
 To find the median, we have to find the observation right in the middle. When we have an odd number of observations, finding the exact middle is easy. In this case, it is given by the 5th observation because it has four observations lower than it and four observations higher than it. So the median Tomato Meter rating for romantic movies in 2013 was 49. 
