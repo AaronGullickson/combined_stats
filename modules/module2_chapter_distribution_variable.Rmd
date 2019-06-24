@@ -16,7 +16,7 @@ One of the best ways to understand the distribution of a variable is to visualiz
 
 In order to graph the distribution of a categorical variable, we first need to calculate its **frequency**. The frequency is just the number of observations that fall into a given category of a categorical variable. We could, for example, count up the number of passengers who were in the various passenger classes on the Titanic. Doing so would give us the following:
 
-```{r echo=FALSE}
+```{r titanic-pclass-table, echo=FALSE}
 x <- table(titanic$pclass)
 x <- c(x, sum(x))
 nam <- c("First","Second","Third","Total")
@@ -31,7 +31,7 @@ pander(tab)
 
 There were 323 first class passengers, 277 second class passengers, and 709 third class passengers. Adding those numbers up gives us 1,309 total passengers. *R* will calculate these numbers for us easily using the `table` command: 
 
-```{r}
+```{r table-command-pclass}
 table(titanic$pclass)
 ```
 
@@ -39,7 +39,7 @@ table(titanic$pclass)
 
 The frequency we just calculated is sometimes called the **absolute frequency** because it just counts the raw number of observations. However such raw numbers are not usually very helpful because they will vary by the overall number of observations. Instead, we typically want to calculate the **proportion** of observations that fall within each category. These proportions are sometimes also called the **relative frequency**.  We can calculate the proportion by simply dividing our absolute frequency by the total number of observations:
 
-```{r echo=FALSE}
+```{r pclass-table-props, echo=FALSE}
 x <- c(paste(paste(tab[1:3,2],tab[4,2],sep="/"),round(as.numeric(tab[1:3,2])/as.numeric(tab[4,2]),3),sep=c("=")),"")
 tab <- cbind(tab,x)
 colnames(tab) <- c("Passenger class", "Frequency","Proportion")
@@ -51,7 +51,7 @@ pander(tab)
 
 *R* provides a nice shorthand function titled `prop.table` to conduct this operation. The `prop.table` command should be run on the output from a `table` command. 
 
-```{r}
+```{r prop-table-command}
 prop.table(table(titanic$pclass))
 ```
 
@@ -59,7 +59,7 @@ Note that I have "wrapped" the `prop.table` command around the `table` command h
 
 We often convert proportions to percents which are more familiar to most people. To convert a proportion to a percent, just multiply by 100:
 
-```{r echo=FALSE}
+```{r pclass-table-percents, echo=FALSE}
 prop <- round(as.numeric(tab[1:3,2])/as.numeric(tab[4,2]),3)
 x <- c(paste(prop,"*100=",prop*100,"%",sep=""),"")
 tab <- cbind(tab,x)
@@ -115,7 +115,7 @@ Barplots won't work for quantitative variables because quantitative variables do
 
 One way to think about the histogram is that we are imposing a set of categories on a quantitative variable by breaking our quantitative variable into a set of equally wide intervals that we call bins. The most important decision with a quantitative variable is how wide to make these bins. As an example, lets take the age variable from our politics dataset. I could break this variable into five-year intervals that go from 0-5, 5-10, 10-15, 15-20, and so on. Alternatively, I could use 10-year intervals from 0-10, 10-20, 20-30, and so on. I could also use any other interval I like such as 1-year, 3-year, and so on. Lets use 10-year intervals for this example. I then just have to count up the number of observations that fall into each 10 year interval. 
 
-```{r echo=FALSE}
+```{r age-dist-table, echo=FALSE}
 x <- as.numeric(table(cut(politics$age, seq(from=0,to=90,by=10))))
 nam <- (paste(seq(from=0,to=80,by=10),seq(from=10,to=90,by=10),sep="-"))
 tab <- cbind(nam,x)
@@ -151,7 +151,7 @@ ggplot(politics, aes(x=age))+
 
 As Figure \@ref(fig:hist-agepol-bin5) shows, I get more or less the same overall impression but a more fine-grained view. I can more easily pick out the two distinct "humps" in the distribution that correspond to the baby boomers and their children. Sometimes adjusting bin width can reveal or hide important trends and sometimes it can just make it more difficult to visualize the distribution. As an exercise, you can play around with the interactive example below. 
 
-```{r echo=FALSE}
+```{r shiny-app-histogram, echo=FALSE}
 knitr::include_app("https://aarongullickson.shinyapps.io/histogram/", height="800px")
 ```
 
@@ -308,7 +308,7 @@ When you have an even number of observations, then finding the median is slightl
 
 The `median` command in *R* will calculate the median for you.
 
-```{r}
+```{r median-command}
 median(movies$TomatoMeter)
 ```
 
@@ -440,7 +440,7 @@ Most of this code is straightforward. We use the `y` aesthetic to indicate the v
 
 The exercise below allows you to adjust a slider to see different percentiles on both a histogram and a boxplot. 
 
-```{r echo=FALSE}
+```{r shiny-app-percentiles, echo=FALSE}
 knitr::include_app("https://aarongullickson.shinyapps.io/percentiles/", height="800px")
 ```
 
@@ -470,7 +470,7 @@ ggplot(temp, aes(x=x, fill=type))+
 
 One of the simplest measures of spread is to calculate the **range**. The range is the distance between the highest and lowest value. Lets take a look at the range in the fare paid (in British pounds) for tickets on the Titanic. The `summary` command, will give us the information we need:
 
-```{r}
+```{r calculate-range}
 summary(titanic$fare)
 ```
 
@@ -489,7 +489,7 @@ The maximum value is such an outlier that the rest of the boxplot has to be "scr
 
 You can also use the `IQR` command in *R* to directly calculate the IQR. 
 
-```{r}
+```{r iqr-command}
 IQR(titanic$fare)
 ```
 
