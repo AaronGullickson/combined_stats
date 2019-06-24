@@ -230,9 +230,14 @@ When we look at a distribution, we often can get an intuitive sense of where its
 
 The mean is the measure most frequently referred to as the "average" although that term could apply to the median and mode as well. The mean is the **balancing point** of a distribution. Imagine trying to balance a distribution on your finger like a basketball. Where along the distribution would you place your finger to achieve this balance? This point is the mean. It is equivalent to the concept of "center of mass" from physics. 
 
-The calculation of the mean is straightforward. First, sum up all the values of your variable across all observations. Then, divide by the number of observations. As an example, lets take a sub-sample of our movie data. I am going to select all the romances (not including rom-coms which are coded as comedies) produced in 2013. There were nine "pure" romances in 2013. I want to know their mean Tomato Meter rating. 
+The calculation of the mean is straightforward:
 
-```{r echo=FALSE}
+1. Sum up all the values of your variable across all observations. 
+2. Divide this sum by the number of observations.
+
+As an example, lets take a sub-sample of our movie data. I am going to select all the romances (not including rom-coms which are coded as comedies) produced in 2013. There were nine "pure" romances in 2013. I want to know their mean Tomato Meter rating. 
+
+```{r romance-table-mean, echo=FALSE}
 tab <- movies[movies$Genre=="Romance" & movies$Year==2013,c("Title","TomatoMeter")]
 rownames(tab) <- NULL
 tab <- rbind(tab, c("Sum",sum(tab$TomatoMeter)))
@@ -240,7 +245,6 @@ colnames(tab) <- c("Title","Tomato Meter")
 emphasize.strong.rows(nrow(tab))
 set.alignment(c("left","right"))
 pander(tab)
-#knitr::kable(tab)
 ```
 
 In the very last row, I show the sum of the Tomato Meter rating which simply sums up the Tomato Meter rating of each movie. To calculate the mean, I simply divide this sum by the number of movies which is 9.
@@ -263,17 +267,23 @@ $$\bar{x}=\frac{\sum_{i=1}^n x_i}{n}$$
 
 In *R*, the mean is very straightforward to calculate. Lets calculate the mean of the Tomato Meter rating for all movies in our dataset:
 
-```{r}
+```{r mean-by-hand}
 sum(movies$TomatoMeter)/nrow(movies)
 ```
 
 The `sum` command calculates the sum and the `nrow` command calculates the number of rows of our dataset, which is equivalent to the number of observations. Or we could go even simpler and just use the `mean` command:
 
-```{r}
+```{r mean-tomato-meter}
 mean(movies$TomatoMeter)
 ```
 
 We can see that the mean Tomato Meter of romantic movies in 2013 (51.1) were slightly above the mean for all the movies in our dataset (`r round(mean(movies$TomatoMeter),1)`), but not by much.
+
+One last thing to note is that it only makes sense to calculate the mean of quantitative variables. You cannot add up the values for categorical variables because categorical values don't have numeric values. Rather, they have categories. Notice that you will get an "NA" value and a warning if you try to do this using the `mean` command:
+
+```{r mean-categorical, warning=TRUE}
+mean(movies$Rating)
+```
 
 ### The median
 
@@ -281,7 +291,7 @@ The median is almost as widely used as the mean as a measure of center, for reas
 
 In order to calculate the median, we need to first order our observations from lowest to highest. Lets do that with the romantic movie data above. 
 
-```{r echo=FALSE}
+```{r romance-movies-median, echo=FALSE}
 tab <- movies[movies$Genre=="Romance" & movies$Year==2013,c("Title","TomatoMeter")]
 tab <- tab[order(tab$TomatoMeter),]
 tab$Order <- 1:nrow(tab)
@@ -304,57 +314,65 @@ median(movies$TomatoMeter)
 
 In this particular case, the mean (`r round(mean(movies$TomatoMeter),1)`) and median (`r round(median(movies$TomatoMeter),1)`) of the Tomato Meter produced very similar measures of center, but this isn't always the case as I will demonstrate below. 
 
+As for the mean, it makes no sense to calculate the median of a categorical variable.
+
 ### The mode
 
-The mode is the least used of the three measures of center. In fact, it is so infrequently used that R does not even have a built-in function to calculate it. The mode is the **high point** or **peak** of the distribution. When you look at a distribution graphically, the mode is what your eye is drawn to as a measure of center. Calculating the mode however is much trickier. Simply speaking, the mode is the most common value in the data. However, when data are recorded down to very precise decimal levels, this can be a misleading number. Furthermore, there may be multiple "peaks" in the data and so speaking of a single mode can be misleading. 
+The mode is the least used of the three measures of center. In fact, it is so infrequently used that R does not even have a built-in function to calculate it. The mode is the **high point** or **peak** of the distribution. When you look at a distribution graphically, the mode is what your eye is drawn to as a measure of center. Calculating the mode however is much trickier. Simply speaking, the mode is the most common value in the data. However, when data are recorded down to very precise decimal levels, this can be a misleading number. Furthermore, there may be multiple "peaks" in the data and so speaking of a single mode can be misleading. In the sample of 2013 romance movies, no value was repeated and so there is no legitimate value for the mode. 
 
-In this case, we have a tie for the most common value. 41 movies had Tomato Meter ratings of 29, 33, and 51, respectively. If we look at the histogram, we can see that the idea of a "peak" in this data is a little misleading anyway because the distribution looks pretty "flat" across most of the values. 
+In the case of the tomato meter distribution for the movies dataset, we have a tie for the most common value. 41 movies had Tomato Meter ratings of 29, 33, and 51, respectively. Figure \@ref(fig:hist-tomato-meter) shows that the distribution of tomato meter ratings lacks any real peak, with a relatively even distribution across most values.
 
-```{r hist_tomato_meter, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-hist(movies$TomatoMeter, 
-     breaks=seq(from=0,to=100,by=10), col="red",
-     xlab="Tomato Meter",
-     main="Histogram of Tomato Meter")
+```{r hist-tomato-meter, fig.cap='Histogram of Tomato Meter ratings from politics dataset with three candidates for the mode drawn in red', fig.align='center'}
+ggplot(movies, aes(x=TomatoMeter))+
+  geom_histogram(binwidth=5, col="black", fill="grey")+
+  labs(x="age")+
+  geom_vline(xintercept = c(29,33,51), size=2, color="red")+
+  theme_bw()
 ```
+
+Interestingly, while it does not make sense to think about a mean or a median for quantitative variables, we can use the idea of the mode for categorical variables. The most common category is often referred to as the **modal category**. If you want to quickly identify the modal category for a categorical variable, you can wrap a `table` command inside a `sort` command with the `decreasing=TRUE` argument to see the top category at the right.
+
+```{r modal-category}
+sort(table(movies$Rating), decreasing = TRUE)
+```
+
+R-Rated movies are the modal category for maturity rating in our movies dataset. 
 
 ### Comparing the mean and median
 
-Why would the mean and median give different results? Remember that the mean defines the **balancing point** and the median defines the **midpoint**. If you have a perfectly symmetric distribution, then these two points are the same because you would balance the distribution at the midpoint. However, when the distribution is skewed in one direction or another, the mean and the median will be different. In order to maintain balance, the mean will be pulled in the direction of the skew. When you have heavily skewed distributions, this can lead to dramatically different values for the mean and median. 
+How can the mean and median give different results? Remember that the mean defines the **balancing point** and the median defines the **midpoint**. If you have a perfectly symmetric distribution, then these two points are the same because you would balance the distribution at the midpoint. However, when the distribution is skewed in one direction or another, the mean and the median will be different. In order to maintain balance, the mean will be pulled in the direction of the skew. When you have heavily skewed distributions, this can lead to dramatically different values for the mean and median. 
 
-Lets look at this phenomenon for a couple of cases in our movie dataset. As the histogram above showed, the Tomato Meter variable is fairly symmetric and as a result we end up with a mean (`r round(mean(movies$TomatoMeter),1)`) and median (`r round(median(movies$TomatoMeter),1)`) that are pretty close. If we look at movie runtime, we see a distribution that is somewhat more right-skewed.
+Lets look at this phenomenon for a couple of variables in the movie dataset. As the histogram above showed, the Tomato Meter variable is fairly symmetric and as a result we end up with a mean (`r round(mean(movies$TomatoMeter),1)`) and median (`r round(median(movies$TomatoMeter),1)`) that are pretty close. Figure \@ref(fig:skew-runtime) shows the distribution of movie runtime which is somewhat more right-skewed.
 
-```{r skew_runtime, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-bins <- seq(0, by=5, length.out = 1+(max(movies$Runtime)/5))
-h <- hist(movies$Runtime, col="grey", breaks=bins, 
-     xlab="Movie runtime (in minutes)", main="Histogram of movie runtime", xlim=c(0, max(movies$Runtime)))
-abline(v=median(movies$Runtime), lwd=3, col="green")
-text(median(movies$Runtime), 0.98*max(h$counts), labels=paste("median=", median(movies$Runtime), sep=""), 
-     pos=4, col="green")
-abline(v=mean(movies$Runtime), lwd=3, col="red")
-text(mean(movies$Runtime), 0.88*max(h$counts), labels=paste("mean=", round(mean(movies$Runtime),1), sep=""), 
-     pos=4, col="red")
+```{r skew-runtime, echo=FALSE, fig.cap="Distribution of movie runtime with mean (105.2) and median (102) shown as vertical lines", fig.align="center"}
+ggplot(movies, aes(x=Runtime))+
+  geom_histogram(binwidth=5, col="grey60", fill="grey")+
+  geom_vline(data = data.frame(value=c(mean(movies$Runtime), median(movies$Runtime)),
+                               center=c("mean","median")), 
+             aes(xintercept=value, color=center), size=2)+
+  labs(x="runtime in minutes", color="measure of center")+
+  theme_bw()
 ```
 
-The skew here is not too dramatic, but it pulls the mean about 3 minutes higher than the median. If we look at the distribution of box office returns to movies, however we see a very heavy right skew. Most movies make moderate amounts of money, and then there are a few star performers that make bucket loads of cash.
+The skew here is not too dramatic, but it pulls the mean about 3 minutes higher than the median. 
 
-```{r skew_boxoffice, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-x <- movies$BoxOffice
-bins <- seq(0, by=5, length.out = 1+(max(x)/1))
-h <- hist(x, col="grey", breaks=bins, 
-     xlab="Box office returns (in millions of dollars)", main="Histogram box office returns ", xlim=c(0, max(x)))
-abline(v=median(x), lwd=3, col="green")
-text(median(x), 0.98*max(h$counts), labels=paste("median=", median(x), sep=""), 
-     pos=4, col="green")
-abline(v=mean(x), lwd=3, col="red")
-text(mean(x), 0.88*max(h$counts), labels=paste("mean=", round(mean(x),1), sep=""), 
-     pos=4, col="red")
+Figure \@ref(fig:skew-boxoffice) shows the distribution of box office returns to movies which is heavily right skewed. Most movies make moderate amounts of money, and then there are a few star performers that make bucket loads of cash.
+
+```{r skew-boxoffice, echo=FALSE, fig.cap="Distribution of movie box office returns with mean (45.2) and median (21.6) shown as vertical lines", fig.align="center"}
+ggplot(movies, aes(x=BoxOffice))+
+  geom_histogram(binwidth=10, col="grey60", fill="grey")+
+  geom_vline(data = data.frame(value=c(mean(movies$BoxOffice), median(movies$BoxOffice)),
+                               center=c("mean","median")), 
+             aes(xintercept=value, color=center), size=2)+
+  labs(x="box office returns (in millions of dollars)", color="measure of center")+
+  theme_bw()
 ```
 
 As a result of this skew, the mean box office returns are about \$45.2 million, while the median box office returns are about \$21.6 million. The mean here is more than double the median!
 
 Note that neither estimate is in some fundamental way incorrect. They are both correctly estimating what they were intended to estimate. It is up to us to understand and interpret these numbers correctly and to understand their limitations.
 
-In many cases, we are actually more interested in the median as a measure of "average" experience than the mean, even though we think of the mean as the "average." This is, for example, why you see home prices in an area always reported in terms of medians rather than means. Mean home prices tend to be much higher than median home prices because of the relatively few fabulously expensive homes in a given area. 
+In many cases, we are actually more interested in the median as a measure of "average" experience than the mean, even though we think of the mean as the "average." This is, for example, why you see home prices in an area always reported in terms of medians rather than means. Mean home prices tend to be much higher than median home prices because of the relatively few very expensive homes in a given area. 
 
 ---
 
@@ -370,7 +388,7 @@ We calculate percentiles in a fashion similar to the median. First, sort the dat
 
 The `quantile` command in R will calculate percentiles for us in this fashion (quantile is a synonym for percentile). In addition to telling the quantile command which variable we want the percentiles of, we need to tell it which percentiles we want.  In the command below, I ask for the 27th and 57th percentile of age in our sexual frequency data. 
 
-```{r}
+```{r quantile-example}
 quantile(sex$age, p=c(.27,.57))
 ```
 
@@ -382,7 +400,7 @@ We can split our distribution into quarters by calculating the minimum(0th perce
 
  We can calculate these quartiles with the `quantile` command. If I don't enter in specific percentiles, the `quantile` command will give me the quartiles by default:
 
-```{r}
+```{r quantile-age-sex}
 quantile(sex$age)
 ```
 
@@ -396,26 +414,37 @@ So, the 25th and 75th percentile of age are separated by 25 years.
 
 ### Boxplots
 
-We can also use this five number summary to create another graphical representation of the distribution called the boxplot. Here is an example of a boxplot for the age variable from the sexual frequency data:
+We can also use this five number summary to create another graphical representation of the distribution called the boxplot. Figure \@ref(fig:boxplot-age-sex) below shows a boxplot for the age variable from the sexual frequency data.
 
-```{r boxplot_age_sex, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-boxplot(sex$age, 
-        col="skyblue", ylab="age", 
-        main="boxplot of age in sexual frequency data")
+```{r boxplot-age-sex, echo=FALSE, fig.cap="Boxplot of respondent's age in sexual frequency data"}
+ggplot(sex, aes(x="", y=age))+
+  geom_boxplot(fill="skyblue")+
+  labs(x=NULL)+
+  theme_bw()
 ```
 
 The "box" in the boxplot is drawn from the 25th to the 75th percentile. The height of this box is equal to the interquartile range. The median is drawn as a thick bar within the box. Finally, "whiskers" are then drawn to the minimum and maximum of the data. Sometimes, the whiskers are drawn to less than the minimum and maximum if these values are very extreme and instead the whiskers are drawn out to 1.5xIQR in length and then individual points are plotted. In this case there were no extreme values, so the whiskers were drawn all the way out to the actual maximum and minimum. 
 
-The boxplot is a very rich graph which provides many pieces of information. It shows the center of the distribution as measured by the median. It also gives a sense of the spread of the distribution and extreme values by the height of the box and whiskers. It can also show skewness in the distribution depending on where the median is drawn within the box and the size of the whiskers. If the median is in the center of the box, then that indicates a symmetric distribution. If the median is towards the bottom of the box, then the distribution is right-skewed. If the median is towards the top of the box, then the distribution is left-skewed.  
+The boxplot provides many pieces of information. It shows the center of the distribution as measured by the median. It also gives a sense of the spread of the distribution and extreme values by the height of the box and whiskers. It can also show skewness in the distribution depending on where the median is drawn within the box and the size of the whiskers. If the median is in the center of the box, then that indicates a symmetric distribution. If the median is towards the bottom of the box, then the distribution is right-skewed. If the median is towards the top of the box, then the distribution is left-skewed.  
 
-As an exercise, [use the slider to see different percentiles on both a histogram and a boxplot](https://aarongullickson.shinyapps.io/percentiles/).
+I have not yet shown you how to make a boxplot using ggplot. The code for Figure \@ref(fig:boxplot-age-sex) is shown below. 
+
+```{r boxplot-code, eval=FALSE}
+ggplot(sex, aes(x="", y=age))+
+  geom_boxplot(fill="skyblue")+
+  labs(x=NULL)+
+  theme_bw()
+```
+
+Most of this code is straightforward. We use the `y` aesthetic to indicate the variable we want the boxplot for and we use the `geom_boxplot` command to graph the boxplot (in this case the `fill` argument can be used to specify a color choice for the box of the boxplot). The only unusual thing here is the use of `x=""` in the top-level aesthetics and the use of `x=NULL` in the `labs` command. These additions are not strictly necessary but they do cause the horizontal x-scale on the graph to be supressed. Otherwise we would see some non-intuitive numbers here.
+
+The exercise below allows you to adjust a slider to see different percentiles on both a histogram and a boxplot. 
 
 ```{r echo=FALSE}
-#shinyAppDir(
-#  "ShinyApps/percentiles",
-#  options=list( width="100%", height=500)
-#)
+knitr::include_app("https://aarongullickson.shinyapps.io/percentiles/", height="800px")
 ```
+
+In general, boxplots for a single variable do not contain as much information as a histogram and so are generally inferior for understanding the full shape of the distribution. The real advantage of boxplots will come in the next module when we learn to use comparative boxplots to make comparisons of the distribution of a quantitative variable across different categories of a categorical variable. 
 
 ---
 
