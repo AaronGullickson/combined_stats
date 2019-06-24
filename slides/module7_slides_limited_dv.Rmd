@@ -4,14 +4,13 @@ author: "Prof. Gullickson, University of Oregon, Spring 2017"
 resource_files:
 output:
   ioslides_presentation:
-    css: LectureSlides.css
+    css: lecture_slides.css
     fig_caption: yes
     fig_height: 4
     fig_width: 6
-    logo: logo.png
+    logo: images/logo.png
     widescreen: yes
 subtitle: Sociology 513, Statistical Analysis II
-runtime: shiny
 ---
 
 <style type="text/css">
@@ -23,21 +22,21 @@ slides > slide:not(.nobackground):after {
 ```{r loaddata, echo=FALSE, message=FALSE, error=FALSE}
 library(stargazer)
 library(mfx, quietly=TRUE, warn.conflicts=FALSE)
-load("ExampleDatasets/movies.RData")
-load("ExampleDatasets/sex.RData")
-load("ExampleDatasets/crimes.RData")
-load("ExampleDatasets/titanic.RData")
-load("ExampleDatasets/politics.RData")
-load("ExampleDatasets/addhealthwweights.RData")
-load("ExampleDatasets/addhealth_subsample.RData")
-load("ExampleDatasets/nyc.RData")
-load("ExampleDatasets/relig.RData")
+load("example_datasets/movies/movies.RData")
+load("example_datasets/sex/sex.RData")
+load("example_datasets/crimes/crimes.RData")
+load("example_datasets/titanic/titanic.RData")
+load("example_datasets/politics/politics.RData")
+load("example_datasets/add_health/addhealth_missing.RData")
+load("example_datasets/add_health/addhealth_subsample.RData")
+load("example_datasets/nyc_nonprofit/nyc.RData")
+load("example_datasets/misc/relig.RData")
 ```
 
-#Dichotomous Outcomes and The Binomial Distribution
+# Dichotomous Outcomes and The Binomial Distribution
 Models for Dichotomous Categorical Outcomes
 
-##Categorical dependent variables?
+##  Categorical dependent variables?
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Dichotomous Outcomes and The Binomial Distribution</body>
@@ -48,7 +47,7 @@ Models for Dichotomous Categorical Outcomes
 >- If we are only interested in a bivariate relationship we can look at two-way tables or mean differences, but what if we want to control for other quantitative and categorical characteristics?
 >- We need a linear model framework that allows us to predict categorical outcomes. 
 
-##Life and Death on the Titanic
+##  Life and Death on the Titanic
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Dichotomous Outcomes and The Binomial Distribution</body>
@@ -59,7 +58,7 @@ Models for Dichotomous Categorical Outcomes
 >- We might be interested in how survival is affected by age, fare paid, passenger class, gender, and so on. We would like to be able to predict the effect of these variables simultaneously so that they control for each other. We might even like to interact some variables together. This calls for a linear model framework. 
 >- In order to develop a linear model framework for categorical outcomes, we need to develop our understanding of how categorical outcomes are generated probabilistically. 
 
-##The Binomial Distribution
+##  The Binomial Distribution
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Dichotomous Outcomes and The Binomial Distribution</body>
@@ -73,7 +72,7 @@ The binomial distribution will help us understand how dichotomous variables are 
 
 A simple example of this type of process would be rolling five dice ($n=5$) and counting the number of sixes ($p=0.167$). 
 
-##The Binomial Formula
+##  The Binomial Formula
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Dichotomous Outcomes and The Binomial Distribution</body>
@@ -88,7 +87,7 @@ This formula can be broken down into two parts.
 >- The first part, ${n \choose k}$ is called "n choose k" and gives the number of ways that $k$ successes and $n-k$ failures can be combined.
 >- The second part, $p^k(1-p)^{n-k}$ gives the probability of any particular sequence of $k$ successes and $n-k$ failures. 
 
-##Probability of a sequence
+##  Probability of a sequence
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Dichotomous Outcomes and The Binomial Distribution</body>
@@ -102,7 +101,7 @@ $$(1/6)(1/6)(5/6)(5/6)(5/6)=(1/6)^2(5/6)^3=0.016$$
 More generally, we can just say:
 $$p^k(1-p)^{n-k}$$
 
-##Number of possible sequences
+##  Number of possible sequences
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Dichotomous Outcomes and The Binomial Distribution</body>
 </div>
@@ -115,7 +114,7 @@ There are ten possible ways to combine two successes and three failures. Therefo
 
 $$10*(1/6)^2(5/6)^3=0.161$$
 
-##The n choose k formula {.smaller}
+##  The n choose k formula {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Dichotomous Outcomes and The Binomial Distribution</body>
@@ -133,7 +132,7 @@ Typically, many of these values will cancel in the numerator and denominator, so
 
 $${5 \choose 2}=\frac{5!}{2!(5-2)!}=\frac{5*4*3*2}{2*3*2}=5*2=10$$
 
-## Calculate all the probabilities in R {.smaller}
+##  Calculate all the probabilities in R {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Dichotomous Outcomes and The Binomial Distribution</body>
@@ -149,7 +148,7 @@ par(mar=c(4,4,1,1))
 barplot(prob, space=0, names.arg=X, las=1, col="darkgreen")
 ```
 
-## What about twenty dice? {.smaller}
+##  What about twenty dice? {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Dichotomous Outcomes and The Binomial Distribution</body>
@@ -165,7 +164,7 @@ par(mar=c(4,4,1,1))
 barplot(prob, space=0, names.arg=X, las=1, col="darkgreen")
 ```
 
-## Features of the binomial distribution
+##  Features of the binomial distribution
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Dichotomous Outcomes and The Binomial Distribution</body>
@@ -181,7 +180,7 @@ y <- p*(1-p)
 plot(p, y, type="l", lwd=2, las=1, ylab="(p)(1-p)")
 ```
 
-##The Bernoulli distribution
+##  The Bernoulli distribution
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Dichotomous Outcomes and The Binomial Distribution</body>
@@ -192,7 +191,7 @@ plot(p, y, type="l", lwd=2, las=1, ylab="(p)(1-p)")
 >- The only two possible outcomes in the Bernoulli distribution are 0 and 1. 
 >- The mean of the Bernoulli distribution is $p$ and the variance is $(p)(1-p)$.
 
-##Back to the Titanic
+##  Back to the Titanic
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Dichotomous Outcomes and The Binomial Distribution</body>
@@ -202,10 +201,10 @@ plot(p, y, type="l", lwd=2, las=1, ylab="(p)(1-p)")
 >- We don't observe the $p_i$ values for individual passengers. We only observe the count of successes (i.e. zero or one). 
 >- How can we attempt to recover predicted values of $p_i$ that are related to our independent variables? 
 
-#Linear Probability Model
+# Linear Probability Model
 Models for Dichotomous Categorical Outcomes
 
-## Treating outcomes as quantitative
+##  Treating outcomes as quantitative
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Linear Probability Model</body>
@@ -220,7 +219,7 @@ summary(model.lpm)$coef
 
 R estimates a model with a slope and intercept, but how do we interpret these numbers?
 
-## Y-values are either zero or one
+##  Y-values are either zero or one
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Linear Probability Model</body>
@@ -234,7 +233,7 @@ axis(2, las=1, at=c(0,1))
 abline(model.lpm, lwd=2)
 ```
 
-##The linear probability model
+## The linear probability model
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Linear Probability Model</body>
@@ -251,7 +250,7 @@ We would interpret the intercept and slope as follows:
 
 This kind of model is called the **linear probability model** (LPM) and while seemingly useful, it has serious flaws. 
 
-## Two big problems with the LPM
+##  Two big problems with the LPM
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Linear Probability Model</body>
@@ -260,7 +259,7 @@ This kind of model is called the **linear probability model** (LPM) and while se
 >- The i.i.d. assumption of OLS regression models is violated because of **heteroscedasticity**. The outcome variable is distributed as a bernoulli variable which has a variance equal to $(p_i)(1-p_i)$. The variance is a function of the predicted probability of survival. Thus, the assumption of constant variance is wrong and the estimates from the OLS regression model will be inefficient. 
 >- The linear probability model can produce predicted values that lie outside the range from 0 to 1. These are nonsensical values for a probability to take, which suggests that we aren't using a very good model. 
 
-##Using GLS to fix heteroscedasticity {.smaller}
+## Using GLS to fix heteroscedasticity {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Linear Probability Model</body>
@@ -280,7 +279,7 @@ cbind(coef(model.lpm),coef(model.fgls))
 
 I had to fudge probabilities>1 a bit to make sure the weight formula produced a real positive value. 
 
-##Using IRLS {.smaller}
+## Using IRLS {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Linear Probability Model</body>
@@ -303,7 +302,7 @@ round(coefs, 4)
 
 We reached convergence down to the fourth decimal place by the eighth iteration.
 
-##Using IRLS, part 2
+## Using IRLS, part 2
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Linear Probability Model</body>
@@ -317,7 +316,7 @@ We have now fixed the first problem of heteroscedasticity.  However, its still p
 
 *Note: I technically only "sort of" solved for heteroscedasticity in this model because I had to initially fudge my predicted values to get them in the range of 0 to 1 and it turns out the results are highly dependent on how that fudge is done.*
 
-## Predicted values oustide the range
+##  Predicted values oustide the range
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Linear Probability Model</body>
@@ -338,7 +337,7 @@ text(250,1.25, "Nonsense values", col="red")
 text(250,-0.25, "Nonsense values", col="red")
 ```
 
-##Should you use the LPM?
+## Should you use the LPM?
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Linear Probability Model</body>
@@ -349,7 +348,7 @@ text(250,-0.25, "Nonsense values", col="red")
 >- The LPM is a poor model because it doesn't properly model the outcome which *must* be restricted to the range between zero and one. 
 >- The LPM hints at the solution: we need a model that transforms probabilities so that the predicted model always remains between 0 and 1. 
 
-##The logit transformation {.smaller}
+## The logit transformation {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Linear Probability Model</body>
@@ -367,7 +366,7 @@ For any real value of the logit $g$, you can compute the probability by reversin
 
 $$p=\frac{e^g}{1+e^g}$$
 
-##The logit transformation
+## The logit transformation
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Linear Probability Model</body>
@@ -380,7 +379,7 @@ p <- exp(g)/(1+exp(g))
 plot(g,p, type="l", lwd=2, las=1, xlab="logit(p)", ylab="p")
 ```
 
-##Using the logit transformation
+## Using the logit transformation
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Linear Probability Model</body>
@@ -393,10 +392,10 @@ $$\log(\frac{p_i}{1-p_i})=\beta_0+\beta_1(fare_i)$$
 >- However, we can't apply this transformation because we don't actually have the $p_i$ values to directly transform. All we have are the 1 and 0 values and we can't logit transform these values because their logit values are infinity and negative infinity, respectively.  
 >- We are on the right track but we have reached the limits of what OLS regression can do for us. We need a new kind of model and a new means of estimation. We need **generalized linear models** and **maximum likelihood estimation**. 
 
-#Generalized Linear Model
+# Generalized Linear Model
 Models for Dichotomous Categorical Outcomes
 
-##OLS regression model as a partition of variance {.smaller}
+##  OLS regression model as a partition of variance {.smaller}
 
 <div class="footer">
 <body>Sociology 512, OLS Regression Issues: Review of OLS Regression</body>
@@ -414,7 +413,7 @@ So, we can write this conceptual equation more formally as:
 
 $$y_i=\hat{y}_i+\epsilon_i$$
 
-##The linear functional form {.smaller}
+##  The linear functional form {.smaller}
 
 <div class="footer">
 <body>Sociology 512, OLS Regression Issues: Review of OLS Regression</body>
@@ -431,7 +430,7 @@ Substituting this equation for $\hat{y}_i$ above gives us the full OLS regressio
 
 $$y_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_2x_{ip}+\epsilon_i$$
 
-##What is the regression model really doing
+## What is the regression model really doing
 
 <div class="footer">
 <body>Sociology 512, OLS Regression Issues: Review of OLS Regression</body>
@@ -447,7 +446,7 @@ $$observed = structural+stochastic$$
 
 Mathematically, these are all identical. The baggage about what the math *means* is all in your head. 
 
-##OLS Regression as Data-Generating Process {.smaller}
+## OLS Regression as Data-Generating Process {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Generalized Linear Model</body>
@@ -464,7 +463,7 @@ There are two key concepts to understand here:
 
 This formulation is often thought of as a description of a **data-generating process**. In this case, the data-generating process is simple to the point of crudeness: you get a predicted outcome ($\hat{y}_i$) from a linear combination of an observation's values on the independent variables, and then you reach into a distribution (the same distribution each time because iid) and pull out a value that represents all the random stuff that you tag on the end. 
 
-##What distribution for $\epsilon_i$?
+## What distribution for $\epsilon_i$?
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Generalized Linear Model</body>
@@ -475,7 +474,7 @@ This formulation is often thought of as a description of a **data-generating pro
 >- This is not actually true. The "most efficient estimator" properties of OLS regression hold for **any**  distribution of $\epsilon_i$ so long as the iid assumption is met. The ony issue is that hypothesis tests on the slope will not be accurate for very small values of $n$, but t-statistics are robust to this in almost all practical cases.
 >- Nonetheless, it will be convenient for the moment to treat the distribution of $\epsilon_i$ as if it comes from a normal distribution with a center of zero and a standard deviation ($\sigma$) equal to the standard deviation of the residuals. 
 
-## Reformulating the Data-Generating Process
+##  Reformulating the Data-Generating Process
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Generalized Linear Model</body>
@@ -493,7 +492,7 @@ To get the value of $y_i$ for any observation we reach into a normal distributio
 
 $$\hat{y_i}=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$
 
-## GLM: link function and error distribution
+##  GLM: link function and error distribution
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Generalized Linear Model</body>
@@ -509,7 +508,7 @@ These two equations identify the two key components of a GLM:
 >- The **error distribution** which defines how the distribution of the dependent variable is produced. The error distribution in this case is normal, or (to be fancy) **gaussian**. 
 >- The **link function** defines how the key parameter of the error distribution (in this case, the center) is related to the independent variables. In this case, the link function is a direct linear relationship. In GLM-speak, this is called the **identity** link. 
 
-## Try out GLM {.smaller}
+##  Try out GLM {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Generalized Linear Model</body>
@@ -524,7 +523,7 @@ summary(glm(Violent~MedianAge, data=crimes, family=gaussian(link=identity)))$coe
 
 The results are identical. 
 
-## Things to consider about the GLM
+##  Things to consider about the GLM
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Generalized Linear Model</body>
@@ -535,7 +534,7 @@ The results are identical.
 >- Even though our GLM formulation assumed a normal distribution to the errors, this is not necessary in the case of OLS regression to get unbiased and efficient estimates. 
 >- The GLM approach provides no real improvement over OLS regression models, but by varying up the error distribution and link function the GLM can work for the case of dichotomous dependent variables, as well as other categorical outcomes. 
 
-## GLM for dichotomous outcomes
+##  GLM for dichotomous outcomes
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Generalized Linear Model</body>
@@ -550,7 +549,7 @@ $$logit(p_i)=\log(\frac{p_i}{1-p_i})=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+
 
 This formulation is often called the **logistic regression model**.
 
-##Try out the logistic regression model
+## Try out the logistic regression model
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Generalized Linear Model</body>
@@ -564,10 +563,10 @@ summary(model.glm)$coef
 
 It works! ... Or at least it did something. Interpreting the responses is the tricky part because we have to take account of the transformation used here. However, before we discuss interpretation, we need to discuss in more detail how R generated this estimate using maximum likelihood estimation (MLE).
 
-#Maximum Likelihood Estimation
+# Maximum Likelihood Estimation
 Models for Dichotomous Categorical Outcomes
 
-## TMI Warning
+##  TMI Warning
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Maximum Likelihood Estimation</body>
@@ -577,7 +576,7 @@ Models for Dichotomous Categorical Outcomes
 >- In an effort to demistify the process, I want you to have some sense of what is going on under the hood when you call up `glm`. 
 
 
-## The Logic of MLE
+##  The Logic of MLE
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Maximum Likelihood Estimation</body>
@@ -589,7 +588,7 @@ Models for Dichotomous Categorical Outcomes
 >4. In practice, its generally easier to find the maximum of the log-likelihood function, $\log(L(\theta))$. The value of $\hat{\theta}$ that maximimizes the log-likelihood function will always maximize the likelihood function as well. 
 
 
-## A Simple Example: Flipping Coins
+##  A Simple Example: Flipping Coins
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Maximum Likelihood Estimation</body>
@@ -603,7 +602,7 @@ $$L(p)={n \choose x}p^x(1-p)^{n-x}$$
 
 Note that this formula is identical to the binomial formula except that it is now a function of $p$ (which is unknown) rather than $n$ and $x$ (which are known).
 
-## A Simple Example: Flipping Coins {.smaller}
+##  A Simple Example: Flipping Coins {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Maximum Likelihood Estimation</body>
@@ -623,7 +622,7 @@ abline(v=0.26, col="red", lty=2, lwd=3)
 text(0.5, 0.06, label="p=13/50=0.26", col="red")
 ```
 
-## A Simple Example: Flipping Coins {.smaller}
+##  A Simple Example: Flipping Coins {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Maximum Likelihood Estimation</body>
@@ -642,7 +641,7 @@ $$\frac{\partial \log L(p)}{\partial p}=\frac{x}{p}-\frac{n-x}{1-p}$$
 
 Now, we can solve for the value of p when this equation is zero to get the maximum. 
 
-## A Simple Example: Flipping Coins {.smaller}
+##  A Simple Example: Flipping Coins {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Maximum Likelihood Estimation</body>
@@ -669,7 +668,7 @@ This case has a **closed form** solution. In practice, many cases (including the
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Maximum Likelihood Estimation</body>
 </div>
 
-## MLE for the logistic regression model
+##  MLE for the logistic regression model
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Maximum Likelihood Estimation</body>
@@ -679,7 +678,7 @@ This case has a **closed form** solution. In practice, many cases (including the
 >- The parameters of interest are the regression slopes and intercept ($\beta$) of the model predicting the log-odds of a success, which can be converted into the probability of success for each observation, $p_i$.
 >- We want to choose the $\beta$ values that produce $p_i$ values that maximize the likelihood of actually observing the ones and zero for $y_i$ that we have. 
 
-##Likelihood formula for logistic regression model {.smaller}
+## Likelihood formula for logistic regression model {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Maximum Likelihood Estimation</body>
@@ -700,7 +699,7 @@ The log-likelihood for all the observations is just the sum of these individual 
 
 $$\log L= \sum_{i=1}^n \log L_i= \sum_{i=1}^n y_i\log F(\mathbf{x_i'\beta})+(1-y_i) \log (1-F(\mathbf{x_i'\beta}))$$
 
-##Log-likelihood and Deviance
+## Log-likelihood and Deviance
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Maximum Likelihood Estimation</body>
@@ -711,7 +710,7 @@ $$\log L= \sum_{i=1}^n \log L_i= \sum_{i=1}^n y_i\log F(\mathbf{x_i'\beta})+(1-y
 >- The lower deviance gets, the better the fit of the model (because the likelihood is getting closer to one). 
 >- We can also estimate **null deviance** which is the deviance of a model with no predictors. In the case of the Titanic this would be a model in which we assume that everyone had the exact same probability of survival. 
 
-##Maximize the log-likelihood of this!
+## Maximize the log-likelihood of this!
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Maximum Likelihood Estimation</body>
@@ -723,7 +722,7 @@ $$\log L = \sum_{i=1}^n y_i\log F(\mathbf{x_i'\beta})+(1-y_i) \log (1-F(\mathbf{
 >- There is no closed-form solution to this problem. It can only be solved by iterative methods where we start with initial estimates and then iteratively adjust them until they no longer change. 
 >- There are multiple algorithms that can do this, but the simplest (and the one R uses in `glm` by default) is a form of iteratively-reweighted least squares (IRLS). 
 
-##The IRLS Technique {.smaller}
+## The IRLS Technique {.smaller}
 
 
 <div class="footer">
@@ -746,7 +745,7 @@ $$z_i=\mathbf{x_i'\beta}+\frac{y_i-\hat{p}_i}{\hat{p}_i(1-\hat{p}_i)}$$
 
 Lets try this estimation procedure out by hand on the Titanic model predicting survival by fare.
 
-## Initialize values assuming null model {.smaller}
+##  Initialize values assuming null model {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Maximum Likelihood Estimation</body>
@@ -772,7 +771,7 @@ deviance.null <- -2*logL
 deviance.null
 ```
 
-## Iteratively estimate $\beta$ {.smaller}
+##  Iteratively estimate $\beta$ {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Maximum Likelihood Estimation</body>
@@ -796,7 +795,7 @@ for(i in 1:5) {
 deviance <- -2*logL
 ```
 
-## Convergence happened quickly {.smaller}
+##  Convergence happened quickly {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Maximum Likelihood Estimation</body>
@@ -808,7 +807,7 @@ logL
 deviance
 ```
 
-##`glm` command will do this for you {.smaller}
+## `glm` command will do this for you {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Maximum Likelihood Estimation</body>
@@ -822,10 +821,10 @@ model.survival <- glm((survival=="Survived")~fare, data=titanic,
 summary(model.survival)$coef
 ```
 
-#Logistic Regression Model
+# Logistic Regression Model
 Models for Dichotomous Categorical Outcomes
 
-##The logistic regression model set up
+## The logistic regression model set up
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
@@ -841,7 +840,7 @@ $$log(\frac{\hat{p}_i}{1-\hat{p}_i}) = \beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldot
 >- We are predicting the log-odds of "success" as a linear function of the independent variables.
 >- In terms of the interpretation of results, we have to consider both the log transformation and the use of odds. The key concept is the **odds ratio**.
 
-##Odds ratios {.smaller}
+## Odds ratios {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
@@ -861,7 +860,7 @@ $$OR=O_1/O_2$$
 >- The odds ratio $OR$ often provides a better comparison of the likelihood of success than comparing the probabilities $p_1$ and $p_2$ themselves. 
 >- probabilities are bounded by 0 and 1 and therefore probability differences between groups will necessarily increase as the overall $p$ across all groups approaches zero and necessarily shrink as the overall $p$ across all groups gets closer to one. 
 
-##Comparing odds ratios at different points {.smaller}
+## Comparing odds ratios at different points {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
@@ -877,7 +876,7 @@ $$p_1=\frac{O_1}{1+O_1}=\frac{9}{9+1}=\frac{9}{10}=0.9$$
 $$p_2=\frac{18}{1+18}=\frac{18}{1+19}=\frac{18}{19}=0.947$$
 A doubling of the odds here necessarily leads to a smaller increase in probabilities because we are closer to one. The odds ratio separates the relationship from the level of success. This is a feature, not a bug. 
 
-##Odds ratio example {.smaller}
+## Odds ratio example {.smaller}
 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
@@ -894,7 +893,7 @@ We can calculate men's survival odds and odds ratio of survival for women compar
 ```
 0.24 men survived for every one that died. The odds of survival for women is 11.3 times higher. 
 
-##Simple logistic regression model example {.smaller}
+## Simple logistic regression model example {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -911,7 +910,7 @@ So we have the following model:
 $$log(\frac{\hat{p}_i}{1-\hat{p}_i}) = -1.444+2.425(female_i)$$
 How do we interpret the slope and intercept?
 
-##Simple logistic regression model example {.smaller}
+## Simple logistic regression model example {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -925,7 +924,7 @@ $$\frac{\hat{p}_i}{1-\hat{p}_i} = (e^{-1.444})(e^{2.425(female_i)})$$
 $$\frac{\hat{p}_i}{1-\hat{p}_i} = (0.24)(11.3)^{(female_i)}$$
 We now have a multiplicative model that describes the relationship between survival and sex. 
 
-##Simple logistic regression model example {.smaller}
+## Simple logistic regression model example {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -942,7 +941,7 @@ $$\frac{\hat{p}_i}{1-\hat{p}_i} = (0.24)(11.3)^{1}=(0.24)(11.3)$$
 >- This model reproduces exactly the results we derived directly from the two-by-two table of survival by sex.
 >- The advantage of the linear model framework is that we can easily add in other control variables. 
 
-##Gender and passenger class models
+## Gender and passenger class models
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -957,7 +956,7 @@ model.genderclass <- update(model.gender, .~.+pclass)
 model.interact <- update(model.genderclass,.~.+sex*pclass)
 ```
 
-##Gender and passenger class models {.smaller}
+## Gender and passenger class models {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -977,7 +976,7 @@ stargazer(model.gender, model.genderclass, model.interact, type="html",
 >- Women in first class were 53.5 ($e^{3.98}$) times more likely to survive than first class men. Among second class passengers, the ratio in survival by gender was slightly smaller at 45.6 ($e^{3.98-.16}$), but in third class it was much smaller at 5.4 ($e^{3.98-2.3}$).
 >- Men in second and third class were both about 65-67% ($1-e^{-1.06}$ or $1-e^{-1.1}$) less likely to survive than first class men. 
 
-##Interpreting quantitative independent variables 
+## Interpreting quantitative independent variables 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -992,7 +991,7 @@ summary(model.fare)$coef
 $$log(\frac{\hat{p}_i}{1-\hat{p}_i}) = -0.882+0.012(fare_i)$$
 How do we interpret the slope and intercept in this case?
 
-##Interpreting quantitative independent variables {.smaller}
+## Interpreting quantitative independent variables {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1013,7 +1012,7 @@ $$
 $$
 Each one pound increase in fare is associated with a 1.2% increase in the odds of survival. 
 
-## Predicted probabilities from logistic model {.smaller}
+##  Predicted probabilities from logistic model {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1041,7 +1040,7 @@ text(250,1.25, "Nonsense values", col="red")
 text(250,-0.25, "Nonsense values", col="red")
 ```
 
-##A full example from Add Health {.smaller}
+## A full example from Add Health {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1052,7 +1051,7 @@ round(summary(model.full)$coef,3)
 round(exp(model.full$coef),3)
 ```
 
-##Marginal effects {.smaller}
+## Marginal effects {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1064,7 +1063,7 @@ round(exp(model.full$coef),3)
 >- The problem is that there is no single number that describes this marginal effect because the effect of a one unit increase in $x$ on the probability depends on the current values of all the independent variables in the model. 
 >- For this reason, I am not a big fan of this approach. I think it reflects an implicit bias toward thinking in probability rather than odds which throws away one of the important features of logistic regression models. 
 
-##Different marginal effects
+## Different marginal effects
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1085,7 +1084,7 @@ abline(prob[400]-fare[400]*marginals[400],marginals[400], col="green", lty=1)
 abline(v=fare[400],lty=2)
 ```
 
-##Estimating marginal effect
+## Estimating marginal effect
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1097,7 +1096,7 @@ The marginal effect of the $k$th independent variable in the model is then given
 
 $$\hat{p}(1-\hat{p})\beta_k$$
 
-##Marginal effects example {.smaller}
+## Marginal effects example {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1111,7 +1110,7 @@ p*(1-p)*c(0.0134,-0.017)
 
 The marginal effect of a one pound increase in fare when fare and age are at the mean is a 0.3% increase in the probability of survival. The marginal effect of a one year increase in age when fare and age are at the mean is a 0.4% decrease in the probability of survival.
 
-##Marginal effects for a categorical variable {.smaller}
+## Marginal effects for a categorical variable {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1127,7 +1126,7 @@ p2-p1
 
 When at the mean of age and fare, women's probability of survival is 53 percentage points higher than men's.
 
-##Using `mfx` package for marginal effects {.smaller}
+## Using `mfx` package for marginal effects {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1141,7 +1140,7 @@ library(mfx)
 logitmfx(survival~fare+age+sex, data=titanic)
 ```
 
-##An alternative link: probit
+## An alternative link: probit
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1152,7 +1151,7 @@ logitmfx(survival~fare+age+sex, data=titanic)
 >- While the actual numbers will be different from a logistic model, the probit model will generally produce very similar results in terms of the strength of the relationship and the predicted values at the cost of being more difficult to interpret. 
 
 
-## The Inverse Cumulative Normal Distribution 
+##  The Inverse Cumulative Normal Distribution 
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1169,7 +1168,7 @@ text(0,0.2,"0.84",col="red",cex=2)
 ```
 
 
-## Predicted values from logit and probit models
+##  Predicted values from logit and probit models
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1196,7 +1195,7 @@ text(250,1.25, "Nonsense values", col="red")
 text(250,-0.25, "Nonsense values", col="red")
 ```
 
-##Assessing model fit with deviance {.smaller}
+## Assessing model fit with deviance {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1213,7 +1212,7 @@ The smaller the deviance, the better the fit of the model, because the likelihoo
 >- The deviance of the saturated model where the number of predictors is equal to the number of cases. This model would fit the data perfectly and therefore has a likelihood of one and a deviance of zero. 
 >- The deviance of the current model $G^2$ that we are currently fitting with $p$ independent variables as predictors. The deviance of this model will be less than that of the null model and greater than for the saturated model.
 
-##pseudo-$R^2$
+## pseudo-$R^2$
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1226,7 +1225,7 @@ The number on top is the reduction in deviance from the null to the current mode
 
 Just like $R^2$ this measures takes no account of parsimony. More complex models will always have a larger $D$ value.
 
-##The Likelihood Ratio Test
+## The Likelihood Ratio Test
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1237,7 +1236,7 @@ $$G^2_2-G^2_1$$
 
 Assuming the null hypothesis that all of the additional terms in the second model have no predictive power (all $\beta=0$), this observed difference should come from a $\chi^2$ (chi-squared) distribution with degrees of freedom equal to the number of additional terms in the second model. 
 
-##LRT Example
+## LRT Example
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1255,7 +1254,7 @@ A model predicting survival by gender alone reduced the deviance by 373 compared
 
 So close to zero that R is reporting zero. 
 
-##Using `anova` to do LRT {.smaller}
+## Using `anova` to do LRT {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1266,7 +1265,7 @@ We can also use the `anova` command to do an LRT test if we add in the additiona
 anova(model.gender, test="LRT")
 ```
 
-##Comparing to non-null models by LRT {.smaller}
+## Comparing to non-null models by LRT {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1276,7 +1275,7 @@ model.complex <- update(model.gender, .~.+pclass)
 anova(model.gender, model.complex, test="LRT")
 ```
 
-##BIC for GLMs {.smaller}
+## BIC for GLMs {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1292,7 +1291,7 @@ $$BIC'=(G^2-G^2_0)+(p)\log n$$
 
 You can use this value to compare any two models since the difference in BIC' between any two models is equivalent to the BIC between them. 
 
-##BIC Example {.smaller}
+## BIC Example {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1313,7 +1312,7 @@ BIC.null.glm(model.complex)-BIC.null.glm(model.gender)
 
 Both approaches lead to the same BIC difference. We prefer the more complex model.
 
-##Model comparison {.smaller}
+## Model comparison {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1346,7 +1345,7 @@ stargazer(model.basic, model.achieve, model.activities,
                              "number of sports","popularty","male x popularity"))
 ```
 
-##Bayesian Model Averaging {.smaller}
+## Bayesian Model Averaging {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1378,7 +1377,7 @@ BIC                                     -3.228e+04  -3.228e+04  -3.228e+04  -3.2
 post prob                                0.295       0.240       0.131       0.118       0.077    
 ```
 
-##Sparseness and Separation {.smaller}
+## Sparseness and Separation {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1390,7 +1389,7 @@ post prob                                0.295       0.240       0.131       0.1
 >- Separation is apparent when one coefficient for a categorical variable "explodes" into a very high positive or negative number with a very high standard error and low p-value. 
 >- This problem can either be fixed by collapsing categories (when possible and sensible) or by using alternative estimating techniques, most commonly penalized likelihood models. 
 
-##Example of separation {.smaller}
+## Example of separation {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
@@ -1407,7 +1406,7 @@ summary(glm(smoker~bandchoir, data=addhealth.samp, family=binomial))$coef
 ```
 The very large coefficient and SE are clear signs of separation. 
 
-##Fixing separation {.smaller}
+## Fixing separation {.smaller}
 <div class="footer">
 <body>Sociology 513, Models for Dichotomous Categorical Outcomes: Logistic Regression Model</body>
 </div>
