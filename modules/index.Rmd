@@ -19,31 +19,14 @@ description: "Textbook for Statistical Analysis for University of Oregon Sociolo
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.height = 4)
+knitr::opts_chunk$set(echo = TRUE, fig.height = 4, message = FALSE, error = FALSE, fig.align="center")
 ```
 
-```{r include=FALSE}
-load("../example_datasets/movies/movies.RData")
-load("../example_datasets/sex/sex.RData")
-load("../example_datasets/crimes/crimes.RData")
-load("../example_datasets/titanic/titanic.RData")
-load("../example_datasets/politics/politics.RData")
-load("../example_datasets/students/studentsCurrent.RData")
-load("../example_datasets/students/studentsamplingdist.RData")
-load("../example_datasets/add_health/addhealth.RData")
-load("../example_datasets/nyc_nonprofit/nyc.RData")
-load("../example_datasets/earnings/earnings.RData")
-load("example_datasets/misc/relig.RData")
-load("example_datasets/misc/pew.RData")
-preston <- read.csv("../example_datasets/misc/preston.csv")
-election <- read.csv("../example_datasets/misc/ecofallacy.csv")
-library(pander)
-library(ggplot2)
-library(scales)
-library(broom)
-library(texreg)
-library(psych)
-library(car)
+```{r load-stuff, include=FALSE}
+#load libraries
+library(here)
+source(here("check_packages.R"))
+source(here("example_datasets","load_all_data.R"))
 ```
  
 # Preface {-}
