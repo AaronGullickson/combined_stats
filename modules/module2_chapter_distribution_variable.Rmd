@@ -450,12 +450,20 @@ In general, boxplots for a single variable do not contain as much information as
 
 ## Measuring the Spread of a Distribution
 
-The second most important measure of a distribution is its spread. Spread indicates how far individual values tend to fall from the center of the distribution. As the figure below shows, two distributions can have the same center and general shape (in this case, a bell curve) but have very different spreads.
+The second most important measure of a distribution is its spread. Spread indicates how far individual values tend to fall from the center of the distribution. As Figure \@ref(fig:spread-compare) below shows, two distributions can have the same center and general shape (in this case, a bell curve) but have very different spreads.
 
-```{r spread_compare, echo=FALSE, fig.width=5, fig.height=2, out.width='500px', out.height='200px', dpi=300}
-par(mfrow=c(1,2), mar=c(1,1,1,1))
-hist(rnorm(10000,0,1), breaks=60, col="red", xlim=c(-4,4), main="wide spread", xlab="", ylab="", xaxt="n", yaxt="n")
-hist(rnorm(10000,0,0.5), breaks=30, col="red", xlim=c(-4,4), main="narrow spread", xlab="", ylab="", xaxt="n", yaxt="n")
+```{r spread-compare, echo=FALSE, fig.cap="Two different distributions with the same mean but very different spreads, based on simulated data."}
+#par(mfrow=c(1,2), mar=c(1,1,1,1))
+temp <- data.frame(x=c(rnorm(10000,10,1),
+                       rnorm(10000,10,0.5)),
+                   type=c(rep("wide",10000),
+                          rep("narrow",10000)))
+ggplot(temp, aes(x=x, fill=type))+
+  geom_histogram(data=subset(temp, type=="narrow"), alpha=0.7, binwidth=0.2)+
+  geom_histogram(data=subset(temp, type=="wide"), alpha=0.7, binwidth=0.2)+
+  guides(fill=FALSE)+
+  labs(x="some interesting variable")+
+  theme_bw()
 ```
 
 ### Range and interquartile range
@@ -468,12 +476,13 @@ summary(titanic$fare)
 
 Note that at least one person made it on the Titanic for free. The highest fare paid was 512.3 pounds. So the range is easy to calculate 512.3 - 0 = 512.3. The difference between the highest and lowest paying passenger was about 512 pounds. 
 
-This example also reveals the shortcoming of the range as a measure of spread. If there are any outliers in the data, they are going to show up in the range and so the range may give you a misleading idea of how spread out the values are. Note that the 75th percentile here is only 31.28 pounds, which would suggest that the 512.3 maximum is a pretty high outlier. We can check this by graphing a boxplot:
+This example also reveals the shortcoming of the range as a measure of spread. If there are any outliers in the data, they are going to show up in the range and so the range may give you a misleading idea of how spread out the values are. Note that the 75th percentile here is only 31.28 pounds, which would suggest that the 512.3 maximum is a pretty high outlier. We can check this by graphing a boxplot, as I have done in Figure \@ref(fig:boxplot-fare). 
 
-```{r boxplot_fare, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-boxplot(titanic$fare, col="seagreen",
-        las=1, ylab="British pounds", 
-        main="Boxplot of fare paid")
+```{r boxplot-fare, fig.cap="Boxplot of fare paid on the Titanic"}
+ggplot(titanic, aes(x="", y=fare))+
+  geom_boxplot(fill="seagreen", outlier.color = "red")+
+  labs(x=NULL, y="fare paid in British pounds")+
+  theme_bw()
 ```
 
 The maximum value is such an outlier that the rest of the boxplot has to be "scrunched" in order to fit it all into the graph. Clearly this is not a good indicator of spread. However, we have already seen a better measure of spread using a similar idea: the **interquartile range** or **IQR**. The IQR is just the range between the 25th and 75th percentile. We already have these numbers from the output above, so the IQR = 31.28-7.90=23.38. So, the difference in fare between the 25th and 75th percentile (the middle 50% of the data) was 23.4 pounds. That result suggests a much smaller spread of fares. 
@@ -486,7 +495,7 @@ IQR(titanic$fare)
 
 ### Variance and standard deviation
 
-The most common measure of spread is the **variance** and its derivative measurement, the **standard deviation**. Its so common in fact, that most people simply refer to the concept of "spread" as "variance." The variance can be defined as the "average squared distance to the mean." Of course, "squared distance" is a bit hard to think about, so we more commonly take the square root of the variance to get the standard deviation which gives us the "average distance to the mean." Imagine if you were to randomly pick one observation from your dataset and guess how far it would be from the mean. Your best guess would be the standard deviation. 
+The most common measure of spread is the **variance** and its derivative measurement, the **standard deviation**. It is so common in fact, that most people simply refer to the concept of "spread" as "variance." The variance can be defined as the "average squared distance to the mean." Of course, "squared distance" is a bit hard to think about, so we more commonly take the square root of the variance to get the standard deviation which gives us the "average distance to the mean." Imagine if you were to randomly pick one observation from your dataset and guess how far it would be from the mean. Your best guess would be the standard deviation. 
 
 The calculation for the variance and standard deviation is a bit intimidating but we will break it down into steps to show it is not that hard. At the same time, I will show you to calculate the parts in R using the fare variable from the Titanic data. 
 
