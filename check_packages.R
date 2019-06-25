@@ -12,7 +12,7 @@ packages = c("here", "texreg", "pander","stargazer",
              "mfx","nnet","BMA","logistf",
              "gapminder",
              "ggplot2","ggalt","scales","ggrepel",
-             "scatterplot3d","corrgram")
+             "scatterplot3d","corrgram","gganimate","gifski")
 
 package.check <- lapply(packages, FUN = function(x) {
   if (!require(x, character.only = TRUE)) {
