@@ -23,11 +23,17 @@ nam <- c("First","Second","Third","Total")
 tab <- cbind(nam,x)
 colnames(tab) <- c("Passenger class", "Frequency")
 rownames(tab) <- NULL
-kable(tab, align=c("l","r"),
-      caption="Passengers on the Titanic by passenger class") %>% 
-  kable_styling(bootstrap_options = c("striped","hover"),
-                full_width = FALSE) %>%
-  row_spec(4, bold=TRUE, color="white",background="#666")
+if(is_html) {
+  kable(tab, align=c("l","r"),
+        caption="Passengers on the Titanic by passenger class") %>% 
+    kable_styling(bootstrap_options = c("striped","hover"),
+                  full_width = FALSE) %>%
+    row_spec(4, bold=TRUE, color="white",background="#666")
+} else {
+  kable(tab, "latex", booktabs=TRUE, align=c("l","r"),
+        caption="Passengers on the Titanic by passenger class") %>%
+    row_spec(4, bold=TRUE)
+}
 ```
 
 There were 323 first class passengers, 277 second class passengers, and 709 third class passengers. Adding those numbers up gives us 1,309 total passengers. *R* will calculate these numbers for us easily using the `table` command: 
@@ -45,11 +51,17 @@ x <- c(paste(paste(tab[1:3,2],tab[4,2],sep="/"),round(as.numeric(tab[1:3,2])/as.
 tab <- cbind(tab,x)
 tab[4,3] <- "1.0"
 colnames(tab) <- c("Passenger class", "Frequency","Proportion")
-kable(tab, align=c("l","r","r"),
-      caption="Passengers on the Titanic by passenger class") %>% 
-  kable_styling(bootstrap_options = c("striped","hover"),
-                full_width = FALSE) %>%
-  row_spec(4, bold=TRUE, color="white",background="#666")
+if(is_html) {
+  kable(tab, align=c("l","r","r"),
+        caption="Passengers on the Titanic by passenger class") %>% 
+    kable_styling(bootstrap_options = c("striped","hover"),
+                  full_width = FALSE) %>%
+    row_spec(4, bold=TRUE, color="white",background="#666")
+} else {
+  kable(tab, "latex", booktabs=TRUE, align=c("l","r","r"),
+        caption="Passengers on the Titanic by passenger class") %>% 
+    row_spec(4, bold=TRUE)
+}
 ```
 
 *R* provides a nice shorthand function titled `prop.table` to conduct this operation. The `prop.table` command should be run on the output from a `table` command. 
@@ -69,11 +81,17 @@ tab <- cbind(tab,x)
 tab[4,3] <- "1.0"
 tab[4,4] <- "100%"
 colnames(tab) <- c("Passenger class", "Frequency","Proportion", "Percent")
-kable(tab, align=c("l","r","r","r"),
-      caption="Passengers on the Titanic by passenger class") %>% 
-  kable_styling(bootstrap_options = c("striped","hover"),
-                full_width = FALSE) %>%
-  row_spec(4, bold=TRUE, color="white",background="#666")
+if(is_html) {
+  kable(tab, align=c("l","r","r","r"),
+        caption="Passengers on the Titanic by passenger class") %>% 
+    kable_styling(bootstrap_options = c("striped","hover"),
+                  full_width = FALSE) %>%
+    row_spec(4, bold=TRUE, color="white",background="#666")
+} else {
+  kable(tab, "latex", booktabs=TRUE, align=c("l","r","r","r"),
+        caption="Passengers on the Titanic by passenger class") %>% 
+    row_spec(4, bold=TRUE)
+}
 ```
 
 24.7% of passengers were first class, 21.2% of passengers were second class, and 54.2% of passengers were third class. Just over half of passengers were third class and the remaining passengers were fairly evenly split between first and second class.
@@ -126,10 +144,15 @@ x <- as.numeric(table(cut(politics$age, seq(from=0,to=90,by=10))))
 nam <- (paste(seq(from=0,to=80,by=10),seq(from=9,to=89,by=10),sep="-"))
 tab <- cbind(nam,x)
 colnames(tab) <- c("Age Group","Frequency")
-kable(tab, align=c("l","r"),
-      caption="Age distribution in politics datatset in 10 year groups") %>%
-  kable_styling(bootstrap_options = c("striped","hover"),
-                full_width = FALSE)
+if(is_html) {
+  kable(tab, align=c("l","r"),
+        caption="Age distribution in politics datatset in 10 year groups") %>%
+    kable_styling(bootstrap_options = c("striped","hover"),
+                  full_width = FALSE)
+} else {
+  kable(tab, "latex", booktabs=TRUE, align=c("l","r"),
+        caption="Age distribution in politics datatset in 10 year groups")
+}
 ```
 
 Because the survey was only administered to adults, I have zero individuals from 0-9 and only a few in the 10-19 age range.
@@ -249,10 +272,16 @@ tab <- movies[movies$Genre=="Romance" & movies$Year==2013,c("Title","TomatoMeter
 rownames(tab) <- NULL
 tab <- rbind(tab, c("Sum",sum(tab$TomatoMeter)))
 colnames(tab) <- c("Title","Tomato Meter")
-kable(tab, align=c("l","r"),
-      caption="Tomato meter of pure romance movies released in 2013") %>%
-  kable_styling(bootstrap_options = c("striped"), full_width = FALSE) %>%
-  row_spec(10, bold=TRUE, color="white", background="#666")
+if(is_html) {
+  kable(tab, align=c("l","r"),
+        caption="Tomato meter of pure romance movies released in 2013") %>%
+    kable_styling(bootstrap_options = c("striped"), full_width = FALSE) %>%
+    row_spec(10, bold=TRUE, color="white", background="#666")
+} else {
+  kable(tab, "latex", booktabs=TRUE, align=c("l","r"),
+        caption="Tomato meter of pure romance movies released in 2013") %>%
+    row_spec(10, bold=TRUE)
+}
 ```
 
 In the very last row, I show the sum of the Tomato Meter rating which simply sums up the Tomato Meter rating of each movie. To calculate the mean, I simply divide this sum by the number of movies which is 9.
@@ -305,10 +334,16 @@ tab <- tab[order(tab$TomatoMeter),]
 tab$Order <- 1:nrow(tab)
 colnames(tab) <- c("Title","Tomato Meter", "Order")
 rownames(tab) <- NULL
-kable(tab, align=c("l","r","r"),
-      caption="Tomato meter of pure romance movies released in 2013, sorted from worst to best") %>%
-  kable_styling(bootstrap_options = c("striped"), full_width = FALSE) %>%
-  row_spec(5, bold=TRUE, color="white", background="#666")
+if(is_html) {
+  kable(tab, align=c("l","r","r"),
+        caption="Tomato meter of pure romance movies released in 2013, sorted from worst to best") %>%
+    kable_styling(bootstrap_options = c("striped"), full_width = FALSE) %>%
+    row_spec(5, bold=TRUE, color="white", background="#666")
+} else {
+  kable(tab, "latex", booktabs=TRUE, align=c("l","r","r"),
+        caption="Tomato meter of pure romance movies released in 2013, sorted from worst to best") %>%
+    row_spec(5, bold=TRUE)
+}
 ```
 
 To find the median, we have to find the observation right in the middle. When we have an odd number of observations, finding the exact middle is easy. In this case, it is given by the 5th observation because it has four observations lower than it and four observations higher than it. So the median Tomato Meter rating for romantic movies in 2013 was 49. 

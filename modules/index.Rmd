@@ -22,13 +22,7 @@ description: "Textbook for Statistical Analysis for University of Oregon Sociolo
 knitr::opts_chunk$set(echo = TRUE, fig.height = 4, message = FALSE, error = FALSE, fig.align="center")
 ```
 
-```{r load-stuff, include=FALSE}
-#load libraries
-library(here)
-source(here("check_packages.R"))
-source(here("example_datasets","load_all_data.R"))
-```
- 
+
 # Preface {-}
 
 This online textbook combines all of the information taught in my undergraduate statistics course as well as both terms of my introductory graduate statistics course. It is very much a work in progress at the moment. I am adding new chapters and transitioning most of my figures to `ggplot` so you will likely notice many quirks. 
@@ -36,3 +30,14 @@ This online textbook combines all of the information taught in my undergraduate 
 &copy; Aaron Gullickson, 2017
 
 This material is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International Public License. Users are free to remix tweak, and build upon this work for non-commercial purposes, although new work must acknowledge the original author and use the same license. Full license is available [here](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
+
+```{r load-stuff, include=FALSE}
+#load libraries
+library(here)
+source(here("check_packages.R"))
+source(here("example_datasets","load_all_data.R"))
+```
+ 
+```{r check_html, include=FALSE}
+is_html <- knitr::opts_knit$get("rmarkdown.pandoc.to")=="html"
+```
