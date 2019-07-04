@@ -12,7 +12,8 @@ packages = c("here", "texreg", "pander","stargazer",
              "mfx","nnet","BMA","logistf",
              "gapminder",
              "ggplot2","ggalt","scales","ggrepel",
-             "scatterplot3d","corrgram","gganimate","gifski")
+             "scatterplot3d","corrgram","gganimate","gifski",
+             "devtools")
 
 package.check <- lapply(packages, FUN = function(x) {
   if (!require(x, character.only = TRUE)) {
@@ -20,3 +21,7 @@ package.check <- lapply(packages, FUN = function(x) {
     library(x, character.only = TRUE)
   }
 })
+
+if(!require(patchwork)) {
+  devtools::install_github("thomasp85/patchwork")
+}

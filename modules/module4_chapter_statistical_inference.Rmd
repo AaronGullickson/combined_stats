@@ -1,5 +1,9 @@
 # Statistical Inference
 
+Now that we have the basics of examining data down, we turn to another issue that we can address with statistical analysis. Howe confident are we that the the results from the data represent the larger population from which the data are drawn? This issue only applies to cases where the data we use constitutes a **sample** from a larger **population**. However, many of the datasets that we work with in the social sciences are of this type, so this is typically an important issue. We don't want to to reach an incorrect conclusion that $x$ is associated with $y$ in cases when that association in our sample is basically a result of random chance.
+
+In many introductory statistics courses, statistical inference would take up the majority of the course and you would learn a variety of cookbook formulae for conducting "tests." We won't do much of that here. Instead I will focus on the logic of the two most common procedures in statistical inference: the **confidence interval** and the **hypothesis test**. Once you understand the logic behind these procedures, it turns out that all of the various "tests" are just iterations on the same basic theme. Nonetheless, we will have to use some formulae in this module with associated number crunching. This is the most math heavy module of the course, so be prepared. 
+
 ------
 
 ## The Problem of Statistical Inference
@@ -14,9 +18,9 @@ To take another example from our General Social Survey (GSS) data on sexual freq
 tapply(sex$sexf, sex$marital, mean)
 ```
 
-Married respondents had sex 2.5 (56.1-53.6) times more per year than never married individuals. We don't want to draw this conclusion just for our sample. Rather, we want to know what the relationship is between marital status and sexual frequency in the US population as a whole. In other words, we want to **infer** from our sample to the population. The figure below shows this process graphically. 
+Married respondents had sex 2.5 (56.1-53.6) times more per year than never married individuals. We don't want to draw this conclusion just for our sample. Rather, we want to know what the relationship is between marital status and sexual frequency in the US population as a whole. In other words, we want to **infer** from our sample to the population. Figure \@ref(fig:chart-inference) shows this process graphically. 
 
-```{r chart_inference, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+```{r chart-inference, echo=FALSE, fig.cap="The process of making statistical inferences"}
 par(mar=c(0,0,0,0))
 plot(-2,-2, xlim=c(0,10), ylim=c(0,10), xaxt="n", yaxt="n", bty="n", xlab="", ylab="")
 rect(6,1,10,9, col="skyblue")
@@ -41,7 +45,7 @@ The sample mean difference may be our best guess as to the true value in the pop
 
 Why might our sample produce inaccurate results? There are two sources of **bias** that could result in our sample statistic being different from the true population parameter. The first form of bias is **systematic bias**. Systematic bias occurs when something about the procedure for generating the sample produces a systematic difference between the sample and the population. Sometimes, systematic bias results from the way the sample is drawn. For example, if I sample my friends and colleagues on their voting behavior, I will likely introduce very large systematic bias in my estimate of who will win an election because my friends and colleagues are more likely than the general population to hold similar views to my own. Systematic bias can also result from the way questions are worded, the characteristics of interviewers, the time of day interviews are conducted, etc. Systematic bias can often be minimized in well-designed and executed scientific surveys. Statistical inference cannot do anything to account for systematic bias.
 
-The second form of bias is **random bias**. Random bias occurs when the sample statistic is different from the population parameter, just by random chance due to the actual sample that was drawn. In other words, even if there is no systematic bias in my survey design, I can get a bad estimate simply due to the bad luck of drawing a really unusual sample. Imagine that I am interested in estimating mean wealth in the United States and I happen to draw Bill Gates in my sample. I am probably going to dramatically overestimate mean wealth. Random bias affects every sample, regardless of how well-designed and executed. 
+The second form of bias is **random bias**. Random bias occurs when the sample statistic is different from the population parameter, just by random chance due to the actual sample that was drawn. In other words, even if there is no systematic bias in my survey design, I can get a bad estimate simply due to the bad luck of drawing a really unusual sample. Imagine that I am interested in estimating mean wealth in the United States and I happen to draw Bill Gates in my sample. I will dramatically overestimate mean wealth in the US. Random bias affects every sample, regardless of how well-designed and executed. 
 
 In practice, the sample statistic is extremely unlikely to be *exactly* equal to the population parameter, so some degree of random bias is always present in every sample. However, this random bias will become less important as the sample size increases. In the previous example, Bill Gates is going to bias my results much more if I draw a sample of 10 people, than if I draw a sample of 100,000 people. Our goal with statistical inference is to more precisely quantify how bad that random bias *could* be in our sample.
 
@@ -65,11 +69,13 @@ The sampling distribution is much more abstract than the other two distributions
 
 ### Example: class height
 
-Lets treat our class of `r sum(!is.na(students$height))` students as a population that I would like to know something about. In this case, I would like to know the mean height of the class. In most cases, the population distribution is unknown but in this case, I know the height of all `r sum(!is.na(students$height))` students because of the surveys you all took at the beginning of the term. Here is the population distribution of height in our class:
+As an example, lets use some data on a recent class that took this course. I will treat this class of `r sum(!is.na(students$height))` students as a population that I would like to know something about. In this case, I would like to know the mean height of the class. In most cases, the population distribution is unknown but in this case, I know the height of all `r sum(!is.na(students$height))` students because of surveys they all took at the beginning of the term. Figure \@ref(fig:hist-student-height-pop) shows the population distribution of height in the class:
 
-```{r hist_student_height_pop, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-hist(students$height, breaks=seq(from=55, to=82, by=1), col="red", las=1,
-     xlab="height in inches", main="population distribution of class height")
+```{r hist-student-height-pop, echo=FALSE, fig.cap="Population distribution of height in a class of students"}
+ggplot(students, aes(x=height))+
+  geom_histogram(fill="grey", color="grey20", breaks=seq(from=58,to=76, by=1))+
+  labs(x="height in inches")+
+  theme_bw()
 ```
 
 The population distribution of height is bimodal which is typical, because we are mixing the heights of men and women. The population mean of height ($\mu$) is `r round(mean(students$height, na.rm=TRUE),3)` inches. 
@@ -78,43 +84,88 @@ Lets say I lost the results of the student survey and I wanted to know the mean 
 
 How many samples would this be? On the first draw from the population of `r sum(!is.na(students$height))` students there are `r sum(!is.na(students$height))` possible results. On the second draw, there are `r sum(!is.na(students$height))-1` possible results, because I won't re-sample the student I selected the first time. This gives me `r sum(!is.na(students$height))`*`r sum(!is.na(students$height))-1`=`r sum(!is.na(students$height))*(sum(!is.na(students$height))-1)` possible combinations of `r sum(!is.na(students$height))` students in two draws. However, half of these draws are just mirror images of the other draws where I swap the first and second draw. Since I don't care about the order, I actually have `r sum(!is.na(students$height))*(sum(!is.na(students$height))-1)`/2=`r sum(!is.na(students$height))*(sum(!is.na(students$height))-1)/2` possible samples.
 
-I have used a computer routine to actually calculate the sample means in all `r sum(!is.na(students$height))*(sum(!is.na(students$height))-1)/2` of those possible samples. The distribution of these sample means then gives us the sampling distribution of mean height for samples of size 2. Here is a histogram of that distribution.
+I have used a computer routine to actually calculate the sample means in all `r sum(!is.na(students$height))*(sum(!is.na(students$height))-1)/2` of those possible samples. The distribution of these sample means then gives us the sampling distribution of mean height for samples of size 2. Figure \@ref(fig:hist-samplingd-size2) shows a histogram of that distribution.
 
-```{r hist_samplingd_size2, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-hist(means2,breaks=seq(from=60,to=75,by=1), col="red", main="The sampling distribution of class height\nfor samples of size 2", xlab="mean height", las=1)
+```{r hist-samplingd-size2, echo=FALSE, fig.cap="The sampling distribution of class height for samples of size 2"}
+ggplot(data.frame(means2), aes(x=means2))+
+  geom_histogram(fill="grey", color="grey20", breaks=seq(from=58,to=76, by=1))+
+  labs(x="mean height in samples of size 2")+
+  xlim(58, 76)+
+  theme_bw()
 ```
 
 When I randomly draw one sample of size 2 and calculate its mean, I am effectively reaching into this distribution and pulling out one of these values. Note that many of the means are clustered around the true population mean of  `r round(mean(students$height, na.rm=TRUE),1)` inches, but in a few cases I can get extreme overestimates or extreme underestimates. 
 
-What if I were to increase the sample size? I have used the same computer routine to calculate the sampling distribution for samples of size 3, 4, and 5. Here are the results:
+What if I were to increase the sample size? I have used the same computer routine to calculate the sampling distribution for samples of size 3, 4, and 5. Figure \@ref(fig:compare-samplingd) shows the results. 
 
-```{r compare_samplingd, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-par(mfrow=c(2,2),
-    mar=c(1.5,2,1,0.1),
-    cex.main=1, cex.lab=0.5, cex.axis=0.5, las=1)
-hist(means2,breaks=seq(from=60,to=75,by=1), 
-     col="red", main="Sampling distribution (n=2)",
-     xaxt="n")
-axis(1, pos=0, padj=-3, at=seq(from=60,to=75, by=1))
-title(xlab="mean height", line=0.5)
-hist(means3,breaks=seq(from=60,to=75,by=1),
-     col="red", main="Sampling distribution (n=3)",
-     xaxt="n")
-axis(1, pos=0, padj=-3, at=seq(from=60,to=75, by=1))
-title(xlab="mean height", line=0.5)
-hist(means4,breaks=seq(from=60,to=75,by=1), 
-    col="red", main="Sampling distribution (n=4)",
-     xaxt="n")
-axis(1, pos=0, padj=-3, at=seq(from=60,to=75, by=1))
-title(xlab="mean height", line=0.5)
-hist(means5,breaks=seq(from=60,to=75,by=1), 
-     col="red", main="Sampling distribution (n=5)",
-     xaxt="n")
-axis(1, pos=0, padj=-3, at=seq(from=60,to=75, by=1))
-title(xlab="mean height", line=0.5)
+
+```{r compare-samplingd, echo=FALSE, fig.cap="The sampling distribution of class height for samples of various sizes"}
+p1 <- ggplot(data.frame(means2), aes(x=means2))+
+  geom_histogram(fill="grey", color="grey20", breaks=seq(from=58,to=76, by=1))+
+  labs(title="n=2", x=NULL)+
+  xlim(58, 76)+
+  theme_bw()+
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p2 <- ggplot(data.frame(means3), aes(x=means3))+
+  geom_histogram(fill="grey", color="grey20", breaks=seq(from=58,to=76, by=1))+
+  labs(title="n=3", x=NULL)+
+  xlim(58, 76)+
+  theme_bw()+
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p3 <- ggplot(data.frame(means3), aes(x=means3))+
+  geom_histogram(fill="grey", color="grey20", breaks=seq(from=58,to=76, by=1))+
+  labs(title="n=4", x=NULL)+
+  xlim(58, 76)+
+  theme_bw()+
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p4 <- ggplot(data.frame(means4), aes(x=means4))+
+  geom_histogram(fill="grey", color="grey20", breaks=seq(from=58,to=76, by=1))+
+  labs(title="n=5", x=NULL)+
+  xlim(58, 76)+
+  theme_bw()+
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+
+p1+p2+p3+p4
+
+# 
+# ggplot(temp, aes(x=means, y=..density..))+
+#   geom_histogram(data=subset(temp, size=="n=5"), 
+#                  breaks=seq(from=58,to=76, by=1))+
+#   labs(x="mean height")+
+#   xlim(58, 76)+
+#   theme_bw()+
+#   transition_states(size)
 ```
 
-There are three thing to note here. First, each sampling distribution seems to have most of their points clustered (where the peak is) around the true population mean of `r round(mean(students$height, na.rm=TRUE),1)`. In fact, the mean of these distributions is exactly the true population parameter, as I will show below. Second, the spread of the distributions is shrinking as the sample size increases. You can see that the when the sample size increases, the tails of the distribution are "pulled in" and more of the sample means are closer to the center. This indicates that we are less likely to draw a sample mean that is extremely different from the population mean in larger samples. Third, the shape of the distribution at larger sample sizes is becoming more symmetric and "bell-shaped." 
+Clearly, the shape of these distributions is changing. Another way to visualize this would be to draw **density** graphs which basically fit a curve to the histograms. We can then then overlap these density curves on the same graph. Figure \@ref(fig:compare-density) shows this graph. 
+
+```{r compare-density, echo=FALSE, fig.cap="The sampling distribution of class height for samples of various sizes. The vertical red line shows the true population mean."}
+temp <- data.frame(size=c(rep("n=2", length(means2)),
+                          rep("n=3", length(means3)),
+                          rep("n=4", length(means4)),
+                          rep("n=5", length(means5))),
+                   means=c(means2, means3, means4, means5))
+
+ggplot(temp, aes(x=means, y=..density.., fill=size))+
+  geom_density(data=subset(temp, size=="n=5"), alpha=0.6)+
+  geom_density(data=subset(temp, size=="n=4"), alpha=0.6)+
+  geom_density(data=subset(temp, size=="n=3"), alpha=0.6)+
+  geom_density(data=subset(temp, size=="n=2"), alpha=0.6)+
+  geom_vline(xintercept = mean(students$height), color="red", size=2, alpha=0.7)+
+  labs(x="mean height")+
+  xlim(58, 76)+
+  theme_bw()
+```
+
+There are three thing to note here. First, each sampling distribution seems to have most of the sample means clustered (where the peak is) around the true population mean of `r round(mean(students$height, na.rm=TRUE),1)`. In fact, the mean of each of these sampling distributions is exactly the true population parameter, as I will show below. Second, the spread of the distributions is shrinking as the sample size increases. You can see that the when the sample size increases, the tails of the distribution are "pulled in" and more of the sample means are closer to the center. This indicates that we are less likely to draw a sample mean that is extremely different from the population mean in larger samples. Third, the shape of the distribution at larger sample sizes is becoming more symmetric and "bell-shaped." 
 
 Lets take a look at the mean and standard deviation of these sampling distributions:
 
@@ -131,9 +182,9 @@ names <- c("Population Distribution",
 tab <- cbind(names, means, sds)
 rownames(tab) <- NULL
 colnames(tab) <- c("Distribution","Mean","Standard Deviation")
-set.alignment(c("left","right","right"))
-#emphasize.strong.rows(1)
-pander(tab)
+kable(tab, align=c("l","r","r"),
+      caption="Mean and standard deviation of height for the population of students in a class as well as from several sampling distributions of that population") %>%
+  kable_styling(bootstrap_options = c("striped","hover"))
 ```
 
 Note that the mean of each sampling distribution is identical to the true population mean. This is not a coincidence. The mean of the sampling distribution of sample means is always itself equal to the population mean. In statistical terminology, this is the definition of an **unbiased statistic**. Given that we are trying to estimate the true population mean, it is reassuring that the "average" sample mean we should get is the true population mean. 
@@ -150,7 +201,7 @@ What is this "normal" distribution? The name is somewhat misleading because ther
 
 Lets look at the normal sampling distribution of the mean to become familiar with it. 
 
-```{r normal_dist, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+```{r normal_dist, echo=FALSE, fig.cap="The Normal Distribution"}
 x <- seq(from=-5,to=5,by=0.1)
 y <- (1/(sqrt(2*pi)))*exp(-1*(x)^2/(2^2))
 par(mar=c(6,0.1,0.1,0.1))
@@ -218,35 +269,33 @@ I will discuss these two different methods in the next two sections.
 
 ## Confidence Intervals
 
-Remember from the previous section that 95% of all the possible sample means will be within 1.96 standard errors of the true population mean $\mu$. Therefore: 
+As Figure \@ref(fig:normaldist-ci) showsm, 95% of all the possible sample means will be within 1.96 standard errors of the true population mean $\mu$.
 
-```{r normaldist_ci, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+```{r normaldist-ci, echo=FALSE, fig.cap="95% of all sample means will be within 1.96 standard errors of the true population mean."}
 x <- seq(from=-5,to=5,by=0.1)
 y <- (1/(sqrt(2*pi)))*exp(-1*(x)^2/(2^2))
 par(mar=c(4,0.1,0.1,0.1))
 plot(x,y, type="l", lwd=3, yaxt="n", xlab="",
      ylab="", xaxt="n")
 axis(1, at=c(-2,0,2), cex=0.7,
-     labels=c(expression(mu-2*sigma/sqrt(n)),
+     labels=c(expression(mu-1.96*sigma/sqrt(n)),
               expression(mu),
-              expression(mu+2*sigma/sqrt(n))))
+              expression(mu+1.96*sigma/sqrt(n))))
 polygon(c(x[31],x[31:71],x[71]),c(0,y[31:71],0), col="grey")
-text(0, max(y)/3, "95% probability that I will\ndraw a sample mean\nthat is within two (1.96)\nstandard deviations of\nthe true population mean")
+text(0, max(y)/3, "95%")
 ```
-
-There is a 95% probability that we will draw a sample mean within 1.96 standard errors of the true population mean.
 
 Lets say I were to construct the following interval for every possible sample:
 
 $$\bar{x}\pm1.96(\sigma/\sqrt{n})$$
 
-t follows from the probability statement above that for 95% of all samples, this interval would contain the true population mean, $\mu$. 
+It follows from the statement above that for 95% of all samples, this interval would contain the true population mean, $\mu$. 
 
-To see how this works graphically, imagine constructing this interval for twenty different samples from the same population. 
+To see how this works graphically, imagine constructing this interval for twenty different samples from the same population. Figure \@ref(fig:conf-intervals) shows the mean and interval for each of these twenty samples, relative to the true population mean. 
 
-```{r conf_intervals, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+```{r conf-intervals, echo=FALSE, fig.cap="Intervals of sample mean plus and minus 1.96 standard errors for 20 different samples, with the true population mean shown by the blue line. Sample means shown by dots."}
 par(mar=c(0,0,0,0))
-plot(-2,-2, xlim=c(-1,20), ylim=c(-4,4.5), xaxt="n", yaxt="n", bty="n", xlab="", ylab="")
+plot(-2,-2, xlim=c(-1,20), ylim=c(-4,4), xaxt="n", yaxt="n", bty="n", xlab="", ylab="")
 x <- rnorm(19,0,1)
 while(sum(abs(x)>1.96)>0) {
   x[abs(x)>1.96] <- rnorm(sum(abs(x)>1.96),0,1) 
@@ -259,10 +308,9 @@ segments(1:20,lower,1:20,upper)
 segments(11,lower[11],11,upper[11], col="red", lwd=2)
 points(1:20, x, pch=19, cex=1.2)
 text(0,0, expression(mu), col="blue", cex=2, pos=3)
-legend(0,4.5,legend=c("sample mean", "confidence interval"), pch=c(19,NA), lty=c(NA,1), bty="n")
 ```
 
-The blue line gives the true population mean. The dots represent the sample means for each of the twenty samples. You can see that these sample means fluctuate around the true population mean due to random sampling error. The lines give the interval outlined above. In 19 out of the 20 cases, this interval contains the true population mean (as you can see by the fact that the interval crosses the blue line). The one sample where this is not true is shown in red. On average, 95% of samples will contain the true population mean in the interval, so 5% or 1 in 20 will not. 
+You can see that these sample means fluctuate around the true population mean due to random sampling error. The lines give the interval outlined above. In 19 out of the 20 cases, this interval contains the true population mean (as you can see by the fact that the interval crosses the blue line). The one sample where this is not true is shown in red. On average, 95% of samples will contain the true population mean in the interval, so 5% or 1 in 20 will not. 
 
 We refer to this interval as the **95% confidence interval**. Of course, in practice, we only construct one interval on the sample that we have. We use this interval to give a range of values that we feel "confident" will contain the true population mean. 
 
@@ -318,9 +366,9 @@ We are 95% confident that the  mean age among all US adults is between 49.01 and
 
 As noted in the previous section, the sampling distribution of other sample statistics such as proportions, mean differences, and regression slopes is also normally distributed in large enough samples. This means that we can use the same approach to construct confidence intervals for other sample statistics. The general form of the confidence interval is:
 
-$$(sample statistic) \pm t*(standard error)$$ 
+$$\texttt{(sample statistic)} \pm t*\texttt{(standard error)}$$ 
 
-In order to do this for any of the above sample statistics, we only need to know how to calculate that sample statistic's standard error and the degrees of freedom used to look up the t-statistic for that sample statistic. Here is a useful cheat sheet of those formulas:
+In order to do this for any of the above sample statistics, we only need to know how to calculate that sample statistic's standard error and the degrees of freedom used to look up the t-statistic for that sample statistic. Table \@ref(tab:cheat-sheet) provides a useful cheat sheet of those formulae:
 
 Type                     SE                                                                                df for $t$
 ------                   ------                                                                            ------
@@ -329,6 +377,8 @@ Proportion               $\sqrt\frac{\hat{p}*(1-\hat{p})}{n}$                   
 Mean Difference          $\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}$                                      min($n_1-1$,$n_2-1$)
 Proportion Difference    $\sqrt{\frac{\hat{p}_1*(1-\hat{p}_1)}{n_1}+\frac{\hat{p}_2*(1-\hat{p}_2)}{n_2}}$  min($n_1-1$,$n_2-1$)
 Correlation Coefficient  $\sqrt{\frac{1-r^2}{n-2}}$                                                        $n-2$
+
+Table: (\#tab:cheat-sheet) Cheat sheet of equations for calculating standard errors and degrees of freedom
 
 I know some of that math might look intimidating but I will go through an example of each case below to show you how it works for each case. 
 
@@ -532,18 +582,17 @@ $$\sqrt{\frac{0.083*(1-0.083)}{100}}=0.028$$
 
 Therefore, we should have a sampling distribution that looks like:
 
-```{r make_believe1, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+```{r make-believe1, echo=FALSE, fig.cap="A game of make believe, or the sampling distribution for sample proportion of winning Coca-Cola bottle caps assuming the null hypothesis is true"}
 x <- seq(from=-0.02,to=0.2,by=0.001)
 p <- 0.083
 se <- sqrt(p*(1-p)/100)
 y <- (1/(se*sqrt(2*pi)))*exp(-1*(x-p)^2/(2*se^2))
-
-plot(x,y,type="l",xlab="sample proportion",yaxt="n",ylab="", main="Game of make believe", cex.main=2)
-text(0.14,12, "Sampling distribution for sample proportion\nassuming null hypothesis is true", cex=0.7)
+par(mar=c(4,0.5,0.5,0.5))
+plot(x,y,type="l",xlab="possible sample proportions",yaxt="n", ylab="", cex.main=2)
 abline(v=p,lwd=4,col="blue")
-text(p,1,"true proportion = 0.083", col="blue", pos=4)
+text(p,10,"true proportion = 0.083", col="blue", pos=4)
 abline(v=0.05,lwd=4,col="red")
-text(0.05,1,"our sample      \nproportion = 0.05", col="red", pos=2)
+text(0.05,10,"our sample      \nproportion = 0.05", col="red", pos=2)
 ```
 
 The blue line shows the true population proportion assumed by the null hypothesis. The red line shows my actual sample proportion. The **key question of hypothesis testing is whether the observed data (or more extreme data) are reasonably likely under the assumption of the null hypothesis**. Practically speaking, I want to know how far my sample proportion is from the true proportion and whether this distance is far enough to consider it unlikely. 
@@ -564,12 +613,13 @@ There is one catch with this command. It always gives you the area in the lower 
 
 Our output indicates that 12% of all samples would produce a sample proportion of 0.05 or less when the true population proportion is 0.083. Graphically it looks like this:
 
-```{r make_believe2, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+```{r make-believe2, echo=FALSE, fig.cap="The proportion of all possible sample proportions that are lower than our sample proportion, assuming the null hypothesis is true"}
 x2 <- (x-p)/0.028
-plot(x2,y,type="l",xlab="SEs from center",yaxt="n",ylab="", main="Game of make believe")
+par(mar=c(4,0.5,0.5,0.5))
+plot(x2,y,type="l",xlab="SEs from center",yaxt="n",ylab="")
 abline(h=0)
 abline(v=-1.18,lwd=4,col="red")
-text(-1.18,1,"1.18 standard errors below the mean", col="red", pos=4)
+text(-1.18,5,"1.18 standard errors below the mean", col="red", pos=4)
 polygon(c(x2[1:71],-1.18),c(y[1:71],0), col="grey")
 arrows(-3,3,-1.5,2)
 text(-2.5,3.5,"0.12 (12%)",pos=3)
@@ -577,8 +627,9 @@ text(-2.5,3.5,"0.12 (12%)",pos=3)
 
 The grey area is the area in the lower tail. It would seem that we are almost ready to conclude our hypothesis test. However, there is a catch and its a tricky one. Remember that I was interested in the probability of getting a sample proportion this far or farther from the true population proportion. This is not the same as getting a sample proportion this low or lower. I need to consider the possibility that I would have been equally suspicious if I had got a sample proportion much higher than 8.3%. In mathematically terms, that means I need to take the area in the upper tail as well, where I am .033 above the true population proportion. This is called a **two-tailed test**. Luckily, because the normal distribution is symmetric, this area will be identical to the area in the lower tail and so I can just double this percent. 
 
-```{r make_believe3, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-plot(x2,y,type="l",xlab="sample proportion",yaxt="n",ylab="", main="Game of make believe")
+```{r make-believe3, echo=FALSE, fig.cap="We have to also consider the possibility of getting a sample proportion as far from the population proportion but in the other direction"}
+par(mar=c(4,0.5,0.5,0.5))
+plot(x2,y,type="l",xlab="possible sample proportions",yaxt="n",ylab="")
 abline(h=0)
 polygon(c(x2[1:71],-1.18),c(y[1:71],0), col="grey")
 polygon(c(x2[221:137],1.18),c(y[221:137],0), col="grey")
