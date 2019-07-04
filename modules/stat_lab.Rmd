@@ -1,16 +1,23 @@
 
 # (APPENDIX) Appendices {-}
 
+# Ggplot Cookbook
+
+This appendix will provide `ggplot` example R code and output for of all the graphs that we might use this term. For further information, I highly recommend Kieran Healy's [Data Visualization](https://kieranhealy.org/publications/dataviz/) book and Hadley Wikham's [ggplot2](https://www.springer.com/us/book/9780387981413) book.
+
+All the examples provided will use the standard example datasets that we have been working with throughout the term.
+
+```{r child="ggplot_cookbook.Rmd", echo=FALSE}
+```
+
+
 # R Stat Lab
 
-```{r child="lab1_using_scripts.Rmd", echo=FALSE}
+```{r child="lab1_using_scripts.Rmd", echo=FALSE, eval=FALSE}
 ```
 
-```{r child="lab2_object_types.Rmd", echo=FALSE}
+```{r child="lab2_object_types.Rmd", echo=FALSE, eval=FALSE}
 ```
 
-```{r child="lab3_pretty_pictures.Rmd", echo=FALSE}
-```
-
-```{r child="lab5_reading_writing_data.Rmd", echo=FALSE}
+```{r child="lab3_pretty_pictures.Rmd", echo=FALSE, eval=FALSE}
 ```
