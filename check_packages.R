@@ -11,7 +11,8 @@ packages = c("here", "texreg", "pander","stargazer",
              "sandwich","lmtest","survey","mice",
              "mfx","nnet","BMA","logistf",
              "gapminder",
-             "ggplot2","ggalt","scales","ggrepel",
+             "ggplot2","ggalt","scales","ggrepel", "plotly",
+             "viridis",
              "scatterplot3d","corrgram","gganimate","gifski",
              "devtools")
 
