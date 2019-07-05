@@ -1,5 +1,11 @@
 # Building Models
 
+Up to this point, we have learned the elementary components of a good statistical analysis. However, the typical social scientist doesn't spend that much time with these elementary components. Instead, most social scientific analysis depends on building **statistical model**. A statistical model is a formal mathematical representation of how we think variables might be related to one another. By building models, we can better understand the relationships between variables and how these relationships are affected by other variables. We will focus on model building in some form or another for all the remaining modules of this course. 
+
+We will begin with the simplest kind of model: we just try to fit a straight line through a set of points on a scatterplot. Although this approach may not seem very sophisticated, it forms the basis for more advanced modeling techniques we will learn later. After understanding this basic model, often called the *OLS regression model** we will move on to a variety of techniques we can use to build more complicated models that are both more realistic and more informative. 
+
+Throughout this module, we will focus primarily on issues of interpretation. We are now starting to learn the techniques that you will see presented in real world social science research. Being able to interpret and understand this work is a key objective of this course. 
+
 ------
 
 ## The OLS Regression Line
