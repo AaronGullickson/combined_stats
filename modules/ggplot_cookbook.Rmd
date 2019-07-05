@@ -1,6 +1,10 @@
+## Plotting Cookbook
 
+This appendix will provide `ggplot` example R code and output for of all the graphs that we might use this term. For further information, I highly recommend Kieran Healy's [Data Visualization](https://kieranhealy.org/publications/dataviz/) book and Hadley Wikham's [ggplot2](https://www.springer.com/us/book/9780387981413) book.
 
-## Barplots
+All the examples provided will use the standard example datasets that we have been working with throughout the term.
+
+### Barplots
 
 Oddly, barplots are one of the trickiest graphs in `ggplot`if you want proportions rather than absolute frequencies for each category. To make proportions, I need to specify `y=..prop..` in the aesthetics, and then use `group=1` to ensure that all categories are part of a single group and thus have proportions that sum up to one. In the code below, I am also using the `scale_y_continuous` command and the `scales::percent` command to label the tickmarks on the y-axis as percents rather than proportions. 
 
@@ -15,7 +19,7 @@ ggplot(titanic, aes(x=pclass, y=..prop.., group=1))+
 
 The result of this code is shown in Figure \@ref(fig:barplot). Because the tickmark labels are self-explanatory I use a value of `NULL` for the y-axis label. 
 
-## Histograms
+### Histograms
 
 Histograms are a snap in `ggplot`. The `binwidth` argument will allow you to easily resize bin widths without having to provide every break as base plot does. 
 
@@ -40,7 +44,7 @@ ggplot(movies, aes(x=Runtime, y=..density..))+
   theme_bw()
 ```
 
-## Boxplots
+### Boxplots
 
 The only tricky thing to a boxplot in `ggplot` is to remember that the aesthetic is `y` not `x`. Its not required, but setting `x=""` in the aesthetics and then setting the x label to `NULL` will also create a cleaner display with no x-axis. I also apply a `geom_boxplot` only argument here that colors outliers a different color.
 
@@ -63,7 +67,7 @@ ggplot(movies, aes(x=1, y=Runtime))+
   theme_bw()
 ```
 
-## Comparative Barplots
+### Comparative Barplots
 
 Comparative barplots are definitely one of the most difficult cases to graph properly in `ggplot` because grouping causes all kinds of issues with calculating proportions correctly. The best approach that I have found is to use faceting to separate out the barplots of one variable by the categories of the other variable. The basic code is then identical to that for a single barplot above with the addition of a `facet_wrap` command to identify the second categorical variable to use for faceting.
 
@@ -106,7 +110,7 @@ ggplot(tab, aes(x=pclass, y=prop_surv))+
   theme_bw()
 ```
 
-## Comparative Boxplots
+### Comparative Boxplots
 
 To construct comparative boxplots, we just need to add an `x` to the aesthetic of a boxplot. 
 
@@ -155,7 +159,7 @@ ggplot(movies, aes(x=reorder(Genre, Runtime, median), y=Runtime))+
   theme_bw()
 ```
 
-## Scatterplots
+### Scatterplots
 
 The `geom_point` command gives us the the geom we want for scatterplots. We can also use `geom_smooth` to graph a variety of lines to our data. Setting an `alpha` value can help with overplotting as well by providing sem-transparency.
 

@@ -1,0 +1,19 @@
+
+# (APPENDIX) Appendices {-}
+
+# Useful References
+
+```{r child="ggplot_cookbook.Rmd", echo=FALSE}
+```
+
+
+# R Stat Lab
+
+```{r child="lab1_using_scripts.Rmd", echo=FALSE, eval=FALSE}
+```
+
+```{r child="lab2_object_types.Rmd", echo=FALSE, eval=FALSE}
+```
+
+```{r child="lab3_pretty_pictures.Rmd", echo=FALSE, eval=FALSE}
+```
