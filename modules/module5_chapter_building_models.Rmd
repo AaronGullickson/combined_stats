@@ -4,24 +4,21 @@
 
 ## The OLS Regression Line
 
-Lets take another look at the scatterplot we constructed in the previous section that showed the relationship between median age and violent crime rates:
+Figure \@ref(fig:scatter-age-violent-line) shows a scatterplot of the relationship between median age and violent crime rates:
 
-```{r scatter_age_violent2, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-plot(crimes$MedianAge,crimes$Violent,
-     xlim=c(min(crimes$MedianAge),max(crimes$MedianAge)),
-     ylim=c(min(crimes$Violent),max(crimes$Violent)),
-     xlab="median age in state",
-     ylab="violent crimes (per 100,000)",
-     main="Scatterplot of median age and violent crime rates\nacross US States",
-     pch=21, bg="red",las=1)
-abline(lm(Violent~MedianAge, data=crimes))
+```{r scatter-age-violent-line, echo=FALSE, fig.cap="Scatterplot of median age and violent crime rates across US states, with a best-fitting straight line drawn through points"}
+ggplot(crimes, aes(x=MedianAge, y=Violent))+
+  geom_smooth(method="lm", se=FALSE)+
+  geom_point()+
+  labs(x="median age in state", y="violent crimes per 100,000 population")+
+  theme_bw()
 ```
 
-Notice that I now have a line plotted through those points. When you were trying to determine the direction of the relationship many of you were probably imagining a line going through the points already. Of course, if we just tried to "eyeball" the best line, we would get many different results. The line I have graphed above, however, is the best fitting line, at least according to some reasonable criteria. It is the best-fitting line because it minimizes the total distance from all of the points collectively to the line. This line is called the **ordinary least squares regression line** ( or OLS regression line, for short) and it is the basis for the most used statistical technique in the social sciences. This fairly simply concept of fitting the best line to a set of points on a scatterplot is the workhorse of social science statistics.
+I have also plotted a line through those points. When you were trying to determine the direction of the relationship many of you were probably imagining a line going through the points already. Of course, if we just tried to "eyeball" the best line, we would get many different results. The line I have graphed above, however, is the best fitting line, according to standard statistical criteria. It is the best-fitting line because it minimizes the total distance from all of the points collectively to the line. This line is called the **ordinary least squares regression line** ( or OLS regression line, for short). This fairly simply concept of fitting the best line to a set of points on a scatterplot is the workhorse of social science statistics and is the basis for most of the models that we will explore in this module.
 
 ### The Formula for a Line
 
- Remember the basic formula for a line in two-dimensional space? In algebra, you probably learned something like this:
+Remember the basic formula for a line in two-dimensional space? In algebra, you probably learned something like this:
 
 $$y=a+bx$$
 
@@ -35,11 +32,14 @@ On the right-hand side, we have a linear equation (or function) into which we fe
 
 The y-intercept is given by the symbol $b_0$. The y-intercept tells us the predicted value of $y$ when $x$ is zero. The slope is given by the symbol $b_1$. The slope tells us the predicted change in $y$ for a one-unit increase in $x$. In practice, the slope is the more important number because it tells us about the association between $x$ and $y$. Unlike the correlation coefficient, this measure of association is not unitless. We get an estimate of how much we expect $y$ to change in terms of its units for a one-unit increase in $x$. 
 
-In the case above, the slope is -25.6 and the y-intercept is 1343.9. We could therefore write the equation like so:
+For the scatterplot in Figure \@ref(fig:scatter-age-violent-line) above, the slope is -25.6 and the y-intercept is 1343.9. We could therefore write the equation like so:
 
-$$\hat{crimerate}_i=1343.9-25.6(medianage_i)$$
+$$\hat{\texttt{crime rate}_i}=1343.9-25.6(\texttt{median age}_i)$$
 
-We would interpret our numbers as follows. The model predicts that a one-year increase in age within a state is associated with 25.6 fewer violent crimes per 100,000 population, on average. The model predicts that in a state where the median age is zero, the violent crime rate will be 1343.9 crimes per 100,000 population, on average.
+We would interpret our numbers as follows:
+
+* The model predicts that a one-year increase in age within a state is associated with 25.6 fewer violent crimes per 100,000 population, on average. (the slope)
+* The model predicts that in a state where the median age is zero, the violent crime rate will be 1343.9 crimes per 100,000 population, on average. (the intercept)
 
 There is a lot to digest in these interpretations and I want to return to them in detail, but first I want to address a more basic question. How did I know that these are the right numbers for the best-fitting line? 
 
@@ -47,25 +47,24 @@ There is a lot to digest in these interpretations and I want to return to them i
 
 The slope and intercept of the OLS regression line are determined based on addressing one simple criteria: minimize the distance between the actual points and the line. More formally, we choose the slope and intercept that produce the **minimum sum of squared residuals (SSR)**.
 
-A **residual** is the vertical distance between an actual value of y for an observation and its predicted value:
+A **residual** is the vertical distance between an actual value of $y$ for an observation and its predicted value:
 
 $$residual_i=y_i-\hat{y}_i$$
 
-These residuals are also sometimes called **error terms**, because the larger they are in absolute value, the worse is our prediction. Take a look at the same scatterplot as above but this time with the residuals drawn in red:
+These residuals are also sometimes called **error terms**, because the larger they are in absolute value, the worse is our prediction. Take a look at the Figure \@ref(fig:scatter_reside) below which shows the residuals graphically as vertical distances between the actual point and the line. 
 
 
-```{r scatter_reside, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-plot(crimes$MedianAge,crimes$Violent,
-     xlim=c(min(crimes$MedianAge),max(crimes$MedianAge)),
-     ylim=c(min(crimes$Violent),max(crimes$Violent)),
-     xlab="median age in state",
-     ylab="violent crimes (per 100,000)",
-     main="Scatterplot of median age and violent crime rates\nacross US States",
-     pch=21, bg="grey",las=1)
+```{r scatter_reside, echo=FALSE, fig.cap="Scatterplot with best-fitting line shown in blue and residuals shown in red"}
 model <- lm(Violent~MedianAge, data=crimes)
-abline(model)
-segments(crimes$MedianAge, model$fitted.values, crimes$MedianAge, crimes$Violent,
-        col="red")
+temp <- data.frame(MedianAge=crimes$MedianAge, Violent=crimes$Violent,
+                   fitted=model$fitted.values)
+
+ggplot(temp, aes(x=MedianAge, y=Violent))+
+  geom_smooth(method="lm", se=FALSE)+
+  geom_segment(aes(xend=MedianAge, yend=fitted), color="red")+
+  geom_point()+
+  labs(x="median age in state", y="violent crimes per 100,000 population")+
+  theme_bw()
 ```
 
 Unless the points all fall along an exact straight line, there is no way for me to eliminate these residuals altogether, but some lines will produce higher residuals than others. What I am aiming to do is minimize the sum of squared residuals which is given by:
@@ -74,7 +73,11 @@ $$SSR = \sum_{i=1}^n(y_i-\hat{y}_i)^2$$
 
 I square each residual and then sum them up. By squaring, I eliminate the problem of some residuals being negative and some positive. 
 
-To see how this all works try [this exercise](https://aarongullickson.shinyapps.io/reducerss/.) where you can experiment with trying to find the best-fitting line to minimize the sum of squared residuals for another scatterplot. 
+To see how this all works, you can play around with the interactive example below which allows you to guess slope and intercept for a scatterplot and then see how well you did in minimizing the sum of squared residuals. 
+
+```{r shiny-app-reducerss, echo=FALSE}
+knitr::include_app("https://aarongullickson.shinyapps.io/reducerss/", height="800px")
+```
 
 Fortunately, we don't have to figure out the best slope and intercept by trial and error, as in the exercise above. There are relatively straightforward formulas for calculating the slope and intercept. They are:
 
@@ -105,7 +108,7 @@ In order to run the `lm` command, you need to input a formula. The structure of 
 model1 <- lm(crimes$Violent~crimes$MedianAge)
 ```
 
-**The dependent variable always goes on the left-hand side of this equation.**
+Please keep in mind that **the dependent variable always goes on the left-hand side of this equation.** You will get very different answers if you reverse the ordering. 
 
 In this case, I have entered in the variable names using the `data$variable` syntax, but `lm` also offers you a more streamlined way of specifying variables, by including a `data` option separately so that you only have to put the variable names in the formula, like so:
 
@@ -113,7 +116,7 @@ In this case, I have entered in the variable names using the `data$variable` syn
 model1 <- lm(Violent~MedianAge, data=crimes)
 ```
 
-Because I have specified "crimes" as the dataset, *R* knows that the variables "Violent" and "MedianAge" refer to variables within this dataset. The result will be the same as the previous command, but this approach makes it easier to read the formula itself. 
+Because I have specified `data=crimes`, *R* knows that the variables "Violent" and "MedianAge" refer to variables within this dataset. The result will be the same as the previous command, but this approach makes it easier to read the formula itself. 
 
 I have saved the output of the `lm` command into a new object that I have called "model1". You can call this object whatever you like.  This is out first real example of the "object-oriented" nature of *R*. I can apply a variety of functions to this object in order to extract information about the relationship. If I want to get the most information, I can run a `summary` on this model. 
 
@@ -131,16 +134,19 @@ coef(model1)
 
 This result is much more compact and will do for our purposes at the moment. 
 
-Finally, we can also plot the line to a scatterplot as shown in the very first figure of this module by using the `abline` command on our `model1` object. 
+### Adding an OLS regression line to a plot
 
-```{r scatter_abline, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-plot(crimes$MedianAge, crimes$Violent, 
-     pch=21, bg="red", 
-     xlab="Median Age", ylab="Violent crime rate per 100,000", 
-     main="scatterplot of median age\nand violent crime rates", las=1)
-abline(model1)
+You can easily add an OLS regression line to a scatterplot in `ggplot`. We can do this using the `geom_smooth` function. However we also need to specify that our method of smoothing is "lm" (for linear model) with the `method="lm"` argument. Here is the code for the example earlier: 
+
+```{r scatter-age-violent-line2, echo=FALSE, fig.cap="Use geom_smooth to plot an OLS regression line with or without a confidence interval band"}
+ggplot(crimes, aes(x=MedianAge, y=Violent))+
+  geom_smooth(method="lm", se=TRUE)+
+  geom_point()+
+  labs(x="median age in state", y="violent crimes per 100,000 population")+
+  theme_bw()
 ```
 
+You will notice that Figure \@ref(fig:scatter-age-violent-line2) also adds a band of grey. This is the confidence interval band for my line and is drawn by default. We will discuss issues of inference for the OLS regression line below. If you want to remove this you can change the `se` argument in `geom_smooth` to FALSE.
 
 ### The OLS regression line as a model
 
@@ -225,25 +231,33 @@ crimes$MedianAge.ctr <- crimes$MedianAge-35
 coef(lm(Violent~MedianAge.ctr, data=crimes))
 ```
 
-The intercept now gives me the predicted violent crime rate in a state with a median age of 35. In effect, I have moved my y-intercept from zero to thirty-five as is shown in the figure below. 
+The intercept now gives me the predicted violent crime rate in a state with a median age of 35. In effect, I have moved my y-intercept from zero to thirty-five as is shown in Figure \@ref(fig:ols-move-intercept) below. 
 
-```{r ols_move_intercept, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-par(mar=c(4,4,1,1))
-plot(crimes$MedianAge, crimes$Violent, pch=21, bg="grey90", col=NULL, cex=0.7,
-     xlim=c(0,45), ylim=c(200,1400), xaxt="n", bty="n", las=1,
-     xlab="Median Age (original and re-centered)", ylab="Violent crime rate (crimes/100,000)")
-model <- lm(Violent~MedianAge, data=crimes)
-abline(model, lwd=2)
-axis(1,at=seq(from=0,to=45, by=5))
-axis(1,at=seq(from=0,to=45, by=5), labels=paste(seq(from=0,to=45, by=5)-35), 
-     tick=FALSE, line=1)
-abline(v=0, lty=3, col="grey", lwd=2)
-abline(v=35, lty=3, col="grey", lwd=2)
-MedianAge <- c(0,35)
-predicted <- predict(model,data.frame(MedianAge))
-points(MedianAge,predicted, pch=21, bg="red")
-text(MedianAge,predicted,labels=paste(round(predicted,1)), pos=4, cex=0.7)
-arrows(rep(0,3),c(400,800,1200),rep(35,3),c(400,800,1200),length=0.1)
+```{r ols-move-intercept, echo=FALSE, fig.cap="Re-centering the independent variable moves the intercept but does not change the slope"}
+ggplot(crimes, aes(x=MedianAge, y=Violent))+
+  geom_segment(x=0, y=800, xend=35, yend=800,
+               arrow=arrow(length=unit(0.1, "inches")), 
+               color="grey40")+
+  geom_segment(x=0, y=400, xend=35, yend=400,
+               arrow=arrow(length=unit(0.1, "inches")), 
+               color="grey40")+
+  geom_segment(x=0, y=1200, xend=35, yend=1200,
+               arrow=arrow(length=unit(0.1, "inches")), 
+               color="grey40")+
+  geom_vline(xintercept = c(0,35), linetype=2)+
+  geom_smooth(method="lm", se=FALSE, fullrange=TRUE)+
+  geom_point(alpha=0.7)+
+  geom_point(x=0, y=1343.9, color="red", size=3)+
+  geom_point(x=35, y=448.7, color="red", size=3)+
+  annotate(x=3, y=1343.9, geom="label", label="1343.9")+
+  annotate(x=37.5, y=448.7, geom="label", label="448.7")+
+  xlim(0,45)+
+  scale_x_continuous(breaks=c(0,5,10,15,20,25,30,35,40,45),
+                     labels=paste(c(0,5,10,15,20,25,30,35,40,45),
+                                  c(0,5,10,15,20,25,30,35,40,45)-35,
+                                  sep="\n"))+
+  labs(x="median age in state on original scale and re-centered", y="violent crimes per 100,000 population")+
+  theme_bw()
 ```
 
 Its also possible to re-center an independent variable in the `lm` command without creating a whole new variable. If you surround the re-centering in the `I()` function within the formula, R will interpret the result of whatever is inside the `I()` function as a new variable. Here is an example based on the previous example:
@@ -260,42 +274,42 @@ Now, lets say instead of making you guess randomly I first told you the value of
 
 We can do this by separating, or *partitioning* the total possible error in our first case when we guessed the mean, into the part accounted for by $x$ and the part that is unaccounted for by $x$. 
 
-I can demonstrate this partitioning for one observation in our crime data (the state of Vermont) with this scatterplot:
+I demonstrate this partitioning for one observation in our crime data (the state of Alaska) with the scatterplot in Figure \@ref(fig:scatter-partition-variance) below.
 
-```{r scatter_partition_variance, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+```{r scatter-partition-variance, echo=FALSE, fig.cap="We can parition the total distance (in red) between an observation's value of the dependent variable and the mean (the dotted horizontal line) into the part accounted for by the model (in gold) and the residual (in green) that is unaccounted for by the model"}
 model <- lm(Violent~MedianAge, data=crimes)
-plot(crimes$MedianAge,crimes$Violent,
-     xlim=c(min(crimes$MedianAge),max(crimes$MedianAge)),
-     ylim=c(min(crimes$Violent),max(crimes$Violent)),
-     xlab="Median Age",
-     ylab="Violent crimes (per 100,000)",
-     main="Scatterplot of Median Age and Violent Crime",
-     pch=21, bg="grey90",col="white", las=1)
-abline(model, lwd=2)
-abline(h=mean(crimes$Violent), lwd=2, lty=2)
-points(crimes$Violent[46],crimes$MedianAge[46], pch=21,
-       bg="black")
-segments(crimes$MedianAge[46]-.08,crimes$Violent[46],
-         crimes$MedianAge[46]-.08,mean(crimes$Violent),
-         col="red", lwd=2)
-segments(crimes$MedianAge[46]+.08,crimes$Violent[46],
-         crimes$MedianAge[46]+.08,
-         model$coef[1]+model$coef[2]*crimes$MedianAge[46],
-         col="blue", lwd=2)
-segments(crimes$MedianAge[46]+.08,mean(crimes$Violent),
-         crimes$MedianAge[46]+.08,
-         model$coef[1]+model$coef[2]*crimes$MedianAge[46],
-         col="green", lwd=2)
-legend(4,4500, legend=c("Total distance","Explainable by model", "Model residual"), lty=1, lwd=2, col=c("red","green","blue"))
+crimes$fitted <- model$fitted.values
+
+ggplot(crimes, aes(x=MedianAge, y=Violent))+
+  geom_smooth(method="lm", se=FALSE, color="grey30")+
+  geom_hline(yintercept = mean(crimes$Violent), linetype=2)+
+  geom_segment(data=subset(crimes, State=="Alaska"),
+               aes(x=MedianAge-0.05, xend=MedianAge-0.05), 
+               yend=mean(crimes$Violent), 
+               color="red", size=1)+
+  geom_segment(data=subset(crimes, State=="Alaska"),
+               aes(x=MedianAge+0.05, xend=MedianAge+0.05,
+                   y=fitted), 
+               yend=mean(crimes$Violent), 
+               color="goldenrod", size=1)+
+  geom_segment(data=subset(crimes, State=="Alaska"),
+               aes(x=MedianAge+0.05, xend=MedianAge+0.05,
+                   y=Violent, yend=fitted), 
+               color="darkgreen", size=1)+
+  geom_point(alpha=0.2)+
+  geom_point(data=subset(crimes, State=="Alaska"), size=2)+
+  annotate(geom="text", x=33.8, y=680, label="Alaska")+
+  labs(x="median age in state", y="violent crimes per 100,000 population")+
+  theme_bw()
 ```
 
-The distance in red is the total distance between the observed property violent rate in the state of Vermont and the mean violent crime rate across all states (given by the dotted line). If I were instead to use the regression line predicting the violent crime rate by median age, I would predict a lower violent crime rate than average for Vermont because of its relatively high median age, but I would still predict a value that is too high. This red line is then partitioned into th green line which is the improvement in my estimate and the blue line which is the error that remains in my prediction from the regression line. If I could then repeat this process for all of the states, I could calculate the percentage of the total red lines that the green lines cover. This would give me an estimate of how much I reduce the error in my prediction by using the regression line rather than the mean to predict Vermont's violent crime rate. 
+The distance in red is the total distance between the observed violent crime rate in the state of Alaska and the mean violent crime rate across all states (given by the dotted line). If I were instead to use the OLS regression line predicting the violent crime rate by median age, I would predict a higher violent crime rate than average for Alaska because of its relatively low median age, but I would still predict a crime rate that is too low relative to the actual crime rate. The red line can be partitioned into th gold line which is the improvement in my estimate and the green line which is the error that remains in my prediction from the model. If I could then repeat this process for all of the states, I could calculate the percentage of the total red lines that the gold lines cover. This would give me an estimate of how much I reduce the error in my prediction by using the regression line rather than the mean to predict a state's violent crime rate. 
 
 In practice, we actually need to square those vertical distances because some are negative and some are positive and then we can sum them up over all the observations. So we get the following formulas:
 
-- Total variation: $SSY=\sum_{i=1}^n (y_i-\bar{y})^2$
-- Explained by model: $SSM=\sum_{i=1}^n (\hat{y}_i-\bar{y})^2$
-- Unexplained by model: $SSR=\sum_{i=1}^n (y_i-\hat{y}_i)^2$
+* Total variation: $SSY=\sum_{i=1}^n (y_i-\bar{y})^2$
+* Explained by model: $SSM=\sum_{i=1}^n (\hat{y}_i-\bar{y})^2$
+* Unexplained by model: $SSR=\sum_{i=1}^n (y_i-\hat{y}_i)^2$
 
 The proportion of the variation in $y$ that is explainable or accountable by variation in $x$ is given by $SSM/SSY$. 
 
@@ -343,42 +357,50 @@ There are three major limitations/cautions to be aware of when using OLS regress
 
 By definition, an OLS regression line is a straight line. If the underlying relationship between x and y is non-linear, then the OLS regression line will do a poor job of measuring that relationship.
 
-One common case of non-linearity is the case of diminishing returns in which the slope gets weaker at higher values of x. That is the case with this data:
+One common case of non-linearity is the case of diminishing returns in which the slope gets weaker at higher values of x. Figure \@ref(fig:nonlinearity) demonstrates a class case of non-linearity in the relationship between a country's life expectancy and GDP per capita.
 
-```{r nonlinearity, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-library(gapminder)
-gapminder <- subset(gapminder, year==2007)
-par(mar=c(4,4,0.1,1))
-plot(gapminder$gdpPercap, gapminder$lifeExp,
-     xlab="GDP per capita, 2007",
-     ylab="life expectancy, 2007", pch=21, bg="grey", las=1,
-     ylim=c(30,90))
+```{r nonlinearity, echo=FALSE, fig.cap="Scatterplot of GDP per capita and life expectancy across countries, 2007"}
+ggplot(subset(gapminder, year==2007), aes(x=gdpPercap, y=lifeExp))+
+  geom_point()+
+  labs(x="GDP per capita in US dollars", 
+       y="life expectancy",
+       caption="source: Gapminder, 2007")+
+  ylim(30,90)+
+  scale_x_continuous(labels = scales::dollar)+
+  theme_bw()
 ```
 
 
-The data here plot the GDP per capita of countries in 2007 to the life expectancy of countries in 2007 The relationship is clearly a strongly positive one, but also one of diminishing returns where the positive effect seems to plateau at higher levels of national income and life expectancy. This makes sense because the same absolute increase in national income at low levels of life expectancy can be used to reduce the incidence of well-understood infectious and parasitic diseases, whereas the same absolute increase in national income at high levels of life expectancy must try to reduce the risk of less understood and treatable diseases like cancer. You get more bang for your buck when life expectancy is low. 
+The relationship is clearly a strongly positive one, but also one of diminishing returns where the positive relationship seems to plateau at higher levels of GDP per capita. This makes sense because the same absolute increase in country wealth at low levels of life expectancy can be used to reduce the incidence of well-understood infectious and parasitic diseases, whereas the same absolute increase in country wealth at high levels of life expectancy must try to reduce the risk of less understood and treatable diseases like cancer. You get more bang for your buck when life expectancy is low. 
 
-If we try to fit a line to this data, we will get this:
+Figure \@ref(fig:nonlinearity2) shows what happens if we try to fit a line to this data.
 
-```{r nonlinearity2, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-par(mar=c(4,4,0.1,1))
-plot(gapminder$gdpPercap, gapminder$lifeExp,
-     xlab="GDP per capita, 2007",
-     ylab="life expectancy, 2007", pch=21, bg="grey", las=1,
-     ylim=c(30,90))
-abline(lm(lifeExp~gdpPercap,data=gapminder), lwd=2, col="blue")
-text(10000,75,label="Underestimate", col="red")
-text(2000,50,label="Over\nestimate", col="red")
-text(45000,80,label="Overestimate", col="red")
+```{r nonlinearity2, echo=FALSE, fig.cap="Fitting a line to a non-linear relationship will cause systematic errors in your prediction"}
+ggplot(subset(gapminder, year==2007), aes(x=gdpPercap, y=lifeExp))+
+  geom_smooth(method="lm", se=FALSE)+
+  geom_point(alpha=0.5)+
+  labs(x="GDP per capita in US dollars", 
+       y="life expectancy",
+       caption="source: Gapminder, 2007")+
+  ylim(30,90)+
+  annotate("label", x=10000, y=75, label="Underestimate")+
+  annotate("label", x=2000, y=50, label="Overestimate")+
+  annotate("label", x=45000, y=80, label="Overestimate")+
+  scale_x_continuous(labels = scales::dollar)+
+  theme_bw()
 ```
 
-Clearly a straight line is a poor fit. We systematically overestimate life expectancy at low and high GDP and underestimate life expectancy in the middle. 
+Clearly a straight line is a poor fit. We systematically overestimate life expectancy at low and high GDP per capita and underestimate life expectancy in the middle. 
 
-Its possible, in some circumstances, to correct for this problem of non-linearity but we will not explore those options in this class. For now, its just important to be aware of the problem and if you see clear non-linearity then you should question the use of an OLS regression line. 
+Its possible, in some circumstances, to correct for this problem of non-linearity but we will not explore those options in this module. For now, its just important to be aware of the problem and if you see clear non-linearity then you should question the use of an OLS regression line. 
 
 #### Outliers and Influential Points
 
-An outlier is an **influential point** if removing this observation from the dataset substantially changes the slope of the OLS regression line. You can try this out in [this exercise](https://aarongullickson.shinyapps.io/influentialpoints) on the crime data by clicking on points to remove them. Note how much the line changes when you remove a point. (You can click on a point a second time to add it back again).
+An outlier is an **influential point** if removing this observation from the dataset substantially changes the slope of the OLS regression line. You can try the interactive exercise below to see how removing points changes the slope of your line (click on a point a second time to add it back). Can you identify any influential points?
+
+```{r shiny-app-influentialpoints, echo=FALSE}
+knitr::include_app("https://aarongullickson.shinyapps.io/influentialpoints/", height="800px")
+```
 
 For the case of median age, Utah and DC both have fairly strong influences on the shape of the line. Removing DC makes the relationship weaker, while removing Utah makes the relationship stronger. Outliers will tend to have the strongest influence when their placement is inconsistent with the general pattern. In this case, Utah is very inconsistent with the overall negative effect because it has both low median age and low crime rates. 
 
