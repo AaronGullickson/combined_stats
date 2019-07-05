@@ -360,7 +360,7 @@ xbar+t*se
 xbar-t*se
 ```
 
-We are 95% confident that the  mean age among all US adults is between 49.01 and 49.87 years of age. As you can see, the large sample of nearly 6,000 respondents produces a very tight confidence interval. 
+We are 95% confident that the  mean age among all US adults is between 48.97 and 50.03 years of age. As you can see, the large sample of nearly 6,000 respondents produces a very tight confidence interval. 
 
 ### Calculating the confidence interval for other sample statistics
 
@@ -388,13 +388,13 @@ As an example, lets use the proportion of respondents who do not believe in anth
 
 ```{r}
 table(politics$globalwarm)
-n <- 1181+3057
-p_hat <- 1181/n
+n <- 1180+3058
+p_hat <- 1180/n
 n
 p_hat
 ```
 
-About 27.9% of the respondents in our sample are climate change deniers. What can we conclude about the proportion in the US population? First, lets figure out the t-statistic. We use the same $n-1$ for degrees of freedom:
+About 27.8% of the respondents in our sample are climate change deniers. What can we conclude about the proportion in the US population? First, lets figure out the t-statistic. We use the same $n-1$ for degrees of freedom:
 
 ```{r}
 t_stat <- qt(0.975, n-1)
@@ -407,7 +407,7 @@ $$\sqrt{\frac{\hat{p}*(1-\hat{p})}{n}}$$
 
 The term $hat{p}$ is the standard way to represent the sample proportion, which in this case is 0.279. So, our formula is:
 
-$$\sqrt{\frac{0.279*(1-0.279)}{4238}}$$
+$$\sqrt{\frac{0.278*(1-0.278)}{4238}}$$
 
 We can calculate this in *R*:
 
@@ -430,18 +430,18 @@ We are 95% confident that the true percentage of climate change deniers in the t
 using our Add health data, what is the mean difference in popularity (number of friend nominations) between frequent smokers and those who do not smoke frequently? 
 
 ```{r}
-tab <- tapply(addhealth$indegree, addhealth$smoker, mean)
+tab <- tapply(popularity$indegree, popularity$smoker, mean)
 tab
-mean_diff <- 4.782148 - 4.509636
+mean_diff <- 4.796992 - 4.506699
 mean_diff
 ```
 
-In our sample data, frequent smokers had 0.273 more friends on average than those who did not smoke frequently. What is the confidence interval for that value in the population? We start by calculating the t-statitic for this confidence interval. We use the size of the smaller group minus one for the degrees of freedom.
+In our sample data, frequent smokers had 0.290 more friends on average than those who did not smoke frequently. What is the confidence interval for that value in the population? We start by calculating the t-statitic for this confidence interval. We use the size of the smaller group minus one for the degrees of freedom.
 
 ```{r}
-table(addhealth$smoker)
-n1 <- 3736
-n2 <- 661
+table(popularity$smoker)
+n1 <- 3732
+n2 <- 665
 t_stat <- qt(.975, n2-1)
 t_stat
 ```
@@ -452,9 +452,9 @@ $$\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}$$
 We already have $n_1$ and $n_2$, so we just need to get the standard deviation of friend nominations for the two groups to get $s_1$ and $s_2$. We can do this with another tapply command, but changing from `mean` to `sd` in the third argument.
 
 ```{r}
-tapply(addhealth$indegree, addhealth$smoker, sd)
-s1 <- 3.65865
-s2 <- 3.869584
+tapply(popularity$indegree, popularity$smoker, sd)
+s1 <- 3.652224
+s2 <- 3.901188
 se <- sqrt(s1^2/n1+s2^2/n2)
 se
 ```
@@ -465,26 +465,26 @@ Now we have all the pieces to put together the confidence interval:
 mean_diff - t_stat*se
 mean_diff + t_stat*se
 ```
-We are 95% confident that in the population of US adolescents, those who smoke frequently have between 0.05 fewer to 0.59 more friend nominations, on average, than those who do not smoke frequently. Note that because our confidence interval contains both negative and positive value, we cannot be confident about whether smoking is truly associated with having more or less friends. The direction of the relationship between the two variables is uncertain.
+We are 95% confident that in the population of US adolescents, those who smoke frequently have between 0.03 fewer to 0.61 more friend nominations, on average, than those who do not smoke frequently. Note that because our confidence interval contains both negative and positive value, we cannot be confident about whether smoking is truly associated with having more or less friends. The direction of the relationship between the two variables is uncertain.
 
 ### Example with proportion differences
 
 Lets continue to use the Add Health data. Do we observe a gender difference in smoking behavior in our sample?
 
 ```{r}
-prop.table(table(addhealth$smoker, addhealth$sex), 2)
-p_hat_f <- 0.1456
-p_hat_m <- 0.1555
+prop.table(table(popularity$smoker, popularity$sex), 2)
+p_hat_f <- 0.1465106
+p_hat_m <- 0.1564593
 p_hat_diff <- p_hat_m-p_hat_f
 p_hat_diff
 ```
 
-In our sample, about 14.6% of girls were frequent smokers and about 15.6% of boys were frequent smokers. The percentage of boys who smoke is about 1% higher than the percentage of girls. Do we think this moderate difference in the sample is true in the population? 
+In our sample, about 14.7% of girls were frequent smokers and about 15.6% of boys were frequent smokers. The percentage of boys who smoke is about 1% higher than the percentage of girls. Do we think this moderate difference in the sample is true in the population? 
 
 Lets start again by calculating the appropriate t-statistic for our confidence interval. We use the same procedure as for mean differences above, choosing the size of the smaller group for the degrees of freedom. However, its important to note that our groups are now boys and girls, not smokers and non-smokers.
 
 ```{r}
-table(addhealth$sex)
+table(popularity$sex)
 n_f <- 2307
 n_m <- 2090
 t_stat <- qt(.975, n_m-1)
@@ -516,7 +516,7 @@ We are 95% confident that in the population of US adolescents, between 1.1% fewe
 Lets stick with the Add Health data. What is the correlation between GPA and the number of friend nominations that a student receives?
 
 ```{r}
-r <- cor(addhealth$pseudoGPA, addhealth$indegree)
+r <- cor(popularity$pseudoGPA, popularity$indegree)
 r
 ```
 
@@ -525,7 +525,7 @@ In our sample, there is a moderately positive correlation between a student's GP
 For the t-statistic, we use $n-2$ for the degrees of freedom:
 
 ```{r}
-n <- nrow(addhealth)
+n <- nrow(popularity)
 t_stat <- qt(.975, n-2)
 ```
 
@@ -546,7 +546,7 @@ r - t_stat*se
 r + t_stat*se
 ```
 
-We are 95% confident that the true correlation coefficient between GPA and friend nominations in the population of US adolescents is between 0.139 and 0.198. While there is some difference in the strength of that relationship, we are pretty confident that the correlation is moderatly positive.
+We are 95% confident that the true correlation coefficient between GPA and friend nominations in the population of US adolescents is between 0.139 and 0.197. While there is some difference in the strength of that relationship, we are pretty confident that the correlation is moderatly positive.
 
 ------
 
@@ -683,17 +683,17 @@ Lets look at differences in mean income (measured in $1000) by religion in the p
 tapply(politics$income, politics$relig, mean)
 ```
 
-I want to look at the difference between Roman Catholics and "Other Religions." The mean difference here is:
+I want to look at the difference between Evangelical Protestants and "Other Religions." The mean difference here is:
 
-$$63.35337-61.74611=1.607$$
+$$58.32606-60.75311=-2.42705$$
 
-Roman Catholics make $1,607 more than members of other religions, in my sample. 
+Evangelical Protestants make \$2,427 less than members of other religions, in my sample. 
 
 Let me set up a hypothesis test where the null hypothesis is that Roman Catholics and members of other religions have the same income, or in other words, the mean difference in income is zero:
 
 $$H_0: \mu_c-\mu_o=0$$
 
-Where $\mu_c$ is the population mean income of Catholics and $\mu_o$ is the population mean income of members of other religions. In order to figure out how far my sample mean difference of 0.548 is from 0, I need to find the standard error of the mean difference. The formula for this number is:
+Where $\mu_c$ is the population mean income of evangelical Protestants and $\mu_o$ is the population mean income of members of other religions. In order to figure out how far my sample mean difference of -2.427 is from 0, I need to find the standard error of the mean difference. The formula for this number is:
 
 $$\sqrt{\frac{s_c^2}{n_c}+\frac{s_o^2}{n_o}}$$
 
@@ -702,17 +702,17 @@ I can calculate this in *R*:
 ```{r}
 tapply(politics$income, politics$relig, sd)
 table(politics$relig)
-sqrt(55.49944^2/1393+52.78854^2/257)
-1.607/3.613
+se <- sqrt(51.23396^2/917+56.37886^2/883)
+-2.42705/se
 ``` 
 
-The t-statistic of 0.44 here is not very large. I am only 0.44 standard errors above 0 on the sampling distribution, assuming the null hypothesis is true. Lets go ahead and calculate the p-value for this t-statistic. Remember that I need to put in the negative version of this number to the `pt` command. I also need to use the smaller of the two sample sizes for my degrees of freedom:
+The t-statistic of -0.95 here is not very large. I am only 0.44 standard errors below 0 on the sampling distribution, assuming the null hypothesis is true. Lets go ahead and calculate the p-value for this t-statistic. Remember that I need to put in the negative version of this number to the `pt` command. I also need to use the smaller of the two sample sizes for my degrees of freedom:
 
 ```{r}
-2*pt(-0.44, 257-1)
+2*pt(-0.95, 883-1)
 ```
 
-In a sample of this size, there is an 66% chance of observing a mean income difference of $1,607 or more between Catholics and members of other religions, just by sampling error, assuming that there is no difference in income in the population. Therefore, I **fail to reject the null hypothesis** that Catholics and members of other religions make the same income. 
+In a sample of this size, there is an 34% chance of observing a mean income difference of $2,427 or more between evangelical Protestants and members of other religions, just by sampling error, assuming that there is no difference in income in the population. Therefore, I **fail to reject the null hypothesis** that evangelical Protestants and members of other religions make the same income. 
 
 #### Example of proportion differences
 
@@ -722,19 +722,19 @@ $$H_0: \rho_w-\rho_c=0$$
 In simple terms, our null hypothesis is that the same proportion of white and black adolescents smoke frequently. Lets look at the actual numbers from our sample:
 
 ```{r}
-prop.table(table(addhealth$smoker, addhealth$race),2)
-p_w <- 0.203
-p_b <- 0.051
+prop.table(table(popularity$smoker, popularity$race),2)
+p_w <- 0.20439894
+p_b <- 0.05152838
 p_diff <- p_w-p_b
 p_diff
 ```
 
-About 20.3% of white students smoked frequently, compared to only 5.1% of black students. The difference in proportion is a large 15.2% in the sample. This would seem to contradict our null hypothesis. However, we need to confirm that a difference this large in a sample of our size is unlikely to happen by random chance. To do that we need to calculate the standard error, just as we learned to do it for proportion differences in the confidence interval section:
+About 20.4% of white students smoked frequently, compared to only 5.2% of black students. The difference in proportion is a large 15.3% in the sample. This would seem to contradict our null hypothesis. However, we need to confirm that a difference this large in a sample of our size is unlikely to happen by random chance. To do that we need to calculate the standard error, just as we learned to do it for proportion differences in the confidence interval section:
 
 ```{r}
-table(addhealth$race)
+table(popularity$race)
 n_w <- 2637
-n_b <- 1146
+n_b <- 1145
 se <- sqrt((p_w*(1-p_w)/n_w)+(p_b*(1-p_b)/n_b))
 se
 ```
@@ -749,17 +749,17 @@ t_stat
 Wow, thats a lot. We can be pretty confident already without the final step of the p-value, but lets calculate it anyway. Remember ot always take the negative version of the t-statistic you calculated:
 
 ```{r}
-2*pt(-14.9345, n_b-1)
+2*pt(-14.96485, n_b-1)
 ```
 
-The p-value is astronomically small. In a sample of this size, the probability of observing a difference in the proportion frequent smokers between whites and blacks of 15.2% or larger if there is no difference in the population is less than 0.0000001%. Therefore, I **reject the null hypothesis** and conclude that white students are more likely to be frequent smokers than are black students. 
+The p-value is astronomically small. In a sample of this size, the probability of observing a difference in the proportion frequent smokers between whites and blacks of 15.3% or larger if there is no difference in the population is less than 0.0000001%. Therefore, I **reject the null hypothesis** and conclude that white students are more likely to be frequent smokers than are black students. 
 
 #### Example of correlation coefficient
 
 Lets look at the correlation between the parental income of a student and the number of friend nominations they recieve. Our null hypothesis will be that there is no relationship between parental income and student popularity in the population of US adolescents. Lets look at the data in our sample:
 
 ```{r}
-r <- cor(addhealth$parentinc, addhealth$indegree)
+r <- cor(popularity$parentinc, popularity$indegree)
 r
 ```
 
@@ -768,7 +768,7 @@ In the sample we observe a moderately positive correlation between a student's p
 First, we need to calculate the standard error:
 
 ```{r}
-n <- nrow(addhealth)
+n <- nrow(popularity)
 se <- sqrt((1-r^2)/(n-2))
 se
 ```
@@ -782,10 +782,10 @@ r/se
 What is the probablity of being that far away from zero for a sample of this size?
 
 ```{r}
-2*pt(-8.461366, n-2)
+2*pt(-8.334658, n-2)
 ```
 
-The probability is very small. In a sample of this size, the probability is less than 0.00000001% of observing a correlation coefficient between parental income and friend nominations received of an absolute magnitude of 0.127 or higher when the true correlation is zero in the population. Therefore, we **reject the null hypothesis** and conclude that there is a positive correlation between parental income and populatity among US adolescents.
+The probability is very small. In a sample of this size, the probability is less than 0.00000001% of observing a correlation coefficient between parental income and friend nominations received of an absolute magnitude of 0.125 or higher when the true correlation is zero in the population. Therefore, we **reject the null hypothesis** and conclude that there is a positive correlation between parental income and populatity among US adolescents.
 
 #### Statistical Significance
 
