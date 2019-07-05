@@ -221,7 +221,7 @@ Note that I use the same "model predicts" and "on average" prefix and suffix for
 
 Is it realistic to have a state with a median age of zero? No, its not. You will never observe a US state with a median age of zero. This is a common situation that often confuses students. In cases when zero falls outside the range of the independent variable, the intercept is not a particular useful number because it does not tell us about a realistic situation. The intercept's only "job" is to give a number that allows the line to go through the points on the scatterplot at the right level. You can see this in the interactive exercise above if you select the right slope of 148 and then vary the intercept. 
 
-In general making predictions for values of $x$ that fall outside the range of $x$ in the observed data is problematic. This is ofen leads to intercepts which don't make a lot of sense. This problem with zero being outside the range of data is also evident in the other two examples of slopes from the previous section. When looking at the relationship between education and sexual frequency, no respondents are actually at zero years of education and no movies are at zero minutes of runtime. 
+In general making predictions for values of $x$ that fall outside the range of $x$ in the observed data is problematic. This is often leads to intercepts which don't make a lot of sense. This problem with zero being outside the range of data is also evident in the other two examples of slopes from the previous section. When looking at the relationship between education and sexual frequency, no respondents are actually at zero years of education and no movies are at zero minutes of runtime. 
 
 In truth, to fit the line correctly, we only need the slope and one point along the line. It is convenient to choose the point where $x=0$ but there is no reason why we could not choose a different point. It is actually quite easy to calculate a different predicted value along the line by **re-centering** the independent variable.
 
@@ -334,7 +334,7 @@ When working with sample data, our usual issues of statistical inference apply t
 
 $$\hat{y}_i=\beta_0+\beta_1x_i$$
 
-We use greek "beta" values because we are describing unobserved parameters in the population. The null hypothesis in this case would be that the slope is zero indicating no relationship between $x$ and $y$:
+We use Greek "beta" values because we are describing unobserved parameters in the population. The null hypothesis in this case would be that the slope is zero indicating no relationship between $x$ and $y$:
 
 $$H_0:\beta_1=0$$
 
@@ -347,7 +347,7 @@ model <- lm(Violent~MedianAge, data=crimes)
 summary(model)
 ```
 
-The "Coefficients" table in the middle gives us all the information we need. The first column gives us the sample slope of -25.58. The second column gives us the standard error for this slope of 11.56. The third column gives us the t-statistic derived by dividing the first column by the second colum. The final column gives us the p-value for the hypothesis test. In this case, there is about a 3.2% chance of getting a sample slope this large on a sample of 51 cases if the true value in the population is zero. Of course, in this case its nonsensical because we don't have a sample, but the numbers here will be valuable in cases with real sample data. 
+The "Coefficients" table in the middle gives us all the information we need. The first column gives us the sample slope of -25.58. The second column gives us the standard error for this slope of 11.56. The third column gives us the t-statistic derived by dividing the first column by the second column. The final column gives us the p-value for the hypothesis test. In this case, there is about a 3.2% chance of getting a sample slope this large on a sample of 51 cases if the true value in the population is zero. Of course, in this case its nonsensical because we don't have a sample, but the numbers here will be valuable in cases with real sample data. 
 
 ### Regression Line Cautions
 
@@ -468,7 +468,7 @@ plot_ly(x=jitter(sex$educ,10), y=jitter(sex$age,10), z=jitter(sex$sexf,10)) %>%
                     zaxis=list(title="sexual frequency")))
 ```
 
-The dependent variable is shown on the vertical (z) axis and the two independent variables are shown on the "width" and "depth" axes (x and y). The flate plane shown is defined by the OLS regression model equation above. So, rather than fitting a straight line through the data, I am fitting a plane. Note however that if you rotate the 3d scatterplot to hide the age "depth" dimension, it will then look like a two-dimensional scatterplot between years of education and sexual frequency. In this case, the the edge of the plane would indicate the slope between years of education and sexual frequency. Similarly, I could rotate it the other way to look at the relationship between age and sexual frequency. 
+The dependent variable is shown on the vertical (z) axis and the two independent variables are shown on the "width" and "depth" axes (x and y). The flat plane shown is defined by the OLS regression model equation above. So, rather than fitting a straight line through the data, I am fitting a plane. Note however that if you rotate the 3d scatterplot to hide the age "depth" dimension, it will then look like a two-dimensional scatterplot between years of education and sexual frequency. In this case, the the edge of the plane would indicate the slope between years of education and sexual frequency. Similarly, I could rotate it the other way to look at the relationship between age and sexual frequency. 
 
 How do I know what are the best values for $b_0$, $b_1$, and $b_2$ that define my plane? The logic is the same as for bivariate OLS regression: I choose values that minimize the sum of squared residuals (SSR):
 

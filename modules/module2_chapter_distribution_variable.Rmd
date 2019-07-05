@@ -120,7 +120,7 @@ ggplot(titanic, aes(x=pclass, y=..prop.., group=1))+
   theme_bw()
 ```
 
-Figure \@ref(fig:barplot-passclass) is our first code example of the `ggplot` library that we will use to make figures in *R*. I will discuss how this code works below, but first I want to focus on the figure itself. Unlike the piechart, our eye only has to work in one dimension (in this case, horizontal). We can clearly see that third class is the largest passenger class with slightly more than 50% of all passengers. We also can see easily determine visually that thrid class passengers are at more than twice as common as either of the other two categories, simply by comparing the height of the bars. We can also see that slightly more passengers were in first class than second class simply by comparing the heights of those two bars. 
+Figure \@ref(fig:barplot-passclass) is our first code example of the `ggplot` library that we will use to make figures in *R*. I will discuss how this code works below, but first I want to focus on the figure itself. Unlike the piechart, our eye only has to work in one dimension (in this case, horizontal). We can clearly see that third class is the largest passenger class with slightly more than 50% of all passengers. We also can see easily determine visually that third class passengers are at more than twice as common as either of the other two categories, simply by comparing the height of the bars. We can also see that slightly more passengers were in first class than second class simply by comparing the heights of those two bars. 
 
 So how did I create this graph? The `ggplot` syntax is a little different than most of the other R syntax we will look at this term. With `ggplot`, we add several commands together with the `+` sign to create our overall plot. Each command adds a "layer" to our plot. These layers are:
 
@@ -168,7 +168,7 @@ ggplot(politics, aes(x=age))+
   theme_bw()
 ```
 
-Looking at Figure \@ref(fig:hist-agepol), I can see the peak in the distribution in the 50's (the baby boomers) with a long fat tail to the right and a steeper drop off at older ages, due to smaller cohorts and old age mortality.I can also sort of see a smaller peack in the 25-34 range which is largely the children of the baby boomers. 
+Looking at Figure \@ref(fig:hist-agepol), I can see the peak in the distribution in the 50's (the baby boomers) with a long fat tail to the right and a steeper drop off at older ages, due to smaller cohorts and old age mortality.I can also sort of see a smaller peak in the 25-34 range which is largely the children of the baby boomers. 
 
 What would this histogram look like if I had used 5-year bin widths instead of 10-year bins? Lets try it:
 
@@ -190,7 +190,7 @@ What kinds of things should you be looking for in your histogram? There are four
 
 #### Center
 
-Where is the center of the distribution? Loosely we can think of the center as the peak in the data, although we will develop some more technical terms for center in the next section. Some distributions might have more than one distinct peak. When a distribution has one peak, we call it a **unimodal** distribution. Figure \@ref(fig:hist-unimodal) shows a clear unimodal distribution for the runtime of movies. We can clearly see that the peak is somewhere between 90 and 100 minutes. When a distribution has two distinct peaks, we call it a **bimodal** distribution. Figure \@ref(fig:hist-bimodal) shows that the distribution of violent crime rates aross states is bimodal. The first peak is around 2200-2700 crimes per 100,000 and the second is around 3500 crimes per 100,000. This suggests that there are two distinctive clusters of states: in the first cluster are states with a moderate crime rate and in the second cluster, states with high crime rate states. You can probably guess what we call a distribution with three peaks (and so on), but its fairly rare to see more than two distinct peaks in a distribution.
+Where is the center of the distribution? Loosely we can think of the center as the peak in the data, although we will develop some more technical terms for center in the next section. Some distributions might have more than one distinct peak. When a distribution has one peak, we call it a **unimodal** distribution. Figure \@ref(fig:hist-unimodal) shows a clear unimodal distribution for the runtime of movies. We can clearly see that the peak is somewhere between 90 and 100 minutes. When a distribution has two distinct peaks, we call it a **bimodal** distribution. Figure \@ref(fig:hist-bimodal) shows that the distribution of violent crime rates across states is bimodal. The first peak is around 2200-2700 crimes per 100,000 and the second is around 3500 crimes per 100,000. This suggests that there are two distinctive clusters of states: in the first cluster are states with a moderate crime rate and in the second cluster, states with high crime rate states. You can probably guess what we call a distribution with three peaks (and so on), but its fairly rare to see more than two distinct peaks in a distribution.
 
 ```{r hist-unimodal, message=FALSE, warning=FALSE, echo=FALSE, fig.cap='The distribution of movie runtimes is unimodal with one clear peak around 90-100 minutes', fig.align='center'}
 ggplot(movies, aes(x=Runtime))+
@@ -245,7 +245,7 @@ ggplot(movies, aes(x=Runtime, fill=Genre, y=..density..))+
 
 Are there extreme values which fall outside the range of the rest of the data? We want to pay attention to these values because they may have a strong influence on the statistics that we will learn to calculate to summarize a distribution. They might also influence some of the measures of association that we will learn later. Finally, extreme outliers may help identify data coding errors. 
 
-In Figure \@ref(fig:hist-bimodal) above, we can see a clear outlier in the violent crime rate for Washington DC. Washington DC's crime rate is such an outlier relative to the other states that we will pay attention to it throughout this term as we conduct our analysis. Figure \@ref(fig:hist-spread) above shows that Peter Jackson's Return of the King was an outlier for the runtime of sci-fi/fantasy movies, although it doesn't seem quite as exterme as for the case of Washington DC. 
+In Figure \@ref(fig:hist-bimodal) above, we can see a clear outlier in the violent crime rate for Washington DC. Washington DC's crime rate is such an outlier relative to the other states that we will pay attention to it throughout this term as we conduct our analysis. Figure \@ref(fig:hist-spread) above shows that Peter Jackson's Return of the King was an outlier for the runtime of sci-fi/fantasy movies, although it doesn't seem quite as extreme as for the case of Washington DC. 
 
 In large datasets, it can sometimes be very difficult to detect a single outlier on a histogram because the height of its bar will be so small. Later in this chapter, we will learn another graphical technique called the boxplot that can be more useful for detecting outliers in a quantitative variable.
 
@@ -480,7 +480,7 @@ ggplot(sex, aes(x="", y=age))+
   theme_bw()
 ```
 
-Most of this code is straightforward. We use the `y` aesthetic to indicate the variable we want the boxplot for and we use the `geom_boxplot` command to graph the boxplot (in this case the `fill` argument can be used to specify a color choice for the box of the boxplot). The only unusual thing here is the use of `x=""` in the top-level aesthetics and the use of `x=NULL` in the `labs` command. These additions are not strictly necessary but they do cause the horizontal x-scale on the graph to be supressed. Otherwise we would see some non-intuitive numbers here.
+Most of this code is straightforward. We use the `y` aesthetic to indicate the variable we want the boxplot for and we use the `geom_boxplot` command to graph the boxplot (in this case the `fill` argument can be used to specify a color choice for the box of the boxplot). The only unusual thing here is the use of `x=""` in the top-level aesthetics and the use of `x=NULL` in the `labs` command. These additions are not strictly necessary but they do cause the horizontal x-scale on the graph to be suppressed. Otherwise we would see some non-intuitive numbers here.
 
 The exercise below allows you to adjust a slider to see different percentiles on both a histogram and a boxplot. 
 

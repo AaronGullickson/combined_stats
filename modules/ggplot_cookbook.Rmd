@@ -33,7 +33,7 @@ ggplot(movies, aes(x=Runtime))+
 
 Figure \@ref(fig:histogram) shows the basic histogram from the code above. By default, `ggplot` will not place a border around bars, but I like to make the border a slightly different color (e.g. `col="black"`) to provide better visual definition. 
 
-You can also calculate density instead of count, if you prefer, by adding the `y=..density..` option to the aesthetics. Density is the proportion of cases in a bin, divided by bin width. If you plot a histogram with density, you can also overlay this figure with a smoothed line approximing the distribution called a kernel density. These results are shown in Figure \@ref(fig:histogram-density). 
+You can also calculate density instead of count, if you prefer, by adding the `y=..density..` option to the aesthetics. Density is the proportion of cases in a bin, divided by bin width. If you plot a histogram with density, you can also overlay this figure with a smoothed line approximating the distribution called a kernel density. These results are shown in Figure \@ref(fig:histogram-density). 
 
 ```{r histogram-density, fig.cap="A histogram with kernel density smoother", echo=TRUE}
 ggplot(movies, aes(x=Runtime, y=..density..))+
@@ -81,7 +81,7 @@ ggplot(titanic, aes(x=survival, y=..prop.., group=1))+
   theme_bw()
 ```
 
-Figure \@ref(fig:comp-barplot) shows the result. In this case, since survival and death are mirror images, we could convey the same information, but with much less ink by a simple dotplot of the percent surviving by passenger class. However, this would require some prepatory work to prepare the data in the way we want to display it. For the undergraduate class, you are not required to understand how to prepare this data. 
+Figure \@ref(fig:comp-barplot) shows the result. In this case, since survival and death are mirror images, we could convey the same information, but with much less ink by a simple dotplot of the percent surviving by passenger class. However, this would require some preparatory work to prepare the data in the way we want to display it. For the undergraduate class, you are not required to understand how to prepare this data. 
 
 ```{r comp-dotplot, fig.cap="A simple dotplot", echo=TRUE}
 tab <- prop.table(table(titanic$survival, titanic$pclass),2)
@@ -161,7 +161,7 @@ ggplot(movies, aes(x=reorder(Genre, Runtime, median), y=Runtime))+
 
 ### Scatterplots
 
-The `geom_point` command gives us the the geom we want for scatterplots. We can also use `geom_smooth` to graph a variety of lines to our data. Setting an `alpha` value can help with overplotting as well by providing sem-transparency.
+The `geom_point` command gives us the the geom we want for scatterplots. We can also use `geom_smooth` to graph a variety of lines to our data. Setting an `alpha` value can help with overplotting as well by providing semi-transparency.
 
 ```{r scatter, fig.cap="Basic Scatterplot", echo=TRUE}
 ggplot(politics, aes(x=age, y=income))+

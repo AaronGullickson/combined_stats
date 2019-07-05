@@ -130,7 +130,7 @@ nrow(crimes)
 
 #### qt 
 
-Calculate the t-value needed for a confidence interval. For a 95% confidence interval, the first argument shold always be `0.975`. The second argument should be the appropriate degrees of freedom for the statistic and dataset.
+Calculate the t-value needed for a confidence interval. For a 95% confidence interval, the first argument should always be `0.975`. The second argument should be the appropriate degrees of freedom for the statistic and dataset.
 
 ```{r app-qt-example, echo=TRUE}
 qt(0.975, nrow(politics)-1)
@@ -138,7 +138,7 @@ qt(0.975, nrow(politics)-1)
 
 #### pt
 
-Calculate the p-value for a hypothesis test. The first argument should always be the negative version of the t-statistic and the second argument should be the appropirate degrees of freedom for the statistic and dataset.
+Calculate the p-value for a hypothesis test. The first argument should always be the negative version of the t-statistic and the second argument should be the appropriate degrees of freedom for the statistic and dataset.
 
 ```{r app-pt-example, echo=TRUE}
 2*pt(-2.1, nrow(politics)-1)

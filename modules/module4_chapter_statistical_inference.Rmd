@@ -2,7 +2,7 @@
 
 Now that we have the basics of examining data down, we turn to another issue that we can address with statistical analysis. Howe confident are we that the the results from the data represent the larger population from which the data are drawn? This issue only applies to cases where the data we use constitutes a **sample** from a larger **population**. However, many of the datasets that we work with in the social sciences are of this type, so this is typically an important issue. We don't want to to reach an incorrect conclusion that $x$ is associated with $y$ in cases when that association in our sample is basically a result of random chance.
 
-In many introductory statistics courses, statistical inference would take up the majority of the course and you would learn a variety of cookbook formulae for conducting "tests." We won't do much of that here. Instead I will focus on the logic of the two most common procedures in statistical inference: the **confidence interval** and the **hypothesis test**. Once you understand the logic behind these procedures, it turns out that all of the various "tests" are just iterations on the same basic theme. Nonetheless, we will have to use some formulae in this module with associated number crunching. This is the most math heavy module of the course, so be prepared. 
+In many introductory statistics courses, statistical inference would take up the majority of the course and you would learn a variety of cookbook formulas for conducting "tests." We won't do much of that here. Instead I will focus on the logic of the two most common procedures in statistical inference: the **confidence interval** and the **hypothesis test**. Once you understand the logic behind these procedures, it turns out that all of the various "tests" are just iterations on the same basic theme. Nonetheless, we will have to use some formulas in this module with associated number crunching. This is the most math heavy module of the course, so be prepared. 
 
 ------
 
@@ -35,7 +35,7 @@ arrows(4,6,6,6)
 text(5,5.5,"Infer from sample", cex=0.7)
 ```
 
-The large blue rectangle is the population that we want to know about. Within this population, there is some value that we want to know. In this case, that value is the mean difference in sexual frequency between married and never married individuals. We refer to this unknown value in the population as a **parameter**. You will also notice that there are some funny-looking greek letters in that box. We always use greek symbols to represent values in the population. In this case, $\mu_1$ is the population mean of sexual frequency for married individuals and $\mu_2$ is the population mean of sexual frequency for never married individuals. Thus, $\mu_1-\mu_2$ is the population mean difference in sexual frequency between married and never married individuals. 
+The large blue rectangle is the population that we want to know about. Within this population, there is some value that we want to know. In this case, that value is the mean difference in sexual frequency between married and never married individuals. We refer to this unknown value in the population as a **parameter**. You will also notice that there are some funny-looking Greek letters in that box. We always use Greek symbols to represent values in the population. In this case, $\mu_1$ is the population mean of sexual frequency for married individuals and $\mu_2$ is the population mean of sexual frequency for never married individuals. Thus, $\mu_1-\mu_2$ is the population mean difference in sexual frequency between married and never married individuals. 
 
 We typically don't have data on the entire population, which is why we need to draw a sample in the first place. Therefore, these population parameters are unknown. To estimate what they are, we draw a sample as shown by the smaller yellow square. In this sample, we can calculate the sample mean difference in sexual frequency between married and never married individuals, $\bar{x}_1-\bar{x}_2$. We refer to a measurement in the sample as a **statistic**. We represent these statistics with roman letters to distinguish them from the corresponding value in the population.
 
@@ -269,7 +269,7 @@ I will discuss these two different methods in the next two sections.
 
 ## Confidence Intervals
 
-As Figure \@ref(fig:normaldist-ci) showsm, 95% of all the possible sample means will be within 1.96 standard errors of the true population mean $\mu$.
+As Figure \@ref(fig:normaldist-ci) shows, 95% of all the possible sample means will be within 1.96 standard errors of the true population mean $\mu$.
 
 ```{r normaldist-ci, echo=FALSE, fig.cap="95% of all sample means will be within 1.96 standard errors of the true population mean."}
 x <- seq(from=-5,to=5,by=0.1)
@@ -368,7 +368,7 @@ As noted in the previous section, the sampling distribution of other sample stat
 
 $$\texttt{(sample statistic)} \pm t*\texttt{(standard error)}$$ 
 
-In order to do this for any of the above sample statistics, we only need to know how to calculate that sample statistic's standard error and the degrees of freedom used to look up the t-statistic for that sample statistic. Table \@ref(tab:cheat-sheet) provides a useful cheat sheet of those formulae:
+In order to do this for any of the above sample statistics, we only need to know how to calculate that sample statistic's standard error and the degrees of freedom used to look up the t-statistic for that sample statistic. Table \@ref(tab:cheat-sheet) provides a useful cheat sheet of those formulas:
 
 Type                     SE                                                                                df for $t$
 ------                   ------                                                                            ------
@@ -436,7 +436,7 @@ mean_diff <- 4.796992 - 4.506699
 mean_diff
 ```
 
-In our sample data, frequent smokers had 0.290 more friends on average than those who did not smoke frequently. What is the confidence interval for that value in the population? We start by calculating the t-statitic for this confidence interval. We use the size of the smaller group minus one for the degrees of freedom.
+In our sample data, frequent smokers had 0.290 more friends on average than those who did not smoke frequently. What is the confidence interval for that value in the population? We start by calculating the t-statistic for this confidence interval. We use the size of the smaller group minus one for the degrees of freedom.
 
 ```{r}
 table(popularity$smoker)
@@ -495,7 +495,7 @@ Now we can calculate the standard error. The formula is:
 
 $$\sqrt{\frac{\hat{p}_1*(1-\hat{p}_1)}{n_1}+\frac{\hat{p}_2*(1-\hat{p}_2)}{n_2}}$$
 
-That looks like a lot, but we just have to focus on pluggin in the right values in R:
+That looks like a lot, but we just have to focus on plugging in the right values in R:
 
 ```{r}
 se <- sqrt((p_hat_f*(1-p_hat_f)/n_f)+(p_hat_m*(1-p_hat_m)/n_m))
@@ -546,7 +546,7 @@ r - t_stat*se
 r + t_stat*se
 ```
 
-We are 95% confident that the true correlation coefficient between GPA and friend nominations in the population of US adolescents is between 0.139 and 0.197. While there is some difference in the strength of that relationship, we are pretty confident that the correlation is moderatly positive.
+We are 95% confident that the true correlation coefficient between GPA and friend nominations in the population of US adolescents is between 0.139 and 0.197. While there is some difference in the strength of that relationship, we are pretty confident that the correlation is moderately positive.
 
 ------
 
@@ -570,7 +570,7 @@ We call that assumption the **null hypothesis**, $H_0$. The null hypothesis is a
 
 $$H_0: \rho=0.083$$
 
-I use the greek letter $\rho$ as a symbol for the population proportion. I will use $\hat{p}$ to represent the sample proportion in my sample, which is 0.05. 
+I use the Greek letter $\rho$ as a symbol for the population proportion. I will use $\hat{p}$ to represent the sample proportion in my sample, which is 0.05. 
 
 Some standard statistical textbooks will also claim that there is an "alternative hypothesis." That alternative hypothesis is specified as "anything but the null hypothesis." In my opinion, this is incorrect because vague statements about "anything else" do not constitute an actual hypothesis about the data. We are testing only whether the data are consistent with the null hypothesis. No other hypothesis is relevant. 
 
@@ -756,7 +756,7 @@ The p-value is astronomically small. In a sample of this size, the probability o
 
 #### Example of correlation coefficient
 
-Lets look at the correlation between the parental income of a student and the number of friend nominations they recieve. Our null hypothesis will be that there is no relationship between parental income and student popularity in the population of US adolescents. Lets look at the data in our sample:
+Lets look at the correlation between the parental income of a student and the number of friend nominations they receive. Our null hypothesis will be that there is no relationship between parental income and student popularity in the population of US adolescents. Lets look at the data in our sample:
 
 ```{r}
 r <- cor(popularity$parentinc, popularity$indegree)
@@ -779,13 +779,13 @@ How many standard errors are we away from the assumption of zero correlation?
 r/se
 ```
 
-What is the probablity of being that far away from zero for a sample of this size?
+What is the probability of being that far away from zero for a sample of this size?
 
 ```{r}
 2*pt(-8.334658, n-2)
 ```
 
-The probability is very small. In a sample of this size, the probability is less than 0.00000001% of observing a correlation coefficient between parental income and friend nominations received of an absolute magnitude of 0.125 or higher when the true correlation is zero in the population. Therefore, we **reject the null hypothesis** and conclude that there is a positive correlation between parental income and populatity among US adolescents.
+The probability is very small. In a sample of this size, the probability is less than 0.00000001% of observing a correlation coefficient between parental income and friend nominations received of an absolute magnitude of 0.125 or higher when the true correlation is zero in the population. Therefore, we **reject the null hypothesis** and conclude that there is a positive correlation between parental income and popularity among US adolescents.
 
 #### Statistical Significance
 

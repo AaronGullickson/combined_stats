@@ -2,13 +2,13 @@
 
 Measuring association between variables, in some form or another, is really what social scientists use statistics for the most. Establishing whether two variables are related to one another can help to affirm or cast doubt on theories about the social world. Does substance use improve an adolescent's popularity in school? Does increasing wealth in a country lead to more or less environmental degradation? Does income inequality inhibit voter participation? These are just a few of the questions one could ask that require a measurement of the association between two or more variables.
 
-In this module, we will learn about how to visualize and measure association between two variables. How we do this depends on the kinds of variables that we have. There are three possibilitites:
+In this module, we will learn about how to visualize and measure association between two variables. How we do this depends on the kinds of variables that we have. There are three possibilities:
 
 * two categorical variables
 * one categorical and one quantitative variable
 * two quantitative variables
 
-Each of these cases requires that we learn and master different techniques. In the three sections that follow, we will learn how to measure assocation for all three cases. 
+Each of these cases requires that we learn and master different techniques. In the three sections that follow, we will learn how to measure association for all three cases. 
 
 ------
 
@@ -259,7 +259,7 @@ If we want a quantitative measure of how genre and runtime are related we can ca
 
 We could have reversed that subtraction to get $97.4-111.9=-14.5$. In this case, we would say that horror movies are 14.5 minutes *shorter* than action movies. Either way, we get the same information. However, its important to keep track of which number applies to which category when you take the difference, so that you get the interpretation correct. 
 
-We can also display these results graphically using a barplot, although this will take a little more processing for `ggplot` because `ggplot` expects data to be in a "data.frame" object and the output of `tapply` is a single vector of numbers. To make this work, we have to use the `as.data.frame.table` command to convert our object and then rename the varaibles. Also, to make this prettier, I am first going to sort the output from largest to smallest mean runtime:
+We can also display these results graphically using a barplot, although this will take a little more processing for `ggplot` because `ggplot` expects data to be in a "data.frame" object and the output of `tapply` is a single vector of numbers. To make this work, we have to use the `as.data.frame.table` command to convert our object and then rename the variables. Also, to make this prettier, I am first going to sort the output from largest to smallest mean runtime:
 
 ```{r mean-barplot-runtime-genre, fig.cap="Mean runtime by movie genre"}
 mruntime <- tapply(movies$Runtime, movies$Genre, mean)
@@ -276,7 +276,7 @@ ggplot(mruntime, aes(x=genre, y=runtime))+
   theme_bw()
 ```
 
-This is is one of the few examples this term where we have to process a dataset into something else prior to feeding it into `ggplot`. The result is shown in Figure \@ref(fig:mean-barplot-runtime-genre). While this information is useful, it doesn't really tell us anything that we haven't already seen in the comparative boxplot from Figure \@ref(fig:compar-box-runtime-genre-reorder). The only real difference is that the boxplots showed us medians while this figrue shows us means. However, the comparative boxplots also showed us additional information about spread and outliers and so are generally preferable. 
+This is is one of the few examples this term where we have to process a dataset into something else prior to feeding it into `ggplot`. The result is shown in Figure \@ref(fig:mean-barplot-runtime-genre). While this information is useful, it doesn't really tell us anything that we haven't already seen in the comparative boxplot from Figure \@ref(fig:compar-box-runtime-genre-reorder). The only real difference is that the boxplots showed us medians while this figure shows us means. However, the comparative boxplots also showed us additional information about spread and outliers and so are generally preferable. 
 
 Figure \@ref(fig:mean-barplot-runtime-genre) also breaks a common stylistic rule in data visualization. The big thick bars take up a lot of ink but carry relatively little information. This is called the "ink to information ratio" made famous by Edward Tufte. An alternative way to display this information would be to use "lollipops" rather than bars:
 
