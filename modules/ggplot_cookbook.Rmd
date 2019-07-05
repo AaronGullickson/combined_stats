@@ -94,7 +94,7 @@ ggplot(tab, aes(x=pclass, y=prop_surv))+
   theme_bw()
 ```
 
-Figure \@ref(fig:comp-dotplot) shows the resulting dotplot. If that is a little too spartan for you, you could try a lollipop graph, shown in Figure 8. The `geom_lollipop` is in the `ggalt` library.
+Figure \@ref(fig:comp-dotplot) shows the resulting dotplot. If that is a little too spartan for you, you could try a lollipop graph, shown in Figure \@ref(fig:lollipop). The `geom_lollipop` is in the `ggalt` library.
 
 ```{r lollipop, fig.cap="A lollipop plot", echo=TRUE}
 ggplot(tab, aes(x=pclass, y=prop_surv))+
