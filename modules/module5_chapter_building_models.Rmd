@@ -852,14 +852,18 @@ The line for comedy movies is given by:
 
 $$\hat{meter}_i=-1.75+4.43(1)+0.41(runtime_i)=2.68+0.41(runtime_i)$$
 
-Each line has an intercept and a slope. Notice that the intercepts are different but the slopes are the same. That means we have two parallel lines at different levels. You can see this easily by graphing the lines out:
+Each line has an intercept and a slope. Notice that the intercepts are different but the slopes are the same. That means we have two parallel lines at different levels. Figure \@ref(fig:plot-nointeractiontwogenre) overlays these two parallel lines on top of a scatterplot of movie runtime by tomato meter for these two genres. 
 
-```{r plot_nointeraction_twogenre, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-plot(-1,-1, ylim=c(20,80), xlim=c(70,190),
-     xlab="runtime in minutes", ylab="Predicted tomato meter")
-abline(-1.74,0.41, lwd=2, col="red")
-abline(2.68, 0.41, lwd=2, col="blue")
-legend(80,80, lty=1, col=c("red","blue"), legend=c("Action","Comedy"))
+```{r plot-nointeractiontwogenre, echo=FALSE, fig.cap="Predicted Tomato Meter by runtime for two genres based on an additive OLS regression model. The lines must be parallel."}
+model <- lm(TomatoMeter~Runtime+Genre, data=subset(movies, Genre=="Action" | Genre=="Comedy"))
+temp <- expand.grid(Runtime=75:185, Genre=c("Action","Comedy"))
+temp$TomatoMeter <- predict(model, temp)
+ggplot(subset(movies, Genre=="Action" | Genre=="Comedy"),
+       aes(x=Runtime, y=TomatoMeter, color=Genre))+
+  geom_line(data=temp)+
+  geom_point(alpha=0.2)+
+  labs(x="runtime in minutes", y="Tomato Meter")+
+  theme_bw()
 ```
 
 The parallel lines are an assumption of the OLS regression model structure we have used. There are two consequences of this assumption. First, At every single level of runtime, the predicted Tomato Meter difference between comedy and action movies is exactly 4.62. This can be seen on the graph by the consistent gap between the blue and red line. Second, the effect of runtime on the Tomato Meter rating is assumed to be the same for action and comedy movies. This can be seen on the graph by the fact that both lines have the exact same slope. 
@@ -897,14 +901,15 @@ For comedy movies, the equation is:
 
 $$\hat{meter}_i=-14.45+24.36(1)+0.52(runtime_i)-0.19(runtime_i*1)=(-14.45+24.36)+(0.52-0.19)(runtime_i)=9.91+0.33(run_i)$$
 
-We now have two lines with different intercept and **different slopes**. The interaction term has allowed the effect of runtime on the Tomato Meter to vary by type of genre. In this case, the interaction term tells us how much smaller the slope is for comedy movies than for action movies. We can also just plot the lines to see how it looks:
+We now have two lines with different intercept and **different slopes**. The interaction term has allowed the effect of runtime on the Tomato Meter to vary by type of genre. In this case, the interaction term tells us how much smaller the slope is for comedy movies than for action movies. We can also just plot the lines to see how it looks, as I have done in Figure \@ref(fig:plot-interaction-twogenre).
 
-```{r plot_interaction_twogenre, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-plot(-1,-1, ylim=c(20,80), xlim=c(70,190),
-     xlab="runtime in minutes", ylab="Predicted tomato meter")
-abline(-14.45,0.52, lwd=2, col="red")
-abline(9.91, 0.33, lwd=2, col="blue")
-legend(80,80, lty=1, col=c("red","blue"), legend=c("Action","Comedy"))
+```{r plot-interaction-twogenre, echo=FALSE, fig.cap="An interaction term allows for non-parallel lines, and thus different effects of runtime on tomato meter ratings by genre"}
+ggplot(subset(movies, Genre=="Action" | Genre=="Comedy"),
+       aes(x=Runtime, y=TomatoMeter, color=Genre))+
+  geom_smooth(method="lm", se=FALSE)+
+  geom_point(alpha=0.2)+
+  labs(x="runtime in minutes", y="Tomato Meter")+
+  theme_bw()
 ```
 
 The pattern here is fairly clear. Short comedies get better ratings than short action movies, while long comedies get worse ratings than long action movies. Put another way, comedies get less "return" in terms of their ratings when increasing their length than do action movies. This can be seen by the much steeper slope for action movies. 
@@ -949,112 +954,120 @@ model <- lm(TomatoMeter~Runtime*Genre, data=movies)
 round(coef(model),2)
 ```
 
-Thats a lot of numbers! There is a slope for each genre except action (10 in all) and an interaction between runtime and each genre except action (another 10 in all). What we are estimating here are 11 different lines (on for each genre) for the relationship between runtime and Tomato Meter rating. Because action movies are the reference, the main effect of runtime is the slope for action movies (0.52). The interaction terms show us how much larger or smaller the effect of runtime is for each given genre. So the effect is 0.39 smaller for dramas for a total effect of 0.13 (0.52-0.39). It is 0.32 larger for family movies for a total effect of 0.84 (0.52+0.32), and so forth. Similarly, the intercept is the intercept only for action movies. To get the intercept for other genres, we take the intercept value itself and add the main effect of genre. So for dramas the intercept is -14.45+59.5=45.05 and for family movies it is -14.45-29.06=-43.51. If we put all these slopes and intercepts together, we will get 11 lines like so:
+Thats a lot of numbers! There is a slope for each genre except action (10 in all) and an interaction between runtime and each genre except action (another 10 in all). What we are estimating here are 11 different lines (on for each genre) for the relationship between runtime and Tomato Meter rating. Because action movies are the reference, the main effect of runtime is the slope for action movies (0.52). The interaction terms show us how much larger or smaller the effect of runtime is for each given genre. So the effect is 0.39 smaller for dramas for a total effect of 0.13 (0.52-0.39). It is 0.32 larger for family movies for a total effect of 0.84 (0.52+0.32), and so forth. Similarly, the intercept is the intercept only for action movies. To get the intercept for other genres, we take the intercept value itself and add the main effect of genre. So for dramas the intercept is -14.45+59.5=45.05 and for family movies it is -14.45-29.06=-43.51. If we put all these slopes and intercepts together, we will get 11 lines as shown in Figure \@ref(fig:plot-fullinteraction-genre).
 
-```{r plot_fullinteraction_genre, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-plot(-1,-1, ylim=c(0,120), xlim=c(70,190),
-     xlab="runtime in minutes", ylab="Predicted tomato meter")
-model <- lm(TomatoMeter~Runtime*Genre, data=movies)
-intercepts <- coef(model)[1]+c(0,coef(model)[3:12])
-slopes <- coef(model)[2]+c(0,coef(model)[13:22])
-cols <- c("black","seagreen","yellow","brown","red","orange",
-          "blue","skyblue","violet","slategray","indianred")
-for(i in 1:length(intercepts)) {
-  abline(intercepts[i],slopes[i], lwd=2, col=cols[i])
-}
-legend(80,20, legend=levels(movies$Genre),lty=1, col=cols, ncol=4, cex=0.5)
+```{r plot-fullinteraction-genre, echo=FALSE, fig.cap="Interaction terms allow each genre to get a different return from increasing runtime"}
+ggplot(movies,
+       aes(x=Runtime, y=TomatoMeter, color=Genre))+
+  geom_point(alpha=0.2)+
+  geom_smooth(method="lm", se=FALSE, fullrange=FALSE)+
+  labs(x="runtime in minutes", y="Tomato Meter")+
+  scale_color_brewer(palette = "Paired")+
+  theme_bw()
 ```
 
-There is a lot going on here, but we can detect some interesting patterns. Almost all of the lines are positive indicating that longer movies tend to generally get better ratings. This is not true of Romances however, where there is a slight negative relationship between movie runtime and Tomato Meter ratings. Dramas also have a fairly flat slope and a high intercept, so they tend to outperform most other short movies but don't fare as well compared to other genres when they are longer. The steepest slope is for family movies, which apparently are horrible when short (think "Beethoven 6: Beethoven saves Christmas, again" or something), but do much better when longer (although I can't think of many examples here). SciFi/Fantasy movies have the highest ratings at every single runtime, although they don't get quite as much return from runtime as family movies.  
+There is a lot going on here, but we can detect some interesting patterns. Almost all of the lines are positive indicating that longer movies tend to generally get better ratings. This is not true of Romances however, where there is a slight negative relationship between movie runtime and Tomato Meter ratings. Dramas also have a fairly flat slope and a high intercept, so they tend to outperform most other short movies but don't fare as well compared to other genres when they are longer. The steepest slope is for family movies, which apparently are horrible when short (think "Beethoven 6: Beethoven saves Christmas, again" or something), but do much better when longer. 
 
 ### Interaction terms with two categorical variables
 
 The examples so far have involved interacting a quantitative variable with a categorical variable which gives you a different line for each category of your categorical variable. However, we can also create an interaction term between two categorical variables. 
 
-As an example, lets look at differences in income in the politics dataset by race and education. To simplify things, I am going to dichotimize race into white/non-white and education into less than college/college or more, as follows:
+As an example, lets look at differences in wages in the earnings dataset by race and education. To simplify things, I am going to dichotimize race into white/non-white and education into less than Bachelor's degree/Bachelor's degree or more, as follows:
 
-```{r}
-politics$nwhite <- politics$race!="White"
-politics$college <- as.numeric(politics$educ)>3
+```{r added-vars-earnings}
+earnings$nwhite <- earnings$race!="White"
+earnings$college <- as.numeric(earnings$educ)>3
 ```
 
-Lets look at the mean income across these combination of categories:
+Lets look at mean wages across these combination of categories:
 
-```{r}
-tapply(politics$income, politics[,c("nwhite","college")], mean)
+```{r tapply-earnings-race-college}
+tapply(earnings$wages, earnings[,c("nwhite","college")], mean)
 ```
 
-White college graduates make \$103K, on average, while non-white college graduates make \$96K, on average. Whites without a college degree make \$59K, on average, while non-whites without a college degree make \$43K, on average. If we put this in a table, I can show that there are four different ways to make comparisons between these numbers. 
+White college graduates make \$33.91 per hour, on average, while non-white college graduates make \$31.82 per hour, on average. Whites without a college degree make \$19.99, on average, while non-whites without a college degree make \$16.74, on average. If we put this in a table, I can show that there are four different ways to make comparisons between these numbers. 
 
-```{r echo=FALSE}
-tab <- round(tapply(politics$income, politics[,c("nwhite","college")], mean),1)
+```{r table-earnings-race-college, echo=FALSE}
+tab <- round(tapply(earnings$wages, earnings[,c("nwhite","college")], mean),2)
 tab <- cbind(tab, tab[,2]-tab[,1])
 tab <- rbind(tab, tab[2,]-tab[1,])
-colnames(tab) <- c("No degree", "College degree", "Difference")
+colnames(tab) <- c("No degree", "Bachelor's degree", "Difference")
 rownames(tab) <- c("White","Non-white","Difference")
-set.alignment(c("right","right","right"))
-pander(tab)
+kable(tab, align=c("r","r","r"),
+      caption="Mean wages in dollars per hour by race and education") %>%
+  kable_styling(bootstrap_options = c("striped","hover")) %>%
+  column_spec(1, bold=TRUE) %>%
+  row_spec(3, bold=TRUE, color="white", background="#666") %>%
+  column_spec(4, bold=TRUE, color="white", background="#666")
 ```
 
-If we look at the two differences along the far-right column, we are seeing the "returns" in terms of income for a college degree separately for whites and non-whites. The return for whites is \$43.4K and the return for non-whites is higher at \$52K. if we look at the differences along the bottom row, we are seeing the racial inequality in income separately for those with no degree and those with a college degree. Among those with no college degree, non-whites make \$15.9K less than whites. Among those with a college degree, non-whites make \$7.3K less than whites. The racial gap in income gets smaller at the higher level of education. 
+If we look at the two differences along the far-right column, we are seeing the "returns" in terms of wages for a college degree separately for whites and non-whites. The return for whites is \$13.92 per hour and the return for non-whites is higher at \$15.08. If we look at the differences along the bottom row, we are seeing the racial inequality in wages separately for those with no degree and those with a college degree. Among those with no college degree, non-whites make \$3.25 less per hour than whites. Among those with a college degree, non-whites make \$2.09 less per hour than whites. The racial gap in wages gets smaller among those who have completed a college degree. 
 
-Now lets look at the difference in the differences. For the racial gap in income this is given by -7.3-(-15.9)=8.6. For the returns to a college degree this is given by 52-43.4=-8.6. The difference in the differences is the same! This is because we are looking at the same relationship in two different ways. If non-whites get a better return to college than whites, then the racial gap in income must get smaller among the college-educated. Similarly, if the racial gap in income gets smaller at the college level, it tells us that non-whites must get a better return on their college education. 
+Now lets look at the difference in the differences. For the racial gap in wages this is given by -3.25-(-2.09)=1.16. For the returns to a college degree this is given by 15.08-13.92=1.16. The difference in the differences is the same! This is because we are looking at the same relationship in two different ways. If non-whites get a better return to college than whites, then the racial gap in wages must get smaller among the college-educated. Similarly, if the racial gap in wages gets smaller at the college level, it tells us that non-whites must get a better return on their college education. 
 
-This 8.6 number is basically an interaction term. We can interpret the number as the difference in returns to income from a college degree between whites and non-whites. Alternatively, we can interpret the number as the difference in the racial income gap between those with no degree and those with a college degree. Either way, we have the same information, with the same finding: greater educational attainment reduces racial inequality because minorities get greater return on their college degrees. 
+This 1.16 number is basically an interaction term. We can interpret the number as the difference in returns to wages from a college degree between whites and non-whites. Alternatively, we can interpret the number as the difference in the racial wage gap between those with no degree and those with a college degree. Either way, we have the same information, with the same finding: greater educational attainment reduces racial inequality because minorities get a greater return on their college degrees. 
 
 Lets try modeling this relationship with an OLS regression model. First lets try a model without interaction terms:
 
-```{r}
-model <- lm(income~nwhite+college, data=politics)
+```{r model-additive-earnings-race-college}
+model <- lm(wages~nwhite+college, data=earnings)
 coef(model)
 ```
 
 Lets put this into an equation framework:
 
-$$\hat{income}_i=58.5-13.0(nwhite_i)+45.6(college_i)$$
+$$\hat{wages}_i=19.85-2.87(nwhite_i)+14.26(college_i)$$
 
 We can use this equation to fill in the predicted valued of the same table we calculated by hand above:
 
-```{r echo=FALSE}
-tab <- cbind(c(58.5,"58.5-13.0=45.5",-13),
-      c("58.5+45.6=104.1","58.5-13+45.6=91.1",-13),
-      c(45.6,45.6,0))
-colnames(tab) <- c("No degree", "College degree", "Difference")
+```{r table-additive-earnings-race-college, echo=FALSE}
+tab <- cbind(c(19.85,"19.85-2.87=16.98",-2.87),
+      c("19.85+14.26=34.11","19.85-2.87+14.26=31.24",-2.87),
+      c(14.26,14.26,0))
+colnames(tab) <- c("No degree", "Bachelor's degree", "Difference")
 rownames(tab) <- c("White","Non-white","Difference")
-set.alignment(c("right","right","right"))
-pander(tab)
+kable(tab, align=c("r","r","r"),
+      caption="Predicted wages in dollars per hour by race and education from an additive model") %>%
+  kable_styling(bootstrap_options = c("striped","hover")) %>%
+  column_spec(1, bold=TRUE) %>%
+  row_spec(3, bold=TRUE, color="white", background="#666") %>%
+  column_spec(4, bold=TRUE, color="white", background="#666")
 ```
 
-The predicted values do not match the exact values above. More importantly, if you look at the differences, you can see that the returns to education are assumed to be identical for whites and non-whites (45.6) and the racial gap is assumed to be the same for those with no degree and those with a college degree (-13). This is the limitation of the additive model. We assume that the effects of race and college completion are not affected by each other. If we want to determine whether returns to college are different by race, we need to model the interaction term, as follows:
+The predicted values do not match the exact values above. More importantly, if you look at the differences, you can see that the returns to education are assumed to be identical for whites and non-whites (\$14.26) and the racial gap is assumed to be the same for those with no degree and those with a college degree (-\$2.87). This is the limitation of the additive model. We assume that the effects of race and college completion are not affected by each other. If we want to determine whether returns to college are different by race, we need to model the interaction term, as follows:
 
-```{r}
-model <- lm(income~nwhite*college, data=politics)
+```{r model-interactive-earnings-race-college}
+model <- lm(wages~nwhite*college, data=earnings)
 coef(model)
 ```
 
 In equation form:
 
-$$\hat{income}_i=59.4-15.9(nwhite_i)+43.4(college_i)+8.6(nwhite_i*college_i)$$
+$$\hat{income}_i=19.99-3.25(nwhite_i)+13.92(college_i)+1.16(nwhite_i*college_i)$$
 
 Lets use this model to get predicted values in our table:
 
-```{r echo=FALSE}
-tab <- cbind(c(59.4,"59.4-15.9=43.5",-15.9),
-      c("59.4+43.4=102.8","59.4-15.9+43.4+8.6=95.5",-7.3),
-      c(43.4,52.0,8.6))
-colnames(tab) <- c("No degree", "College degree", "Difference")
+```{r table-interactive-earnings-race-college, echo=FALSE}
+tab <- cbind(c(19.99,"19.99-3.25=16.74",-3.25),
+      c("19.99+13.92=33.91","19.99-3.25+13.92+1.16=31.82",-2.09),
+      c(13.92,15.08,1.16))
+colnames(tab) <- c("No degree", "Bachelor's degree", "Difference")
 rownames(tab) <- c("White","Non-white","Difference")
-set.alignment(c("right","right","right"))
-pander(tab)
+kable(tab, align=c("r","r","r"),
+      caption="Predicted wages in dollars per hour by race and education from an interactive model") %>%
+  kable_styling(bootstrap_options = c("striped","hover")) %>%
+  column_spec(1, bold=TRUE) %>%
+  row_spec(3, bold=TRUE, color="white", background="#666") %>%
+  column_spec(4, bold=TRUE, color="white", background="#666")
 ```
 
-Our model now fits the data exactly and the differences are allowed to vary by the other category, so that we can see the differences in returns to college by race and the differences in the racial gap by education level. The interaction term itself of 8.6 is basically the same to what we calculated by hand. 
+Our model now fits the data exactly and the differences are allowed to vary by the other category, so that we can see the differences in returns to college by race and the differences in the racial gap by education level. The interaction term itself of 1.16 is the same to what we calculated by hand. 
 
 If we were to interpret the intercept and slopes from the model above, we would say:
 
-- Whites with no college degree had a mean income of $59,400. 
-- Among those with no college degree, non-whites earn $15,900 less than whites, on average. 
-- Among whites, those with a college degree have incomes $43,400 higher on average than those without a college degree.
-- The returns to income from a college degree are $8,600 larger for non-whites than they are for whites, on average. 
+* Whites with no college degree had mean wages of \$19.99 per hour. 
+* Among those with no college degree, non-whites earn \$3.25 less per hour than whites, on average. 
+* Among whites, those with a college degree have wages \$13.92 per hour higher on average than those without a college degree.
+* The returns to wages from a college degree are \$1.16 larger for non-whites than they are for whites, on average. 
 
 
