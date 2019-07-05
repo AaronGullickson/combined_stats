@@ -10,6 +10,8 @@ output:
     split_by: "section+number"
     number_section: false
 site: bookdown::bookdown_site
+lot: yes
+lof: yes
 documentclass: book
 #bibliography: [book.bib, packages.bib]
 biblio-style: apalike
@@ -25,7 +27,9 @@ knitr::opts_chunk$set(echo = TRUE, fig.height = 4, message = FALSE, error = FALS
 
 # Preface {-}
 
-This online textbook combines all of the information taught in my undergraduate statistics course as well as both terms of my introductory graduate statistics course. It is very much a work in progress at the moment. I am adding new chapters and transitioning most of my figures to `ggplot` so you will likely notice many quirks. 
+This online textbook combines all of the information taught in my undergraduate statistics course as well as both terms of my introductory graduate statistics course. The undergraduate course consists of the first five chapters/modules up to and including **Building Models**. I have put a lot of work into this book, but it is still very much a work in progress, so you may notice typos and other errors on occasion.
+
+This textbook is designed to be used with the [R statistical software program](https://www.r-project.org/). If you are taking this course from me, then you will be running *R* through the [RStudio Cloud](https://rstudio.cloud). Various snippets of R code are interspersed throughout the book in order to show you how to do things. You will also find useful information in the appendices of this book. 
 
 &copy; Aaron Gullickson, 2017
 
