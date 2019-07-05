@@ -611,23 +611,23 @@ What would happen if we put this indicator variable into a regression model pred
 
 $$\hat{frequency}_i=b_0+b_1(nonrelig_i)$$
 
-How would we interpret the slope and intercept for such a model? It might help to look at a scatterplot of this relationship.
+How would we interpret the slope and intercept for such a model? Figure \@ref(fig:scatter-dichotomous) shows a scatterplot of this relationship.
 
-```{r scatter_dichotomous, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-par(mar=c(4,4,0,2))
-plot(sex$norelig, sex$sexf, pch=21, bg="seagreen",
-     xlab="religious indicator variable",
-     ylab="sexual frequency", xaxt="n", las=1)
-axis(1, at=c(0,1), labels=c("0=religious","1=non-religious"))
-points(c(0,1),tapply(sex$sexf, sex$norelig, mean),
-       pch=21, col="red", bg="grey80", cex=2)
-text(c(0,1),tapply(sex$sexf, sex$norelig, mean)*1.1,
-     c("Religious\nmean", "Non-religious\nmean"), pos=c(4,2))
-abline(lm(sexf~norelig, data=sex), lty=2, col="red")
-text(0.5, 30, "Slope is 11.5,\nthe mean difference between\nthe groups")
+```{r scatter-dichotomous, echo=FALSE, fig.cap="A scatterplot of the religious indicator variable by sexual frequency. Points are jittered to avoid overplotting. The mean for each group is plotted in red."}
+ggplot(sex, aes(x=as.numeric(norelig), y=sexf))+
+  geom_smooth(method="lm", se=FALSE)+
+  geom_jitter(alpha=0.1, width=0.1, height=5)+
+  geom_point(x=0, y=48.33671, color="red", size=3)+
+  geom_point(x=1, y=59.84862, color="red", size=3)+
+  annotate("label", x=0.1, y=68, label="mean for\nreligious group")+
+  annotate("label", x=0.9, y=79, label="mean for\nreligious group")+
+  annotate("label", x=0.5, y=30, label="The slope is 11.5,\nthe mean difference\nbetween the groups")+
+  scale_x_continuous(breaks = c(0,1), labels=c("0=religious","1=non-religious"))+
+  labs(x="religious indicator variable", y="sexual frequency")+
+  theme_bw()
 ```
 
-Notice that all of the points align vertically either at the 0 or 1 on the x-axis. This is because the indicator variable can only take these two values. In addition, there is a lot of overplotting of these points right on top of one another so it is hard to see the trend. To simplify things I have plotted the means of the two groups in grey dots and the OLS regression line for the scatterplot in red. In order to be the best-fitting line, this OLS regression line must connect those two dots that represent the mean of each group. 
+Notice that all of the points align vertically either at the 0 or 1 on the x-axis. This is because the indicator variable can only take these two values. I have jittered points slightly to avoid overplotting. I have also plotted the means of the two groups in red dots and the OLS regression line for the scatterplot in blue. It turns out, that in order to be the best-fitting line, this OLS regression line must connect the two dots that represent the mean of each group. 
 
 What will the slope of this line be? If we go up "one unit" on the non-religious indicator variable we have gone from a religious person to a non-religious person and the change in predicted sexual frequency is equal to the mean difference of 11.5 between the groups. The intercept is given by the value at zero which is just given by the mean sexual frequency among the religious of 48.3. So, the OLS regression line should look like:
 
@@ -683,9 +683,9 @@ Lets look at the mean sexual frequency for each of these groups.
 round(tapply(sex$sexf, sex$relig, mean),1)
 ```
 
-We could plot up these means on a number line to get a visual display of the differences:
+Figure \@ref(fig:compare-relig-means) plots these means on a number line to get a visual display of the differences:
 
-```{r compare_relig_means, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
+```{r compare-relig-means, echo=FALSE, fig.cap="The mean sexual frequency of each group arrayed on a vertical number line. The red lines indicate the distance between each group and the reference category of fundamentalist Protestant."}
 mdiffs <- round(tapply(sex$sexf, sex$relig, mean),1)
 par(mar=c(0.1,4,0,0.1))
 plot(rep(1,length(mdiffs)), mdiffs, cex=2, pch=21, bg="skyblue", bty="n", xaxt="n",
@@ -788,30 +788,30 @@ We would also interpret the age effect controlling for religious affiliation lik
 
 > The model predicts, that holding religious affiliation constant, a one year increase in age is associated with 1.28 fewer instances of sex per year, on average. 
 
-The table below helps to highlight the change in the effects once age is controlled.
+Table \@ref(tab:model-relig-sex) below helps to highlight the change in the effects once age is controlled.
 
-```{r echo=FALSE, results="asis", warning=FALSE, message=FALSE}
+```{r model-relig-sex, echo=FALSE, results="asis"}
 m1 <- lm(sexf~relig, data=sex)
 m2 <- lm(sexf~relig+age, data=sex)
-stargazer(m1,m2, type="html",
-          omit.stat=c("adj.rsq","ser","f"), 
-          digits=2, 
-          dep.var.labels="sexual frequency",
-          covariate.labels = c("Mainline Protestant",
-                               "Catholic",
-                               "Jewish",
-                               "Other",
-                               "None",
-                               "Age"),
-          notes=c("SE's in parenthesis. Reference category is fund. Protestant"),
-          notes.append=TRUE,
-          title="OLS regression models predicting sexual frequency",
-          dep.var.labels.include=FALSE,
-          dep.var.caption="",
-          header=FALSE)
+htmlreg(list(m1, m2),
+        custom.coef.names=c("Intercept",
+                            "Mainline Protestant",
+                            "Catholic",
+                            "Jewish",
+                            "Other",
+                            "None",
+                            "Age"),
+        custom.gof.names = c("R-squared","N"),
+        caption="(\\#tab:model-relig-sex) OLS regression models predicting sexual frequency",
+        caption.above=TRUE,
+        digits=2,
+        star.symbol='&#42;',
+        custom.note = "%stars. Standard errors in parenthesis. Reference category is fundamentalist Protestant",
+        include.adjrs=FALSE, include.rmse=FALSE,
+        doctype = FALSE)
 ```
 
-All of the coefficients (except for Catholic, which was tiny anyway) have declined substantially in size. The mean differences from fundamentalist Protestants for both Jews and other religions have basically disappeared and the "None" effect has been severely reduced. In other words, almost all or all of the observed differences in sexual frequency by religious affiliation were indirectly a product of underlying age differences between religious affiliations. If you were just about ready to convert to a different religion to get laid more often (or less depending on your preferences), you may want to hold off for the moment. 
+All of the coefficients (except for Catholic, which was tiny anyway) have declined substantially in size. The mean differences from fundamentalist Protestants for both Jews and other religions have basically disappeared and the "None" effect has been severely reduced. In other words, almost all or all of the observed differences in sexual frequency by religious affiliation were indirectly a product of underlying age differences between religious affiliations. If you were just about ready to convert to a different religion to get laid more often, you may want to hold off for the moment. 
 
 ------
 
