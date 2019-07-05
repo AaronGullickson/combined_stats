@@ -3,6 +3,12 @@
 
 # Useful References
 
+```{r child="example_datasets.Rmd", echo=FALSE}
+```
+
+```{r child="common_r_commands.Rmd", echo=FALSE}
+```
+
 ```{r child="ggplot_cookbook.Rmd", echo=FALSE}
 ```
 

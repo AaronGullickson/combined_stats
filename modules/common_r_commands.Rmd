@@ -1,0 +1,189 @@
+## Common R Commands
+
+Below is a list of common commands that we use for the undergraduate class, along with some examples. You can view a help file in RStudio for each command by searching for the command name in the help tab in the lower right panel. You can also just type the name of the command preceded by a “?” into the console. For example, if you wanted to understand how barplot works, type:
+
+```r
+?barplot
+```
+
+The list here does not contain information about making plots in R. That information is in the Plotting Cookbook appendix. 
+
+### Univariate Statistics
+
+#### mean
+
+Calculate the mean of a quantitative variable. Remember that this command will not work for categorical variables.
+
+```{r app-mean-example, echo=TRUE}
+mean(earnings$wages)
+```
+
+#### median 
+
+Calculate the median of a quantitative variable. Remember that this command will not work for categorical variables.
+
+```{r app-median-example, echo=TRUE}
+median(earnings$wages)
+```
+
+#### sd
+
+Calculate the standard deviation of a quantitative variable. Remember that this command will not work for categorical variables.
+
+```{r app-sd-example, echo=TRUE}
+sd(earnings$wages)
+```
+
+#### IQR
+
+Calculate the interquartile range of a quantitative variable. Remember that this command will not work for categorical variables. 
+
+```{r app-iqr-example, echo=TRUE}
+IQR(earnings$wages)
+```
+
+
+#### quantile
+
+Calculate percentiles of a distribution. Remember that this command will not work for categorical variables. By default, the quantile command will return the quartiles (0,25,50,75,100 percentiles). If you want different percentiles, you will have to specify the `probs` argument. 
+
+```{r app-quantile-example, echo=TRUE}
+quantile(earnings$wages)
+#get the 10th and 90th percentile instead
+quantile(earnings$wages, probs = c(0.1,0.9))
+```
+
+#### table
+
+Calculate the absolute frequencies of the categories a categorical variable. 
+
+```{r app-table-example, echo=TRUE}
+table(movies$Genre)
+```
+
+#### prop.table
+
+Calculate the proportions (i.e. relative frequencies) of the categories of a categorical variable. This command must be run on the output from a `table` command. You can do that in one command by nesting the `table` command inside the `prop.table` command. 
+
+```{r app-prop-table-example, echo=TRUE}
+prop.table(table(movies$Genre))
+```
+
+#### summary
+
+Provide a summary of a variable, either categorical or quantitative.
+
+```{r app-summary-example, echo=TRUE}
+summary(earnings$wages)
+summary(movies$Genre)
+```
+
+
+### Bivariate Statistics
+
+#### table
+
+Can be used to create a two-way table, although further work needs to be done to extract useful information from the two-way table. 
+
+```{r app-table-two-way-example, echo=TRUE}
+table(movies$Genre, movies$Rating)
+```
+
+#### prop.table
+
+Calculate the conditional distributions from a two-way table. The first argument here must be a two-way table output from the `table` command. It is very important that you also add a second argument that indicated the way you want the conditional distributions. 1 will give you distributions conditional on the row variable and 2 will give you distributions conditional on the column variable. 
+
+```{r app-prop-two-way-rtable, echo=FALSE}
+prop.table(table(movies$Genre, movies$Rating), 1)
+```
+
+#### tapply
+
+Calculate a statistic (e.g. mean, median, sd, IQR) for a quantitative variable across the categories of a categorical variable. The first argument should be the quantitative variable. The second argument should be the categorical variable. The third argument should be the name of the command that will calculate the desired statistic.
+
+
+```{r app-tapply-example, echo=TRUE}
+tapply(movies$Runtime, movies$Rating, mean)
+tapply(movies$Runtime, movies$Rating, median)
+tapply(movies$Runtime, movies$Rating, sd)
+```
+
+
+#### cor
+
+Calculate the correlation coefficient between two quantitative variables. 
+
+```{r app-cor-example, echo=TRUE}
+cor(crimes$Violent, crimes$Gini)
+```
+
+
+### Statistical Inference
+
+#### nrow
+
+Return the number of observations in a dataset.
+
+```{r app-nrow-example, echo=TRUE}
+nrow(crimes)
+```
+
+#### qt 
+
+Calculate the t-value needed for a confidence interval. For a 95% confidence interval, the first argument shold always be `0.975`. The second argument should be the appropriate degrees of freedom for the statistic and dataset.
+
+```{r app-qt-example, echo=TRUE}
+qt(0.975, nrow(politics)-1)
+```
+
+#### pt
+
+Calculate the p-value for a hypothesis test. The first argument should always be the negative version of the t-statistic and the second argument should be the appropirate degrees of freedom for the statistic and dataset.
+
+```{r app-pt-example, echo=TRUE}
+2*pt(-2.1, nrow(politics)-1)
+```
+
+
+### OLS Regression Models
+
+#### lm
+
+Run an OLS regression model. The first argument should always be a formula of the form `dependent~independent1+independent2+...`. To simplify the writing of variable names, it is often useful to specify a second argument `data` that identifies that dataset being used. Then you don't have to include `dataset_name$` in the formula. **Remember to always put the dependent (y) variable on the left hand side of the equation. 
+
+```{r app-lm-example, echo=TRUE}
+#simple model with one independent variable
+model_simple <- lm(wages~age, data=earnings)
+#same simple model but recenter age on 45 years of age
+model_recenter <- lm(wages~I(age-45), data=earnings)
+#a model with multiple independent variables, both quantitative and qualitative
+model_multiple <- lm(wages~I(age-45)+education+race+gender+nchild, data=earnings)
+#a model like the previous but also with interaction between gender and nchild
+model_interaction <- lm(wages~I(age-45)+education+race+gender*nchild, data=earnings)
+```
+
+Once a model object is created, information can be extracted with either the `coef` command which just reports the slopes and intercept, or a full `summary` command which gives more information.
+
+```{r app-coef-example, echo=TRUE}
+coef(model_interaction)
+summary(model_interaction)
+```
+
+### Utility functions
+
+#### round
+
+Used for rounding the results of numbers to a given number of decimal places. By default, it will round to whole numbers, but you can specify the number of decimal places in the second argument.
+
+```{r app-round-example, echo=TRUE}
+100*round(prop.table(table(movies$Genre)), 2)
+```
+
+#### sort
+
+Sort a vector of numbers from smallest to largest (default), or largest to smallest (with additional argument `decreasing=TRUE`).
+
+```{r app-sort-example, echo=TRUE}
+sort(100*round(prop.table(table(movies$Genre)), 2), decreasing = TRUE)
+sort(100*round(prop.table(table(movies$Genre)), 2))
+```
