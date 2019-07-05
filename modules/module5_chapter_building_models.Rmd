@@ -51,10 +51,10 @@ A **residual** is the vertical distance between an actual value of $y$ for an ob
 
 $$residual_i=y_i-\hat{y}_i$$
 
-These residuals are also sometimes called **error terms**, because the larger they are in absolute value, the worse is our prediction. Take a look at the Figure \@ref(fig:scatter_reside) below which shows the residuals graphically as vertical distances between the actual point and the line. 
+These residuals are also sometimes called **error terms**, because the larger they are in absolute value, the worse is our prediction. Take a look at the Figure \@ref(fig:scatter-reside) below which shows the residuals graphically as vertical distances between the actual point and the line. 
 
 
-```{r scatter_reside, echo=FALSE, fig.cap="Scatterplot with best-fitting line shown in blue and residuals shown in red"}
+```{r scatter-reside, echo=FALSE, fig.cap="Scatterplot with best-fitting line shown in blue and residuals shown in red"}
 model <- lm(Violent~MedianAge, data=crimes)
 temp <- data.frame(MedianAge=crimes$MedianAge, Violent=crimes$Violent,
                    fitted=model$fitted.values)
@@ -446,22 +446,25 @@ $$\hat{frequency}_i=b_0+b_1(education_i)+b_2(age_i)$$
 
 We now have two different "slopes", $b_1$ and $b_2$. These two slopes give the association of education and age, respectively, on sexual frequency, while **controlling for the other independent variable**. We now have what is called a **multivariate** OLS regression model. 
 
-This "controlling" concept is a key point that I will return to below, but first I want to try to think graphically about what this model is doing. In the case of bivariate regression, we thought of fitting a line to a scatterplot in two-dimensional space. We are doing something similar here, but since we now have three variables, our scatterplot is in three dimensions. 
+This "controlling" concept is a key point that I will return to below, but first I want to try to think graphically about what this model is doing. In the case of bivariate regression, we thought of fitting a line to a scatterplot in two-dimensional space. We are doing something similar here, but since we now have three variables, our scatterplot is in three dimensions. Figure \@ref(fig:scatter-3d) shows an interactive three-dimensional plot of the three variables. 
 
-```{r scatter_3d, echo=FALSE, fig.width=5, fig.height=4, out.width='500px', out.height='400px', dpi=300}
-library(scatterplot3d)
-s3d <- scatterplot3d(jitter(sex$educ,5),jitter(sex$age,5),jitter(sex$sexf,5), pch=21, cex.symbols =0.5, bg="grey", xlab="years of education", ylab="age", zlab="sexual frequency", main="3d scatterplot", cex.main=1.8)
-fit <- lm(sexf~educ+age, data=sex)
-x1 <- c(0,25)
-x2 <- c(0,100)
-y <- fit$coef[1]+fit$coef[2]*x1+fit$coef[3]*x2
-#s3d$points3d(x1,x2,y, type="l", col="red", lwd=3)
-s3d$plane3d(fit, col="red")
+```{r scatter-3d, echo=FALSE, fig.cap="Interactive 3d scatterplot of years of education, age, and sexual frequency"}
+model <- lm(sexf~age+educ, data=sex)
+temp <- expand.grid(educ=0:25, age=18:100)
+fit <- predict(model, temp)
+fit2 <- matrix(fit, 26, 83)
+
+plot_ly(x=jitter(sex$educ,10), y=jitter(sex$age,10), z=jitter(sex$sexf,10)) %>%
+  add_markers() %>%
+  add_surface(x=0:25, y=18:100, z=t(fit2), color=I("grey")) %>%
+  layout(scene=list(xaxis=list(title="years of education"),
+                    yaxis=list(title="age"),
+                    zaxis=list(title="sexual frequency")))
 ```
 
-The dependent variable is shown on the vertical (z) axis and the two independent variables are shown on the "width" and "depth" axes (x and y). The red dashes show a flat plane across the data. The OLS regression model equation above defines this plane, rather than a single line. So, rather than fitting a straight line through the data, I am fitting a plane. Note however that if I could rotate the 3d scatterplot to hide the age "depth" dimension and in that case it would look like a two-dimensional scatterplot and the edge of the plane would look like a line that describes the relationship between education and sexual frequency. Similarly, I could rotate it the other way to look at the relationship between age and sexual frequency. 
+The dependent variable is shown on the vertical (z) axis and the two independent variables are shown on the "width" and "depth" axes (x and y). The flate plane shown is defined by the OLS regression model equation above. So, rather than fitting a straight line through the data, I am fitting a plane. Note however that if you rotate the 3d scatterplot to hide the age "depth" dimension, it will then look like a two-dimensional scatterplot between years of education and sexual frequency. In this case, the the edge of the plane would indicate the slope between years of education and sexual frequency. Similarly, I could rotate it the other way to look at the relationship between age and sexual frequency. 
 
-How do I know what are the best values for b0, b1, and b2 that define my plane? The logic is the same as for bivariate OLS regression: I choose values that minimize the sum of squared residuals (SSR):
+How do I know what are the best values for $b_0$, $b_1$, and $b_2$ that define my plane? The logic is the same as for bivariate OLS regression: I choose values that minimize the sum of squared residuals (SSR):
 
 $$SSR=\sum_{i=1}^n (\hat{y}_i-y_i)^2$$
 
@@ -504,7 +507,7 @@ Note that I am giving you the full output of summary now, but we can find the sl
 
 The model is:
 
-$$\hat{crime}_i=5137+69(pctlesshs_i)-83(medianage_i)$$
+$$\hat{\texttt{crime}}_i=5137+69(\texttt{pct less hs}_i)-83(\texttt{median age}_i)$$
 
 The model predicts that, comparing two states with the same median age of residents, a one percent increase in the percent of the state with less than a high school diploma is associated with an increase of 69 property crimes per 100,000, on average. The model predicts that, comparing two states with the same percentage of adults without a high school diploma, a one year increase in the median age of a state's residents is associated with a decrease of 83 property crimes per 100,000, on average. 
 
@@ -537,36 +540,38 @@ The intercept is given by $b_0$. This is the predicted value of $y$ when all of 
 
 ### How to read a table of regression results
 
-In academic journal articles and books, the results of OLS regression models are represented in a fairly standard way. In order to understand how to read these articles, you need to understand this presentation style. Its not immediately intuitive for everyone. The table below shows the typical style. In this table, I am reporting three regression models with the property crime rates as the dependent variable and three different independent variables.  
+In academic journal articles and books, the results of OLS regression models are represented in a fairly standard way. In order to understand how to read these articles, you need to understand this presentation style. Its not immediately intuitive for everyone. Table \@ref(tab:model-table-example) below shows the typical style. In this table, I am reporting three regression models with the property crime rates as the dependent variable and three different independent variables.  
 
-```{r echo=FALSE, results="asis", warning=FALSE, message=FALSE}
-library(stargazer, quietly=TRUE, verbose=FALSE)
+```{r model-table-example, echo=FALSE, results="asis"}
 m1 <- lm(Property~PctLessHS, data=crimes)
 m2 <- lm(Property~PctLessHS+MedianAge, data=crimes)
 m3 <- lm(Property~PctLessHS+MedianAge+Poverty, data=crimes)
-stargazer(m1,m2,m3, type="html",
-          omit.stat=c("adj.rsq","ser","f"), 
-          digits=2, 
-          dep.var.labels="Property crime rate",
-          covariate.labels = c("Percent Less than HS", 
-                               "Median Age",
-                               "Poverty Rate"),
-          notes=c("Standard errors in parenthesis"),
-          notes.append=TRUE,
-          title="OLS regression models predicting violent crime rates for US states",
-          dep.var.labels.include=FALSE,
-          dep.var.caption="",
-          header=FALSE)
+htmlreg(list(m1, m2, m3),
+        custom.coef.names=c("Intercept",
+                            "Percent Less than HS", 
+                            "Median Age",
+                            "Poverty Rate"),
+        custom.gof.names = c("R-squared","N"),
+        caption="(\\#tab:model-table-example) OLS regression models predicting violent crime rates for US states",
+        caption.above=TRUE,
+        digits=2,
+        star.symbol='&#42;',
+        custom.note = "%stars. Standard errors in parenthesis.",
+        include.adjrs=FALSE, include.rmse=FALSE,
+        doctype = FALSE)
 ```
 
 When reading this table and others like it, keep the following issues in mind:
 
-1. The first question you should ask is "what is the dependent variable?" This is the outcome that we are trying to predict. Typically, the dependent variable will be listed in the title of the table. In this case, the title tells you that the dependent variable is property crime rates and the unit of analysis is US states.
-2. The independent variables are listed on the rows of the table. In this case, I have independent variables of percent less than HS, median age, and the poverty rate. As I will explain below, just because an independent variable is listed here does not mean that it is actually included in all models.
-3. The term "constant" is a synonym for "intercept."
-4. Models are listed in each column of the table. If numbers are listed for the row of a particular independent variable then that variable is included in that particular model. In this case, I have three different models. The first model only has numbers listed for Percent less than HS, so that is the only independent variable in the first model. The second model has numbers listed for Percent less than HS and Median Age, so both of these variables are included in the model. The third model includes all three variables in the model. Remember that in each case the dependent variable is the property crime rate. 
-5. Within each cell with numbers listed there is a lot going on. We are primarily interested in the main number listed at the top. This number is the slope (or intercept in the case of the "Constant" row). The number in parenthesis is the standard error for each slope in the model. You could use this standard error and the slope estimate above it to calculate t-statistics and p-values exactly. However, the asterisks give you an easy visual short cut to determine the rough size of the p-value. These asterisks indicate if the p-value is below a certain level, as shown in the notes at the bottom. The cut-offs of 0.05, 0.01, and 0.001 used here are pretty standard for the discipline. So an asterisks generally means that the result is "statistically significant." However, its important to keep in mind as noted above that these cut-offs are ultimately arbitrary and should never be confused with the substantive size of the effect itself.
-6. At the bottom, you typically get a number of summary measures of the model. The only two we care about are the number of observations and the $R^2$ of the model.
+* The first question you should ask is "what is the dependent variable?" This is the outcome that we are trying to predict. Typically, the dependent variable will be listed in the title of the table. In this case, the title tells you that the dependent variable is property crime rates and the unit of analysis is US states.
+*  The independent variables are listed on the rows of the table. In this case, I have independent variables of percent less than HS, median age, and the poverty rate. As I will explain below, just because an independent variable is listed here does not mean that it is actually included in all models.
+* Models are listed in each column of the table. If numbers are listed for the row of a particular independent variable then that variable is included in that particular model. In this case, I have three different models. The first model only has numbers listed for Percent less than HS, so that is the only independent variable in the first model. The second model has numbers listed for Percent less than HS and Median Age, so both of these variables are included in the model. The third model includes all three variables in the model. Remember that in each case the dependent variable is the property crime rate. 
+* Within each cell with numbers listed there is a lot going on. We are primarily interested in the main number listed at the top. This number is the slope (or intercept in the case of the "Constant" row). The number in parenthesis is the standard error for each slope in the model. You could use this standard error and the slope estimate above it to calculate t-statistics and p-values exactly. However, the asterisks give you an easy visual short cut to determine the rough size of the p-value. These asterisks indicate if the p-value is below a certain level, as shown in the notes at the bottom. The cut-offs of 0.05, 0.01, and 0.001 used here are pretty standard for the discipline. So an asterisks generally means that the result is "statistically significant." However, its important to keep in mind as noted above that these cut-offs are ultimately arbitrary and should never be confused with the substantive size of the effect itself.
+* At the bottom, you typically get a number of summary measures of the model. The only two we care about are the number of observations and the $R^2$ of the model.
+
+The advantage of organizing the table in this fashion is that we can easily see how the relationship between a given independent variable and the dependent variable changes as we add in other control variables by just looking at the numbers across a row. For example, we can see from Model 1 that the percent of the population with less than a high school diploma is initially pretty strongly positively related to violent crime rates. A one percentage point increase in this variable is associated with 78.83 more violent crimes per 100,000 population, on average. Controlling for the median age of the population in Model 2reduces this effect slightly but we still see a strong relationship. However, once we control for the poverty rate in a state the percent less than high school diploma effect completely vanishes (it becomes 0.05 which is effectively zero in this case). The poverty rate, on the other hand, has a big positive association with violent crime rates.
+
+What is going on here? It seems that the percent of the population with less than a high school diploma is only indirectly related to violent crime rates by its positive association with the poverty rate. But high poverty rates are much more directly responsible for high violent crime rates. In other words, a low high school completion rate predicts higher poverty rates and higher poverty rates predict more violent crimes, but a low high school completion rate does not directly predict more violent crimes. 
 
 ------
 
