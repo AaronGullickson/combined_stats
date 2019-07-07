@@ -1,0 +1,564 @@
+---
+title: "Distribution of a Variable"
+subtitle: "Sociology 312"
+author: "Aaron Gullickson"
+institute: "University of Oregon"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: [default, uo, uol-fonts, lecture_slides.css]
+    self_contained: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: ""
+      ratio: 16:10
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(fig.retina = 3, message=FALSE, warning=FALSE, fig.height=6.5, fig.align="center")
+```
+
+```{r load-stuff, include=FALSE}
+load("example_datasets/movies/movies.RData")
+load("example_datasets/sex/sex.RData")
+load("example_datasets/crimes/crimes.RData")
+load("example_datasets/titanic/titanic.RData")
+load("example_datasets/politics/politics.RData")
+load("example_datasets/add_health/popularity.RData")
+library(ggplot2)
+library(latex2exp)
+```
+
+
+```{r custom-ggtheme, include=FALSE}
+theme_myslides <- theme_bw()+
+  theme(axis.title = element_text(size=16),
+        axis.text = element_text(size=12),
+        plot.title = element_text(size=24),
+        plot.subtitle = element_text(size=16))
+theme_set(theme_myslides)
+```
+
+class: inverse, center, middle
+
+background-image: url(images/eaters-collective-rS1GogPLVHk-unsplash.jpg)
+background-size: cover
+
+# What is a Distribution?
+
+---
+
+## The concept of a distribution
+
+When we refer to the **distribution** of a variable, we are referring to how the different values of that variable are distributed across the given observations. 
+
+--
+
+.pull-left[
+### `r icon::fa("binoculars")` Look at it
+
+- We can make a plot that shows the distribution.
+- We make different kinds of plots for categorical and quantitative variables.
+  * **Barplots** for categorical variables
+  * **Histograms** for quantitative variables
+]
+
+--
+
+.pull-left[
+### `r icon::fa("square-root-alt")` Measure it
+
+- We can calculate summary measures of the **center** and **spread** of the distribution.
+- We an only calculate summary measures for quantiative variables.
+]
+
+---
+
+## Calculating frequencies
+
+In order to display the distribution of a **categorical variable**, we first need to calculate the **frequency** which is the number of observations that belong to each possible category. We can do this easily in *R* with the `table` command:
+
+```{r table-freq} 
+table(politics$party)
+```
+
+--
+
+Lets convert these frequencies into **proportions** by dividing through by the total number of observations. We can also do this easily in *R* by adding the `sum` command to the previous command:
+
+```{r} 
+prop <- table(politics$party)/sum(table(politics$party))
+prop
+```
+
+---
+
+## Proportions and percents
+
+*R* also has a built-in function called `prop.table` that will calculate proportions automatically. We just need to feed the output of the `table` command into it. 
+
+```{r}
+prop.table(table(politics$party))
+```
+
+--
+
+We can employ this "wrapping" feature of *R* to do some more tidying up. In this case, I want to `round` the number of digits and multiply by 100 to turn my proportions into percents. I also use the `sort` command to sort values from highest to lowest.
+
+```{r} 
+percent <- sort(round(100*prop.table(table(politics$party)),1), decreasing=TRUE)
+percent
+```
+
+---
+
+## How can we display distribution graphically?
+
+--
+
+.pull-left[
+### Do not use a piechart
+```{r, echo=FALSE}
+par(mar=c(0,0,0,0))
+pie(percent)
+```
+]
+
+--
+
+.pull-right[
+### Use a barplot
+```{r, echo=FALSE}
+ggplot(politics, aes(x=party, y=..prop.., group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  labs(x="party affiliation", y=NULL)
+```
+]
+
+---
+
+## Constructing a barplot in ggplot
+
+We will use `ggplot` to construct graphs. Here is the full code for the barplot. 
+
+```{r, eval=FALSE}
+ggplot(politics, aes(x=party, y=..prop.., group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  labs(x="party affiliation", y=NULL,
+       title="Distribution of party affiliation",
+       caption="Source: ANES 2016")+
+  theme_bw()
+```
+
+1. Multiple commands are linked together with `+` signs.
+
+---
+
+## Constructing a barplot in ggplot
+
+We will use `ggplot` to construct graphs. Here is the full code for the barplot. 
+
+```{r, eval=FALSE}
+ggplot(politics, aes(x=party, y=..prop.., group=1))+ #<<
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  labs(x="party affiliation", y=NULL,
+       title="Distribution of party affiliation",
+       caption="Source: ANES 2016")+
+  theme_bw()
+```
+
+1. Multiple commands are linked together with `+` signs.
+2. The first command of `ggplot` takes two arguments. The first argument is the data we want to use (in this case, the politics dataset). The second argument is the `aes` command that defines *aesthetics* for the full plot.
+
+---
+
+## Constructing a barplot in ggplot
+
+We will use `ggplot` to construct graphs. Here is the full code for the barplot. 
+
+```{r, eval=FALSE}
+ggplot(politics, aes(x=party, y=..prop.., group=1))+
+  geom_bar()+ #<<
+  scale_y_continuous(label=scales::percent)+
+  labs(x="party affiliation", y=NULL,
+       title="Distribution of party affiliation",
+       caption="Source: ANES 2016")+
+  theme_bw()
+```
+
+1. Multiple commands are linked together with `+` signs.
+2. The first command of `ggplot` takes two arguments. The first argument is the data we want to use (in this case, the politics dataset). The second argument is the `aes` command that defines *aesthetics* for the full plot.
+3. The second command is `geom_bar`. In general, all plots require some kind of "geometry" command defined as `geom_something`. This tells `ggplot` that I want to plot bars. At this point, my basic plot is done. The remaining commands just add more bells and whistles for a nicer plot.
+
+---
+
+## Constructing a barplot in ggplot
+
+We will use `ggplot` to construct graphs. Here is the full code for the barplot. 
+
+```{r, eval=FALSE}
+ggplot(politics, aes(x=party, y=..prop.., group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+ #<<
+  labs(x="party affiliation", y=NULL,
+       title="Distribution of party affiliation",
+       caption="Source: ANES 2016")+
+  theme_bw()
+```
+
+1. Multiple commands are linked together with `+` signs.
+2. The first command of `ggplot` takes two arguments. The first argument is the data we want to use (in this case, the politics dataset). The second argument is the `aes` command that defines *aesthetics* for the full plot.
+3. The second command is `geom_bar`. In general, all plots require some kind of "geometry" command defined as `geom_something`. This tells `ggplot` that I want to plot bars. At this point, my basic plot is done. The remaining commands just add more bells and whistles for a nicer plot.
+4. `scale_y_continuous(label=scales::percent)` causes my proportions on the y-axis to reported as percents.
+
+---
+
+## Constructing a barplot in ggplot
+
+We will use `ggplot` to construct graphs. Here is the full code for the barplot. 
+
+```{r, eval=FALSE}
+ggplot(politics, aes(x=party, y=..prop.., group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  labs(x="party affiliation", y=NULL, #<<
+       title="Distribution of party affiliation", #<<
+       caption="Source: ANES 2016")+ #<<
+  theme_bw()
+```
+
+1. Multiple commands are linked together with `+` signs.
+2. The first command of `ggplot` takes two arguments. The first argument is the data we want to use (in this case, the politics dataset). The second argument is the `aes` command that defines *aesthetics* for the full plot.
+3. The second command is `geom_bar`. In general, all plots require some kind of "geometry" command defined as `geom_something`. This tells `ggplot` that I want to plot bars. At this point, my basic plot is done. The remaining commands just add more bells and whistles for a nicer plot.
+4. `scale_y_continuous(label=scales::percent)` causes my proportions on the y-axis to reported as percents.
+5. The `labs` command can be used to add nice labeling of axes and to create titles and captions.
+
+---
+
+## Constructing a barplot in ggplot
+
+We will use `ggplot` to construct graphs. Here is the full code for the barplot. 
+
+```{r, eval=FALSE}
+ggplot(politics, aes(x=party, y=..prop.., group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  labs(x="party affiliation", y=NULL,
+       title="Distribution of party affiliation",
+       caption="Source: ANES 2016")+
+  theme_bw() #<<
+```
+
+1. Multiple commands are linked together with `+` signs.
+2. The first command of `ggplot` takes two arguments. The first argument is the data we want to use (in this case, the politics dataset). The second argument is the `aes` command that defines *aesthetics* for the full plot.
+3. The second command is `geom_bar`. In general, all plots require some kind of "geometry" command defined as `geom_something`. This tells `ggplot` that I want to plot bars. At this point, my basic plot is done. The remaining commands just add more bells and whistles for a nicer plot.
+4. `scale_y_continuous(label=scales::percent)` causes my proportions on the y-axis to reported as percents.
+5. The `labs` command can be used to add nice labeling of axes and to create titles and captions.
+6. `theme_bw` defines a theme for the overall plot. I prefer `theme_bw` to the default theme in `ggplot`. 
+
+---
+
+## Code and output
+
+.pull-left[
+```{r barplot-example, fig.show = 'hide'}
+ggplot(politics, 
+       aes(x=party, y=..prop.., group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  labs(x="party affiliation", 
+       y=NULL,
+       title="Distribution of party affiliation",
+       caption="Source: ANES 2016")+
+  theme_bw()
+```
+]
+
+.pull-right[
+```{r ref.label = 'barplot-example', echo = FALSE}
+```
+]
+
+---
+
+## Visualize quantitative variables with a histogram
+
+```{r hist-example, echo=FALSE, fig.width=12}
+ggplot(movies, aes(x=Runtime))+
+  geom_histogram(fill="skyblue", color="black", 
+                 binwidth=5)+
+  labs(x="runtime in minutes",
+       title="Distribution of move runtime")+
+  theme_bw()
+```
+
+---
+
+## How a histogram is created
+
+--
+
+1. We break the variable into equivalent intervals called **bins**. For a histogram of movie runtime length, we might use bins of 5 minutes width, so our bins would look like 0-5 minutes, 5-10 minutes, 10-15 minutes, 15-20 minutes, etc.
+
+--
+
+2. We calculate the frequency of observations that fall into each bin. Technically, we need to decide which bin to put cases that straddle two bins (e.g. exactly 5 minutes). *R* defaults to putting these cases in the lower category.
+
+--
+
+3. We make a barplot of these frequencies, but we put no space between the bars. 
+
+---
+
+## Code and output for making a histogram
+
+.pull-left[
+```{r ref.label='hist-example', fig.show = 'hide'}
+```
+
+* You only need an `x` aesthetic for a histogram which is just your variable
+* use `binwidth` to specify the width of the bins
+* use `fill` and `color` to specify the fill and border color respectively for your bars
+
+]
+
+.pull-right[
+```{r ref.label = 'hist-example', echo = FALSE}
+```
+]
+
+---
+
+class: center, middle
+
+<iframe src="https://aarongullickson.shinyapps.io/histogram/">
+
+</iframe>
+
+---
+
+## What are we looking for in a histogram?
+
+.pull-left[
+
+### Shape
+
+Is it symmetric or skewed?
+
+### Center
+
+Where is the center or peak of the distribution and is there only one?
+
+### Spread
+
+How spread out are the values around the center?
+
+### Outliers
+
+Are there any observations that have relatively very high or low values?
+]
+
+.pull-right[
+```{r ref.label = 'hist-example', echo = FALSE}
+```
+]
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/willie-fineberg-64iuIOektb4-unsplash.jpg)
+background-size: cover
+
+# The Center of a Distribution
+
+---
+
+## What does "center" mean?
+
+--
+
+### Mean
+
+The mean is the **balancing point** of a distribution. Imagine trying to put a column underneath a histogram so that it does not tip one direction or the other. This balancing point is the mean. 
+
+--
+
+### Median
+
+The median is the **midpoint** of the distribution. At this point, 50% of the observations have lower values, and 50% have higher values. 
+
+--
+
+### Mode
+
+The mode is the **high point** of the distribution, or the peak. It is typically much less useful than the other two measures. 
+
+
+---
+
+## The mean and the median
+
+```{r echo=FALSE, fig.width=12}
+temp <- data.frame(value=c(mean(movies$Runtime), median(movies$Runtime)),
+                   measure=c("mean","median"))
+ggplot(movies, aes(x=Runtime))+
+  geom_histogram(fill="grey", color="black", 
+                 binwidth=5)+
+  labs(x="runtime in minutes",
+       title="Distribution of move runtime")+
+  geom_vline(data=temp, aes(xintercept = value, color=measure), size=2)
+```
+
+---
+
+## Calculating the mean
+
+The mean (represented mathematically as $\bar{x}$) is calculated by taking the sum of the variable divided by the number of observations, or in math speak: $$\bar{x}=\frac{\sum_{i=1}^n x_i}{n}$$
+
+--
+
+### `r emo::ji("scream")` Equations??!!
+
+Don't panic! We will walk through what these symbols mean. 
+
+--
+
+* $x_i$: We use a lower-case letter like $x$ or $y$ to refer to a generic variable. The subscript indicates a particular observation. So, $x_1$ means the value of variable $x$ for the first observation. The $x_i$ subscripts means some generic observation's value of $x$.
+
+--
+
+* $n$: We use $n$ to refer generically to the number of observations. So, $x_n$ gives the value of $x$ for the last observation. 
+
+--
+
+* We use the $\sum (something)$ term to say sum something up. In this case, $\sum_{i=1}^n x_i$ means to "sum the variable $x$ from the first observation to the last."
+
+---
+
+## Calculate the mean in *R*
+
+ $$\bar{x}=\frac{\sum_{i=1}^n x_i}{n}$$
+
+To calculate the mean we just sum up all the values of $x$ and divde by the number of observations. The `sum` command will sum up a variable and the `nrow` command will give us the number of observations, so:
+
+```{r}
+sum(movies$Runtime)/nrow(movies)
+```
+
+The mean move runtime is 105.2 minutes.
+
+--
+
+Alternatively, we could just use the `mean` command in R: `r emo::ji("sunglasses")`
+
+```{r}
+mean(movies$Runtime)
+```
+
+---
+
+## Calculating the median
+
+.pull-left[
+### The Midpoint
+
+* We just need to sort the observations from smallest to largest and pick the exact middle point of the distribution.
+  * If there are an odd number of observations, there will always be an exact midpoint. 
+  * If we have an even number of observations, we have to take the two values closest to the midpoint and take their mean. 
+]
+
+--
+
+.pull-right[
+```{r}
+nrow(movies)
+```
+
+With an odd number of 2553 movies, the exact midpoint is the 1277th movie. We can use the `sort` command to sort and thene extract the 1277th movie by using square brackets:
+
+```{r}
+sort(movies$Runtime)[1277]
+```
+
+Alternatively, we can use the `median` command:
+
+```{r}
+median(movies$Runtime)
+```
+]
+
+---
+
+## Why are the mean and median different?
+
+.pull-left[
+```{r echo=FALSE}
+temp <- data.frame(value=c(mean(movies$Runtime), median(movies$Runtime)),
+                   measure=c("mean","median"))
+ggplot(movies, aes(x=Runtime))+
+  geom_histogram(fill="grey", color="black", 
+                 binwidth=5)+
+  labs(x="runtime in minutes",
+       title="Distribution of move runtime")+
+  geom_vline(data=temp, aes(xintercept = value, color=measure), size=2)
+```
+]
+
+--
+
+.pull-right[
+* In perfectly symmetric distributions, the mean and the median will be the same. In other words, the balancing point will be at the midpoint. 
+* Skewness will "pull" the mean in the direction of the skew, but not the median. This is because the mean will need to move in that direction to maintain balance. 
+* In highly skewed distributions, this can lead to significant differences between the median and the mean.
+]
+
+---
+
+## Skewness can create large differences
+
+```{r, echo=FALSE, fig.width=12}
+temp <- data.frame(value=c(mean(movies$BoxOffice), median(movies$BoxOffice)),
+                   measure=c("mean","median"))
+ggplot(movies, aes(x=BoxOffice))+
+  geom_histogram(fill="grey", color="black", 
+                 binwidth=5)+
+  labs(x="box office returns in millions of USD",
+       title="Distribution of move box office returns")+
+  geom_vline(data=temp, aes(xintercept = value, color=measure), size=2)+
+  annotate("label", x=170, y=400, 
+           label="The mean ($45.2 million) is more than\ndouble the median ($21.6 million)",
+           size=4)
+```
+
+---
+
+## Modal Categories
+
+.pull-left[
+* We don't generally calculate measures of 
+"center" for categorical variables.
+* Since the mode is the most common observation, we can make an exception for this case.
+* The **modal category** is the most frequent category in a categorical variable. 
+]
+
+.pull-right[
+```{r echo=FALSE}
+ggplot(movies, aes(x=Rating, y=..prop.., group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  ylim(0,.5)+
+  labs(x=NULL, y=NULL, 
+       title="Distribution of movie maturity rating")+
+  annotate("label", x=4, y=0.48, label="R is the\nmodal category",
+           size=4)
+```
+
+]
