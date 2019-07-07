@@ -724,7 +724,7 @@ ggplot(movies, aes(x="", y=BoxOffice))+
 
 class: inverse, center, middle
 
-background-image: url(images/victoria-strukovskaya-OhL_qEqpef4-unsplash.jpg)
+background-image: url(images/avi-werde-5udBKkXTUK8-unsplash.jpg)
 background-size: cover
 
 # Measuring the Spread of a Distribution
@@ -733,6 +733,101 @@ background-size: cover
 
 ## Distributions can vary in their spread
 
-```{r echo=FALSE}
-
+```{r echo=FALSE, fig.width=12}
+temp <- data.frame(x=c(rnorm(10000,10,1),
+                       rnorm(10000,10,0.5)),
+                   type=c(rep("wide",10000),
+                          rep("narrow",10000)))
+ggplot(temp, aes(x=x, fill=type))+
+  geom_histogram(data=subset(temp, type=="narrow"), alpha=0.7, binwidth=0.2)+
+  geom_histogram(data=subset(temp, type=="wide"), alpha=0.7, binwidth=0.2)+
+  guides(fill=FALSE)+
+  labs(x="some interesting variable",
+       title="distributions with the same center and shape, but different spread")+
+  theme_bw()
 ```
+
+---
+
+## Measures of spread
+
+### Interquartile Range
+
+The **Interquartile Range** (IQR) is the distance between the 25th and 75th percentile. It can be calculated by the `IQR` command in *R*:
+
+```{r}
+IQR(movies$Runtime)
+```
+
+The 75th percentile of movie runtime is 21 minutes longer than the 25th percentile. 
+
+### Variance and Standard Deviation
+
+**Standard deviation** (SD) is the most common measure of spread in a variable. Loosely, standard deviation measures the average distance from the mean of all observations. **Variance** is the squared value of standard deviation.
+
+---
+
+## Calculating the standard deviation
+
+The standard deviation ($s$) is calculated with the following formula:
+
+$$s=\sqrt{\frac{\sum_{i=1}^n(x_i-\bar{x})^2}{n-1}}$$
+
+--
+
+### `r emo::ji("open_mouth")` More Equations??!!
+
+Don't panic! We will go through it one step at a time. 
+
+--
+
+$(x_i-\bar{x})$: The distance between each observation's value and the mean. Some of these values are positive and some are negative. If we summed these values up across all observations, the sum would equal zero by definition.
+
+```{r}
+distance <- movies$Runtime-mean(movies$Runtime) 
+```
+
+--
+
+$(x_i-\bar{x})^2$: We square this distance to get rid of the negative values.
+
+```{r}
+distance_sq <- distance^2
+```
+
+---
+
+### Calculating the standard deviation
+
+$\sum_{i=1}^n(x_i-\bar{x})^2$: The sum of the squared distance, sometimes abbreviated *SSX*.
+
+```{r}
+ssx <- sum(distance_sq)
+```
+
+--
+
+$\sum_{i=1}^n(x_i-\bar{x})^2/(n-1)$: Dividing through by the number of observations gives us the "average" squared distance from the mean. This number is the **variance**.
+
+```{r}
+variance <- ssx/(nrow(movies)-1)
+```
+
+--
+
+$\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2/(n-1)}$: Squared distance is a hard thing to conceptualize, so we square root to get back to distance.
+
+```{r}
+sd <- sqrt(variance)
+sd
+```
+
+The average movie is about 16.7 minutes away from the mean movie runtime.
+
+We can also just use the `sd` command: `r emo::ji("sunglasses")`
+
+```{r}
+sd(movies$Runtime)
+```
+
+
