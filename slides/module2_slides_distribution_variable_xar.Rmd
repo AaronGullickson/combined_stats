@@ -419,6 +419,8 @@ ggplot(movies, aes(x=Runtime))+
 
 ---
 
+
+
 ## Calculating the mean
 
 The mean (represented mathematically as $\bar{x}$) is calculated by taking the sum of the variable divided by the number of observations, or in math speak: $$\bar{x}=\frac{\sum_{i=1}^n x_i}{n}$$
@@ -562,3 +564,175 @@ ggplot(movies, aes(x=Rating, y=..prop.., group=1))+
 ```
 
 ]
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/victoria-strukovskaya-OhL_qEqpef4-unsplash.jpg)
+background-size: cover
+
+# Percentiles and the Five-Number Summary
+
+---
+
+## Percentiles/Quantiles
+
+.pull-left[
+* A given percentile tells you what percent of the distribution is below that number. 
+* We have already seen one example of a percentile: the median. The median is the 50th percentile. 50% of the observations are below this value.
+* Percentiles are sometimes also called **quantiles**, but I will use the term percentile in this course.
+]
+
+--
+
+.pull-right[
+### Calculating percentiles in *R*
+
+The `quantile` command in R will calculate a given percentile.  
+
+To calculate the percentile with this command, we need to add a second argument called `probs` where we feed in a list of proportions. So if we wanted to calculate the 13th and 76th percentile of movie runtime:
+
+```{r}
+quantile(movies$Runtime, probs=c(0.13, 0.76))
+```
+
+13% of movies  are 89 minutes or shorter and 76% of movies are 114 minutes or shorter.
+]
+
+---
+
+## The five-number summary
+
+.pull-left[
+If I run the `quantile` command without the `probs` argument, I get:
+
+```{r}
+quantile(movies$Runtime)
+```
+
+* The 25th percentile, 50th percentile, and 75th percentile are called the **quartiles** because they split the data into four equal quarters. 
+* When combined with the minimum (0%) and maximum (100%), they create the **five-number summary**. 
+]
+
+--
+
+.pull-right[
+You can use the five-number summary to create a boxplot.
+```{r echo=FALSE}
+ggplot(movies, aes(y=Runtime))+
+  geom_boxplot(fill="grey", outlier.color = "red")+
+  xlim(-0.6, 0.6)+
+  labs(x=NULL, y="runtime in minutes")+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+```
+]
+
+---
+
+## Anatomy of the boxplot
+
+.pull-left[
+* Use a single vertical number line
+* Draw a box with a bottom and top at the 25th and 75th percentiles
+* Inside the box, draw a thick line at the median
+* The height of the box is the differencde between the 25th and 75th percentile which is called the **Interquartile range** or **IQR** for short.
+* Draw "whiskers" above and below the box. These whiskers should be drawn out to the maximum and minimum values or a total distance of 1.5 x IQR, whichever is shortest.
+* Plot out individual points that are beyond the 1.5 x IQR limit individually.
+]
+
+.pull-right[
+```{r echo=FALSE}
+ggplot(movies, aes(y=Runtime))+
+  geom_hline(yintercept = 114, linetype=2, color="grey")+
+  annotate("label", x=0.5, y=114, label="75%")+
+  geom_hline(yintercept = 93, linetype=2, color="grey")+
+  annotate("label", x=0.5, y=93, label="25%")+
+  geom_hline(yintercept = 102, linetype=2, color="grey")+
+  annotate("label", x=-0.5, y=102, label="median")+
+  geom_segment(x=0.6, xend=0.6, y=93, yend=114, 
+               arrow=arrow(length=unit(0.1, "inch")))+
+  geom_segment(x=0.6, xend=0.6, y=114, yend=93, 
+               arrow=arrow(length=unit(0.1, "inch")))+
+  annotate("label", x=0.6, y=120, label="IQR")+
+  geom_segment(x=0.05, xend=0.05, y=114, yend=114+21*1.5, 
+               arrow=arrow(length=unit(0.1, "inch")))+
+  geom_segment(x=0.05, xend=0.05, yend=114, y=114+21*1.5, 
+               arrow=arrow(length=unit(0.1, "inch")))+
+  annotate("label", x=0.35, y=140, 
+           label="whiskers to either maximum/minimum\nor 1.5 x IQR, whichever is shortest")+
+  annotate("label", x=0.25, y=200, 
+           label="observations beyond 1.5 x IQR\nare drawn individually",
+           color="red")+
+  geom_boxplot(fill="grey", outlier.color = "red")+
+  xlim(-0.6, 0.6)+
+  labs(x=NULL, y="runtime in minutes")+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+```
+]
+
+---
+
+## Code and output for boxplot
+
+.pull-left[
+```{r boxplot-example, fig.show = 'hide'}
+ggplot(movies, aes(x="", y=Runtime))+
+  geom_boxplot(fill="grey", outlier.color="red")+
+  labs(x=NULL, y="runtime in minutes",
+       title="Boxplot of movie runtime")+
+  theme_bw()
+```
+
+* The `x=""` in the aesthetics is not necessary but does create a nicer looking x axis.
+* You can use `fill` to determine color of the box and `outlier.color` to determine color of individual points. 
+
+]
+
+.pull-right[
+```{r ref.label = 'boxplot-example', echo = FALSE}
+```
+]
+
+---
+
+## Detecting skewness in boxplots
+
+.pull-left[
+```{r echo=FALSE}
+ggplot(movies, aes(x="", y=Runtime))+
+  geom_boxplot(fill="grey", outlier.color="red")+
+  labs(x=NULL, y="runtime in minutes",
+       title="movie runtime is slightly right-skewed")+
+  theme_bw()
+```
+]
+
+.pull-right[
+```{r echo=FALSE}
+ggplot(movies, aes(x="", y=BoxOffice))+
+  geom_boxplot(fill="grey", outlier.color="red")+
+  labs(x=NULL, y="box office returns in millions of USD",
+       title="box office returns are heavily right-skewed")+
+  theme_bw()
+```
+]
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/victoria-strukovskaya-OhL_qEqpef4-unsplash.jpg)
+background-size: cover
+
+# Measuring the Spread of a Distribution
+
+---
+
+## Distributions can vary in their spread
+
+```{r echo=FALSE}
+
+```
