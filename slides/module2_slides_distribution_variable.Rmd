@@ -1,66 +1,92 @@
 ---
 title: "Distribution of a Variable"
-author: "Prof. Gullickson, University of Oregon, Winter 2019"
-resource_files:
-- shiny_apps/percentiles/app.R
-- shiny_apps/histogram/app.R
+subtitle: "Sociology 312"
+author: "Aaron Gullickson"
+institute: "University of Oregon"
+date: "`r Sys.Date()`"
 output:
-  ioslides_presentation:
-    css: lecture_slides.css
-    fig_caption: yes
-    fig_height: 4
-    fig_width: 6
-    logo: images/slides/logo.png
-    widescreen: yes
-subtitle: Sociology 312, Statistical Analysis
-runtime: shiny
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: [default, uo, uol-fonts, lecture_slides.css]
+    self_contained: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: ""
+      ratio: 16:10
 ---
 
-<style type="text/css">
-slides > slide:not(.nobackground):after {
-  content: '';
-}
-</style>
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(fig.retina = 3, message=FALSE, warning=FALSE, fig.height=6.5, fig.align="center")
+```
 
-```{r echo=FALSE}
+```{r load-stuff, include=FALSE}
 load("example_datasets/movies/movies.RData")
 load("example_datasets/sex/sex.RData")
 load("example_datasets/crimes/crimes.RData")
 load("example_datasets/titanic/titanic.RData")
 load("example_datasets/politics/politics.RData")
+load("example_datasets/add_health/popularity.RData")
+library(ggplot2)
+library(latex2exp)
 ```
 
 
-# What is a distribution?
+```{r custom-ggtheme, include=FALSE}
+theme_myslides <- theme_bw()+
+  theme(axis.title = element_text(size=16),
+        axis.text = element_text(size=12),
+        plot.title = element_text(size=24),
+        plot.subtitle = element_text(size=16))
+theme_set(theme_myslides)
+```
 
-The Distribution of a Variable
+class: inverse, center, middle
+
+background-image: url(images/eaters-collective-rS1GogPLVHk-unsplash.jpg)
+background-size: cover
+
+# What is a Distribution?
+
+---
 
 ## The concept of a distribution
 
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
-</div>
-
 When we refer to the **distribution** of a variable, we are referring to how the different values of that variable are distributed across the given observations. 
 
->- The simplest way to examine a distribution is just to look at it in a graph. There are different graphical techniques for looking at a distribution, depending on whether it is categorical or quantitative.
->- For quantitative variables, we can also calculate summary statistics that describe a distribution, such as its "center" and "spread."
+--
 
-## Calculating the frequency
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
-</div>
+.pull-left[
+### `r icon::fa("binoculars")` Look at it
 
-In order to display the distribution of a categorical variable, we first need to calculate the **frequency** which is the number of observations that belong to each possible category. We can do this easily in *R* with the `table` command:
+- We can make a plot that shows the distribution.
+- We make different kinds of plots for categorical and quantitative variables.
+  * **Barplots** for categorical variables
+  * **Histograms** for quantitative variables
+]
 
-```{r} 
+--
+
+.pull-left[
+### `r icon::fa("square-root-alt")` Measure it
+
+- We can calculate summary measures of the **center** and **spread** of the distribution.
+- We an only calculate summary measures for quantiative variables.
+]
+
+---
+
+## Calculating frequencies
+
+In order to display the distribution of a **categorical variable**, we first need to calculate the **frequency** which is the number of observations that belong to each possible category. We can do this easily in *R* with the `table` command:
+
+```{r table-freq} 
 table(politics$party)
 ```
 
-## Proportions and Percents {.smaller}
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
-</div>
+--
 
 Lets convert these frequencies into **proportions** by dividing through by the total number of observations. We can also do this easily in *R* by adding the `sum` command to the previous command:
 
@@ -69,15 +95,17 @@ prop <- table(politics$party)/sum(table(politics$party))
 prop
 ```
 
-*R* also has a built-in function called `prop.table` that will calculate proportions automatically:
+---
+
+## Proportions and percents
+
+*R* also has a built-in function called `prop.table` that will calculate proportions automatically. We just need to feed the output of the `table` command into it. 
 
 ```{r}
 prop.table(table(politics$party))
 ```
 
-Note that I still need to run the `table` command and then wrap `prop.table` around that command.
-
-## Rounding and Sorting
+--
 
 We can employ this "wrapping" feature of *R* to do some more tidying up. In this case, I want to `round` the number of digits and multiply by 100 to turn my proportions into percents. I also use the `sort` command to sort values from highest to lowest.
 
@@ -86,386 +114,720 @@ percent <- sort(round(100*prop.table(table(politics$party)),1), decreasing=TRUE)
 percent
 ```
 
-## Piecharts or Barplots?
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
-</div>
+---
 
-```{r fig.width=10, figh.height=4, out.width='1000px', out.height='400px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')} 
-par(mfrow=c(1,2))
-pie(percent, main="Piechart")
-barplot(percent, col="skyblue", cex.names=0.65, ylab="Percent",
-        main="Barplot")
+## How can we display distribution graphically?
+
+--
+
+.pull-left[
+### Do not use a piechart
+```{r, echo=FALSE}
+par(mar=c(0,0,0,0))
+pie(percent)
+```
+]
+
+--
+
+.pull-right[
+### Use a barplot
+```{r, echo=FALSE}
+ggplot(politics, aes(x=party, y=..prop.., group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  labs(x="party affiliation", y=NULL)
+```
+]
+
+---
+
+## Constructing a barplot in ggplot
+
+We will use `ggplot` to construct graphs. Here is the full code for the barplot. 
+
+```{r, eval=FALSE}
+ggplot(politics, aes(x=party, y=..prop.., group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  labs(x="party affiliation", y=NULL,
+       title="Distribution of party affiliation",
+       caption="Source: ANES 2016")+
+  theme_bw()
 ```
 
-## Barplots are better!
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
-</div>
+1. Multiple commands are linked together with `+` signs.
 
-Can you tell whether there are more independents or democrats on the piechart? It is much more difficult to figure out the relative size of slices on a piechart than the bars on a barplot, because your eyeballs have to deal with an extra dimension.
+---
 
-```{r echo=FALSE, fig.width=10, fig.height=4, out.width='1000px', out.height='400px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')} 
-par(mfrow=c(1,2))
-pie(percent, main="Piechart")
-barplot(percent, col="skyblue", cex.names=0.65, ylab="Percent",
-        main="Barplot")
+## Constructing a barplot in ggplot
+
+We will use `ggplot` to construct graphs. Here is the full code for the barplot. 
+
+```{r, eval=FALSE}
+ggplot(politics, aes(x=party, y=..prop.., group=1))+ #<<
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  labs(x="party affiliation", y=NULL,
+       title="Distribution of party affiliation",
+       caption="Source: ANES 2016")+
+  theme_bw()
 ```
 
-## The Histogram
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
-</div>
+1. Multiple commands are linked together with `+` signs.
+2. The first command of `ggplot` takes two arguments. The first argument is the data we want to use (in this case, the politics dataset). The second argument is the `aes` command that defines *aesthetics* for the full plot.
 
-We can look at the distribution of quantitative variables by graphing the **histogram**. The histogram is somewhat similar to a barplot.
+---
 
->1. We break the variable into equivalent intervals called **bins**. 
-    If we did a histogram of movie runtime length, we might use bins of 5 minutes width, so our bins would look like 0-5 minutes, 5-10 minutes, 10-15 minutes, 15-20 minutes, etc. 
-    Technically, we need to decide which bin to put cases that straddle two bins (e.g. exactly 5 minutes). *R* defaults to putting these cases in the lower category. 
->2. We calculate the frequency of observations that fall into each bin.
->3. We make a barplot of these frequencies, but we put no space between the bars. 
+## Constructing a barplot in ggplot
 
-## Making a histogram of movie length {.smaller}
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
-</div>
+We will use `ggplot` to construct graphs. Here is the full code for the barplot. 
 
-We can use the `hist` command. What is the bin width in this example?
-
-```{r fig.height=3.5, out.width='600px', out.height='350px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')} 
-par(mar=c(5,4,1,1))
-hist(movies$Runtime, col="skyblue",
-     xlab="Movie runtime (in minutes)", main="Histogram of movie runtime")
+```{r, eval=FALSE}
+ggplot(politics, aes(x=party, y=..prop.., group=1))+
+  geom_bar()+ #<<
+  scale_y_continuous(label=scales::percent)+
+  labs(x="party affiliation", y=NULL,
+       title="Distribution of party affiliation",
+       caption="Source: ANES 2016")+
+  theme_bw()
 ```
 
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
-</div>
+1. Multiple commands are linked together with `+` signs.
+2. The first command of `ggplot` takes two arguments. The first argument is the data we want to use (in this case, the politics dataset). The second argument is the `aes` command that defines *aesthetics* for the full plot.
+3. The second command is `geom_bar`. In general, all plots require some kind of "geometry" command defined as `geom_something`. This tells `ggplot` that I want to plot bars. At this point, my basic plot is done. The remaining commands just add more bells and whistles for a nicer plot.
 
-```{r echo=FALSE}
-shinyAppDir(
-  "shiny_apps/histogram",
-  options=list( width="100%", height=700)
-)
+---
+
+## Constructing a barplot in ggplot
+
+We will use `ggplot` to construct graphs. Here is the full code for the barplot. 
+
+```{r, eval=FALSE}
+ggplot(politics, aes(x=party, y=..prop.., group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+ #<<
+  labs(x="party affiliation", y=NULL,
+       title="Distribution of party affiliation",
+       caption="Source: ANES 2016")+
+  theme_bw()
 ```
 
-## What are we looking for in a histogram? {.smaller}
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: What is a distribution?</body>
-</div>
+1. Multiple commands are linked together with `+` signs.
+2. The first command of `ggplot` takes two arguments. The first argument is the data we want to use (in this case, the politics dataset). The second argument is the `aes` command that defines *aesthetics* for the full plot.
+3. The second command is `geom_bar`. In general, all plots require some kind of "geometry" command defined as `geom_something`. This tells `ggplot` that I want to plot bars. At this point, my basic plot is done. The remaining commands just add more bells and whistles for a nicer plot.
+4. `scale_y_continuous(label=scales::percent)` causes my proportions on the y-axis to reported as percents.
 
->- **Shape**: centered or **skewed**?
->- **Center**: where is it and is there only one?
->- **Spread**: How spread out are the values around the center?
->- **Outliers**: Are there any observations that have relatively very high or low values?
+---
 
-```{r echo=FALSE, fig.height=3.5, out.width='600px', out.height='350px', dpi=300,fig.align='center', dev.args = list(bg = 'transparent')} 
-bins <- seq(0, by=5, length.out = 1+(max(movies$Runtime)/5))
-hist(movies$Runtime, col="skyblue", breaks=bins, 
-     xlab="Movie runtime (in minutes)", main="Histogram of movie runtime", xlim=c(0, max(movies$Runtime)))
+## Constructing a barplot in ggplot
+
+We will use `ggplot` to construct graphs. Here is the full code for the barplot. 
+
+```{r, eval=FALSE}
+ggplot(politics, aes(x=party, y=..prop.., group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  labs(x="party affiliation", y=NULL, #<<
+       title="Distribution of party affiliation", #<<
+       caption="Source: ANES 2016")+ #<<
+  theme_bw()
 ```
 
-# Measuring the Center of a Distribution
-The Distribution of a Variable
+1. Multiple commands are linked together with `+` signs.
+2. The first command of `ggplot` takes two arguments. The first argument is the data we want to use (in this case, the politics dataset). The second argument is the `aes` command that defines *aesthetics* for the full plot.
+3. The second command is `geom_bar`. In general, all plots require some kind of "geometry" command defined as `geom_something`. This tells `ggplot` that I want to plot bars. At this point, my basic plot is done. The remaining commands just add more bells and whistles for a nicer plot.
+4. `scale_y_continuous(label=scales::percent)` causes my proportions on the y-axis to reported as percents.
+5. The `labs` command can be used to add nice labeling of axes and to create titles and captions.
+
+---
+
+## Constructing a barplot in ggplot
+
+We will use `ggplot` to construct graphs. Here is the full code for the barplot. 
+
+```{r, eval=FALSE}
+ggplot(politics, aes(x=party, y=..prop.., group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  labs(x="party affiliation", y=NULL,
+       title="Distribution of party affiliation",
+       caption="Source: ANES 2016")+
+  theme_bw() #<<
+```
+
+1. Multiple commands are linked together with `+` signs.
+2. The first command of `ggplot` takes two arguments. The first argument is the data we want to use (in this case, the politics dataset). The second argument is the `aes` command that defines *aesthetics* for the full plot.
+3. The second command is `geom_bar`. In general, all plots require some kind of "geometry" command defined as `geom_something`. This tells `ggplot` that I want to plot bars. At this point, my basic plot is done. The remaining commands just add more bells and whistles for a nicer plot.
+4. `scale_y_continuous(label=scales::percent)` causes my proportions on the y-axis to reported as percents.
+5. The `labs` command can be used to add nice labeling of axes and to create titles and captions.
+6. `theme_bw` defines a theme for the overall plot. I prefer `theme_bw` to the default theme in `ggplot`. 
+
+---
+
+## Code and output
+
+.pull-left[
+```{r barplot-example, fig.show = 'hide'}
+ggplot(politics, 
+       aes(x=party, y=..prop.., group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  labs(x="party affiliation", 
+       y=NULL,
+       title="Distribution of party affiliation",
+       caption="Source: ANES 2016")+
+  theme_bw()
+```
+]
+
+.pull-right[
+```{r ref.label = 'barplot-example', echo = FALSE}
+```
+]
+
+---
+
+## Visualize quantitative variables with a histogram
+
+```{r hist-example, echo=FALSE, fig.width=12}
+ggplot(movies, aes(x=Runtime))+
+  geom_histogram(fill="skyblue", color="black", 
+                 binwidth=5)+
+  labs(x="runtime in minutes",
+       title="Distribution of move runtime")+
+  theme_bw()
+```
+
+---
+
+## How a histogram is created
+
+--
+
+1. We break the variable into equivalent intervals called **bins**. For a histogram of movie runtime length, we might use bins of 5 minutes width, so our bins would look like 0-5 minutes, 5-10 minutes, 10-15 minutes, 15-20 minutes, etc.
+
+--
+
+2. We calculate the frequency of observations that fall into each bin. Technically, we need to decide which bin to put cases that straddle two bins (e.g. exactly 5 minutes). *R* defaults to putting these cases in the lower category.
+
+--
+
+3. We make a barplot of these frequencies, but we put no space between the bars. 
+
+---
+
+## Code and output for making a histogram
+
+.pull-left[
+```{r ref.label='hist-example', fig.show = 'hide'}
+```
+
+* You only need an `x` aesthetic for a histogram which is just your variable
+* use `binwidth` to specify the width of the bins
+* use `fill` and `color` to specify the fill and border color respectively for your bars
+
+]
+
+.pull-right[
+```{r ref.label = 'hist-example', echo = FALSE}
+```
+]
+
+---
+
+class: center, middle
+
+<iframe src="https://aarongullickson.shinyapps.io/histogram/">
+
+</iframe>
+
+---
+
+## What are we looking for in a histogram?
+
+.pull-left[
+
+### Shape
+
+Is it symmetric or skewed?
+
+### Center
+
+Where is the center or peak of the distribution and is there only one?
+
+### Spread
+
+How spread out are the values around the center?
+
+### Outliers
+
+Are there any observations that have relatively very high or low values?
+]
+
+.pull-right[
+```{r ref.label = 'hist-example', echo = FALSE}
+```
+]
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/willie-fineberg-64iuIOektb4-unsplash.jpg)
+background-size: cover
+
+# The Center of a Distribution
+
+---
 
 ## What does "center" mean?
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
-</div>
 
-There are three different ways we talk about the center of a distribution in statistics. All three of these could qualify as the "average" to which people often refer. 
+--
 
->- The **mean**: The mean is the *balancing point* of a distribution. Imagine trying to put a column underneath a histogram so that it did not tip one direction or the other. This balancing point is the mean. 
->- The **median**: The median is the *midpoint* of the distribution. At this point, 50% of the observations have lower values, and 50% have higher values. 
->- The **mode**: The mode is the *high point* of the distribution, or the peak. It is typically much less useful than the other two measures. 
+### Mean
 
-##   Some important mathematical notation {.smaller}
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
-</div>
+The mean is the **balancing point** of a distribution. Imagine trying to put a column underneath a histogram so that it does not tip one direction or the other. This balancing point is the mean. 
 
-In order to start doing calculations for statistics like the mean, we need to be familiar with some of the mathematical notation we will use for formulas and how to apply this notation in *R*.
+--
 
->- We use the term $x$ or $y$ to refer to a generic variable. 
->- We subscript $x$ to indicate a particular observation. So, $x_1$ means the value of variable $x$ for the first observation. 
->- We use $n$ to refer generically to the number of observations. So, $x_n$ gives the value of $x$ for the last observation. 
->- We use the term $x_i$ to refer generically to any particular observation's value of $x$.
->- We use the $\sum (something)$ term to say sum something up. So, $$\sum_{i=1}^n x_i$$ means to "sum the variable $x$ from the first observation to the last."  
+### Median
 
-## Summing is easy in *R*
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
-</div>
+The median is the **midpoint** of the distribution. At this point, 50% of the observations have lower values, and 50% have higher values. 
 
-If we want to sum up a variable in *R*, we just use the `sum` command:
+--
 
-```{r}
-sum(movies$Runtime)
+### Mode
+
+The mode is the **high point** of the distribution, or the peak. It is typically much less useful than the other two measures. 
+
+
+---
+
+## The mean and the median
+
+```{r echo=FALSE, fig.width=12}
+temp <- data.frame(value=c(mean(movies$Runtime), median(movies$Runtime)),
+                   measure=c("mean","median"))
+ggplot(movies, aes(x=Runtime))+
+  geom_histogram(fill="grey", color="black", 
+                 binwidth=5)+
+  labs(x="runtime in minutes",
+       title="Distribution of move runtime")+
+  geom_vline(data=temp, aes(xintercept = value, color=measure), size=2)
 ```
 
-This is the total minutes you would spend watching movies if you watched every movie in our movie database. This is not a particularly useful number yet, but it is the beginning of a calculation that will be useful (spoiler: the mean).
+---
 
-## Calculating the Mean {.smaller}
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
-</div>
 
-The mean (represented as $\bar{x}$) is calculated by taking the sum of the variable divided by the number of observations, or in math speak: $$\bar{x}=\frac{\sum_{i=1}^n x_i}{n}$$
 
-## Calculating the Mean {.smaller}
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
-</div>
+## Calculating the mean
 
-The mean (represented as $\bar{x}$) is calculated by taking the sum of the variable divided by the number of observations, or in math speak: $$\bar{x}=\frac{\sum_{i=1}^n x_i}{n}$$
+The mean (represented mathematically as $\bar{x}$) is calculated by taking the sum of the variable divided by the number of observations, or in math speak: $$\bar{x}=\frac{\sum_{i=1}^n x_i}{n}$$
 
-We can use our `sum` command in *R* to get the sum in the numerator and the `nrow` command to get the number of observations in the denominator:
+--
+
+### `r emo::ji("scream")` Equations??!!
+
+Don't panic! We will walk through what these symbols mean. 
+
+--
+
+* $x_i$: We use a lower-case letter like $x$ or $y$ to refer to a generic variable. The subscript indicates a particular observation. So, $x_1$ means the value of variable $x$ for the first observation. The $x_i$ subscripts means some generic observation's value of $x$.
+
+--
+
+* $n$: We use $n$ to refer generically to the number of observations. So, $x_n$ gives the value of $x$ for the last observation. 
+
+--
+
+* We use the $\sum (something)$ term to say sum something up. In this case, $\sum_{i=1}^n x_i$ means to "sum the variable $x$ from the first observation to the last."
+
+---
+
+## Calculate the mean in *R*
+
+ $$\bar{x}=\frac{\sum_{i=1}^n x_i}{n}$$
+
+To calculate the mean we just sum up all the values of $x$ and divde by the number of observations. The `sum` command will sum up a variable and the `nrow` command will give us the number of observations, so:
 
 ```{r}
 sum(movies$Runtime)/nrow(movies)
 ```
 
-Alternatively, we can just use the `mean` command:
+The mean move runtime is 105.2 minutes.
+
+--
+
+Alternatively, we could just use the `mean` command in R: `r emo::ji("sunglasses")`
 
 ```{r}
 mean(movies$Runtime)
 ```
 
-## Calculating the Median {.smaller}
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
-</div>
+---
 
-- There is no tidy formula for calculating the median, but the procedure is straightforward. We just need to sort the observations from smallest to largest and pick the exact middle point of the distribution.
+## Calculating the median
 
-- If there are an odd number of observations, there will always be an exact midpoint. If we have an even number of observations, we have to take the two values closest to the midpoint and take their mean. 
+.pull-left[
+### The Midpoint
 
-- the movies dataset has exactly `r nrow(movies)` observations, so the median should be exactly at the 1277th value:
+* We just need to sort the observations from smallest to largest and pick the exact middle point of the distribution.
+  * If there are an odd number of observations, there will always be an exact midpoint. 
+  * If we have an even number of observations, we have to take the two values closest to the midpoint and take their mean. 
+]
+
+--
+
+.pull-right[
+```{r}
+nrow(movies)
+```
+
+With an odd number of 2553 movies, the exact midpoint is the 1277th movie. We can use the `sort` command to sort and thene extract the 1277th movie by using square brackets:
 
 ```{r}
 sort(movies$Runtime)[1277]
 ```
-Alternatively, we could just use the `median` command:
+
+Alternatively, we can use the `median` command:
+
 ```{r}
 median(movies$Runtime)
 ```
+]
 
-## Why are means and medians different?
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
-</div>
+---
 
->- In perfectly symmetric distributions, the mean and the median will be the same. In other words, the balancing point will be at the midpoint. 
->- Skewness will "pull" the mean in the direction of the skew, but not the median. This is because the mean will need to move in that direction to maintain balance. 
->- In highly skewed distributions, this can lead to significant differences between the median and the mean. 
->- Its important to understand the differences in the meaning of these two terms in order to know which is more helpful for your purposes. If you are shopping for a house, would you rather know the median or mean home price in your area?
+## Why are the mean and median different?
 
-## Where will the means be relative to the medians?
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
-</div>
+.pull-left[
+```{r echo=FALSE}
+temp <- data.frame(value=c(mean(movies$Runtime), median(movies$Runtime)),
+                   measure=c("mean","median"))
+ggplot(movies, aes(x=Runtime))+
+  geom_histogram(fill="grey", color="black", 
+                 binwidth=5)+
+  labs(x="runtime in minutes",
+       title="Distribution of move runtime")+
+  geom_vline(data=temp, aes(xintercept = value, color=measure), size=2)
+```
+]
 
-```{r echo=FALSE, fig.width=10, fig.height=3.7, out.width='1000px', out.height='370px', dpi=300, dev.args = list(bg = 'transparent')}
-par(mfrow=c(1,2))
-bins <- seq(0, by=5, length.out = 1+(max(movies$Runtime)/5))
-h <- hist(movies$Runtime, col="grey", breaks=bins, 
-     xlab="Movie runtime (in minutes)", main="Histogram of movie runtime", xlim=c(0, max(movies$Runtime)))
-abline(v=median(movies$Runtime), lwd=3, col="green")
-text(median(movies$Runtime), 0.98*max(h$counts), labels=paste("median=", median(movies$Runtime), sep=""), 
-     pos=4, col="green")
-x <- movies$BoxOffice
-bins <- seq(0, by=5, length.out = 1+(max(x)/1))
-h <- hist(x, col="grey", breaks=bins, 
-     xlab="Box office returns (in millions of dollars)", main="Histogram box office returns ", xlim=c(0, max(x)))
-abline(v=median(x), lwd=3, col="green")
-text(median(x), 0.98*max(h$counts), labels=paste("median=", median(x), sep=""), 
-     pos=4, col="green")
+--
 
+.pull-right[
+* In perfectly symmetric distributions, the mean and the median will be the same. In other words, the balancing point will be at the midpoint. 
+* Skewness will "pull" the mean in the direction of the skew, but not the median. This is because the mean will need to move in that direction to maintain balance. 
+* In highly skewed distributions, this can lead to significant differences between the median and the mean.
+]
+
+---
+
+## Skewness can create large differences
+
+```{r, echo=FALSE, fig.width=12}
+temp <- data.frame(value=c(mean(movies$BoxOffice), median(movies$BoxOffice)),
+                   measure=c("mean","median"))
+ggplot(movies, aes(x=BoxOffice))+
+  geom_histogram(fill="grey", color="black", 
+                 binwidth=5)+
+  labs(x="box office returns in millions of USD",
+       title="Distribution of move box office returns")+
+  geom_vline(data=temp, aes(xintercept = value, color=measure), size=2)+
+  annotate("label", x=170, y=400, 
+           label="The mean ($45.2 million) is more than\ndouble the median ($21.6 million)",
+           size=4)
 ```
 
-## Where will the means be relative to the medians? {.smaller}
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Measuring the Center of a Distribution</body>
-</div>
+---
 
-```{r echo=FALSE, fig.width=10, fig.height=3.7, out.width='1000px', out.height='370px', dpi=300, dev.args = list(bg = 'transparent')}
-par(mfrow=c(1,2))
-bins <- seq(0, by=5, length.out = 1+(max(movies$Runtime)/5))
-h <- hist(movies$Runtime, col="grey", breaks=bins, 
-     xlab="Movie runtime (in minutes)", main="Histogram of movie runtime", xlim=c(0, max(movies$Runtime)))
-abline(v=median(movies$Runtime), lwd=3, col="green")
-text(median(movies$Runtime), 0.98*max(h$counts), labels=paste("median=", median(movies$Runtime), sep=""), 
-     pos=4, col="green")
-abline(v=mean(movies$Runtime), lwd=3, col="red")
-text(mean(movies$Runtime), 0.88*max(h$counts), labels=paste("mean=", round(mean(movies$Runtime),1), sep=""), 
-     pos=4, col="red")
-x <- movies$BoxOffice
-bins <- seq(0, by=5, length.out = 1+(max(x)/1))
-h <- hist(x, col="grey", breaks=bins, 
-     xlab="Box office returns (in millions of dollars)", main="Histogram box office returns ", xlim=c(0, max(x)))
-abline(v=median(x), lwd=3, col="green")
-text(median(x), 0.98*max(h$counts), labels=paste("median=", median(x), sep=""), 
-     pos=4, col="green")
-abline(v=mean(x), lwd=3, col="red")
-text(mean(x), 0.88*max(h$counts), labels=paste("mean=", round(mean(x),1), sep=""), 
-     pos=4, col="red")
+## Modal Categories
 
+.pull-left[
+* We don't generally calculate measures of 
+"center" for categorical variables.
+* Since the mode is the most common observation, we can make an exception for this case.
+* The **modal category** is the most frequent category in a categorical variable. 
+]
+
+.pull-right[
+```{r echo=FALSE}
+ggplot(movies, aes(x=Rating, y=..prop.., group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  ylim(0,.5)+
+  labs(x=NULL, y=NULL, 
+       title="Distribution of movie maturity rating")+
+  annotate("label", x=4, y=0.48, label="R is the\nmodal category",
+           size=4)
 ```
 
-Both means are higher than the medians because of right skewness, but the heavy skew of box office returns leads to a much greater difference between the mean and median. In fact, about 70% of movies make less than the mean!
+]
 
-# Percentiles and The Five Number Summary
-The Distribution of a Variable
+---
+
+class: inverse, center, middle
+
+background-image: url(images/victoria-strukovskaya-OhL_qEqpef4-unsplash.jpg)
+background-size: cover
+
+# Percentiles and the Five-Number Summary
+
+---
 
 ## Percentiles/Quantiles
 
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Percentiles and The Five Number Summary</body>
-</div>
+.pull-left[
+* A given percentile tells you what percent of the distribution is below that number. 
+* We have already seen one example of a percentile: the median. The median is the 50th percentile. 50% of the observations are below this value.
+* Percentiles are sometimes also called **quantiles**, but I will use the term percentile in this course.
+]
 
->- If you have ever seen the results of a standardized test, then you are probably familiar with **percentiles**. A given percentile tells you what percent of the distribution is below that number. 
->- Quantile is another name for a percentile.
->- We have already seen one example of a percentile: the median. The median is the 50th percentile. 50% of the observations are below this value.
->- The most common percentiles to calculate are the **quartiles**: the 25th, 50th, and 75th percentile. These values split the data into four quarters, thus the name. 
->- When we combine the quartile values with the minimum and maximum values in the dataset, then we have the **five number summary**. 
->- We will use the five number summary to construct a **boxplot** which is another graphical technique for looking at a distribution.
+--
 
-## Calculating percentiles in *R* {.smaller}
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Percentiles and The Five Number Summary</body>
-</div>
+.pull-right[
+### Calculating percentiles in *R*
 
-We can use the `quantile` command to calculate any percentile/quantile that we want:
+The `quantile` command in R will calculate a given percentile.  
+
+To calculate the percentile with this command, we need to add a second argument called `probs` where we feed in a list of proportions. So if we wanted to calculate the 13th and 76th percentile of movie runtime:
+
 ```{r}
-quantile(politics$age, p=c(0.27,0.78))
-```
-If we want to get the **quartiles** of the distribution, we can just use the `quantile` command without specifying particular percentiles:
-``` {r}
-quantile(politics$age)
+quantile(movies$Runtime, probs=c(0.13, 0.76))
 ```
 
-## Constructing a boxplot {.smaller}
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Percentiles and The Five Number Summary</body>
-</div>
+13% of movies  are 89 minutes or shorter and 76% of movies are 114 minutes or shorter.
+]
 
-``` {r echo=FALSE, fig.width=6, fig.height=4, fig.align='center', out.width='600px', out.height='400px', dpi=300, dev.args = list(bg = 'transparent')}
-quantile(politics$age, na.rm=TRUE)
-par(mar=c(1,4,1,1))
-b <- boxplot(politics$age, col="skyblue", ylab="age",
-             ylim=c(0,100))
-text(0.7, b$stats[,1], labels=c("minimum",paste(c(25,50,75),"%"), "maximum"),pos=2)
-segments(rep(0.7,5),b$stats[,1],c(0.9,rep(0.8,3),0.9),b$stats[,1], lty=3)
+---
+
+## The five-number summary
+
+.pull-left[
+If I run the `quantile` command without the `probs` argument, I get:
+
+```{r}
+quantile(movies$Runtime)
 ```
 
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, The Distribution of a Variable: Percentiles and The Five Number Summary</body>
-</div>
+* The 25th percentile, 50th percentile, and 75th percentile are called the **quartiles** because they split the data into four equal quarters. 
+* When combined with the minimum (0%) and maximum (100%), they create the **five-number summary**. 
+]
 
+--
+
+.pull-right[
+You can use the five-number summary to create a boxplot.
 ```{r echo=FALSE}
-shinyAppDir(
-  "shiny_apps/percentiles",
-  options=list( width="100%", height=700)
-)
+ggplot(movies, aes(y=Runtime))+
+  geom_boxplot(fill="grey", outlier.color = "red")+
+  xlim(-0.6, 0.6)+
+  labs(x=NULL, y="runtime in minutes")+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
 ```
+]
+
+---
+
+## Anatomy of the boxplot
+
+.pull-left[
+* Use a single vertical number line
+* Draw a box with a bottom and top at the 25th and 75th percentiles
+* Inside the box, draw a thick line at the median
+* The height of the box is the differencde between the 25th and 75th percentile which is called the **Interquartile range** or **IQR** for short.
+* Draw "whiskers" above and below the box. These whiskers should be drawn out to the maximum and minimum values or a total distance of 1.5 x IQR, whichever is shortest.
+* Plot out individual points that are beyond the 1.5 x IQR limit individually.
+]
+
+.pull-right[
+```{r echo=FALSE}
+ggplot(movies, aes(y=Runtime))+
+  geom_hline(yintercept = 114, linetype=2, color="grey")+
+  annotate("label", x=0.5, y=114, label="75%")+
+  geom_hline(yintercept = 93, linetype=2, color="grey")+
+  annotate("label", x=0.5, y=93, label="25%")+
+  geom_hline(yintercept = 102, linetype=2, color="grey")+
+  annotate("label", x=-0.5, y=102, label="median")+
+  geom_segment(x=0.6, xend=0.6, y=93, yend=114, 
+               arrow=arrow(length=unit(0.1, "inch")))+
+  geom_segment(x=0.6, xend=0.6, y=114, yend=93, 
+               arrow=arrow(length=unit(0.1, "inch")))+
+  annotate("label", x=0.6, y=120, label="IQR")+
+  geom_segment(x=0.05, xend=0.05, y=114, yend=114+21*1.5, 
+               arrow=arrow(length=unit(0.1, "inch")))+
+  geom_segment(x=0.05, xend=0.05, yend=114, y=114+21*1.5, 
+               arrow=arrow(length=unit(0.1, "inch")))+
+  annotate("label", x=0.35, y=140, 
+           label="whiskers to either maximum/minimum\nor 1.5 x IQR, whichever is shortest")+
+  annotate("label", x=0.25, y=200, 
+           label="observations beyond 1.5 x IQR\nare drawn individually",
+           color="red")+
+  geom_boxplot(fill="grey", outlier.color = "red")+
+  xlim(-0.6, 0.6)+
+  labs(x=NULL, y="runtime in minutes")+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+```
+]
+
+---
+
+## Code and output for boxplot
+
+.pull-left[
+```{r boxplot-example, fig.show = 'hide'}
+ggplot(movies, aes(x="", y=Runtime))+
+  geom_boxplot(fill="grey", outlier.color="red")+
+  labs(x=NULL, y="runtime in minutes",
+       title="Boxplot of movie runtime")+
+  theme_bw()
+```
+
+* The `x=""` in the aesthetics is not necessary but does create a nicer looking x axis.
+* You can use `fill` to determine color of the box and `outlier.color` to determine color of individual points. 
+
+]
+
+.pull-right[
+```{r ref.label = 'boxplot-example', echo = FALSE}
+```
+]
+
+---
+
+## Detecting skewness in boxplots
+
+.pull-left[
+```{r echo=FALSE}
+ggplot(movies, aes(x="", y=Runtime))+
+  geom_boxplot(fill="grey", outlier.color="red")+
+  labs(x=NULL, y="runtime in minutes",
+       title="movie runtime is slightly right-skewed")+
+  theme_bw()
+```
+]
+
+.pull-right[
+```{r echo=FALSE}
+ggplot(movies, aes(x="", y=BoxOffice))+
+  geom_boxplot(fill="grey", outlier.color="red")+
+  labs(x=NULL, y="box office returns in millions of USD",
+       title="box office returns are heavily right-skewed")+
+  theme_bw()
+```
+]
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/avi-werde-5udBKkXTUK8-unsplash.jpg)
+background-size: cover
 
 # Measuring the Spread of a Distribution
-The Distribution of a Variable
 
-## The Spread of a Distribution
+---
 
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Measuring the Spread of a Distribution</body>
-</div>
+## Distributions can vary in their spread
 
-How spread out are observations around the center? In some distributions, observations may be clustered tightly around the center, while in other cases, they may be spread out widely. 
-
-```{r echo=FALSE, fig.width=10, figh.height=4, out.width='1000px', out.height='400px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-par(mfrow=c(1,2), mar=c(1,1,1,1))
-hist(rnorm(10000,0,1), breaks=60, col="red", xlim=c(-4,4), main="wide spread", xlab="", ylab="", xaxt="n", yaxt="n")
-hist(rnorm(10000,0,0.5), breaks=30, col="red", xlim=c(-4,4), main="narrow spread", xlab="", ylab="", xaxt="n", yaxt="n")
+```{r echo=FALSE, fig.width=12}
+temp <- data.frame(x=c(rnorm(10000,10,1),
+                       rnorm(10000,10,0.5)),
+                   type=c(rep("wide",10000),
+                          rep("narrow",10000)))
+ggplot(temp, aes(x=x, fill=type))+
+  geom_histogram(data=subset(temp, type=="narrow"), alpha=0.7, binwidth=0.2)+
+  geom_histogram(data=subset(temp, type=="wide"), alpha=0.7, binwidth=0.2)+
+  guides(fill=FALSE)+
+  labs(x="some interesting variable",
+       title="distributions with the same center and shape, but different spread")+
+  theme_bw()
 ```
 
-## Range and Interquartile Range {.smaller}
+---
 
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Measuring the Spread of a Distribution</body>
-</div>
+## Measures of spread
 
-A simple statistic for spread is the **range**. The range is simply the difference between the minimum and maximum value:
+### Interquartile Range
+
+The **Interquartile Range** (IQR) is the distance between the 25th and 75th percentile. It can be calculated by the `IQR` command in *R*:
 
 ```{r}
-diff(range(crimes$Violent))
+IQR(movies$Runtime)
 ```
 
-The range can be misleading because if there are extremely low or high values they will be captured by the range. That is true in the case above where Washington DC's violent crime rate is an extreme outlier. An alternative is to use the **interquartile range** (IQR) which measures the distance between the 25th and 75th percentile:
+The 75th percentile of movie runtime is 21 minutes longer than the 25th percentile. 
 
-```{r}
-IQR(crimes$Violent)
-```
+### Variance and Standard Deviation
 
-The difference in violent crime rates in the middle 50% of states is `r IQR(crimes$Violent)` crimes per 100,000 population. 
+**Standard deviation** (SD) is the most common measure of spread in a variable. Loosely, standard deviation measures the average distance from the mean of all observations. **Variance** is the squared value of standard deviation.
 
-## Range can be misleading
+---
 
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Measuring the Spread of a Distribution</body>
-</div>
+## Calculating the standard deviation
 
-```{r echo=FALSE, fig.width=6, fig.height=5, out.width='600px', out.height='500px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-boxplot(crimes$Violent, range=0, col="darkgreen", ylab="Violent crime rate (per 100,000)")
-arrows(1.25,min(crimes$Violent),1.25,max(crimes$Violent),
-       code=3, col="red", length=0.1)
-text(1.31, 0.9*max(crimes$Violent),labels="Range", pos=4, col="red")
-arrows(1.3,quantile(crimes$Violent,p=0.25),1.3,quantile(crimes$Violent,p=0.75),
-       code=3, col="blue", length=0.1)
-text(1.31, median(crimes$Violent),labels="IQR", pos=4, col="blue")
-
-```
-
-
-## Variance and Standard Deviation
-
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Measuring the Spread of a Distribution</body>
-</div>
-
->- The most common measure of spread is the **variance** and its cousin the **standard deviation.** 
->- In practice the variance is hard to interpret, because it is measured in squared units compared to the variable's units, so we will more commonly talk about the standard deviation, which is simply the square root of the variance.
->- The formula for the standard deviation (represented by $s$) is: $$s=\sqrt{\frac{\sum_{i=1}^n(x_i-\bar{x})^2}{n-1}}$$
->- The standard deviation tells you how far you expect a randomly selected observation's value to be from the mean, on average. 
-
-##  Breaking Down the SD formula {.smaller}
-
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Measuring the Spread of a Distribution</body>
-</div>
+The standard deviation ($s$) is calculated with the following formula:
 
 $$s=\sqrt{\frac{\sum_{i=1}^n(x_i-\bar{x})^2}{n-1}}$$
 
->- $(x_i-\bar{x})$: The distance between each observation's value and the mean. Some of these values are positive and some are negative. If we summed these values up across all observations, the sum would equal zero by definition.
->- $(x_i-\bar{x})^2$: We square this distance to get rid of the negative values.
->- $\sum_{i=1}^n(x_i-\bar{x})^2$: The sum of the squared distance, sometimes abbreviated *SSX*. This already is a pretty decent measure of spread, but we need to scale it by the number of observations.
->- $\sum_{i=1}^n(x_i-\bar{x})^2/(n-1)$: Dividing through by the sample size gives us the "average" squared distance from the mean. This number is the **variance**.
->- $\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2/(n-1)}$: Squared distance is a hard thing to conceptualize, so we square root to get back to distance. 
+--
 
-## Calculating Standard Deviation in *R*
+### `r emo::ji("open_mouth")` More Equations??!!
 
-<div class="footer">
-<body>Sociology 312, The Distribution of a Variable: Measuring the Spread of a Distribution</body>
-</div>
+Don't panic! We will go through it one step at a time. 
+
+--
+
+$(x_i-\bar{x})$: The distance between each observation's value and the mean. Some of these values are positive and some are negative. If we summed these values up across all observations, the sum would equal zero by definition.
 
 ```{r}
-distance <- crimes$Violent-mean(crimes$Violent) #distance from mean
-distance.squared <- distance^2 #square the distance
-ssx <- sum(distance.squared) #sum it up
-variance <- ssx/(nrow(crimes)-1) #divide by n-1
-standardD <- sqrt(variance) #square root for the SD
-standardD
+distance <- movies$Runtime-mean(movies$Runtime) 
 ```
-Alternatively, use the `sd` command:
+
+--
+
+$(x_i-\bar{x})^2$: We square this distance to get rid of the negative values.
+
 ```{r}
-sd(crimes$Violent)
+distance_sq <- distance^2
 ```
+
+---
+
+### Calculating the standard deviation
+
+$\sum_{i=1}^n(x_i-\bar{x})^2$: The sum of the squared distance, sometimes abbreviated *SSX*.
+
+```{r}
+ssx <- sum(distance_sq)
+```
+
+--
+
+$\sum_{i=1}^n(x_i-\bar{x})^2/(n-1)$: Dividing through by the number of observations gives us the "average" squared distance from the mean. This number is the **variance**.
+
+```{r}
+variance <- ssx/(nrow(movies)-1)
+```
+
+--
+
+$\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2/(n-1)}$: Squared distance is a hard thing to conceptualize, so we square root to get back to distance.
+
+```{r}
+sd <- sqrt(variance)
+sd
+```
+
+The average movie is about 16.7 minutes away from the mean movie runtime.
+
+We can also just use the `sd` command: `r emo::ji("sunglasses")`
+
+```{r}
+sd(movies$Runtime)
+```
+
+
