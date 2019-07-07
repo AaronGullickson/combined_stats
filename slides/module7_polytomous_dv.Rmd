@@ -1,0 +1,654 @@
+---
+title: "Models for Polytomous Categorical Outcomes"
+author: "Prof. Gullickson, University of Oregon, Spring 2019"
+resource_files:
+output:
+  ioslides_presentation:
+    css: lecture_slides.css
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 6
+    logo: images/slides/logo.png
+    widescreen: yes
+subtitle: Sociology 513, Statistical Analysis II
+---
+
+<style type="text/css">
+slides > slide:not(.nobackground):after {
+  content: '';
+}
+</style>
+
+```{r loaddata, echo=FALSE, message=FALSE, error=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, error=FALSE)
+library(stargazer)
+library(mfx, quietly=TRUE, warn.conflicts=FALSE)
+library(VGAM)
+library(MASS)
+load("example_datasets/politics/politics.RData")
+load("example_datasets/sex/sex.RData")
+load("example_datasets/wbreport/wbreport.RData")
+```
+
+##  Predicting more than two categories
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Introduction</body>
+</div>
+
+>- It is possible to extend the basic logistic regression model predicting a dichotomous outcome to a categorical outcome with more than two categories (polytomous).
+>- The complexity of the model increases rapidly with the number of categories. 
+>- In the polytomous case, we can distinguish different kinds of models for nominal and ordinal variables. Models for nominal variables can be used on ordinal variables (essentially ignoring their order), but not vice versa. 
+
+# Models for Nominal Outcomes
+Models for Polytomous Categorical Outcomes
+
+##  New dataset example
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Nominal Outcomes</body>
+</div>
+
+>- American Community Survey data on race reporting based on ancestry responses.
+>- Ancestry is a write-in response with two separate lines.
+>- We are using the subset of data that includes all individuals who gave two ancestry responses that suggest both a white and black ancestry (e.g. "African American" and "Irish"). 
+>- We will consider three race responses for these individuals: white, black, or white and black. 
+>- How does the decision to identify racially vary by socioeconomic and demographic characteristics?
+
+##  two-way table of race reporting by college {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Nominal Outcomes</body>
+</div>
+
+```{r crosstab_racereport}
+tab <- table(wbreport$racereport, wbreport$college)
+tab
+prop.table(tab, 2)
+```
+
+College-educated respondents are much less likely to report as white and black and substantially more likely to report as black, and slightly more likely to report as white. 
+
+##  Odds Ratios by College Completion {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Nominal Outcomes</body>
+</div>
+
+```{r crosstab_oddsratio, echo=FALSE}
+tab[c(2:3,1),2:1]
+```
+
+$$\frac{3993*32899}{2781*23374}=2.02$$
+
+The odds of identifying as black rather than white and black are twice as high among college-educated individuals than among those without a college degree.
+
+$$\frac{1598*32899}{2781*12112}=1.56$$
+The odds of identifying as white rather than white and black are 56% higher among college-educated individuals than among those without a college degree.
+
+The odds of identifying as black rather than white are 29.5% (1.56/2.02) higher among college-educated individuals than among those without a college degree.
+
+##  Two logistic regression models {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Nominal Outcomes</body>
+</div>
+
+- Limit data to individuals who identified as black or white/black and run a logistic regression model on black identification. 
+- Limit data to individuals who identified as white or white/black and run a logistic regression model on white identification. 
+
+```{r logistic_multinom}
+model.black <- glm((racereport=="Black")~college, data=subset(wbreport, racereport!="White"),
+                   family=binomial)
+model.white <- glm((racereport=="White")~college, data=subset(wbreport, racereport!="Black"),
+                   family=binomial)
+rbind("black vs Multi"=coef(model.black),"white vs Multi"=coef(model.white))
+```
+
+>- The odds ratio of black vs. white/black identification is 2.02 ($e^{0.70355}$). 
+>- The odds ratio of white vs. white/black identification is 1.56 ($e^{0.44519}$). 
+>- The intercepts give the baseline odds of black and white identification vs. white/black identification, respectively, among the non-college educated. 
+
+##  The Multinomial Logit Model
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Nominal Outcomes</body>
+</div>
+
+>- The multinomial logit model accomplishes the same result as these two separate logistic regression model, but estimates parameters using a single MLE procedure. This allows for a single measure of model log-likelihood and deviance. 
+>- One of the categories of the dependent variable must serve as the reference category. In the example we are using, the white and black category served as the reference. The choice of reference is arbitrary. 
+>- For a model with $J$ categories of the dependent variable, we will get $J-1$ coefficients for each independent variable. 
+>- Multinomial logit models can be estimated in R with the `multinom` function in the `nnet` library. 
+
+## Multinomial logit model example {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Nominal Outcomes</body>
+</div>
+
+```{r multinom_example, echo=TRUE, results="hide"}
+library(nnet)
+model <- multinom(racereport~college, data=wbreport)
+```
+
+```{r multinom_summary}
+summary(model)
+```
+
+##  Formal multinomial model specification
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Nominal Outcomes</body>
+</div>
+
+$$\log(p_{ij}/p_{i1})=\beta_{0j}+\beta_{1j}x_{i1}+\beta_{2j}x_{i2}+\ldots+\beta_{pj}x_{ip}$$
+
+>- The model fits the log-odds of being in the $j$th outcome category relative to the reference outcome category as linear function of the independent variables.
+>- Each independent variable will have $J-1$ coefficients rather than a single coefficient. 
+>- Each $\beta_j$ gives the log odds ratio of being in the $j$th outcome category rather than the reference outcome category for a one unit change in the given independent variable. 
+>- The intercepts $\beta_{0j}$ give the baseline odds of being in the $j$th outcome category rather than the reference outcome category when all the independent variables are zero. 
+
+##  Changing the reference category {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Nominal Outcomes</body>
+</div>
+
+If we want to change the reference category for the dependent variable, we can recalculate the regression coefficients as follows:
+
+$$\beta_j-\beta_{j'}$$
+
+Where $j'$ is the new category that we want to set as the reference. 
+
+Lets try this out for our example, where we set the new reference to be identifying as black. 
+
+```{r rebaseline}
+coefs <- coef(model)
+coefs.new <- rbind(c(0,0)-coefs[1,], coefs[2,]-coefs[1,])
+rownames(coefs.new) <- c("White/Black", "White")
+coefs.new
+```
+
+The white/black effects are just the inverse of the black effects. 
+
+##  Changing the reference categories
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Nominal Outcomes</body>
+</div>
+
+```{r multinom_blackref, echo=TRUE, results="hide"}
+library(nnet)
+model.blackref <- multinom(relevel(racereport, "Black")~college, data=wbreport)
+```
+
+```{r multinom_blackref_summary}
+coef(model.blackref)
+coefs.new
+```
+
+##  Estimating predicted probabilities
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Nominal Outcomes</body>
+</div>
+
+Because there are multiple categories to consider, its often helpful to try to predict how the distribution of the dependent variable will change across different values of the independent variable. For a given set of independent variables $X$, the probability $P_i$ of being in category $i$ is:
+
+$$P_i=\frac{exp(X\beta_i)}{\sum_Jexp(X\beta_j)}$$
+
+The trick here is to remember that the reference category will always have $X\beta$ of zero which exponentiates to one. Therefore, the denominator will always include a one in the sum. 
+
+## Estimating Predicted Probabilities Example {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Nominal Outcomes</body>
+</div>
+
+```{r calculateprobs_multinom}
+temp <- rbind("White/Black"=c(0,0),coef(model))
+temp
+exp(temp[,1])/sum(exp(temp[,1]))
+exp(temp[,1]+temp[,2])/sum(exp(temp[,1]+temp[,2]))
+```
+
+##  Using `predict` to estimate probabilities {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Nominal Outcomes</body>
+</div>
+
+You can also do this in R with the `predict` command where you feed in a new data set to get predicted values.
+
+```{r calculateprobs_predict}
+predicted.probs <- predict(model, newdata = data.frame(college=c("No","Yes")), type="probs")
+predicted.probs
+t(prop.table(tab, 2))
+```
+
+The results here are identical to the conditional distributions estimated by the two-way table. 
+
+##  A full model {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Nominal Outcomes</body>
+</div>
+
+```{r multinom_full, results="hide"}
+model.full <- multinom(racereport~college+poor+agectr+agectrsq+foreign+female, 
+                       data=wbreport)
+```
+
+```{r multinom_full_summary}
+round(coef(model.full),5)
+```
+
+>- The effects of college are very different with controls (particularly for age). College now seems more likely to push respondents away from both singl-race identifations towards multiracial identification. 
+>- How do we interpret the effects of age on racial identification? Age is centered on 22 years and a square is included, so its not easy to sort it out just from the coefficient values. 
+
+##  Estimating the effect of age {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Nominal Outcomes</body>
+</div>
+
+Lets get predicted probabilities for the effect of age from 22 to 75. We will estimate probabilities for the reference categories of the other variables (non-college, non-poor, male, native-born).
+
+In order to do this, we need to create a fake dataset where all values are held at the reference except for age and its square, and then feed this into the `predict` function. 
+
+```{r fitage_multinom}
+x <- 22:75
+fakedata <- data.frame(college=rep("No",length(x)), poor=rep("No",length(x)), 
+                                                foreign=rep("No",length(x)), female=rep(0,length(x)),
+                                                agectr=x-22, agectrsq=(x-22)^2)
+predicted.probs <- predict(model.full, fakedata, type="probs")
+head(predicted.probs)
+```
+
+##  Estimating the effect of age {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Nominal Outcomes</body>
+</div>
+
+The `matplot` function can be used to plot multiple lines from a matrix in one graph:
+
+```{r plotage_multinom, fig.width=7, fig.height=3.5, fig.align='center', out.width='700px', out.height='350px', dpi=300, dev.args = list(bg = 'transparent')}
+par(mar=c(4,4,1,1))
+matplot(x, predicted.probs, type="l", lwd=3, col=c("purple","black","grey"), 
+        lty=1, las=1, ylab="predicted probabilities", xlab="age", ylim=c(0,0.6))
+legend(22, 0.6, legend=c("White/Black","Black","White"), lty=1, col=c("purple","black","grey"), cex=0.5)
+```
+
+## Effects of age and college completion
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Nominal Outcomes</body>
+</div>
+
+```{r plotage_multinom2, echo=FALSE, fig.width=8, fig.height=5, fig.align='center', out.width='800px', out.height='500px', dpi=300, dev.args = list(bg = 'transparent')}
+fakedata <- data.frame(college=rep("Yes",length(x)), poor=rep("No",length(x)), 
+                                                foreign=rep("No",length(x)), female=rep(0,length(x)),
+                                                agectr=x-22, agectrsq=(x-22)^2)
+predicted.probs2 <- predict(model.full, fakedata, type="probs")
+par(mar=c(4,4,1,1))
+matplot(x, predicted.probs, type="l", lwd=3, col=c("purple","black","grey"), 
+        lty=1, las=1, ylab="predicted probabilities", xlab="age", ylim=c(0,0.6))
+matlines(x, predicted.probs2, lwd=3, col=c("purple","black","grey"), lty=2)
+legend(22, 0.6, legend=c("White/Black non-college","Black non-college","White non-college",
+                         "White/Black college","Black college","White college"),
+       lty=c(rep(1,3),rep(2,3)), col=rep(c("purple","black","grey"),2), cex=0.5, ncol=2)
+```
+
+# Models for Ordinal Outcomes
+Models for Polytomous Categorical Outcomes
+
+##  Example for ordinal outcomes {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+Using the National Election Study data, lets look at attitudes toward gay marriage by whether a respondent completed a BA degree. 
+
+```{r crosstab_politics}
+politics$college <- as.numeric(politics$educ) > 3
+tab <- table(politics$gaymarriage, politics$college)
+tab
+prop.table(tab, 2)
+```
+
+##  Multinomial model {.smaller}
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+We could just estimate this model as a multinomial model and ignore the ordinal nature of the dependent variable. 
+
+```{r multinom_politics, results="hide"}
+model.multin <- multinom(gaymarriage~college, data=politics)
+```
+
+```{r multinom_politics_summary}
+round(coef(model.multin),3)
+```
+
+- The odds of supporting civil unions rather than no legal recognition were 99% higher among respondents with a college degree than respondents without a college degree.
+- The odds of supporting gay marriage rather than no legal recognition were 102% higher among respondent with a college degree than respondents without a college degree. 
+- The big difference between the college educated and non-college educated seems to be the difference between no legal recognition and either of the other two categories. 
+
+##  Estimating log-odds ratios by hand
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+```{r crosstab_politics_oddsratio, echo=FALSE}
+tab
+```
+
+$$\log(1186*678/(1268*319))=0.687$$
+$$\log(1186*824/(1511*319))=0.707$$
+
+>- What if we estimate log odds ratio between adjacent categories instead? 
+>- First log-odds ratio is the same, but the second log-odds ratio is: $$\log(1268*824/(1511*678))=0.020$$
+
+##  Adjacent Category Logit Model {.smaller}
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+The Adjacent Category Logit (ACL) Model estimates the log-odds ratio of being in the higher category $j$ for each pair of adjacent categories $j$ and $j-1$:
+
+$$\log(p_{ij}/p_{i(j-1)})=\beta_{0j}+\beta_{1j}x_{i1}+\beta_{2j}x_{i2}+\dots+\beta_{pj}x_{ip}$$
+
+>- The ACL takes advantage of the ordinal structure of the dependent variable to get the odds ratio between each adjacent set of categories on the ordinal scale. 
+>- In general, we can estimate the parameters for an adjacent category logit model from multinomial model results by coding the lowest category as the reference and taking: $$\beta_j-\beta_{j-1}$$ for all coefficients.
+>- In terms of model fit, the ACL is identical to the multinomial model, it just gives a more intuitive interpretation for ordinal responses. 
+>- The multinomial model is sometimes called the Baseline Category Logit (BCL) model to more clearly distinguish it from the ACL. Both are estimating the same basic model, but in the BCL the reference is fixed, while in the ACL, the reference changes for each comparison. 
+
+##  Adjacent Category Logit Model Example {.smaller}
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+```{r acl_model}
+round(coef(model.multin),3)
+model.acl <- diff(rbind(c(0,0),round(coef(model.multin),3)))
+model.acl
+```
+
+>- The 0.687 gives us the same log odds ratio for civil unions compared to no legal recognition. The odds of supporting civil unions rather than no legal recognition were 99% higher among the college educated than among those without a college education.
+>- The 0.02 now tells us that the odds of support for gay marriage rather than civil unions are 2% higher among the college educated than among those without a college education. 
+
+##  Same results from logistic regression models {.smaller}
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+```{r logistic_acl}
+model.acl
+coef(glm((gaymarriage=="Civil union")~college, family=binomial,
+            data=subset(politics, gaymarriage!="Support gay marriage")))
+coef(glm((gaymarriage=="Support gay marriage")~college, family=binomial,
+            data=subset(politics, gaymarriage!="No legal recognition")))
+```
+
+##  The Cumulative Probability {.smaller}
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+Another way to think about differences in the distribution of an ordinal variable is by comparing the cumulative probability of being in a given category or higher. 
+
+```{r cumprob}
+p <- prop.table(tab,2)
+p
+cump <- apply(p[3:1,],2,cumsum)[3:1,]
+cump
+```
+
+
+##  The Cumulative Odds {.smaller}
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+We can convert these cumulative probabilities into cumulative odds:
+
+```{r cumodds}
+cumodds <- cump/(1-cump)
+cumodds
+```
+
+>- The odds for the first category are irrelevant because everyone is at least in the lowest category. 
+>- Among those without a college degree the cumulative odds of supporting civil unions or more is 2.34 to one, whereas among the college-educated the same cumulative odds is 4.71. 
+>- The cumulative odds of supporting gay marriage among those without a college degree is 0.62 to one. Among the college-educated the same cumulative odds is 0.83 to one. 
+>- Since you can't go higher, the cumulative odds for the top category of supporting gay marriage are equal to the odds of being in this category or not. 
+
+##  Cumulative/Ordered Logit Model
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+$$log(P(y_i>=j)/P(y_i<j))=\alpha_j+\beta_{1j}x_{i1}+\beta_{2j}x_{i2}+\dots+\beta_{pj}x_{ip}$$
+
+>- The dependent variable is the cumulative log odds of being in the $j$th category or higher. 
+>- The regression coefficients tell us how the the cumulative log odds of being in the $j$th or higher category change due to a one unit increase in $x$.
+>- The $\alpha_j$ are the intercepts but they are often called the "cut points". They define the cumulative distribution of ordinal responses when all the $x$'s are zero. 
+>- Because this model allows the effect of each independent variable to be different at each cut-point, it has the same model fit as the multinomial model, but a different parameterization.
+
+##  Estimating the cumulative logit model {.smaller}
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+```{r logcumodds}
+lcumodds <- log(cumodds[2:3,])
+lcumodds
+```
+
+The first column gives the "cut points" for the model of 0.85 and -0.49. These define the cumulative log odds among the non-college educated. The log-odds ratios for the college educated are given by the difference in log-odds:
+
+```{r cumlogit_model}
+model.cumlogit <- data.frame(cut=lcumodds[,1],college=c(diff(t(lcumodds))))
+model.cumlogit
+```
+
+##  Interpreting terms in cumulative logit model
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+```{r cumlogit_model_interpret}
+exp(model.cumlogit)
+```
+
+>- Among the non-college educated, the odds of upporting civil unions **or more** are 2.34 to one, and the odds of supporting gay marriage are 0.62 to one. 
+>- The odds of supporting civil unions **or more** are 2.01 times higher for the college educated than the non-college educated.
+>- The odds of supporting gay marriage are 34% higher for the college educated than the non-college educated.
+
+##  Same results from logistic regression models {.smaller}
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+```{r logistic_cumlogit}
+model.cumlogit
+coef(glm((gaymarriage=="Support gay marriage" | gaymarriage=="Civil union")~college, 
+         data=politics, family=binomial))
+coef(glm((gaymarriage=="Support gay marriage")~college, 
+         data=politics, family=binomial))
+```
+
+##  Estimating models with vglm {.smaller}
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+- The `VGAM` library includes a function called `vglm` for estimating "vector generalized linear models." This package can be used to estimate a variety of nominal and ordinal response models. 
+- The structure of the dependent variable in `vglm` is somewhat different than `glm` or `lm`. We need to feed in a matrix of responses ordered from lowest to highest response category, where each vector is a sequence of zeroes/ones or FALSE/TRUE for being in that particular category. 
+
+```{r createvglmbase}
+table(politics$gaymarriage)/sum(table(politics$gaymarriage))
+politics$norecog <- politics$gaymarriage=="No legal recognition"
+politics$civil <- politics$gaymarriage=="Civil unions"
+politics$marriage <- politics$gaymarriage=="Support gay marriage"
+apply(politics[,c("norecog","civil","marriage")],2,mean, na.rm=TRUE)
+```
+
+##  `vglm` models {.smaller}
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+Multinomial model:
+```{r vglm_multinom}
+model.multinom <- vglm(cbind(norecog, civil, marriage)~college,family=multinomial(refLevel=1), 
+                       data=politics)
+```
+Adjacent category logit model: 
+```{r vglm_acl}
+model.acl <- vglm(cbind(norecog, civil, marriage)~college, family=acat(parallel=FALSE), data=politics)
+```
+Cumulative logit model:
+```{r vglm_cumlogit}
+model.cumlogit <- vglm(cbind(norecog, civil, marriage)~college, 
+                       family=cumulative(parallel=FALSE,reverse=TRUE), data=politics)
+```
+Deviance is the same because they are the same model differently parameterized.
+```{r vglm_deviance}
+sapply(list(model.multinom,model.acl,model.cumlogit),deviance)
+```
+
+## `vglm` models
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+```{r vglm_results}
+coef(model.multinom)
+coef(model.acl)
+coef(model.cumlogit)
+```
+
+
+## Constraints in ordinal models
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+>- All three models (multinomial, ACL, cumulative logit) will fit the table of gay marriage support by college education exactly. 
+>- The three models are differently parameterized versions of the same basic model. They fit four parameters to a three by two table and so they exactly fit the table. 
+>- For the ACL and cumulative logit model, it is possible to apply a simple constraint that the effect of college education is the same at each cut point.  This is the assumption of **proportional odds**.
+>- The ACL and cumulative logit model estimated under this constraint are no longer identical in terms of fit and neither will fit the table exactly. 
+>- This constrained model has the advantage of being more parsimonious and having less coefficients to interpet, but with an assumption. In our case, the assumption seems invalid because we can see big differences in the effect of college education at different cut points.
+
+##  Constrained models with vglm {.smaller}
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+Constrained models can be estimating by changing the `parallel` option for family to `TRUE`:
+
+```{r vglm_constrained}
+model.acl.c <-  vglm(cbind(norecog, civil, marriage)~college, family=acat(parallel=TRUE), data=politics)
+model.cumlogit.c <-  vglm(cbind(norecog, civil, marriage)~college, 
+                          family=cumulative(parallel=TRUE,reverse=TRUE), data=politics)
+coef(model.acl.c)
+coef(model.cumlogit.c)
+sapply(list(model.acl,model.cumlogit, model.acl.c, model.cumlogit.c), BIC)
+```
+
+##  Predicted Probabilities {.smaller}
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+No pre-defined method for getting back to predicted probabilities, so I wrote custom functions for ACL and cumulative logit (disclaimer: not stress tested!)
+
+```{r probpredict_functions}
+predictprobs.acl <- function(model, fakedata) {
+  temp <- cbind(rep(0,nrow(fakedata)),predict(model, fakedata))
+  #get back to multinomial logit interpretation
+  temp[,2:ncol(temp)] <- temp[,2:ncol(temp)]+temp[,1:(ncol(temp)-1)]
+  #now just apply same multinomial logit method of summing up results
+  temp <- exp(temp)
+  p <- temp/apply(temp,1,sum)
+  colnames(p) <- NULL
+  return(p)
+}
+
+predictprobs.cumlogit <- function(model, fakedata) {
+  cumodds <- exp(predict(model, fakedata))
+  cumprob <- cbind(rep(1,nrow(fakedata)),cumodds/(1+cumodds))
+  #convert from cumulative probability to probability
+  p <- t(rbind(cumprob[,ncol(cumprob)],diff(t(cumprob[,ncol(cumprob):1])))[ncol(cumprob):1,])
+  colnames(p) <- NULL
+  return(p)
+}
+```
+
+##  Predicted probabilities {.smaller}
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+```{r predictprobs_college, echo=FALSE, fig.width=8, fig.height=5, fig.align='center', out.width='800px', out.height='500px', dpi=300, dev.args = list(bg = 'transparent')}
+test <- data.frame(college=c(FALSE,TRUE))
+par(mfrow=c(1,3), las=1)
+barplot(prop.table(tab,2), beside=TRUE, ylim=c(0,0.5),
+        names.arg=c("No College", "College"),
+        main="Actual proportions")
+barplot(t(predictprobs.acl(model.acl.c, test)), beside=TRUE, ylim=c(0,0.5),
+        names.arg=c("No College", "College"),
+        main="Constrained ACL predictions")
+barplot(t(predictprobs.cumlogit(model.cumlogit.c, test)), beside=TRUE, ylim=c(0,0.5),
+        names.arg=c("No College", "College"),
+        main="Constrained Cumlogit predictions")
+```
+
+##  Fuller models {.smaller}
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+```{r ordinal_full_models, echo=FALSE}
+politics$relig <- relevel(politics$relig, "Evangelical Protestant")
+model.full.cumlogit <- vglm(cbind(norecog, civil, marriage)~college+relig+I(age-40)+I((age-40)^2), 
+                       family=cumulative(parallel=FALSE,reverse=TRUE), data=politics)
+model.full.cumlogit.c <- update(model.full.cumlogit, family=cumulative(parallel=TRUE,reverse=TRUE))
+model.full.acl <- update(model.full.cumlogit, family=acat(parallel=FALSE))
+model.full.acl.c <- update(model.full.acl, family=acat(parallel=TRUE))
+temp <- temp2 <- rep(NA, length(coef(model.full.cumlogit)))
+temp[c(1:2,seq(from=3,to=(length(coef(model.full.cumlogit))-1),by=2))] <- coef(model.full.cumlogit.c)
+temp2[c(1:2,seq(from=3,to=(length(coef(model.full.cumlogit))-1),by=2))] <- coef(model.full.acl.c)
+print(round(cbind("cumlogit"=coef(model.full.cumlogit),"cumlogit, c"=temp,
+            "ACL"=coef(model.full.acl), "ACL, c"=temp2),4), na.print="")
+```
+
+##  Predict the effects of age
+<div class="footer">
+<body>Sociology 513, Models for Polytomous Categorical Outcomes: Models for Ordinal Outcomes</body>
+</div>
+
+The effect of age for a respondent with no college education who is a mainline protestant. 
+
+```{r plotage_politics, echo=FALSE, fig.width=7.5, fig.height=4.25, fig.align='center', out.width='700px', out.height='425px', dpi=300, dev.args = list(bg = 'transparent')}
+x <- 17:85
+fakedata <- data.frame(college=rep(FALSE,length(x)), relig=rep("Mainline Protestant",length(x)), 
+                                                age=x-40)
+predictedprobs.cumlogit <- predictprobs.cumlogit(model.full.cumlogit, fakedata)
+predictedprobs.cumlogit.c <- predictprobs.cumlogit(model.full.cumlogit.c, fakedata)
+predictedprobs.acl <- predictprobs.acl(model.full.acl, fakedata)
+predictedprobs.acl.c <- predictprobs.acl(model.full.acl.c, fakedata)
+par(mfrow=c(1,2), las=1)
+matplot(x, predictedprobs.cumlogit, type="l", lwd=3, lty=1, 
+        col=c("red","grey","purple"), xlab="age", ylab="Predicted probability", 
+        main="Cum. Logit")
+matlines(x, predictedprobs.cumlogit.c, lty=2, col=c("red","grey","purple"))
+legend(20,0.5, legend=c("No legal recognition","Civil union", "Supports gay marriage", "Unconstrained", "Proportional Odds"), lty=c(1,1,1,1,2), col=c("red","grey","purple","black","black"), ncol=2, cex=0.4)
+matplot(x, predictedprobs.acl, type="l", lwd=3, lty=1, 
+        col=c("red","grey","purple"), xlab="age", ylab="Predicted probability",
+        main="ACL")
+matlines(x, predictedprobs.acl.c, lty=2, col=c("red","grey","purple"))
+```
