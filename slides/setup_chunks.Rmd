@@ -1,0 +1,21 @@
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(fig.retina = 3, message=FALSE, warning=FALSE, fig.height=6.5)
+```
+
+```{r load-stuff, include=FALSE}
+#load libraries
+library(here)
+source(here("check_packages.R"))
+#load data
+source(here("example_datasets","load_all_data.R"))
+```
+
+```{r custom-ggtheme, include=FALSE}
+theme_myslides <- theme_bw()+
+  theme(axis.title = element_text(size=16),
+        axis.text = element_text(size=12),
+        plot.title = element_text(size=24),
+        plot.subtitle = element_text(size=16))
+theme_set(theme_myslides)
+```
