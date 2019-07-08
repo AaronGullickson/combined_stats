@@ -10,9 +10,17 @@ Slides for this module can be found [here](https://aarongullickson.github.io/sta
 
 ## Looking at Distributions
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/H_4zOv7_0g0")
+```
+
 One of the best ways to understand the distribution of a variable is to visualize that distribution with a graph. However, the technique we use to graph the distribution will depend on whether we have a categorical or a quantitative variable. For categorical variables, we will use a **barplot**, while for quantitative variables, we will use a **histogram**. 
 
 ### Looking at the distribution of a categorical variable
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/h_MPc89f8wY")
+```
 
 #### Calculating the frequency
 
@@ -136,6 +144,10 @@ So how did I create this graph? The `ggplot` syntax is a little different than m
 Ggplot is a very flexible system that repeats these same basic layer elements in all the graphs it creates. In an appendix to this book, you can see cookbook examples of all the ways we will we use it to create figures throughout the term. 
 
 ### Looking at the distribution of a quantitative variable
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/tIALiP-sEV0")
+```
 
 Barplots won't work for quantitative variables because quantitative variables don't have categories. However, we can do something quite similar with the **histogram**. 
 
