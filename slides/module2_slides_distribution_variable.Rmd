@@ -73,7 +73,7 @@ When we refer to the **distribution** of a variable, we are referring to how the
 ### `r icon::fa("square-root-alt")` Measure it
 
 - We can calculate summary measures of the **center** and **spread** of the distribution.
-- We an only calculate summary measures for quantiative variables.
+- We an only calculate summary measures for quantitative variables.
 ]
 
 ---
@@ -295,7 +295,7 @@ ggplot(movies, aes(x=Runtime))+
   geom_histogram(fill="skyblue", color="black", 
                  binwidth=5)+
   labs(x="runtime in minutes",
-       title="Distribution of move runtime")+
+       title="Distribution of movie runtime")+
   theme_bw()
 ```
 
@@ -349,19 +349,15 @@ class: center, middle
 .pull-left[
 
 ### Shape
-
 Is it symmetric or skewed?
 
 ### Center
-
 Where is the center or peak of the distribution and is there only one?
 
 ### Spread
-
 How spread out are the values around the center?
 
 ### Outliers
-
 Are there any observations that have relatively very high or low values?
 ]
 
@@ -413,7 +409,7 @@ ggplot(movies, aes(x=Runtime))+
   geom_histogram(fill="grey", color="black", 
                  binwidth=5)+
   labs(x="runtime in minutes",
-       title="Distribution of move runtime")+
+       title="Distribution of movie runtime")+
   geom_vline(data=temp, aes(xintercept = value, color=measure), size=2)
 ```
 
@@ -449,7 +445,7 @@ Don't panic! We will walk through what these symbols mean.
 
  $$\bar{x}=\frac{\sum_{i=1}^n x_i}{n}$$
 
-To calculate the mean we just sum up all the values of $x$ and divde by the number of observations. The `sum` command will sum up a variable and the `nrow` command will give us the number of observations, so:
+To calculate the mean we just sum up all the values of $x$ and divide by the number of observations. The `sum` command will sum up a variable and the `nrow` command will give us the number of observations, so:
 
 ```{r}
 sum(movies$Runtime)/nrow(movies)
@@ -484,7 +480,7 @@ mean(movies$Runtime)
 nrow(movies)
 ```
 
-With an odd number of 2553 movies, the exact midpoint is the 1277th movie. We can use the `sort` command to sort and thene extract the 1277th movie by using square brackets:
+With an odd number of 2553 movies, the exact midpoint is the 1277th movie. We can use the `sort` command to sort and then extract the 1277th movie by using square brackets:
 
 ```{r}
 sort(movies$Runtime)[1277]
@@ -509,7 +505,7 @@ ggplot(movies, aes(x=Runtime))+
   geom_histogram(fill="grey", color="black", 
                  binwidth=5)+
   labs(x="runtime in minutes",
-       title="Distribution of move runtime")+
+       title="Distribution of movie runtime")+
   geom_vline(data=temp, aes(xintercept = value, color=measure), size=2)
 ```
 ]
@@ -533,7 +529,7 @@ ggplot(movies, aes(x=BoxOffice))+
   geom_histogram(fill="grey", color="black", 
                  binwidth=5)+
   labs(x="box office returns in millions of USD",
-       title="Distribution of move box office returns")+
+       title="Distribution of movie box office returns")+
   geom_vline(data=temp, aes(xintercept = value, color=measure), size=2)+
   annotate("label", x=170, y=400, 
            label="The mean ($45.2 million) is more than\ndouble the median ($21.6 million)",
@@ -559,7 +555,7 @@ ggplot(movies, aes(x=Rating, y=..prop.., group=1))+
   ylim(0,.5)+
   labs(x=NULL, y=NULL, 
        title="Distribution of movie maturity rating")+
-  annotate("label", x=4, y=0.48, label="R is the\nmodal category",
+  annotate("label", x=4, y=0.48, label="R-rated is the\nmodal category",
            size=4)
 ```
 
@@ -618,14 +614,15 @@ quantile(movies$Runtime)
 --
 
 .pull-right[
-You can use the five-number summary to create a boxplot.
 ```{r echo=FALSE}
 ggplot(movies, aes(y=Runtime))+
   geom_boxplot(fill="grey", outlier.color = "red")+
   xlim(-0.6, 0.6)+
-  labs(x=NULL, y="runtime in minutes")+
+  labs(x=NULL, y="runtime in minutes",
+       title="Use the five-number summary to create a boxplot")+
   theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank())
+        axis.ticks.x = element_blank(),
+        plot.title = element_text(size=16))
 ```
 ]
 
@@ -633,24 +630,14 @@ ggplot(movies, aes(y=Runtime))+
 
 ## Anatomy of the boxplot
 
-.pull-left[
-* Use a single vertical number line
-* Draw a box with a bottom and top at the 25th and 75th percentiles
-* Inside the box, draw a thick line at the median
-* The height of the box is the differencde between the 25th and 75th percentile which is called the **Interquartile range** or **IQR** for short.
-* Draw "whiskers" above and below the box. These whiskers should be drawn out to the maximum and minimum values or a total distance of 1.5 x IQR, whichever is shortest.
-* Plot out individual points that are beyond the 1.5 x IQR limit individually.
-]
-
-.pull-right[
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=12}
 ggplot(movies, aes(y=Runtime))+
   geom_hline(yintercept = 114, linetype=2, color="grey")+
   annotate("label", x=0.5, y=114, label="75%")+
   geom_hline(yintercept = 93, linetype=2, color="grey")+
   annotate("label", x=0.5, y=93, label="25%")+
   geom_hline(yintercept = 102, linetype=2, color="grey")+
-  annotate("label", x=-0.5, y=102, label="median")+
+  annotate("label", x=0.025, y=102, label="median")+
   geom_segment(x=0.6, xend=0.6, y=93, yend=114, 
                arrow=arrow(length=unit(0.1, "inch")))+
   geom_segment(x=0.6, xend=0.6, y=114, yend=93, 
@@ -660,9 +647,9 @@ ggplot(movies, aes(y=Runtime))+
                arrow=arrow(length=unit(0.1, "inch")))+
   geom_segment(x=0.05, xend=0.05, yend=114, y=114+21*1.5, 
                arrow=arrow(length=unit(0.1, "inch")))+
-  annotate("label", x=0.35, y=140, 
+  annotate("label", x=0.25, y=140, 
            label="whiskers to either maximum/minimum\nor 1.5 x IQR, whichever is shortest")+
-  annotate("label", x=0.25, y=200, 
+  annotate("label", x=0.15, y=200, 
            label="observations beyond 1.5 x IQR\nare drawn individually",
            color="red")+
   geom_boxplot(fill="grey", outlier.color = "red")+
@@ -671,7 +658,15 @@ ggplot(movies, aes(y=Runtime))+
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank())
 ```
-]
+
+???
+
+* Use a single vertical number line
+* Draw a box with a bottom and top at the 25th and 75th percentiles
+* Inside the box, draw a thick line at the median
+* The height of the box is the difference between the 25th and 75th percentile which is called the **Interquartile range** or **IQR** for short.
+* Draw "whiskers" above and below the box. These whiskers should be drawn out to the maximum and minimum values or a total distance of 1.5 x IQR, whichever is shortest.
+* Plot out individual points that are beyond the 1.5 x IQR limit individually.
 
 ---
 
@@ -722,9 +717,17 @@ ggplot(movies, aes(x="", y=BoxOffice))+
 
 ---
 
+class: center, middle
+
+<iframe src="https://aarongullickson.shinyapps.io/percentiles/">
+
+</iframe>
+
+---
+
 class: inverse, center, middle
 
-background-image: url(images/avi-werde-5udBKkXTUK8-unsplash.jpg)
+background-image: url(images/priscilla-du-preez-3H0fHhhefsA-unsplash.jpg)
 background-size: cover
 
 # Measuring the Spread of a Distribution
@@ -743,7 +746,7 @@ ggplot(temp, aes(x=x, fill=type))+
   geom_histogram(data=subset(temp, type=="wide"), alpha=0.7, binwidth=0.2)+
   guides(fill=FALSE)+
   labs(x="some interesting variable",
-       title="distributions with the same center and shape, but different spread")+
+       title="Distributions with the same center and shape, but different spread")+
   theme_bw()
 ```
 
@@ -760,6 +763,8 @@ IQR(movies$Runtime)
 ```
 
 The 75th percentile of movie runtime is 21 minutes longer than the 25th percentile. 
+
+--
 
 ### Variance and Standard Deviation
 
@@ -797,7 +802,7 @@ distance_sq <- distance^2
 
 ---
 
-### Calculating the standard deviation
+## Calculating the standard deviation
 
 $\sum_{i=1}^n(x_i-\bar{x})^2$: The sum of the squared distance, sometimes abbreviated *SSX*.
 
@@ -813,7 +818,9 @@ $\sum_{i=1}^n(x_i-\bar{x})^2/(n-1)$: Dividing through by the number of observati
 variance <- ssx/(nrow(movies)-1)
 ```
 
---
+---
+
+## Calculating the standard deviation
 
 $\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2/(n-1)}$: Squared distance is a hard thing to conceptualize, so we square root to get back to distance.
 
@@ -823,6 +830,8 @@ sd
 ```
 
 The average movie is about 16.7 minutes away from the mean movie runtime.
+
+--
 
 We can also just use the `sd` command: `r emo::ji("sunglasses")`
 
