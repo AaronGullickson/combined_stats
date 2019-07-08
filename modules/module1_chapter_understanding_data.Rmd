@@ -2,6 +2,8 @@
 
 In this first module, we will cover what it actually means to have "data" and give a broad overview of what kinds of things we can do with data. Data are the foundation of any statistical analysis and most data that we use in the social sciences consist of **variables** measured on some **observations**. In the next two sections, we will learn more about these concepts. 
 
+Slides for this module can be found [here](https://aarongullickson.github.io/stat_slides/module1_slides_understanding_data.html).
+
 ---
 
 ## What Does Data Look Like?

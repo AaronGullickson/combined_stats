@@ -4,6 +4,8 @@ The **distribution** of a variable refers to how the different values of that va
 
 In this chapter we will first learn graphical techniques that allow us to visualize what the distribution of a variable looks like. For quantitative variables we will then move on to calculate important summary statistics that measure the center and spread of a distribution.  
 
+Slides for this module can be found [here](https://aarongullickson.github.io/stat_slides/module2_slides_distribution_variable.html).
+
 ---
 
 ## Looking at Distributions
