@@ -8,6 +8,10 @@ Slides for this module can be found [here](https://aarongullickson.github.io/sta
 
 ## What Does Data Look Like?
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/jZjslQKSSsM")
+```
+
 The data that we look at typically take the format of a "spreadsheet" with rows and columns. The table below shows some characteristics of four randomly drawn passengers from the Titanic, in this type of spreadsheet format.
 
 ```{r echo=FALSE}
@@ -47,6 +51,10 @@ Race, gender, and political party affiliation are all examples of nominal variab
 ---
 
 ## What Can We Do With Data?
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/jf4t2QiBeGg")
+```
 
 We now know what data looks like, but what do social scientists do with data? in the first part of this course, we will learn three fundamental data analysis tasks: analysis of the distribution of a single variable, measuring association, and statistical inference. In the final part of the course, we will build on these fundamentals to learn how to build more complex statistical models. 
 
