@@ -12,3 +12,8 @@ cp -R module1_slides_understanding_data_files ~/Professional/blog/stat_slides/
 
 cp module2_slides_distribution_variable.html ~/Professional/blog/stat_slides/
 cp -R module2_slides_distribution_variable_files ~/Professional/blog/stat_slides/
+
+#remove all created files
+rm *.html
+rm -R module*files
+
