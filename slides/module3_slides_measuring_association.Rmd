@@ -553,3 +553,329 @@ ggplot(subset(politics, president=="Clinton" | president=="Trump"),
         axis.ticks.y=element_blank())
 ```
 ]
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/mel-poole-ToI01Apo4Pk-unsplash.jpg)
+background-size: cover
+
+# Scatterplot and Correlation Coefficient
+
+---
+
+## Constructing a scatterplot
+
+```{r echo=FALSE, fig.width=12}
+ggplot(crimes, aes(x=Unemployment, y=Property))+
+  xlim(0,13)+
+  ylim(1500,5000)+
+  annotate("label", 3, 4500,
+           label="We call the variable on the y-axis the dependent variable.\nThis is the outcome variable we want to predict.",
+           size=5)+
+  annotate("label", 6.5, 1600,
+           label="We call the variable on the x-axis the independent variable.\nThis is the variable we think predicts the outcome.",
+           size=5)+
+  labs(x="unemployment rate",
+       y="property crimes per 100,000 population",
+       title="Start by defining axes correctly")
+```
+
+---
+
+## Constructing a scatterplot
+
+```{r echo=FALSE, fig.width=12}
+xvalue <- subset(crimes, State=="Alaska")$Unemployment
+yvalue <- subset(crimes, State=="Alaska")$Property
+ggplot(crimes, aes(x=Unemployment, y=Property))+
+  xlim(0,13)+
+  ylim(1500,5000)+
+  geom_hline(yintercept = yvalue, linetype=3)+
+  annotate("label", 3, yvalue*1, label="Alaska's property crime rate",
+           size=4)+
+  geom_vline(xintercept = xvalue, linetype=3)+
+  annotate("label", xvalue*1, 2000, label="Alaska's\nunemployment rate", 
+           size=4)+
+  geom_point(data=subset(crimes, State=="Alaska"), size=3)+
+  geom_text_repel(data=subset(crimes, State=="Alaska"), aes(label=State))+
+  labs(x="unemployment rate",
+       y="property crimes per 100,000 population",
+       title="Adding the first point to the scatterplot")
+```
+
+---
+
+## Constructing a scatterplot
+
+```{r echo=FALSE, fig.width=12}
+ggplot(crimes, aes(x=Unemployment, y=Property))+
+  xlim(0,13)+
+  ylim(1500,5000)+
+  geom_point()+
+  labs(x="unemployment rate",
+       y="property crimes per 100,000 population",
+       title="Adding all the points")
+```
+
+---
+
+## Code and output for scatterplot
+
+.pull-left[
+```{r scatterplot, fig.show="hide"}
+ggplot(crimes, aes(x=Unemployment, y=Property))+ #<<
+  geom_point()+ #<<
+  labs(x="unemployment rate",
+       y="property crimes per 100,000 population",
+       title="Property crime rates by unemployment")
+```
+* define `x` and `y` variables in aesthetics
+* `geom_point` draws the points
+]
+
+.pull-right[
+```{r ref.label = 'scatterplot', echo = FALSE}
+```
+]
+
+---
+
+## What are we looking for?
+
+.pull-left[
+```{r ref.label = 'scatterplot', echo = FALSE}
+```
+]
+
+--
+
+.pull-right[
+### Direction
+Is it positive (y is high when x is high) or negative (y is low when x is high)?
+### Linearity
+Does the relationship look linear or does it "curve?"
+### Strength
+Cloud vs a tight line 
+### Outliers
+We are particularly concerned about outliers that are contrary to the general trend.
+]
+
+---
+
+## Overplotting with discrete variables
+
+.pull-left[
+```{r overplot, fig.show="hide"}
+ggplot(popularity, aes(x=pseudoGPA, y=indegree))+
+  geom_point()+
+  labs(x="student GPA",
+       y="number of friend nominations")
+```
+]
+
+.pull-right[
+```{r ref.label = 'overplot', echo = FALSE}
+```
+]
+
+---
+
+## Overplotting corrections
+
+.pull-left[
+```{r overplot2, fig.show="hide"}
+ggplot(popularity, aes(x=pseudoGPA, y=indegree))+
+  geom_jitter(alpha=0.2, width=0.2, height=0.3)+ #<<
+  labs(x="student GPA",
+       y="number of friend nominations")
+```
+* the `alpha` argument will create semi-transparent points (scale 0-1)
+* `geom_jitter` instead of `geom_point` will add some randomness to x and y values so that points are not plotted on top of each other. The `width` and `height` arguments can be adjusted for more or less randomness (scale 0-1). 
+]
+
+.pull-right[
+```{r ref.label = 'overplot2', echo = FALSE}
+```
+]
+
+---
+
+## `r icon::fa("user-ninja")` Adding a third variable by color
+
+.pull-left[
+```{r scatter-color, fig.show="hide"}
+ggplot(popularity, aes(x=nsports, y=indegree,
+                       color=sex))+ #<<
+  geom_jitter(alpha=0.4, width=0.5, height=0.3)+ #<<
+  scale_color_brewer(palette="Dark2")+
+  labs(x="number of sports played",
+       y="number of friend nominations",
+       color="gender")
+```
+]
+
+.pull-right[
+```{r ref.label = 'scatter-color', echo = FALSE}
+```
+]
+
+---
+
+## The correlation coefficient
+
+The correlation coefficient ($r$) measures the asssociation between two quantitative variables. The formula is:
+
+$$r=\frac{1}{n-1}\sum^n_{i=1} (\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})$$
+
+--
+
+### `r icon::fa("compact-disc")` Let's break it down
+
+--
+
+$(x_i-\bar{x})$ and $(y_i-\bar{y})$: Subtract the mean from each value of x and y to get distance above and below mean.
+
+--
+
+$(x_i-\bar{x})/s_x$ and $(y_i-\bar{y})/s_y$: Divide the difference by the standard deviation of $x$ and $y$. We now have the number of standard deviations above or below the mean.
+
+---
+
+## Move the origin and re-scale
+
+.pull-left[
+```{r echo=FALSE}
+ggplot(crimes, aes(x=Unemployment, y=Property))+
+  geom_point()+
+  labs(x="unemployment rate",
+       y="property crimes per 100,000 population")
+```
+]
+
+
+.pull-right[
+```{r echo=FALSE}
+crimes$x_sd <- (crimes$Unemployment-mean(crimes$Unemployment))/sd(crimes$Unemployment)
+crimes$y_sd <- (crimes$Property-mean(crimes$Property))/sd(crimes$Property)
+ggplot(crimes, aes(x=x_sd, y=y_sd))+
+  geom_hline(yintercept = 0, linetype=2)+
+  geom_vline(xintercept = 0, linetype=2)+
+  geom_point()+
+  labs(x=expression((x[i]-bar(x)) / s[x]),
+       y=expression((y[i]-bar(y)) / s[y]))
+```
+]
+
+---
+
+## Evidence of positive or negative relationship
+
+```{r echo=FALSE, fig.width=12}
+crimes$evidence <- ifelse(crimes$x_sd*crimes$y_sd>0, "Positive", "Negative")
+ggplot(crimes, aes(x=x_sd, y=y_sd))+
+  geom_rect(xmin=-10, xmax=0, ymin=0, ymax=10, fill="red", alpha=0.2)+
+  geom_rect(xmin=0, xmax=10, ymin=0, ymax=-10, fill="red", alpha=0.2)+
+  geom_rect(xmin=-10, xmax=0, ymin=0, ymax=-10, fill="blue", alpha=0.2)+
+  geom_rect(xmin=0, xmax=10, ymin=0, ymax=10, fill="blue", alpha=0.2)+
+  geom_hline(yintercept = 0, linetype=2)+
+  geom_vline(xintercept = 0, linetype=2)+
+  annotate("label", -2, 2.5, label="negative", size=4)+
+  annotate("label", 2, -1.5, label="negative", size=4)+
+  annotate("label", 2, 2.5, label="positive", size=4)+
+  annotate("label", -2, -1.5, label="positive", size=4)+
+  geom_point(color="white", size=4)+
+  geom_point(color="black", size=3)+
+  labs(x=expression((x[i]-bar(x)) / s[x]),
+       y=expression((y[i]-bar(y)) / s[y]))
+```
+
+---
+
+## The correlation coefficient
+
+$$r=\frac{1}{n-1}\sum^n_{i=1} (\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})$$
+
+--
+
+$(\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})$: Multiply x and y values together. The results provides evidence of negative or positive relationship.
+
+--
+
+$\sum^n_{i=1} (\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})$: Sum up all the evidence, positive and negative.
+
+--
+
+$\frac{1}{n-1}\sum^n_{i=1} (\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})$: Divide result by sample size to get final correlation coefficient.
+
+--
+
+```{r}
+sdx <- (crimes$Unemployment-mean(crimes$Unemployment))/sd(crimes$Unemployment)
+sdy <- (crimes$Property-mean(crimes$Property))/sd(crimes$Property)
+sum(sdx*sdy)/(nrow(crimes)-1)
+```
+
+--
+
+Alternatively, use the `cor` command: `r emo::ji("sunglasses")`
+
+```{r}
+cor(crimes$Unemployment, crimes$Property)
+```
+
+---
+
+## What does the correlation coefficient mean? 
+
+```{r}
+cor(crimes$Unemployment, crimes$Property)
+```
+
+--
+
+.pull-left[
+### `r icon::fa("directions")` Direction
+The sign of $r$ indicates the direction of the relationship. Positive values indicate a positive relationship and negative values indicate a negative relationship. Zero indicates no relationship.
+]
+
+--
+
+.pull-right[
+### `r emo::ji("muscle")` Strength
+The **absolute value** of $r$ indicates the strength of the relationship. The maximum value of $r$ is 1 and the minimum value is -1. You only reach these values if the points fall exactly on a straight line.
+]
+
+--
+
+.center[
+### `r emo::ji("warning")` Limitations
+$r$ is only applicable for linear relationships
+
+$r$ can be severely affected by outliers
+]
+
+---
+
+##  Simulated examples of correlation strength
+
+```{r echo=FALSE, fig.width=12}
+r_values <- seq(from=0.0, length=12, by=0.09)
+r <- lapply(r_values, function(x) {cbind(c(1,x),c(x,1))})
+temp <- lapply(r, function(x) {mvrnorm(300,c(0,0),Sigma=x)})
+correlations <- NULL
+for(i in 1:length(r_values)) {
+  correlations <- rbind(correlations, temp[[i]])
+}
+correlations <- as.data.frame(correlations)
+colnames(correlations) <- c("x","y")
+correlations$r <- rep(r_values, each=300)
+ggplot(correlations, aes(x=x, y=y))+
+  geom_point(alpha=0.5)+
+  facet_wrap(~r)+
+  theme_bw()+
+  theme(axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank())
+```
