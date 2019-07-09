@@ -443,3 +443,113 @@ Its always the odds ratio of the first row category (women) by the first column 
 ]
 
 
+---
+
+class: inverse, center, middle
+
+background-image: url(images/charles-cMvDruWjv0Y-unsplash.jpg)
+background-size: cover
+
+# Mean Differences
+
+---
+
+## Comparative boxplots
+
+```{r echo=FALSE, fig.width=12}
+ggplot(earnings, aes(x=reorder(race, wages, median), 
+                     y=wages))+
+  geom_boxplot(fill="grey", outlier.color="red")+
+  scale_y_continuous(label=scales::dollar)+
+  labs(x=NULL, y="hourly wages",
+       title="Comparative boxplots of wages by race",
+       caption="Source: CPS 2018")
+```
+
+---
+
+## Code and output for comparative boxplot
+
+.pull-left[
+```{r comp-boxplot, fig.show="hide"}
+ggplot(earnings, 
+       aes(x=reorder(race, wages, median), #<<
+           y=wages))+
+  geom_boxplot(fill="grey", outlier.color="red")+
+  scale_y_continuous(label=scales::dollar)+
+  labs(x=NULL, y="hourly wages",
+       title="Comparative boxplots of wages by race",
+       caption="Source: CPS 2018")+
+  theme_bw()
+```
+
+* We just need to add an `x` aesthetic (in this case race) to the plot to get a comparative boxplot.
+* In this case, I have also used the `reorder` command to reorder my categories so they go from smallest to largest median wage by race. This is not necessary but will add more information to the boxplot. 
+]
+
+.pull-right[
+```{r ref.label = 'comp-boxplot', echo = FALSE}
+```
+]
+
+---
+
+## Income and presidential choice
+
+```{r fig.width=12, echo=FALSE}
+ggplot(politics, aes(x=reorder(president, income, median), 
+                     y=income*1000))+
+  geom_boxplot(fill="grey", outlier.color = "red")+
+  scale_y_continuous(label=scales::dollar)+
+  labs(y="household income",
+       x=NULL,
+       title="Distribution of household income by presidential choice")
+```
+
+---
+
+## Calculating mean differences
+
+Use the `tapply` command to get the mean income of respondents separately by who they voted for: 
+
+```{r}
+tapply(politics$income, politics$president, mean)
+```
+
+* The first argument is the quantitative variable
+* The second argument is the categorical variable
+* The third argument is the function you want to run on the subsets of the quantitative variable
+
+--
+
+The mean difference is given by: $$80.23-77.33=2.9$$ Clinton voters had a household income $2900 higher than Trump voters, on average. 
+
+---
+
+## What about median differences?
+
+```{r}
+tapply(politics$income, politics$president, median)
+```
+
+Clinton voters had median household incomes $2000 **lower** than Trump voters. Why are the results different between the mean and median? 
+--
+
+.pull-left[
+The income distribution of Clinton supporters is more right-skewed than Trump supporters so it has a higher mean but lower median. However, the differences are relatively small regardless. 
+]
+
+.pull-right[
+```{r echo=FALSE, fig.height=3}
+ggplot(subset(politics, president=="Clinton" | president=="Trump"),
+              aes(x=income, y=..density.., fill=president))+
+  geom_histogram(data=subset(politics, president=="Clinton"), alpha=0.6)+
+  geom_histogram(data=subset(politics, president=="Trump"), alpha=0.6)+
+  labs(x="household income in thousands of USD",
+       fill="presidential vote",
+       title="distribution of income by presidential vote")+
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+```
+]

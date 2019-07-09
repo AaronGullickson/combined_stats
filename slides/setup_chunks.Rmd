@@ -1,6 +1,6 @@
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
-knitr::opts_chunk$set(fig.retina = 3, message=FALSE, warning=FALSE, fig.height=6.5)
+knitr::opts_chunk$set(fig.retina = 3, message=FALSE, warning=FALSE, fig.height=6.5, fig.align="center")
 ```
 
 ```{r load-stuff, include=FALSE}
