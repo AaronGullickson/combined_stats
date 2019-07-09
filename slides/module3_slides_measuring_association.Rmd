@@ -1,0 +1,445 @@
+---
+title: "Measuring Association"
+subtitle: "Sociology 312"
+author: "Aaron Gullickson"
+institute: "University of Oregon"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: [default, uo, uol-fonts, lecture_slides.css]
+    self_contained: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: ""
+      ratio: 16:10
+---
+
+```{r child="setup_chunks.Rmd"}
+```
+
+## Thinking about association
+
+The primary goal of most social science statistical analysis is to establish whether there is an association between variables and to describe the strength and direction of this association.
+
+--
+
+- Is income inequality in a country related to life expectancy?
+
+--
+
+- Do stronger networks predict better success at finding jobs for job seekers?
+
+--
+
+- Does population size and growth predict environmental degradation? 
+
+--
+
+- How does class affect party affiliation and voting?
+
+---
+
+## Association vs. causation
+
+We often think about the relationships we observe in data as being causally determined, but the simple measurement of association is insufficient to establish a necessary causal connection between the variables.
+
+--
+
+.pull-left[
+### Spuriousness
+The association between two variables could be generated because they are both related to a third variable that is actually the cause. 
+
+```{r echo=FALSE, fig.height=3}
+par(mar=c(0,0,0,0))
+plot(-100,-100, xaxt="n", yaxt="n",
+     xlim=c(0,10),
+     ylim=c(0,10), bty="n")
+rect(0,1,4,4, col="skyblue")
+text(2,2.5, "Speeding Tickets")
+rect(6,1,10,4, col="skyblue")
+text(8,2.5, "Accidents")
+rect(3,6,7,10, col="red")
+text(5, 8, "Miles Driven")
+arrows(4.5,5.8,2.5,4.2)
+arrows(5.5,5.8,8,4.2)
+arrows(4.2,2.5,5.8,2.5, lty=2)
+text(3, 5, "+")
+text(7, 5, "+")
+text(5, 3, "+")
+```
+]
+
+--
+
+.pull-right[
+### Reverse causality
+We may think that one variable causes the other, but it is equally possible that the causal relationship is the other way. 
+
+
+```{r echo=FALSE, fig.height=3}
+par(mar=c(0,0,0,0))
+plot(-100,-100, xaxt="n", yaxt="n",
+     xlim=c(0,10),
+     ylim=c(0,5), bty="n")
+rect(0,1,4,4, col="skyblue")
+text(2,2.5, "Income")
+rect(6,1,10,4, col="skyblue")
+text(8,2.5, "Health")
+arrows(4,2.5,6,2.5, code=3)
+text(5, 3, "?")
+```
+]
+
+---
+
+## Different methods for measuring association
+
+--
+
+### Two categorical variables
+
+The **two-way table** and **comparative barplots**
+
+--
+
+### Categorical and quantitative variable
+
+**Mean differences** and **comparative boxplots**
+
+--
+
+### Two quantitative variables
+
+The **correlation coefficient** and **scatterplots**
+
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/jan-jakub-nanista-UHyrjKPsshk-unsplash.jpg)
+background-size: cover
+
+# The Two-Way Table
+
+---
+
+## The two-way table
+
+The **two-way table** (or **cross-tabulation**) gives the **joint distribution** of two categorical variables. 
+
+--
+
+We can create a two-way table in *R* using the `table` command but this time we feed in two different variables. Here is an example using sex and survival on the titanic:
+
+```{r}
+tab <- table(titanic$sex, titanic$survival)
+tab
+```
+
+There were `r tab[1,1]` female survivors, `r tab[1,2]` female deaths, and so on.
+
+---
+
+## Raw numbers are never enough
+
+```{r echo=FALSE}
+tab
+```
+
+* It might seem like the much higher number of male deaths is enough to claim that there is a relationship between gender and survival, but this comparison would be flawed. Why?
+
+--
+
+* There were a lot more male passengers on the Titanic than female passengers. So even if they had the same probability of survival, we would expect to see more male deaths. 
+
+--
+
+* We need to compare the **proportion** of deaths among men to the **proportion** of deaths among women to make a proper comparison.
+
+--
+
+* Never, ever compare raw numbers directly. Instead, we need to first calculate a **conditional distribution** using proportions. In this case, I want the distribution of survival **conditional** on gender. 
+
+---
+
+## Calculate maginal distributions
+
+A first step in establishing the relationship is to calculate the **marginal distributions** of the row and column variables. The marginal distributions are simply the distributions of each categorical variable separately. We can calculate these from the `tab` object I created using the `margin.table` command in *R*:
+```{r}
+margin.table(tab,1)
+margin.table(tab,2)
+```
+Note that the the option `1` here gives me the row marginal and the option `2` gives me the column marginal.
+
+---
+
+## Distribution of survival conditional on sex
+
+.pull-left[
+| Sex   | Survived| Died|  Total  |
+|:------|--------:|----:|--------:|
+|Female | 339     | 127 |   466   |
+|Male   | 161     | 682 |   843   |
+|Total  | 500     | 809 |   1309  |
+
+To get distribution of survival by gender, divide each row by row totals: 
+
+| Sex   | Survived| Died|  Total  |
+|:------|--------:|----:|--------:|
+|Female | 339/466     | 127/466 |   466   |
+|Male   | 161/843     | 682/843 |   843   |
+]
+
+--
+
+.pull-right[
+| Sex   | Survived| Died|  Total  |
+|:------|--------:|----:|--------:|
+|Female | 0.727     | 0.273 |   1.0   |
+|Male   | 0.191     | 0.809 |   1.0   |
+
+* Read the distribution within the rows:
+  * 72.7% of women survived and 27.3% of women died.
+  * 19.1% of men survived and 80.9% of men died. 
+* Men were much more likely to die on the Titanic than women.
+]
+
+---
+
+## Calculating conditional distributions in *R*
+
+You can use `prop.table` to calculate conditional distributions in *R*.
+
+```{r}
+tab <- table(titanic$sex, titanic$survival)
+prop.table(tab,1) #<<
+```
+
+-- 
+
+* Take note of the `1` as the second argument in `prop.table`. You **must** include this to get the distribution of the column variable conditional on the row. 
+
+--
+
+* Make sure that the proportions sum up to one within the rows to check yourself. 
+
+---
+
+## The other conditional distribution
+
+```{r}
+prop.table(tab, 2)
+```
+
+What changed? 
+
+--
+
+* Notice that the rows do not sum to one anymore. However, the columns do sum to one. 
+
+--
+ 
+* Because of the `2` in the `prop.table` command, we are now looking at the distribution of gender conditional on survival.
+
+---
+
+## Comparative barplot by faceting
+
+```{r echo=FALSE, fig.width=12}
+ggplot(titanic, aes(x=survival, y=..prop.., group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  labs(y="percent surviving", x=NULL,
+       title="Distribution of Titanic survival by gender")+
+  facet_wrap(~sex)
+```
+
+---
+
+## Code and output for comparative barplot
+
+.pull-left[
+```{r comp-barplot-example, fig.show = 'hide'}
+ggplot(titanic, aes(x=survival, y=..prop..,
+                    group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  labs(y="percent surviving", x=NULL,
+       title="Distribution of Titanic survival by gender")+
+  facet_wrap(~sex)+ #<<
+  theme_bw()
+```
+
+The code here is identical to that for a single barplot except for the addition of `facet_wrap`. The `facet_wrap` command allows us to make separate panels of the same graph across the categories of some other variable. 
+]
+
+.pull-right[
+```{r ref.label = 'comp-barplot-example', echo = FALSE}
+```
+]
+
+---
+
+## Comparative barplot by fill aesthetic
+
+.pull-left[
+```{r comp-barplot-color, fig.show = 'hide'}
+ggplot(titanic, aes(x=survival, y=..prop..,
+                    group=sex, fill=sex))+ #<<
+  geom_bar(position="dodge")+ #<<
+  scale_y_continuous(label=scales::percent)+
+  labs(y="percent surviving", x=NULL,
+       title="Distribution of Titanic survival by gender",
+       fill="gender")+ #<<
+  theme_bw()
+```
+
+* We `group` by sex and also add a `fill` aesthetic that will apply different colors by sex.
+* We add `position="dodge"` to `geom_bar` so that bars are drawn side-by-side rather than stacked.
+* We add `fill="gender"` to `labs` so that our legend has a nice title.
+ 
+]
+
+.pull-right[
+```{r ref.label = 'comp-barplot-color', echo = FALSE}
+```
+]
+
+---
+
+## `r icon::fa("user-ninja")` Presidential choice by education
+
+
+.pull-left[
+```{r}
+# first command drops non-voters
+temp <- droplevels(subset(politics, 
+                          president!="No Vote")) 
+tab <- table(temp$educ, temp$president)
+# round and multiply prop.table by 100
+# to get percents
+props <- round(prop.table(tab, 1),3)*100
+props
+```
+]
+
+.pull-right[
+```{r, fig.height=3.5}
+ggplot(subset(politics, president!="No Vote"), 
+       aes(x=president, y=..prop.., 
+           group=educ, fill=educ))+
+  geom_bar(position = "dodge")+
+  labs(title="presidential choice by education",
+       x=NULL,
+       y="percent of education group",
+       fill="education")+
+  scale_y_continuous(label=scales::percent)+
+  scale_fill_brewer(palette="YlGn") #<<
+```
+]
+
+---
+
+## `r icon::fa("user-ninja")` Super fancy three-way table
+
+.pull-left[
+```{r three-way-table, fig.show="hide"}
+ggplot(subset(politics, president!="No Vote" &
+                gender!="Other"), 
+       aes(x=president, y=..prop.., 
+           group=educ, fill=educ))+
+  geom_bar(position = "dodge")+
+  labs(title="presidential choice by education",
+       x=NULL,
+       y="percent of education group",
+       fill="education")+
+  scale_y_continuous(label=scales::percent)+
+  scale_fill_brewer(palette="YlGn")+
+  facet_wrap(~gender) #<<
+```
+Just add a `facet_wrap` to see how education affected presidential voting different for men and women.
+]
+
+.pull-right[
+```{r ref.label = 'three-way-table', echo = FALSE, fig.height=5}
+```
+]
+
+---
+
+## How to compare differences in probabilities?
+
+```{r}
+round(prop.table(table(titanic$sex, titanic$survival), 1)*100,2)
+```
+
+We could look at the difference (72.75-19.1=53.65), but this can be misleading because as the overall probability approaches either 0% or 100%, the difference must get smaller.
+
+--
+
+.pull-left[
+### Titanic
+![Titanic sinking](images/titanic.jpg)
+
+38% of passengers survived
+]
+
+.pull-right[
+### Costa Concordia
+![Costa Concordia](images/costa_concordia.jpg)
+
+Roughly 99.2% of passengers survived
+]
+
+---
+
+## Calculate the odds
+
+The **odds** is the ratio of "successes" to "failures." Convert probabilities to odds by taking $$\texttt{Odds}=\texttt{probability}/(1-\texttt{probability})$$
+
+--
+
+If 72.75% of women survived, then the odds of survival for women are $$0.7275/(1-0.7272)=2.67$$
+
+About 2.67 women survived for every woman that died.
+
+--
+
+If 19.1% of men survived, then the odds of survival for men are $$0.191/(1-0.191)=0.236$$
+
+About 0.236 men survived for every man that died. Alternatively, 0.236 is close to 0.25, so about one man survived for every four that died. 
+
+---
+
+## Calculate the odds ratio
+
+.pull-left[
+### Odds ratio
+To determine the difference in our odds we take the **odds ratio** by dividing one of the odds by the other.
+
+$$\texttt{Odds ratio}=\frac{O_1}{O_2}=\frac{2.67}{0.236}=11.31$$
+
+The odds of surviving the Titanic were 11.31 times higher for women than for men.
+]
+
+--
+
+.pull-right[
+### Cross-product method
+| Sex   | Survived| Died|
+|:------|--------:|----:|
+|Female | **339**     | *127* |
+|Male   | *161*     | **682** |
+
+Multiply the **diagonal** bolded values together and divide by the product of the **reverse-diagonal** italicized values to get the same odds ratio.
+
+$$\frac{339*682}{161*127}=11.31$$
+
+Its always the odds ratio of the first row category (women) by the first column category (surviving) relative to the second row category (men). 
+]
+
+
