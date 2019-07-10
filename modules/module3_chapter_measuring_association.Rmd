@@ -1,5 +1,9 @@
 # Measuring Association
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/ATqFMftNvZU")
+```
+
 Measuring association between variables, in some form or another, is really what social scientists use statistics for the most. Establishing whether two variables are related to one another can help to affirm or cast doubt on theories about the social world. Does substance use improve an adolescent's popularity in school? Does increasing wealth in a country lead to more or less environmental degradation? Does income inequality inhibit voter participation? These are just a few of the questions one could ask that require a measurement of the association between two or more variables.
 
 In this module, we will learn about how to visualize and measure association between two variables. How we do this depends on the kinds of variables that we have. There are three possibilities:
@@ -10,9 +14,15 @@ In this module, we will learn about how to visualize and measure association bet
 
 Each of these cases requires that we learn and master different techniques. In the three sections that follow, we will learn how to measure association for all three cases. 
 
+Slides for this module can be found [here](https://aarongullickson.github.io/stat_slides/module3_slides_measuring_association.html).
+
 ------
 
 ## The Two-Way Table
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/ltyT8BJbGLM")
+```
 
 The **two-way table** (also known as a **cross-tabulation** or **crosstab**) gives the joint distribution of two categorical variables. Lets use our politics dataset to construct a two-way table of belief in anthropogenic climate change by political party:
 
@@ -101,6 +111,10 @@ prop.table(tab,2)
 ```
 
 Note that this table looks deceptively similar to the table above. But look again. The numbers now don't add up to one within each row. They do however add up to one within each column. In order to read this table properly, we have to understand that it is giving us the distribution within each column: the proportion of respondents who have a given belief who belong to a given political party. So we can see in the first number that 19.5% of deniers are Democrats, 48.2% are Republicans, 27.9% are Independents, and 4.1% belong to other parties. This distribution is very different from the party affiliation distribution of believers in the second column which tells us that there is an association. However, the large party cleavages on the issue are not as immediately obvious here as they were with the previous conditional distribution. Always think carefully about which conditional distribution is more sensible to interpret and always make sure that you are interpreting them in the correct way. 
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/UYsvfTXXs8w")
+```
 
 It is also possible to graph the conditional distribution as a set of barplots. To do that, we will learn a new feature of ggplot called **faceting**. Faceting allows us to make the same plot based on subsets of the data in a series of panels. In this case, we can use the code for a univariate barplot but faceted by  First, lets save the output of our prop.table into a new object.
 
@@ -215,6 +229,10 @@ Measuring association between a quantitative and categorical variable is fairly 
 
 ### Graphically examining differences in distributions
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/R_lUPYbWO34")
+```
+
 We could compare entire histograms of the quantitative variable across different categories of the categorical variable, but this is often too much information. A cleaner method is to use **comparative boxplots**. Comparative boxplots construct boxplots of the quantitative variable across all categories of the categorical variable and plot them next to each other for easier comparison. We can easily construct a comparative boxplot in ggplot by adding an `x` aesthetic to our existing boxplot code. Lets try an example looking at differences in the distribution of movie runtime across different movie genres.
 
 ```{r compar-box-runtime-genre, fig.cap="Boxplots of movie runtime by genre"}
@@ -246,6 +264,10 @@ ggplot(movies, aes(x=reorder(Genre, Runtime, median), y=Runtime))+
 Figure \@ref(fig:compar-box-runtime-genre-reorder) now contains a lot of information. At a glance, I can see which genres had the longest median runtime and which had the shortest. But I can also see how much variation in runtime there is within movies by comparing the width of the boxes. For example, I can see that there is relatively little variation in runtime for animation movies, and the most variation in runtime among sci-fi/fantasy and action movies. I can also see some of the extreme outliers by genre. Most of these outliers are for extremely long movies, relative to the genre norm, but in a couple of cases, I can see movies that were remarkably short for their genre. 
 
 ### Comparing differences in the mean
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/VCLzsa0bbbc")
+```
 
 We can also establish a relationship by looking at differences in summary measures. Implicitly, we are already doing this in the comparative boxplot when we look at the median bars across categories. However, in practice it is more common to compare the mean of the quantitative variable across different categories of the categorical variable. In *R*, you can get the mean of one variable at different levels of a categorical variable using the `tapply` command like so:
 
@@ -299,6 +321,10 @@ When examining the association between two quantitative variables, we usually di
 The language of dependent vs. independent variable is causal, but its important to remember that we are only measuring the association. That association is the same regardless of which variable we set as the dependent and which we set as the independent. Thus, the selection of the dependent and independent variable is more about which way it more intuitively makes sense to interpret our results.
 
 ### The scatterplot
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/OEs5Hom1_Io")
+```
 
 We can examine the relationship between two quantitative variables by constructing a **scatterplot**. A scatterplot is a two-dimensional graph. We put the independent variable on the x-axis and the dependent variable on the y-axis. For this reason, we often refer generically to the independent variable as x and the dependent variable generically as y. 
 
@@ -390,6 +416,11 @@ ggplot(earnings, aes(x=age, y=wages))+
 ```
 
 ### The correlation coefficient
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/Wxeu2uE_oXQ")
+```
+
 
 We can measure the association between two quantitative variables with the correlation coefficient, *r*. The formula for the correlation coefficient is:
 
