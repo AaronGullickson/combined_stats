@@ -361,7 +361,7 @@ ggplot(subset(politics, president!="No Vote" &
   scale_fill_brewer(palette="YlGn")+
   facet_wrap(~gender) #<<
 ```
-Just add a `facet_wrap` to see how education affected presidential voting different for men and women.
+Just add a `facet_wrap` to see how education affected presidential voting differently for men and women.
 ]
 
 .pull-right[
@@ -725,7 +725,7 @@ ggplot(popularity, aes(x=nsports, y=indegree,
 
 ## The correlation coefficient
 
-The correlation coefficient ($r$) measures the asssociation between two quantitative variables. The formula is:
+The correlation coefficient ($r$) measures the association between two quantitative variables. The formula is:
 
 $$r=\frac{1}{n-1}\sum^n_{i=1} (\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})$$
 
