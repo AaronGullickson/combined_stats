@@ -268,9 +268,17 @@ In large datasets, it can sometimes be very difficult to detect a single outlier
 
 ## Measuring the Center of a Distribution
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/_6ZIRls5gl8")
+```
+
 When we look at a distribution, we often can get an intuitive sense of where its "center" is. But what do we really mean by the term "center?" The notion of center often allows us to think about the value we expect a typical or "average" observation to have, but there are multiple ways of defining this center. In statistics, three different measures of center are used: the **mean**, **median**, and **mode**. 
 
 ### The mean
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/OuZ3TtvIzMg")
+```
 
 The mean is the measure most frequently referred to as the "average" although that term could apply to the median and mode as well. The mean is the **balancing point** of a distribution. Imagine trying to balance a distribution on your finger like a basketball. Where along the distribution would you place your finger to achieve this balance? This point is the mean. It is equivalent to the concept of "center of mass" from physics. 
 
@@ -338,6 +346,10 @@ mean(movies$Rating)
 
 ### The median
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/_-96k4oGdm0")
+```
+
 The median is almost as widely used as the mean as a measure of center, for reasons I will discuss below. The median is the **midpoint** of the distribution. It is the point at which 50% of observations have lower values and 50% of the observations have higher values. 
 
 In order to calculate the median, we need to first order our observations from lowest to highest. Lets do that with the romantic movie data above. 
@@ -398,6 +410,10 @@ R-Rated movies are the modal category for maturity rating in our movies dataset.
 
 ### Comparing the mean and median
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/orXsuQ8I6ks")
+```
+
 How can the mean and median give different results? Remember that the mean defines the **balancing point** and the median defines the **midpoint**. If you have a perfectly symmetric distribution, then these two points are the same because you would balance the distribution at the midpoint. However, when the distribution is skewed in one direction or another, the mean and the median will be different. In order to maintain balance, the mean will be pulled in the direction of the skew. When you have heavily skewed distributions, this can lead to dramatically different values for the mean and median. 
 
 Lets look at this phenomenon for a couple of variables in the movie dataset. As the histogram above showed, the Tomato Meter variable is fairly symmetric and as a result we end up with a mean (`r round(mean(movies$TomatoMeter),1)`) and median (`r round(median(movies$TomatoMeter),1)`) that are pretty close. Figure \@ref(fig:skew-runtime) shows the distribution of movie runtime which is somewhat more right-skewed.
@@ -440,6 +456,10 @@ In this section, we will learn about the concept of **percentiles**. Percentiles
 
 ### Percentiles
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/8sOWBj0QES0")
+```
+
 We have already seen one example of a percentile. The median is the 50th percentile of the distribution. It is the point at which 50% of the observations are lower and 50% are higher. We can actually use this same logic to calculate other percentiles. We could calculate the 25th percentile of the distribution by finding the point where 25% of the observations are below and 75% are above. We could even calculate something like the 43rd percentile if we were so inclined. 
 
 We calculate percentiles in a fashion similar to the median. First, sort the data from lowest to highest. Then, find the exact observation where X% of the observations fall below to find the Xth percentile. In some cases, there might not be an exact observation that fits this description and so you may have to take the mean across the two closest numbers. 
@@ -471,6 +491,10 @@ $$IQR=56-31=25$$
 So, the 25th and 75th percentile of age are separated by 25 years. 
 
 ### Boxplots
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/lp-ZhOr2xCY")
+```
 
 We can also use this five number summary to create another graphical representation of the distribution called the boxplot. Figure \@ref(fig:boxplot-age-sex) below shows a boxplot for the age variable from the sexual frequency data.
 
@@ -507,6 +531,10 @@ In general, boxplots for a single variable do not contain as much information as
 ---
 
 ## Measuring the Spread of a Distribution
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/Ops3m_u1c")
+```
 
 The second most important measure of a distribution is its spread. Spread indicates how far individual values tend to fall from the center of the distribution. As Figure \@ref(fig:spread-compare) below shows, two distributions can have the same center and general shape (in this case, a bell curve) but have very different spreads.
 
