@@ -751,7 +751,7 @@ The 75th percentile of movie runtime is 21 minutes longer than the 25th percenti
 
 ## Calculating the standard deviation
 
-The standard deviation ($s$) is calculated with the following formula:
+The standard deviation $(s)$ is calculated with the following formula:
 
 $$s=\sqrt{\frac{\sum_{i=1}^n(x_i-\bar{x})^2}{n-1}}$$
 
