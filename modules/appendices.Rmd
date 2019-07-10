@@ -15,11 +15,11 @@
 
 # R Stat Lab
 
-```{r child="lab1_using_scripts.Rmd", echo=FALSE, eval=FALSE}
+```{r child="lab1_using_scripts.Rmd", echo=FALSE, eval=TRUE}
 ```
 
-```{r child="lab2_object_types.Rmd", echo=FALSE, eval=FALSE}
+```{r child="lab2_object_types.Rmd", echo=FALSE, eval=TRUE}
 ```
 
-```{r child="lab3_pretty_pictures.Rmd", echo=FALSE, eval=FALSE}
+```{r child="lab3_pretty_pictures.Rmd", echo=FALSE, eval=TRUE}
 ```
