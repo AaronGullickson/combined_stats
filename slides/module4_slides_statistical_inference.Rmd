@@ -1,241 +1,296 @@
 ---
 title: "Statistical Inference"
-author: "Prof. Gullickson, University of Oregon, Winter 2019"
-resource_files:
+subtitle: "Sociology 312"
+author: "Aaron Gullickson"
+institute: "University of Oregon"
+date: "`r Sys.Date()`"
 output:
-  ioslides_presentation:
-    css: lecture_slides.css
-    fig_caption: yes
-    fig_height: 4
-    fig_width: 6
-    logo: images/slides/logo.png
-    widescreen: yes
-subtitle: Sociology 312, Statistical Analysis
-runtime: shiny
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: [default, uo, uol-fonts, lecture_slides.css]
+    self_contained: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      slideNumberFormat: ""
+      ratio: 16:10
 ---
 
-<style type="text/css">
-slides > slide:not(.nobackground):after {
-  content: '';
-}
-</style>
-
-```{r echo=FALSE}
-load("example_datasets/movies/movies.RData")
-load("example_datasets/sex/sex.RData")
-load("example_datasets/crimes/crimes.RData")
-load("example_datasets/titanic/titanic.RData")
-load("example_datasets/politics/politics.RData")
-load("example_datasets/students/studentsFall2017.RData")
-load("example_datasets/students/studentsamplingdist.RData")
+```{r child="setup_chunks.Rmd"}
 ```
 
-# The problem of statistical inference
-Statistical Inference
+class: inverse, center, middle
 
-## Statistical Inference
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The problem of statistical inference</body>
-</div>
+background-image: url(images/tim-bennett-EoC_IuYmtug-unsplash.jpg)
+background-size: cover
 
->- The data that we work with often constitutes a **sample** from a larger **population**. Our interest is not in the sample itself, but rather in the population. 
+# The Problem of Statistical Inference
 
->- We use our sample statistics to **infer** what the true values are in the population, but we have to recognize that our sampling statistics may not exactly match the population numbers because of random chance.
+---
 
->- Statistical inference is the technique of quantifying our uncertainty about the true values in the population. 
+## What percent of Americans favor ending birthright citizenship?
 
->- Lets take the example of the percent who favor ending birthright citizenship in the ANES data. The ANES data are drawn from a **representative** sample of the US population.  
+--
 
-## Estimating a sample proportion
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The problem of statistical inference</body>
-</div>
-
-I can use `prop.table` and `table` to quickly get this proportion.
-
+We can look at the results from our politics dataset: 
 
 ```{r}
-round(prop.table(table(politics$brcitizen)),3)
+100*round(prop.table(table(politics$brcitizen)),3)
 ```
 
-About 31.7% of respondents to the ANES sample favored ending birthright citizenship.
+About 31.7% of respondents to the American National Election Study (ANES) favored ending birthright citizenship.
 
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: The problem of statistical inference</body>
-</div>
+--
 
-```{r echo=FALSE, fig.width=8, fig.height=6, out.width='800px', out.height='600px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+* Is the percent of *all* Americans also 31.7%? 
+
+--
+
+* The ANES is a **sample** of the US voting age **population**. How confident can we be that the sample percent is close to the true population percent?
+
+---
+
+## Drawing a statistical inference
+
+```{r echo=FALSE, fig.width=10}
 par(mar=c(0,0,0,0))
 plot(-2,-2, xlim=c(0,10), ylim=c(0,10), xaxt="n", yaxt="n", bty="n", xlab="", ylab="")
 rect(6,1,10,9, col="skyblue")
 text(8,5,"US Population", cex=1.2)
-text(8,4,expression(rho%~~%"?"))
+text(8,4,expression(rho=="?"))
 ```
 
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: The problem of statistical inference</body>
-</div>
+---
 
-```{r echo=FALSE, fig.width=8, fig.height=6, out.width='800px', out.height='600px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+## Drawing a statistical inference
+
+```{r echo=FALSE, fig.width=10}
 par(mar=c(0,0,0,0))
 plot(-2,-2, xlim=c(0,10), ylim=c(0,10), xaxt="n", yaxt="n", bty="n", xlab="", ylab="")
 rect(6,1,10,9, col="skyblue")
 text(8,5,"US Population", cex=1.2)
-text(8,4,expression(rho%~~%"?"))
+text(8,4,expression(rho=="?"))
 rect(0,3,4,7, col="yellow")
 text(2,5,"ANES Sample", cex=1.2)
-text(2,4,expression(hat(p)==0.396))
+text(2,4,expression(hat(p)==0.317))
 arrows(6,4,4,4)
-text(5,3.5,"Draw a sample", cex=0.7)
+text(5,3.5,"Draw a sample", cex=1)
 ```
 
+---
 
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: The problem of statistical inference</body>
-</div>
+## Drawing a statistical inference
 
-```{r echo=FALSE, fig.width=8, fig.height=6, out.width='800px', out.height='600px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+```{r echo=FALSE, fig.width=10}
 par(mar=c(0,0,0,0))
 plot(-2,-2, xlim=c(0,10), ylim=c(0,10), xaxt="n", yaxt="n", bty="n", xlab="", ylab="")
 rect(6,1,10,9, col="skyblue")
 text(8,5,"US Population", cex=1.2)
-text(8,4,expression(rho%~~%0.396))
+text(8,4,expression(rho%~~%0.317))
 rect(0,3,4,7, col="yellow")
 text(2,5,"ANES Sample", cex=1.2)
-text(2,4,expression(hat(p)==0.396))
+text(2,4,expression(hat(p)==0.317))
 arrows(6,4,4,4)
-text(5,3.5,"Draw a sample", cex=0.7)
+text(5,3.5,"Draw a sample", cex=1)
 arrows(4,6,6,6)
-text(5,5.5,"Infer from sample", cex=0.7)
+text(5,5.5,"Infer from sample", cex=1)
 ```
 
-## Populations and Samples
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The problem of statistical inference</body>
-</div>
+---
 
->- We refer to the unknown value in the poplation that we want to know about as a **parameter**. We represent this value with a greek letter (e.g. $\rho$)
->- We refer to the value in the sample that is an estimate of the population value as a **statistic**. We represent this value with a roman letter (e.g. $\hat{p}$). 
+## Parameters and statistics
 
-## How do we know if our sample is any good?
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The problem of statistical inference</body>
-</div>
+.pull-left[
+### Parameters
 
->- There are two sources of potential **bias** that may cause our sample statistic to be different from the population parameter. 
->- **Systematic bias** means that something about our sampling procedure biases our results systematically. Perhaps we are unable to sample really wealthy people or perhaps the question wording predisposes people to a certain answer. Systematic bias is a real problem but can be minimized in well-designed and executed surveys. 
->- **Random bias** means that *just by random chance* we happened to draw a sample that is very different from the population on the parameter we care about. There is nothing we can do to prevent this from happening regardless of how well our study is conducted. The only way to minimize random bias is to draw a bigger sample. 
+* Parameters represent unknown measures in the population, such as the population mean or proportion
+* Parameters are represented by greek letters (e.g. the population mean is $\mu$)
 
-## The real kicker
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The problem of statistical inference</body>
-</div>
+### Statistics
 
->- Even though we know random bias *might* have caused our sample statistic to be different from the population mean, we can't know for sure if this happened or not because we don't know the true population parameter!
->- This is what statistical inference is all about. Even though we can never say for certain that our results are close or far away from the true value, we can quantify our uncertainty about how different the sample statistic could potentially be from the population parameter.
+* Statistics represent known measurements from the sample that estimate the unknown population parameters.
+* Statistics are represented by roman letters (e.g. the sample mean $\bar{x}$)
 
-# The concept of the sampling distribution
-Statistical Inference
+]
 
-## Three kinds of distributions {.smaller}
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
+.pull-right[
 
-Lets say you want to know the mean years of education in the United States. You draw a simple random sample of 100 people. There are three kinds of distributions involved in this process.
+| Measure             | Parameter | Statistic |
+|:-------------------:|:---------:|:---------:|
+| mean                | $\mu$     | $\bar{x}$ |
+| proportion          | $\rho$    | $\hat{p}$ |
+| standard deviation  | $\sigma$  | $s$       | 
 
->- **Population Distribution** - The distribution of years of education for the whole US poplation. Its mean is given by $\mu$. The population mean and distribution are unknown. 
->- **Sample Distribution** - The distribution of years of education in your sample. The mean is given by $\bar{x}$. The mean and distribution are known because we have this sample. Hopefully, this mean and distribution should approximate the population distribution. 
->- **Sampling Distribution** - The distribution of all possible samples of size 100 that you could have drawn. We don't know this distribution exactly, but it turns out that we know its general shape. 
+]
+
+---
+
+## When samples go bad `r emo::ji("imp")`
+
+--
+
+.pull-left[
+### Systematic Bias
+
+.center[![systematic darts](images/systematic_darts.png)]
+
+Something about our data collection procedure biases our results systematically.
+
+* We made a mistake in our research design. 
+* Statistical inference cannot fix this mistake.
+
+]
+
+--
+
+.pull-right[
+### Random Bias
+
+.center[![random darts](images/random_darts.png)]
+
+Just by random chance we happened to draw a sample that is very different from the population on the parameter we care about.
+
+* We didn't do anything wrong! We just had bad luck.
+* Statistical inference addresses this form of bias.
+]
+
+???
+
+* Even though we know random bias *might* have caused our sample statistic to be different from the population mean, we can't know for sure if this happened or not because we don't know the true population parameter!
+* This is what statistical inference is all about. Even though we can never say for certain that our results are close or far away from the true value, we can quantify our uncertainty about how different the sample statistic could potentially be from the population parameter.
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/kai-pilger-qHfJPxOnXi4-unsplash.jpg)
+background-size: cover
+
+# The Sampling Distribution
+
+---
+
+## Three kinds of distributions
+
+You draw a simple random sample of 100 people from the US population and calculate their mean years of education. There are three kinds of distributions involved in this process:
+
+--
+
+.pull-left[
+### Population Distribution
+
+* The distribution of years of education for the whole US poplation. 
+* Its mean is given by $\mu$. 
+* The population mean and distribution are unknown. 
+]
+
+--
+
+.pull-right[
+### Sample Distribution
+
+* The distribution of years of education in your sample. 
+* The mean is given by $\bar{x}$. 
+* The mean and distribution are known and hopefully approximate the population distribution. 
+]
+
+--
+
+### Sampling Distribution
+
+* The distribution of the sample mean $\bar{x}$ in all possible samples of size 100. 
+* We can't know this distribution exactly, but it turns out that we know its general shape. 
+
+---
 
 ## Example: Height in our class
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
 
->- Lets treat our class of `r sum(!is.na(students$height))` students as the population. I want to estimate the average height of the class. 
->- In this case, I am omnipotent - I know the population distribution because I collected data for the whole class on Canvas.
->- What do the sampling distributions look like for different sample sizes? 
+.pull-left[
+* Lets treat our class of `r sum(!is.na(students$height))` students as the population. I want to estimate the average height of the class. 
+* In this case, I am omnipotent - I know the population distribution because I collected data for the whole class on Canvas.
+]
 
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
+.pull-right[
+```{r echo=FALSE}
+ggplot(students, aes(x=height))+
+  geom_histogram(binwidth=1, fill="grey", color="grey20")+
+  geom_vline(xintercept = mean(students$height), size=2, color="red")+
+  annotate("label", x=67.7, y=7, label="mu==66.52", parse=TRUE)+
+  labs(x="student height in inches", 
+       title="Distribution of student height in the class")
+```
+]
 
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-minHeight <- min(students$height, na.rm=TRUE)
-maxHeight <- max(students$height, na.rm=TRUE)
-hist(students$height,breaks=seq(from=minHeight,to=maxHeight,by=1), 
-     col="red", main="population distribution of class height", xlab="height", las=1, cex.main=1.5)
+---
+
+## How many samples of size 2 are possible?
+
+Lets say I wanted to sample two students to estimate class height. In a class of `r sum(!is.na(students$height))` students, how many unique samples of size 2 exist?
+
+--
+
+* On the first draw, I have `r sum(!is.na(students$height))` possibilities.
+
+--
+
+* On the second draw, I have `r sum(!is.na(students$height))-1` possibilities because I am not putting my first draw back.
+
+--
+
+* I therefore have $42*41=1722$ possible samples. 
+
+--
+
+* However, half of these samples are just duplicates of the other half, but sampled in the other order. In one sample, I samples John and Then Kate and in another I sampled Kate and then John.
+
+--
+
+* Therefore the true number of unique samples is: $$42*41/2=861$$
+
+--
+
+* What if I calculated the sample mean in all 861 samples and looked at the distribution of these sample means?
+
+---
+
+## The sampling distribution
+
+```{r hist-samplingd-size2, echo=FALSE, fig.width=12}
+ggplot(data.frame(means2), aes(x=means2))+
+  geom_histogram(fill="grey", color="grey20", breaks=seq(from=58,to=76, by=1))+
+  labs(x="mean height in samples of size 2",
+       title="Sampling distribution of mean student height from samples of size 2")+
+  xlim(58, 76)+
+  theme_bw()
 ```
 
-## Lets draw samples of size 2
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
+---
 
->- Each sample has two values that give its **sample distribution**.
->- For each sample, I can calculate mean height.
->- If I keep drawing samples of size two until I have all possible samples, the means from each sample would constitute the **sampling distribution**. 
->- How many samples of size 2 can I draw from a population of size `r sum(!is.na(students$height))`?
->- (`r sum(!is.na(students$height))`*`r (sum(!is.na(students$height))-1)`)/2=`r sum(!is.na(students$height))*(sum(!is.na(students$height))-1)/2` possible samples. 
+## Sampling distributions for different $n$
 
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
+```{r compare-density, echo=FALSE, fig.width=12}
+temp <- data.frame(size=c(rep("n=2", length(means2)),
+                          rep("n=3", length(means3)),
+                          rep("n=4", length(means4)),
+                          rep("n=5", length(means5))),
+                   means=c(means2, means3, means4, means5))
 
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-hist(means2,breaks=seq(from=minHeight,to=maxHeight,by=1), col="red", main="The sampling distribution of class height\nfor samples of size 2", xlab="mean height", las=1, cex.main=1.5)
+ggplot(temp, aes(x=means, y=..density.., fill=size))+
+  geom_density(data=subset(temp, size=="n=5"), alpha=0.6)+
+  geom_density(data=subset(temp, size=="n=4"), alpha=0.6)+
+  geom_density(data=subset(temp, size=="n=3"), alpha=0.6)+
+  geom_density(data=subset(temp, size=="n=2"), alpha=0.6)+
+  geom_vline(xintercept = mean(students$height), color="red", size=2, alpha=0.7)+
+  labs(x="mean height", 
+       title="The shape is becoming more bell-curved and narrower")+
+  xlim(58, 76)+
+  annotate("label", x=66.6, y=0.175, label="mu", parse=TRUE, size=10, color="red")
 ```
 
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
+---
 
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-hist(means3,breaks=seq(from=minHeight,to=maxHeight,by=1), col="red", main="The sampling distribution of class height\nfor samples of size 3", xlab="mean height", las=1, cex.main=1.5)
-```
-
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
-
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-hist(means4,breaks=seq(from=minHeight,to=maxHeight,by=1), col="red", main="The sampling distribution of class height\nfor samples of size 4", xlab="mean height", las=1, cex.main=1.5)
-```
-
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
-
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-hist(means5,breaks=seq(from=minHeight,to=maxHeight,by=1), col="red", main="The sampling distribution of class height\nfor samples of size 5", xlab="mean height", las=1, cex.main=1.5)
-```
-
-## The shape becomes more bell-curved
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
-
-```{r echo=FALSE, fig.width=7, fig.height=4.5, out.width='700px', out.height='450px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-par(mfrow=c(2,2))
-hist(means2,breaks=seq(from=minHeight,to=maxHeight,by=1), col="red", main="Sampling distribution (n=2)", xlab="mean height", las=1)
-hist(means3,breaks=seq(from=minHeight,to=maxHeight,by=1), col="red", main="Sampling distribution (n=3)", xlab="mean height", las=1)
-hist(means4,breaks=seq(from=minHeight,to=maxHeight,by=1), col="red", main="Sampling distribution (n=4)", xlab="mean height", las=1)
-hist(means5,breaks=seq(from=minHeight,to=maxHeight,by=1), col="red", main="Sampling distribution (n=5)", xlab="mean height", las=1)
-```
-
-## The means of the sampling distributions are the same but the standard deviation gets smaller
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
+## What is the mean of the sampling distributions?
 
 ```{r echo=FALSE}
 knitr::kable(cbind('Distribution'=c("Population Distribution","Sampling Distibution (n=2)",
@@ -247,960 +302,114 @@ knitr::kable(cbind('Distribution'=c("Population Distribution","Sampling Distibut
       align=c("l","r","r"))
 ```
 
-## Its the central limit theorem!
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
+---
 
+## Its the Central Limit Theorem!
+
+.pull-left[
 As the sample size increases, the sampling distribution of a sample mean becomes a **normal** distribution.
 
->- The normal distribution is a bell-shaped curve with two characteristics: center and spread. 
->- Centered on $\mu$, which is the true value in the population.
->- With a spread (standard deviation) of $\sigma/\sqrt{n}$, where $\sigma$ is the standard deviation in the population. 
->- The center of the sampling distribution is the true value of the parameter and the spread of the sampling distribution shrinks as the sample grows larger. 
+* The normal distribution is a bell-shaped curve with two characteristics: center and spread. 
+* Centered on $\mu$, which is the true value in the population.
+* With a spread (standard deviation) of $\sigma/\sqrt{n}$, where $\sigma$ is the standard deviation in the population. 
+* The center of the sampling distribution is the true value of the parameter and the spread of the sampling distribution shrinks as the sample grows larger. 
+]
 
-## Three different standard deviations
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
+.pull-right[
+```{r echo=FALSE}
+x <- seq(from=-5,to=5,by=0.1)
+y <- (1/(sqrt(2*pi)))*exp(-1*(x)^2/(2^2))
+par(mar=c(6,0.1,4,0.1))
+plot(x,y, type="l", lwd=3, yaxt="n", xlab="",
+     ylab="", xaxt="n",
+     main="Sampling distribution of sample mean")
+axis(1, at=c(-3,-1.96,-1,0,1,1.96,3), cex=0.8, las=3,
+     labels=c(expression(mu-3*sigma/sqrt(n)),
+              expression(mu-1.96*sigma/sqrt(n)),
+              expression(mu-1*sigma/sqrt(n)),
+              expression(mu),
+              expression(mu+1*sigma/sqrt(n)),
+              expression(mu+1.96*sigma/sqrt(n)),
+              expression(mu+3*sigma/sqrt(n))))
+polygon(c(x[21],x[21:81], x[81]),c(0,y[21:81],0), col="grey80")
+polygon(c(x[31],x[31:71],x[71]),c(0,y[31:71],0), col="grey50")
+polygon(c(x[41],x[41:61],x[61]),c(0,y[41:61],0), col="grey30")
+abline(v=0, lwd=3, lty=2, col="red")
+text(0,max(y)*0.9, expression(mu), col="red", cex=2, pos=4)
+arrows(x[41],max(y)*0.5,x[61],max(y)*0.5, code=3, length=0.1)
+arrows(x[31],max(y)*0.3,x[71],max(y)*0.3, code=3, length=0.1)
+arrows(x[21],max(y)*0.05,x[81],max(y)*0.05, code=3, length=0.1)
+text(0, max(y)*0.5, label="68%", col="white", pos=3)
+text(1.5, max(y)*0.3, label="95%", col="white", pos=3)
+text(2.5, max(y)*0.05, label="99.7%", col="black", pos=3)
+```
+]
+
+---
+
+## The Standard Error
 
 There are three different kinds of standard deviations involved here, one that corresponds to each of the types of distributions. 
 
->- $\sigma$: population standard deviation
->- $s$: sample standard deviation, approximates $\sigma$
->- $\sigma/\sqrt{n}$: standard deviation of the sampling distribution for the mean. We often refer to the standard deviation of the sampling distribution as the **standard error**.
+| Distribution   | Notation | Description | 
+|----------------|----------|-------------|
+| Population     | $\sigma$ | Unknown population standard deviation |
+| Sample         | $s$ | Known sample standard deviation that hopefully approximates $\sigma$ |
+| Sampling       | $\sigma/\sqrt{n}$ | **Standard error**: Standard deviation of the sampling distribution |
 
-## The Normal Distribution
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
+The standard error gives us an estimate of the strenght of potential random bias in our sample. 
 
-```{r echo=FALSE, fig.width=7, fig.height=4.5, out.width='700px', out.height='450px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-x <- seq(from=-5,to=5,by=0.1)
-y <- (1/(sqrt(2*pi)))*exp(-1*(x)^2/(2^2))
-par(mar=c(4,0.1,0.1,0.1))
-plot(x,y, type="l", lwd=3, yaxt="n", xlab="",
-     ylab="", xaxt="n")
-axis(1, at=c(0), cex=0.7,
-     labels=c(expression(mu)))
-abline(v=0, lwd=3, lty=2, col="red")
-text(-4.9,0.9*max(y),"The center of the sampling distribution\nis the true population parameter", pos=4)
+---
+
+## Sampling distributions are the `r emo::ji("key")` concept 
+
+.pull-left[
+* When we draw a sample and calculate the sample mean we are effectively drawing a value from the sampling distribution for the sample mean. 
+* If we know what that distribution looks like then we can know the probability of drawing a sample close to or far from the true population parameter. 
+]
+
+.pull-right[
+```{r echo=FALSE}
+ggplot(data.frame(means5), aes(x=means5))+
+  geom_histogram(fill="grey", color="grey20", breaks=seq(from=58,to=76, by=1))+
+  geom_vline(xintercept = mean(means5), size=2, color="red")+
+  labs(x="mean height in samples of size 5",
+       title="Sampling distribution of mean height")+
+  xlim(58, 76)+
+  annotate("label", x=66.5, y=50000, label="most sample means\nwill be close to\nthe true value\nin the population")+
+  annotate("label", x=75, y=15000, label="but a few will\nbe far away")+
+  annotate("label", x=66.6, y=150000, label="mu", parse=TRUE, size=5, color="red")
 ```
+]
 
+---
 
-## The Normal Distribution
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
+## But there is a catch!
 
-```{r echo=FALSE, fig.width=7, fig.height=4.5, out.width='700px', out.height='450px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-x <- seq(from=-5,to=5,by=0.1)
-y <- (1/(sqrt(2*pi)))*exp(-1*(x)^2/(2^2))
-par(mar=c(4,0.1,0.1,0.1))
-plot(x,y, type="l", lwd=3, yaxt="n", xlab="",
-     ylab="", xaxt="n")
-axis(1, at=c(-1,0,1), cex=0.7,
-     labels=c(expression(mu-sigma/sqrt(n)),
-              expression(mu),
-              expression(mu+sigma/sqrt(n))))
-polygon(c(x[41],x[41:61],x[61]),c(0,y[41:61],0), col="grey")
-text(0, max(y)/2, label="68%")
-text(-4.9,0.9*max(y),"68% of all possible samples are\nwithin one standard deviation\nof the center", pos=4)
-```
+* The shape of the sampling distribution is determined by:
 
-## The Normal Distribution
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
+  * the population mean, $\mu$
+  * the population standard deviation, $\sigma$
 
-```{r echo=FALSE, fig.width=7, fig.height=4.5, out.width='700px', out.height='450px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-x <- seq(from=-5,to=5,by=0.1)
-y <- (1/(sqrt(2*pi)))*exp(-1*(x)^2/(2^2))
-par(mar=c(4,0.1,0.1,0.1))
-plot(x,y, type="l", lwd=3, yaxt="n", xlab="",
-     ylab="", xaxt="n")
-axis(1, at=c(-2,0,2), cex=0.7,
-     labels=c(expression(mu-1.96*sigma/sqrt(n)),
-              expression(mu),
-              expression(mu+1.96*sigma/sqrt(n))))
-polygon(c(x[31],x[31:71],x[71]),c(0,y[31:71],0), col="grey")
-text(0, max(y)/2, label="95%")
-text(-4.9,0.9*max(y),"95% of all possible samples are\nwithin 1.96 standard deviations\nof the center", pos=4)
-```
+--
 
-## The Normal Distribution
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
+* But these values are unknown! `r emo::ji("open_mouth")` 
 
-```{r echo=FALSE, fig.width=7, fig.height=4.5, out.width='700px', out.height='450px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-x <- seq(from=-5,to=5,by=0.1)
-y <- (1/(sqrt(2*pi)))*exp(-1*(x)^2/(2^2))
-par(mar=c(4,0.1,0.1,0.1))
-plot(x,y, type="l", lwd=3, yaxt="n", xlab="",
-     ylab="", xaxt="n")
-axis(1, at=c(-3,0,3), cex=0.7,
-     labels=c(expression(mu-3*sigma/sqrt(n)),
-              expression(mu),
-              expression(mu+3*sigma/sqrt(n))))
-polygon(c(x[21],x[21:81], x[81]),c(0,y[21:81],0), col="grey")
-text(0, max(y)/2, label="99.7%")
-text(-4.9,0.9*max(y),"99.7% of all possible samples are\nwithin three standard deviations\nof the center", pos=4)
-```
+--
 
-## Sampling distributions are the key concept
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
+.pull-left[
+### First Fix
 
->- When we draw a sample and calculate the sample mean we are effectively drawing a value from the sampling distribution for the sample mean. 
->- If we know what that distribution looks like then we can know the probability of drawing a sample close to or far from the true population parameter. 
+* We can substitute the sample standard deviation $s$ from our sample for the population standard deviation $\sigma$. 
+* This has consquences. Because we are using a sample value which can also be subject to random bias, this substitution creates greater uncertainty in our estimate which we will address later. 
+]
+  
+--
 
-## Reach into this distribution and pull out a sample
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
+.pull-right[
+### Second Fix
 
-```{r echo=FALSE, fig.width=7, fig.height=4.5, out.width='700px', out.height='450px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-h <- hist(means4,breaks=seq(from=minHeight,to=maxHeight,by=1), 
-          col="red", 
-          main="The sampling distribution of class height\nfor samples of size 4", 
-          xlab="mean height", las=1)
-```
-
-## Reach into the distribution and pull out a sample
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
-
-```{r echo=FALSE, fig.width=7, fig.height=4.5, out.width='700px', out.height='450px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-h <- hist(means5,breaks=seq(from=minHeight,to=maxHeight,by=1), col="red", main="The sampling distribution of class height\nfor samples of size 5", xlab="mean height", las=1)
-arrows(75, 0.85*max(h$counts), mean(means5), 0.5*max(h$counts))
-text(75, 0.85*max(h$counts), "You will likely draw a value\nclose to the center", pos=4, cex=0.8)
-arrows(77, 0.2*max(h$counts), mean(means5)+5.5*sd(means5)/sqrt(5), 0.01*max(h$counts))
-text(77, 0.2*max(h$counts), "But you could draw a\nreally unusual value", pos=4, cex=0.8)
-```
-
-
-## The Catch
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
-
->- We don't know the true population mean or standard deviation so we know the shape is normal but not its actual center and spread. 
->- Therefore, we don't know if our particular sample was close to the center or out in the tail.
->- What can we do? 
-
-## First Fix
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
-
->- We can solve the standard deviation problem by just using our sample standard deviation $s$ as an estimate of $\sigma$ to calculate $s\sqrt{n}$ as an approximation of the standard error.
->- This has consquences. Because we are using a sample value which can also be subject to random bias, this substitution creates greater uncertainty in our estimate which we will address later. 
->- We still don't know the population mean though, which is a more fundamental problem. 
-
-## Two Approaches
-<div class="footer">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
-
->- **Confidence Intervals**: Provide a range of values within which you feel confident that the true population mean resides. 
->- **Hypothesis tests**: Play a game of make believe. If the true population mean was a given value, what is the probability that I would get the sample mean value that I actually did? 
-
-# Confidence Intervals
-Statistical Inference
-
-## Consider this logic
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-```{r echo=FALSE, fig.width=7, fig.height=4.5, out.width='700px', out.height='450px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-x <- seq(from=-5,to=5,by=0.1)
-y <- (1/(sqrt(2*pi)))*exp(-1*(x)^2/(2^2))
-par(mar=c(4,0.1,0.1,0.1))
-plot(x,y, type="l", lwd=3, yaxt="n", xlab="",
-     ylab="", xaxt="n")
-axis(1, at=c(-2,0,2), cex=0.7,
-     labels=c(expression(mu-2*sigma/sqrt(n)),
-              expression(mu),
-              expression(mu+2*sigma/sqrt(n))))
-polygon(c(x[31],x[31:71],x[71]),c(0,y[31:71],0), col="grey")
-text(0, max(y)/3, "95% probability that I will\ndraw a sample mean\nthat is within two (1.96)\nstandard deviations of\nthe true population mean")
-```
-
-## Reverse the logic
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-There is a 95% probability that I will draw a sample mean $\bar{x}$ within 1.96 standard errors ($\sigma/\sqrt{n}$) of the true population mean $\mu$. 
-
-I can reverse the logic of this statement and say that if I construct the following interval:
-
-$$\bar{x}\pm1.96*\sigma/\sqrt{n}$$
-
-95% of *all possible samples* will contain the true population mean $\mu$ within this interval. 
-
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: The concept of the sampling distribution</body>
-</div>
-
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-par(mar=c(0,0,3,0))
-plot(-2,-2, xlim=c(-1,20), ylim=c(-4,4.5), xaxt="n", yaxt="n", bty="n", xlab="", ylab="", main="On average, one in twenty samples will have confidence\nintervals that do not contain the true population mean", cex.main=1.5)
-x <- rnorm(19,0,1)
-while(sum(abs(x)>1.96)>0) {
-  x[abs(x)>1.96] <- rnorm(sum(abs(x)>1.96),0,1) 
-}
-x <- c(x[1:10],-2.3,x[11:19])
-upper <- x + 1.96
-lower <- x - 1.96
-abline(h=0, lwd=3, col="blue")
-segments(1:20,lower,1:20,upper)
-segments(11,lower[11],11,upper[11], col="red", lwd=2)
-points(1:20, x, pch=19, cex=1.2)
-text(0,0, expression(mu), col="blue", cex=2, pos=3)
-legend(0,4.5,legend=c("sample mean", "confidence interval"), pch=c(19,NA), lty=c(NA,1), bty="n")
-```
-
-## What does confidence mean?
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
->- We refer to the interval $\bar{x}\pm1.96*\sigma/\sqrt{n}$ as the **confidence interval**.
->- It is tempting to claim that there is a 95% probability that the true population mean is in this interval, **BUT THIS IS INCORRECT**. 
->- The true population mean does not vary. It just is what it is, even if it is unknown. Either your interval contains it or the interval does not contain it. There is no probability.
->- The correct interpretation is that "95% of all possible confidence intervals will contain the true population mean." We don't know if we have one that does or doesn't but we know that 95% would.
->- If that is confusing to you, its perfectly normal. Its weird. 
-
-## We still have a problem
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-The confidence interval is given by:
-
-$$\bar{x}\pm1.96*\sigma/\sqrt{n}$$
-
-However, we still can't calculate this confidence interval because we don't know $\sigma$. Remember that $\sigma$ is the population standard deviation. Since we don't have the population, we don't know this value.
-
-What can we do? Lets just substitute in our sample standard deviation $s$ for $\sigma$ since this value is itself an estimate of $\sigma$:
-
-$$\bar{x} \pm t*s/\sqrt{n}$$
-
-## The t-statistic
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-Notice that the 1.96 is no longer in my formula for the confidence interval.
-
-$$\bar{x} \pm t*s/\sqrt{n}$$
-
-Instead, I now have a $t$. This is the **t-statistic**. We have to use the t-statistic here because of our use of the sample standard deviation. Basically $t$ will be some number slightly bigger than 1.96 that adjusts for the greater uncertainty in our estimate as a result of using the sample standard deviation. 
-
-## How do you get the t-statistic? {.smaller}
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-The t-statistic you get depends on two characteristics:
-
-- What level of confidence you want (we will always use 95%).
-- The number of **degrees of freedom** which for sample means is given by $n-1$. 
-
-In *R*, you can calculate the t-statistic with the `qt` command. Lets say we wanted the t-statistic for our crime data with 51 observations:
-
-```{r}
-qt(.975, 51-1)
-```
-
-The first number is a little hard to explain. We want the 95% confidence interval but we need to put in 0.975. This is because we are getting the upper tail of the distribution which has only 2.5% of the area outside. The second number is the degrees of freedom. 
-
-## Example: Property crime rates {.smaller}
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-```{r}
-mean(crimes$Property)
-sd(crimes$Property)
-nrow(crimes)
-```
-
-$\bar{x}=2894$, $s=641.5$, $n=51$
-
-## Example: Property crime rates, continued {.smaller}
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-```{r}
-se <- 641.5/sqrt(51)
-se
-```
-
-We got the t-statistic on the previous slide, so put it all together.
-
-```{r}
-2894+2.0086*se
-2894-2.0086*se
-```
-
-We are 95% confident that the true mean property crime rate across states is between 2731.6 and 3074.4 crimes per 100,000. 
-
-## Does this even make sense?
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-It doesn't actually make a lot of sense to calculate a confidence interval for this dataset, because the crime data are not a sample. We have all 50 states, so there is no larger population to which we want to infer. The mean crime rate across states is the true population value already.
-
-The movie, crime, and titanic data all share this feature that they are not samples that we can infer to larger populations. The sexual frequency, politics, and Add Health data, however, are all samples of the US population. 
-
-## Example: Sexual frequency {.smaller}
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-```{r}
-barx <- mean(sex$sexf)
-s <- sd(sex$sexf)
-n <- nrow(sex)
-se <- s/sqrt(n)
-t <- qt(.975, n-1)
-results <- c(barx, s, n, se, t)
-names(results) <- c("sample mean","sd","n","SE","t")
-results
-```
-
-Note that because the sample size is large here, the t-statistic is very close to 1.96. 
-
-## Example: Sexual frequency, continued {.smaller}
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-```{r}
-barx+t*se
-barx-t*se
-```
-
-We are 95% confident that the mean sexual frequency in the US is between 47.8 and 52.4 times per year. 
-
-## General form of the confidence interval
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-We can construct confidence intervals for any statistic whose sampling distribution is a normal distribution. This includes means, mean differences, proportions, and regression slopes. The general form of the confidence interval is given by:
-
-$$\texttt{(sample statistic)} \pm t*(\texttt{standard error})$$ 
-The only trick is knowing how to calculate the standard error and degrees of freedom for the t-statistic in each case. 
-
-## Cheat sheet for SE and df
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-Type                     SE                                                                                df for $t$
-------                   ------                                                                            ------
-Mean                     $s/\sqrt{n}$                                                                      $n-1$
-Proportion               $\sqrt\frac{\hat{p}*(1-\hat{p})}{n}$                                              $n-1$
-Mean Difference          $\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}$                                      min($n_1-1$,$n_2-1$)
-Proportion Difference    $\sqrt{\frac{\hat{p}_1*(1-\hat{p}_1)}{n_1}+\frac{\hat{p}_2*(1-\hat{p}_2)}{n_2}}$  min($n_1-1$,$n_2-1$)
-Correlation Coefficient  $\sqrt{\frac{1-r^2}{n-2}}$                                                        $n-2$
-
-## Proportion example
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-What proportion of voters support removing birthright citizenship?
-
-```{r}
-prop.table(table(politics$brcitizen))
-p <- 0.3185465
-n <- nrow(politics)
-se <- sqrt(p*(1-p)/n)
-t <- qt(0.975, n-1)
-```
-
-
-## Proportion example, continued
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-```{r}
-p+t*se
-p-t*se
-```
-
-I am 95% confident that the true proportion of American adults who support removing birthright citizenship from the constitution is between 30.5% and 33.3%.
-
-## Mean difference example {.smaller}
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-What is the difference in sexual frequency between married and never married individuals?
-
-```{r}
-tapply(sex$sexf, sex$marital, mean)
-diff <- 56.094106-53.617704
-tapply(sex$sexf, sex$marital, sd)
-sd1 <- 49.95361
-sd2 <- 58.81459
-```
-
-## Mean difference example, continued {.smaller}
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-```{r}
-table(sex$marital)
-n1 <- 1052
-n2 <- 514
-se <- sqrt(sd1^2/n1+sd2^2/n2)
-t <- qt(0.975,n2-1)
-```
-
-## Mean difference example, continued
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-```{r}
-diff+t*se
-diff-t*se
-```
-
-I am 95% confident that, among American adults, married individuals have sex between 8.4 more times per year or 3.45 less times per year than never married individuals, on average. 
-
-## Proportion difference example{.smaller}
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-What is the difference in support for removing birthright citizenship between those who have served in the military and those who have not? 
-
-```{r}
-prop.table(table(politics$brcitizen, politics$military), 2)
-p1 <- 0.304
-p2 <- 0.435
-diff <- p2-p1
-```
-
-## Proportion difference example, continued {.smaller}
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-```{r}
-table(politics$military)
-n1 <- 3778
-n2 <- 460
-se <- sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
-t <- qt(0.975, n2-1)
-```
-
-## Proportion difference example, continued
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-```{r}
-diff-t*se
-diff+t*se
-```
-
-I am 95% confident that the percent in support for removing birthright citizenship is between 8.3% and 17.9% higher among who have served in the military than those who have not. 
-
-## Correlation coefficent example
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-
-What is the correlation between age and income in the US? 
-
-```{r}
-r <- cor(politics$age, politics$income)
-r
-n <- nrow(politics)
-se <- sqrt((1-r^2)/(n-2))
-t <- qt(0.975, n-2)
-```
-
-## Correlation coefficent example, continued
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Confidence Intervals</body>
-</div>
-```{r}
-r - t*se
-r + t*se
-```
-
-I am 95% confident that the true correlation coefficient in the US between age and income is between -0.016 and 0.044. 
-
-# Hypothesis Tests
-Statistical Inference
-
-## The logic of hypothesis testing
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
->- We know what the sampling distribution should look like, but we don't know its center (the true population parameter).
->- Play a game of make believe
->- Assume that the true parameter is some value
->- If my assumption is correct, what is the probability that I would have gotten the sample statistic that I got? 
->- If this probability is really low, then I reject my assumption. 
-
-## Example: Coca-Cola Winners
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
->- Coca-Cola claims that 1 in 12 bottle caps will earn a free coke. ($1/12=0.083$), 8.3%
->- I buy 100 bottles of coke and only get 5 winners. ($5/100=0.05$), 5%
->- Is my winning percentage low enough to cast doubt on Coca-Cola's claims?
-
-## Set up a null hypothesis
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
->- The **null hypothesis** ($H_0$) is your assumption about the true parameter value. It is your prior assumption unless the data can prove you wrong. 
->- In this case, I assume that the true population proportion is 0.083. 
->- Some people will tell you there is also an alternative hypothesis ($H_A$). These people are wrong. 
-
-## Null hypothesis stated mathematically
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-$$H_0: \rho=0.083$$
-
-I use the greek $\rho$ to indicate the population proportion of winners. I will use $\hat{p}$ to represent the proportion observed in my sample. 
-
-## How do we test?
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
->- I have a sample proportion of 0.05 in a sample of size 100.
->- **Assuming the null hypothesis is true**, what would the sampling distribution for my sampling proportion look like? 
->- The sample size is big enough that it should be normally distributed.
->- The center of the sampling distribution should be the assumed true parameter under $H_0$ of 0.083.
->- The standard error of 0.028 is calculated based on the formula presented in the prior section. 
-
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-x <- seq(from=-0.02,to=0.2,by=0.001)
-p <- 0.083
-se <- sqrt(p*(1-p)/100)
-y <- (1/(se*sqrt(2*pi)))*exp(-1*(x-p)^2/(2*se^2))
-
-plot(x,y,type="l",xlab="sample proportion",yaxt="n",ylab="", main="Game of make believe", cex.main=2)
-text(0.14,12, "Sampling distribution for sample proportion\nassuming null hypothesis is true")
-```
-
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-x <- seq(from=-0.02,to=0.2,by=0.001)
-p <- 0.083
-se <- sqrt(p*(1-p)/100)
-y <- (1/(se*sqrt(2*pi)))*exp(-1*(x-p)^2/(2*se^2))
-
-plot(x,y,type="l",xlab="sample proportion",yaxt="n",ylab="", main="Game of make believe", cex.main=2)
-text(0.14,12, "Sampling distribution for sample proportion\nassuming null hypothesis is true")
-abline(v=p,lwd=4,col="blue")
-text(p,1,"true proportion = 0.083", col="blue", pos=4)
-```
-
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-x <- seq(from=-0.02,to=0.2,by=0.001)
-p <- 0.083
-se <- sqrt(p*(1-p)/100)
-y <- (1/(se*sqrt(2*pi)))*exp(-1*(x-p)^2/(2*se^2))
-
-plot(x,y,type="l",xlab="sample proportion",yaxt="n",ylab="", main="Game of make believe", cex.main=2)
-text(0.14,12, "Sampling distribution for sample proportion\nassuming null hypothesis is true")
-abline(v=p,lwd=4,col="blue")
-text(p,1,"true proportion = 0.083", col="blue", pos=4)
-abline(v=0.05,lwd=4,col="red")
-text(0.05,1,"our sample      \nproportion = 0.05", col="red", pos=2)
-```
-
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-x <- seq(from=-0.02,to=0.2,by=0.001)
-p <- 0.083
-se <- sqrt(p*(1-p)/100)
-y <- (1/(se*sqrt(2*pi)))*exp(-1*(x-p)^2/(2*se^2))
-
-plot(x,y,type="l",xlab="sample proportion",yaxt="n",ylab="", main="Game of make believe", cex.main=2)
-text(0.14,12, "Sampling distribution for sample proportion\nassuming null hypothesis is true")
-abline(v=p,lwd=4,col="blue")
-text(p,1,"true proportion = 0.083", col="blue", pos=4)
-abline(v=0.05,lwd=4,col="red")
-text(0.05,1,"our sample      \nproportion = 0.05", col="red", pos=2)
-arrows(p,1,0.05,1)
-text(0.05,3,"How far is our sample proportion from\nwhere the center would be if the\nnull hypothesis was true?", pos=4)
-```
-
-## The central question
-<div class="footer"> 
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-How far is our sample proportion (0.05) from where the center would be if the null hypothesis was true (0.083)?
-
->- If our sample proportion is far way and unlikely to be drawn, then we **reject the null hypothesis**.
->- If our sample proportion is not far away and reasonably likely to be drawn, then we **fail to reject the null hypothesis**. We never accept the null hypothesis, since it is already our working assumption. 
-
-## How far is far enough? 
-<div class="footer"> 
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-We determine how far our sample proportion is from the center in terms of the number of standard errors.
-
-$$\frac{\hat{p}-\rho}{SE}=\frac{0.05-0.083}{0.028}=-1.18$$
-
-The sample proportion of 0.05 is 1.18 standard errors below the center of the sampling distribution, assuming the null hypothesis is true. Is this far or not far? 
-
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-x2 <- (x-p)/0.028
-#x2 <- c(x2,-1.18)
-#x2 <- sort(x2)
-
-plot(x2,y,type="l",xlab="SEs from center",yaxt="n",ylab="", main="Game of make believe")
-abline(h=0)
-abline(v=-1.18,lwd=4,col="red")
-text(-1.18,1,"1.18 standard errors below the mean", col="red", pos=4)
-```
-
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-x2 <- (x-p)/0.028
-
-plot(x2,y,type="l",xlab="SEs from center",yaxt="n",ylab="", main="Game of make believe")
-abline(h=0)
-abline(v=-1.18,lwd=4,col="red")
-text(-1.18,1,"1.18 standard errors below the mean", col="red", pos=4)
-polygon(c(x2[1:71],-1.18),c(y[1:71],0), col="grey")
-arrows(-3,3,-1.5,2)
-text(-2.5,3,"What proportion of all\nsample means are equal to\nor lower than this value?", pos=3)
-```
-
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-plot(x2,y,type="l",xlab="SEs from center",yaxt="n",ylab="", main="Game of make believe")
-abline(h=0)
-abline(v=-1.18,lwd=4,col="red")
-text(-1.18,1,"1.18 standard errors below the mean", col="red", pos=4)
-polygon(c(x2[1:71],-1.18),c(y[1:71],0), col="grey")
-arrows(-3,3,-1.5,2)
-text(-2.5,3.5,"0.12 (12%)",pos=3)
-```
-
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-plot(x2,y,type="l",xlab="SEs from center",yaxt="n",ylab="", main="Game of make believe")
-abline(h=0)
-polygon(c(x2[1:71],-1.18),c(y[1:71],0), col="grey")
-polygon(c(x2[221:137],1.18),c(y[221:137],0), col="grey")
-abline(v=-1.18,lwd=4,col="red")
-abline(v=1.18,lwd=4,col="red")
-arrows(-3,3,-1.5,2)
-text(-2.5,3.5,"0.12 (12%)",pos=3)
-arrows(3,3,1.5,2)
-text(2.5,3.5,"But what about the probability of\nbeing this far off in the other direction?",pos=3)
-```
-
-----
-<div class="footer" style="top:575px;">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-```{r echo=FALSE, fig.width=8, fig.height=5.5, out.width='800px', out.height='550px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
-plot(x2,y,type="l",xlab="sample proportion",yaxt="n",ylab="", main="Game of make believe")
-abline(h=0)
-polygon(c(x2[1:71],-1.18),c(y[1:71],0), col="grey")
-polygon(c(x2[221:137],1.18),c(y[221:137],0), col="grey")
-abline(v=-1.18,lwd=4,col="red")
-abline(v=1.18,lwd=4,col="red")
-arrows(-3,3,-1.5,2)
-text(-2.5,3.5,"0.12 (12%)",pos=3)
-arrows(3,3,1.5,2)
-text(2.5,3.5,"0.12 (12%)",pos=3)
-arrows(-2.5,4.5,-0.5,10)
-arrows(2.5,4.5,0.5,10)
-text(0,11,"p-value=0.12+0.12=0.24 (24%)",pos=3)
-```
-
-## Endgame: the p-value
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-The p-value is the ultimate product of a hypothesis test.
-
->- The p-value tells you the probability of getting a statistic this far away or farther from the the assumed true population parameter, assuming the null hypothesis is true. 
->- I got a p-value of 0.24. Assuming the null hypothesis is true, there is a 24% probability that I would have gotten a sample proportion (0.05) this far or farther from the true poplation paramter (0.083).
->- The lower the p-value, the less likely that we could have gotten the data we got under the assumption of the null hypothesis. Thus, we will reject the null hypothesis if our p-value is low enough.
->- Is 0.24 low enough to reject the null hypothesis? 
-
-## The critical value
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-The critical value is the level of the p-value where we will reject the null hypothesis.
-
->- If our p-value is less than or equal to the critical value, we **reject the null hypothesis**.
->- If our p-value is greater than the critical value, we **fail to reject the null hypothesis**. 
->- The standard critical value is 0.05 (5%). This number is totally arbitrary, but nonetheless accepted. 
->- 0.24>0.05, so I fail to reject the null hypothesis that 1 in 12 bottlecaps are indeed winners. I cannot confidently claim that Coca-Cola is lying. However, I have also not accepted their claim, just failed to reject it. 
-
-## How do you calculate the p-value? 
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-The p-value is given by the area in the tails of the normal distribution. However, as for confidence intervals, we have to adjust this area for the use of the sample standard deviation in most of our calculations. The command `pt` is very similar to `qt` except you feed in the number of standard errors:
-
-```{r}
-2*pt(-1.18,99)
-```
-
-I multiply by two to get the area of both tails. 
-
-Note that `pt` always gives the lower tail, so you should always put in negative standard errors, regardless of whether your statistic is above or below the center. 
-
-## The general procedure of hypothesis testing
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
->- State a **null hypothesis**.
->- Calculate a **test statistic** that tells you how different your sample is from what you would expect under the null hypothesis. For our purposes, this test statistic is always the number of standard errors above or below the center of the sampling distribution. 
->- Calculate the **p-value** for the given test statistic.
->- Based on the p-value, either **reject** or **fail to reject** the null hypothesis.
-
-
-## Hypothesis tests of relationships
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-The hypothesis test we are most interested in is whether the association we observe between two variables in our sample holds in the population. 
-
->- Mean/proportion differences: Are the means/proportions between two groups in the population different? In other words, is the mean/proportion difference non-zero?
->- Correlation coefficent: is the correlation coefficient in the population non-zero? 
-
-## Example: Mean differences
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-Is there a difference in sexual frequency between married and never married individuals? Formally, my null hypothesis is:
-
-$$H_0: \mu_M-\mu_N=0$$
-
-Where $\mu_N$ is the population mean sexual frequency of married individuals and $\mu_N$ is the population mean sexual frequency of never-married individuals.
-
-## Example: Mean differences, continued {smaller}
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-```{r}
-tapply(sex$sexf, sex$marital, mean)
-diff <- 56.094106-53.617704
-diff
-```
-
-In my GSS sample, married individuals have sex 56.1 times per year on average and never married individuals have sex 53.6 time per year on average. So, in my sample, married individuals have sex about 2.5 more times per year than never-married individuals, on average. Is this difference far enough from zero to reject the null hypothesis? 
-
-## Example: Mean differences, continued {.smaller}
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-First, I need the standard error of the sample mean difference, as per the formula in the previous section, which requires the sample SD's and sample size of both groups.
-
-```{r}
-tapply(sex$sexf, sex$marital, sd)
-sd1 <- 49.95361
-sd2 <- 58.81459
-table(sex$marital)
-n1 <- 1052
-n2 <- 514
-se <- sqrt(sd1^2/n1+sd2^2/n2)
-```
-
-## Example: Mean differences, continued {.smaller}
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-I can now calculate how many standard errors my sample mean difference is from zero and use that to calculate my p-value. Remember that I use the smaller of the two sample sizes as my degrees of freedom for the t. 
-
-```{r}
-diff/se
-#always take the negative version
-2*pt(-0.8208,n2-1)
-```
-
-Assuming that the true sexual frequency difference between married and never-married dinviduals is zero in the populatiln, there is a 41.2% chance of observing a sample sexual frequency difference of 2.5 years or larger in a sample of this size. Thus, I **fail to reject** the null hypothesis there there is no difference in the average sexual frequency between married and never-married individuals in the US. 
-
-## Example: Proportion differences
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-Is there a difference in support for removing birthright citizenship between those who have served in the military and those who have not? 
-
-```{r}
-prop.table(table(politics$brcitizen, politics$military), 2)
-p1 <- 0.304
-p2 <- 0.435
-
-```
-
-## Example: Proportion differences, continued
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-```{r}
-diff <- p2-p1
-diff
-table(politics$military)
-n1 <- 3778
-n2 <- 460
-se <- sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
-```
-
-## Example: Proportion differences, continued
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-```{r}
-diff/se
-pt(-5.391824, n2-1)
-```
-
-Assuming that there is no difference in the US population between those who have served in the military and those who have not in support for removing birthright citizenship, there is less than a 0.000001% chance of observing a sample difference in proportion of 13.1% or greater by random chance in a sample of this size. Thus, I **reject** the null hypothesis there there is no difference in support for removing birthright citizenship between those who have served in the military and those who have not. 
-
-## Example: Correlation coefficient
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-Is there a relationship between a person's age and their income in the US? 
-
-```{r}
-r <- cor(politics$age, politics$income)
-r
-n <- nrow(politics)
-se <- sqrt((1-r^2)/(n-2))
-```
-
-## Example: Correlation coefficient, continued
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-```{r}
-r/se
-pt(-0.9174406, n-2)
-```
-
-Assuming no association between a person's age and their income in the US, there is a 17.9% chance of observing a correlation coefficient between age and income of 0.014 or larger in absolute magnitude in a sample of this size. Therefore, I **fail to reject** the null hypothesis that there is no relationship between a person's age and their income in the US population.
-
-## Statistical Significance
-<div class="footer"> 
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-If you reject the null hypothesis of "no relationship," then the relationship you observe in the sample is said to be "statistically significant."
-
->- Don't confuse statistical and substantive significance. In a large sample, even very small substantive associations can be found to be statistically significant. On the flip side, in small samples, very large substantive associations can fail to be statistically significant. 
->- A better term might be "statistically distinguishable" as in "the association observed in the sample is statistically distinguishable from zero."
-
-## What is a p-value? {.centered}
-<div class="footer"> 
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-![](images/slides/pvalues.jpg)
-
-## What is a p-value?
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-P-values are widely misunderstood, even by well-informed researchers. Suppose that you conduct a study of a difference between two groups and find a p-value on your hypothesis test of 0.01. Which of the following statements is true? 
-
-- You have absolutely disproved the null hypothesis.
-- You have found the probability of the null hypothesis being true. 
-- You know, if you decide to reject the null hypothesis, the probability that you are making the wrong decision. 
-- You have a reliable finding in the sense that if, hypothetically, the experiment were repeated a great number of times, you would obtain a significant result 99% of the time. 
-
->- ALL OF THESE STATEMENTS ARE FALSE. 
-
-
-## Misunderstanding the p-value
-<div class="footer">
-<body>Sociology 312, Statistical Inference: Hypothesis Tests</body>
-</div>
-
-The p-value is the **probability of the observed data (or more extreme data), assuming the null hypothesis is correct**.
-
->- The p-value is NOT a statement about the probability of a hypothesis, given the data. It is a statement about the probability of the data, **given a hypothesis**.
->- The reason your brain wants to turn it around to the probability of a hypothesis given the data is because that is intuitively what you want. 
->- According to the classical view of probability as objective, the hypothesis is either true or it is not true and we cannot assign a probability to its truth. 
->- Don't report your conclusions about the p-value in terms of statements about the probability of a hypothesis. 
+* **Confidence Intervals**: Provide a range of values within which you feel confident that the true population mean resides. 
+* **Hypothesis tests**: Play a game of make believe. If the true population mean was a given value, what is the probability that I would get the sample mean value that I actually did? 
+]  
+  
