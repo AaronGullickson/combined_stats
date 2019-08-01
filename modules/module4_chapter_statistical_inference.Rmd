@@ -4,9 +4,17 @@ Now that we have the basics of examining data down, we turn to another issue tha
 
 In many introductory statistics courses, statistical inference would take up the majority of the course and you would learn a variety of cookbook formulas for conducting "tests." We won't do much of that here. Instead I will focus on the logic of the two most common procedures in statistical inference: the **confidence interval** and the **hypothesis test**. Once you understand the logic behind these procedures, it turns out that all of the various "tests" are just iterations on the same basic theme. Nonetheless, we will have to use some formulas in this module with associated number crunching. This is the most math heavy module of the course, so be prepared. 
 
+
+Slides for this module can be found [here](https://aarongullickson.github.io/stat_slides/module4_slides_statistical_inference.html).
+
 ------
 
 ## The Problem of Statistical Inference
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/aOoNQB5kc98")
+```
+
 
 So far, we have only been looking at measurements from our actual datasets. We examined both **univariate statistics** like the mean, median, and standard deviation, as well as **measures of association** like the mean difference, correlation coefficient and OLS regression line slope. We can use this measures to draw conclusions about our data. 
 
@@ -57,6 +65,10 @@ It is also important to keep in mind that statistical inference only works when 
 
 ## The Concept of the Sampling Distribution
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/XGbnpkT1vuM")
+```
+
 Lets say that you want to know the mean years of education of US adults. You implement a well-designed representative survey that samples 100 respondents from the USA. You ask people the simple question "how many years of education do you have?" You then calculate the mean years of education in your sample. 
 
 This simple example involves three different kinds of distributions. Understanding the difference between these three different distributions is the key to unlocking how statistical inference works.
@@ -68,6 +80,10 @@ This simple example involves three different kinds of distributions. Understandi
 The sampling distribution is much more abstract than the other two distributions, but is key to understanding statistical inference. When we draw a sample and calculate a sample statistic from this sample, we are in effect reaching into the sampling distribution and pulling out a value. Therefore, the sampling distribution give us information about how variable our sample statistic might be as a result of randomness in the sampling. 
 
 ### Example: class height
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/V_8qkKGmgcI")
+```
 
 As an example, lets use some data on a recent class that took this course. I will treat this class of `r sum(!is.na(students$height))` students as a population that I would like to know something about. In this case, I would like to know the mean height of the class. In most cases, the population distribution is unknown but in this case, I know the height of all `r sum(!is.na(students$height))` students because of surveys they all took at the beginning of the term. Figure \@ref(fig:hist-student-height-pop) shows the population distribution of height in the class:
 
@@ -193,6 +209,10 @@ Also note that the standard deviation of the sampling distributions gets smaller
 
 ### Central limit theorem and the normal distribution
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/W-TTn-0gIoI")
+```
+
 The patterns we are seeing here are well known to statisticians. In fact, they are patterns that are predicted by the most important theorem in statistics, the **central limit theorem**. We won't delve into the technical details of this theorem. We can generally interpret the central limit theorem to say:
 
 > As the sample size increases, the sampling distribution of a sample mean becomes a **normal distribution**. This normal distribution will be centered on the true population mean $\mu$ and with a standard deviation equal to $\sigma/\sqrt{n}$, where $\sigma$ is the population standard deviation. 
@@ -254,6 +274,10 @@ Note that the standard error formula $\sigma/\sqrt{n}$ only applies to the sampl
 
 ### What can we do with the sampling distribution?
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/CV_IBss49EM")
+```
+
 Now that we know the sampling distribution of the sample mean should be normally distributed, what can we do with that information? The sampling distribution gives us information about how we would expect the sample means to be distributed. This seems like it should be helpful in figuring out whether we got a value close to the center or not. However, there is a catch. We don't know either $\mu$, the center of this distribution or $\sigma$ which we need to calculate its standard deviation. Thus, we know theoretically what it should look like but we have no concrete numbers to determine its actual shape. 
 
 We can fix the problem with not knowing $\sigma$ fairly easily. We don't know $\sigma$ but we do have an estimate of it in $s$, the sample standard deviation. In practice, we us this value to calculate an estimated standard error of $s/\sqrt{n}$. However, this substitution has consequences. Because we are using a sample statistic subject to random bias to estimate the standard error, this creates greater uncertainty in our estimation. I will come back to this issue in the next section.
@@ -268,6 +292,10 @@ I will discuss these two different methods in the next two sections.
 ------
 
 ## Confidence Intervals
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/bikmu5nGB9o")
+```
 
 As Figure \@ref(fig:normaldist-ci) shows, 95% of all the possible sample means will be within 1.96 standard errors of the true population mean $\mu$.
 
@@ -324,6 +352,10 @@ If this all seems a bit confusing, you are perfectly normal. As I said, this is 
 
 ### Calculating the confidence interval for the sample mean
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/DRnO9h9CdlY")
+```
+
 Okay, lets try calculating a confidence interval. Lets try this out for age in the politics dataset. The formula is:
 
 $$\bar{x}\pm1.96(\sigma/\sqrt{n})$$
@@ -364,6 +396,10 @@ We are 95% confident that the  mean age among all US adults is between 48.97 and
 
 ### Calculating the confidence interval for other sample statistics
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/M_7q99wEifk")
+```
+
 As noted in the previous section, the sampling distribution of other sample statistics such as proportions, mean differences, and regression slopes is also normally distributed in large enough samples. This means that we can use the same approach to construct confidence intervals for other sample statistics. The general form of the confidence interval is:
 
 $$\texttt{(sample statistic)} \pm t*\texttt{(standard error)}$$ 
@@ -383,6 +419,10 @@ Table: (\#tab:cheat-sheet) Cheat sheet of equations for calculating standard err
 I know some of that math might look intimidating but I will go through an example of each case below to show you how it works for each case. 
 
 ### Example with proportions
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/yMiCBeqz8L0")
+```
 
 As an example, lets use the proportion of respondents who do not believe in anthropogenic climate change. In our politics sample, we get:
 
@@ -427,6 +467,10 @@ We are 95% confident that the true percentage of climate change deniers in the t
 
 ### Example with mean differences
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/T0h-6fsZXG8")
+```
+
 using our Add health data, what is the mean difference in popularity (number of friend nominations) between frequent smokers and those who do not smoke frequently? 
 
 ```{r}
@@ -468,6 +512,10 @@ mean_diff + t_stat*se
 We are 95% confident that in the population of US adolescents, those who smoke frequently have between 0.03 fewer to 0.61 more friend nominations, on average, than those who do not smoke frequently. Note that because our confidence interval contains both negative and positive value, we cannot be confident about whether smoking is truly associated with having more or less friends. The direction of the relationship between the two variables is uncertain.
 
 ### Example with proportion differences
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/BS5DC752zUQ")
+```
 
 Lets continue to use the Add Health data. Do we observe a gender difference in smoking behavior in our sample?
 
@@ -513,6 +561,10 @@ We are 95% confident that in the population of US adolescents, between 1.1% fewe
 
 ### Example with correlation coefficient
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/YnTTP982LSU")
+```
+
 Lets stick with the Add Health data. What is the correlation between GPA and the number of friend nominations that a student receives?
 
 ```{r}
@@ -551,6 +603,10 @@ We are 95% confident that the true correlation coefficient between GPA and frien
 ------
 
 ## Hypothesis Tests
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/7KMqOfyLA6s")
+```
 
 In social scientific practice, hypothesis testing is far more common than confidence intervals as a technique of statistical inference. Both techniques are fundamentally derived from the sampling distribution and produce similar results, but the methodology and interpretation of results is very different. 
 
@@ -654,6 +710,10 @@ No reasonable scientist, however, would reject the null hypothesis with a p-valu
 
 ### The general procedure of hypothesis testing
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/jT3oCGtxm0g")
+```
+
 The general procedure of hypothesis testing is as follows:
 
 1. State a **null hypothesis**. This null hypothesis is a claim about the true value of an unknown parameter. 
@@ -676,6 +736,10 @@ The reason why everyone (including you and me) struggles with this is that our b
 The hypothesis tests that we care the most about in the sciences are hypothesis tests about relationships between variables. We want to know whether the association we are observing in the sample is true in the population. In all of these cases, our null hypothesis is that there is no association, and we want to know whether the association we observe in the sample is strong enough to reject this null hypothesis of no association. We can do hypothesis tests of this nature for both mean differences and regression slopes. 
 
 #### Example: mean differences
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/kE_53FNEyBA")
+```
 
 Lets look at differences in mean income (measured in $1000) by religion in the politics dataset.
 
@@ -716,6 +780,10 @@ In a sample of this size, there is an 34% chance of observing a mean income diff
 
 #### Example of proportion differences
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/aj5tFwkK0MA")
+```
+
 Lets look at the difference in smoking behavior between white and black students in the Add Health data. Our null hypothesis is:
 
 $$H_0: \rho_w-\rho_c=0$$
@@ -755,6 +823,10 @@ Wow, thats a lot. We can be pretty confident already without the final step of t
 The p-value is astronomically small. In a sample of this size, the probability of observing a difference in the proportion frequent smokers between whites and blacks of 15.3% or larger if there is no difference in the population is less than 0.0000001%. Therefore, I **reject the null hypothesis** and conclude that white students are more likely to be frequent smokers than are black students. 
 
 #### Example of correlation coefficient
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/8xbHhe3PgSc")
+```
 
 Lets look at the correlation between the parental income of a student and the number of friend nominations they receive. Our null hypothesis will be that there is no relationship between parental income and student popularity in the population of US adolescents. Lets look at the data in our sample:
 
