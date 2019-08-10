@@ -6,9 +6,16 @@ We will begin with the simplest kind of model: we just try to fit a straight lin
 
 Throughout this module, we will focus primarily on issues of interpretation. We are now starting to learn the techniques that you will see presented in real world social science research. Being able to interpret and understand this work is a key objective of this course. 
 
+Slides for this module can be found [here](https://aarongullickson.github.io/stat_slides/module5_slides_building_models.html).
+
+
 ------
 
 ## The OLS Regression Line
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/RaNRPecJIxQ")
+```
 
 Figure \@ref(fig:scatter-age-violent-line) shows a scatterplot of the relationship between median age and violent crime rates:
 
@@ -50,6 +57,10 @@ We would interpret our numbers as follows:
 There is a lot to digest in these interpretations and I want to return to them in detail, but first I want to address a more basic question. How did I know that these are the right numbers for the best-fitting line? 
 
 ### Calculating the Best-Fitting Line
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/v1X3VehBUw4")
+```
 
 The slope and intercept of the OLS regression line are determined based on addressing one simple criteria: minimize the distance between the actual points and the line. More formally, we choose the slope and intercept that produce the **minimum sum of squared residuals (SSR)**.
 
@@ -105,6 +116,10 @@ mean(crimes$Violent)-slope*mean(crimes$MedianAge)
 ```
 
 ### Using the `lm` command to calculate OLS regression lines in *R*
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/YG8sSaIl6D8")
+```
 
 We could just use the given formulas to calculate the slope and intercept in *R*, as I showed above. However, the `lm` command will become particularly useful later in the term when we extend this basic OLS regression line to more advanced techniques.
 
@@ -163,6 +178,10 @@ Just as the general term model is used to describe something that is not realist
 However, we always have to consider that our model is not a very good representation of the relationship. The most obvious potential problem is if the relationship is non-linear and yet we fit the relationship by a linear model, but there can be other problems as well. I will discuss these more below and the next few sections of this module will give us techniques for building better models. However, we first need to focus on how to interpret the results we just got. 
 
 ### Interpeting Slopes and Intercepts
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/sTcdDkWj3Ps")
+```
 
 Learning to properly interpret slopes and intercepts (especially slopes) is the number one most important thing you will learn all term, because of how common the use of OLS regression is in social science statistics. You simply cannot pass the class unless you can interpret these numbers. So take the time to be careful in interpretation here. 
 
@@ -274,6 +293,10 @@ coef(lm(Violent~I(MedianAge-35), data=crimes))
 
 ### How good is $x$ as a predictor of $y$?
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/B6Ab63QfXK0")
+```
+
 If I selected a random observation from the dataset and asked you to predict the value of $y$ for this observation, what value would you guess? Your best guess would be to guess the mean of y because this is the case where your average error would be smallest. This error is defined by the distance between the mean of y and the selected value, $y_i-\bar{y}$. 
 
 Now, lets say instead of making you guess randomly I first told you the value of another variable $x$ and gave you the slope and intercept predicting $y$ from $x$. What is your best guess now? You should guess the predicted value of $\hat{y}_i$ from the regression line because now you have some additional information. There is no way that having this information could make your guess worse than just guessing the mean. The question is how much better do you do than guessing the mean. Answering this question will give us some idea of how good $x$ is as a predictor of $y$. 
@@ -330,6 +353,10 @@ About 9% of the variation in violent crime rates across states can be accounted 
 
 ### Inference for OLS Regression models
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/8JTvRLrEsk0")
+```
+
 When working with sample data, our usual issues of statistical inference apply to regression models. In this case, our primary concern is the estimate of the regression slope because the slope measures the relationship between $x$ and $y$. We can think of an underlying OLS regression model in the population: 
 
 $$\hat{y}_i=\beta_0+\beta_1x_i$$
@@ -350,6 +377,10 @@ summary(model)
 The "Coefficients" table in the middle gives us all the information we need. The first column gives us the sample slope of -25.58. The second column gives us the standard error for this slope of 11.56. The third column gives us the t-statistic derived by dividing the first column by the second column. The final column gives us the p-value for the hypothesis test. In this case, there is about a 3.2% chance of getting a sample slope this large on a sample of 51 cases if the true value in the population is zero. Of course, in this case its nonsensical because we don't have a sample, but the numbers here will be valuable in cases with real sample data. 
 
 ### Regression Line Cautions
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/Ow58pdcJzAc")
+```
 
 OLS regression models can be very useful for understanding relationships, but they do have some important limitations that you should be aware of when you are doing statistical analysis. 
 
@@ -427,6 +458,10 @@ Another trivial example would be to look at the growth rate of children 5-15 yea
 
 ## The Power of Controlling for Other Variables
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/sHicSbJu78U")
+```
+
 In the previous module, I showed that the OLS regression line predicting sexual frequency by years of education was 0.03. So in my dataset, there is a very small positive association between sexual frequency and years of education. 
 
 Its possible that this is a causal effect. We could even spin stories about why we think such a positive association (a very small one) might exist. Maybe more educated people appear sexier to the opposite sex. Maybe more educated people take better care of themselves and thus are healthier and more able to have sex. Maybe more educated people are just more sexually liberated. 
@@ -489,6 +524,10 @@ $$\hat{frequency}_i=91.06-0.43(education_i)-1.30(age_i-18)$$
 
 ### Interpreting results in a multivariate OLS regression models
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/AkRer3eTsAA")
+```
+
 How do we interpret the results?
 
 - **Intercept**: The model predicts that **18-year old individuals** at **with no education** will have 91.06 sexual encounters per year, on average.
@@ -521,6 +560,10 @@ Note that we also get the $R^2$ value from the summary command. In multivariate 
 
 ### Including more than two independent variables
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/yleq5RTnq-c")
+```
+
 If we can include two independent variables in a regression model, why stop there? Why not include three or four or more? The number of independent variables you can include is only limited by the sample size (you can never have more independent variables than the sample size minus one), although in practice we generally stop well short of this limit for pragmatic reasons. 
 
 Lets take the model above predicting property crime rates by percent of adults with less than a high school diploma and the median age of residents. Lets add the poverty rate as another predictor:
@@ -545,6 +588,10 @@ $$\hat{y}_i=b_0+b_1x_{i1}+b_2x_{i2}+b_3x_{i3}+\ldots+b_px_{ip}$$
 The intercept is given by $b_0$. This is the predicted value of $y$ when all of the independent variables are zero. The remaining $b$'s give the slopes for all of the variables up through the $p$th variable. Each of these gives the predicted change in $y$ for a unit increase in that independent variable, **holding all other independent variables constant**. 
 
 ### How to read a table of regression results
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/5PN7I_WuXJ4")
+```
 
 In academic journal articles and books, the results of OLS regression models are represented in a fairly standard way. In order to understand how to read these articles, you need to understand this presentation style. Its not immediately intuitive for everyone. Table \@ref(tab:model-table-example) below shows the typical style. In this table, I am reporting three regression models with the property crime rates as the dependent variable and three different independent variables.  
 
@@ -582,6 +629,10 @@ What is going on here? It seems that the percent of the population with less tha
 ------
 
 ## Including Categorical Variables as Predictors
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/Nj_cRVzZRQw")
+```
 
 To this point, we only know how to include quantitative variables into OLS regression models. However, it turns out you can use a fairly easy trick to include categorical variables as independent variables in OLS regression models. By including categorical variables as independent variables, we expand considerably the range of things that we can do with OLS regression models.  The most difficult part of this trick is correctly interpreting your results. 
 
@@ -677,6 +728,10 @@ Both models give me the exact same information, but from the perspective of a di
 
 ### Categorical variables with more than two categories
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/RBgvaGnBLyA")
+```
+
 What if I have a categorical variable that has more than two categories? Lets expand the religious variable that I dichotomized back to its original scale. There are six different categories: Fundamentalist Protestant, Mainline Protestant, Catholic, Jewish, Other, and None:
 
 ```{r}
@@ -769,6 +824,11 @@ You can tell which category is the reference by which category is left out here.
 
 ### Categorical and quantitative variables combined in a single model
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/DllN6ulaqh4")
+```
+
+
 If all we are doing is reproducing mean differences between categories, what good is this method? After all, we already know how to do that. The major advantage of putting these mean differences into a regression model framework is that we can **control for other potentially confounding variables**. 
 
 These sexual frequency differences by religious affiliation are a prime example. Lets take a look at the age differences between religious affiliations:
@@ -822,6 +882,10 @@ All of the coefficients (except for Catholic, which was tiny anyway) have declin
 ------
 
 ## Interaction Terms
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/0SGm6XPLTLA")
+```
 
 By definition, a linear model is an **additive** model. As you increase or decrease the value of one independent variable you increase or decrease the predicted value of the dependent variable by a set amount, **regardless of the other values of the independent variable**. This is an assumption built into the linear model by its additive form, and it may misrepresent some relationships where independent variables **interact** with one another to produce more complicated effects. In particular, in this section, we want to know whether the effect (i.e. the slope) of one independent variable varies by the value of another independent variable. 
 
@@ -975,6 +1039,10 @@ ggplot(movies,
 There is a lot going on here, but we can detect some interesting patterns. Almost all of the lines are positive indicating that longer movies tend to generally get better ratings. This is not true of Romances however, where there is a slight negative relationship between movie runtime and Tomato Meter ratings. Dramas also have a fairly flat slope and a high intercept, so they tend to outperform most other short movies but don't fare as well compared to other genres when they are longer. The steepest slope is for family movies, which apparently are horrible when short (think "Beethoven 6: Beethoven saves Christmas, again" or something), but do much better when longer. 
 
 ### Interaction terms with two categorical variables
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/rrCvp8z1cmA")
+```
 
 The examples so far have involved interacting a quantitative variable with a categorical variable which gives you a different line for each category of your categorical variable. However, we can also create an interaction term between two categorical variables. 
 
