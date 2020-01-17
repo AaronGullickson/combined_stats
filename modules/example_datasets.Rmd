@@ -1,6 +1,6 @@
 ## Example Datasets
 
-We will utilize several different datasets throughout this course to develop concepts and to provide examples. You should become familiar with these datasets. Below, I provide a brief description of each of the datasets we will use. If you are taking my undergraduate course, you will have access to these datasets through RStudio Cloud. Otherwise, you can download a ZIP file of these datasets here. You should unzip this folder to your own computer and place it somewhere you can easily access it (e.g. the desktop). You should use this folder to organize all of your work for the course.The datasets are in a *.RData format. You can simply click on them in your filesystem viewer to load them into R.
+We will utilize several different datasets throughout this course to develop concepts and to provide examples. You should become familiar with these datasets. Below, I provide a brief description of each of the datasets we will use. If you are taking my undergraduate course, you will have access to these datasets through RStudio Cloud. Otherwise, you can download a ZIP file of these datasets [here](resources/example_data.zip). You should unzip this folder to your own computer and place it somewhere you can easily access it (e.g. the desktop). You should use this folder to organize all of your work for the course.The datasets are in a *.RData format. You can simply click on them in your filesystem viewer to load them into R.
 
 ### Crimes
 
