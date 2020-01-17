@@ -6,3 +6,4 @@ modules/_book
 modules/_bookdown_files
 slides/*.html
 slides/*module*files/
+admin/*
