@@ -328,14 +328,7 @@ The plot command here basically creates an empty canvas because I give a single 
 
 ### ggplot 
 
-Now, I want to show you how to plot that same scatterplot of non-profit funding in NYC using ggplot. First you will need to install ggplot and load the library:
-
-```{r load_ggplot, echo=TRUE, eval=FALSE}
-install.packages("ggplot2", repos =  "http://cran.us.r-project.org")
-install.packages("scales", repos =  "http://cran.us.r-project.org")
-library(ggplot2)
-library(scales)
-```
+Now, I want to show you how to plot that same scatterplot of non-profit funding in NYC using ggplot.
 
 Ggplot builds up a graph from layers. The first and most essential component is the function `ggplot` where I indicate the data I am using and the aesthetics that I want to be carried through to all of the other layers:
 
@@ -426,7 +419,6 @@ We now have a very nice looking graph. Ggplot can be a little overwhelming at fi
 Lets do one more example to show how flexible ggplot is. Lets look at the distribution of popularity by race in the Add Health data. Because we have one categorical and one quantitative variable, we want comparative boxplots. Here is our basic set up:
 
 ```{r}
-load("example_datasets/add_health/addhealth.RData")
 ggplot(addhealth, aes(x=race, y=indegree))+
   geom_boxplot()+
   theme_bw()

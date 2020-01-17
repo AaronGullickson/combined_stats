@@ -1,114 +1,145 @@
----
-output: 
-  html_document: 
-    self_contained: no
----
-# Cleaning Data
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-load("../../example_datasets/sex/sex.RData")
-load("../../example_datasets/crimes/crimes.RData")
-load("../../example_datasets/movies/movies.RData")
-```
+## Cleaning Data
 
 Cleaning data is a major component of any quantitative project. Rarely will data come to you in exactly the form that you want for your research question. In this section, we will focus on two of the most important components of data cleaning: (1) assigning and handling missing values, (2) recoding variables, and (3) aggregating data.
 
-For this analysis, we will use a data extract from the 2015 [American Community Survey](https://www.census.gov/programs-surveys/acs/) conducted by the US Census Bureau. I downloaded this extract from [IPUMS](https://usa.ipums.org/usa/). You can get a copy of this data in STATA format here. 
+For this analysis, we will use the same data extract from the 1980 US Census that we used for the reading/writing lab. I downloaded this extract from [IPUMS](https://usa.ipums.org/usa/).
 
 The data is a sample of individuals in the US. Here is what the data looks like:
 
-```{r}
-library(haven)
-census <- read_dta("../resources/rawdata_ipums.dta")
+```{r read-ipums-cleaning, echo=FALSE}
+library(readr)
+census <- read_fwf("resources/usa_00074.dat.gz", 
+                   col_positions = fwf_positions(start = c(1, 7,15,25,33,37,47,48,51,52,53,
+                                                           56,60,63,71,75,83),
+                                                 end   = c(4,14,24,27,36,46,47,50,51,
+                                                           52,54,58,62,65,74,76,85),
+                                                 col_names = c("year","hhid","hhwt","metarea",
+                                                               "pernum","perwt","sex",
+                                                               "age","marst","marrno",
+                                                               "agemarr","raced","hispand",
+                                                               "bpl","yrimmig","language",
+                                                               "educd")),
+                   col_types = cols(.default = "i"), #ensure that all variables are read in as integers
+                   progress = FALSE)
 census
 ```
 
+All of the data here is recorded as integer values even in cases where the variable is categorical. This is a common approach with many datasets. Part of the cleaning process will be to use the codebook to convert from integer values to proper categorical variables. 
 
-## The Most Important Rule: [Check yourself before you wreck yourself](https://www.youtube.com/watch?v=5aAbOgdbTbM)
+
+### The Most Important Rule: [Check yourself before you wreck yourself](https://www.youtube.com/watch?v=5aAbOgdbTbM)
 
 The number one rule of cleaning and processing data is to always check your code to make sure it is producing what you think it should be producing. In the examples below, I run several diagnostic checks using tables and figures to ensure that what I am producing looks correct. There are a variety of ways you can check your code, but its important to take your time here and be extra scrupulous. If you don't properly clean your data, then everything you produce in the later analysis will be questionable at best. You don't want  [this](http://journals.sagepub.com/doi/abs/10.1177/0003122417714422) to happen to you. 
 
-## Assigning missing values
+### Assigning missing values
 
-One of the first things you should check in your data is how missing values are coded. In many cases, missing values will be coded with a numeric value rather than a proper missing value. If you don't correct this, then all of your statistics will be incorrect. Codebooks that are provided with the data will normally identify the codes used for missing values. Usually, missing values are coded with numeric values that are impossible or well outside the range of the data, so that they can easily be identified. For example, if you look at the [codebook for SEI](https://usa.ipums.org/usa-action/variables/SEI#codes_section) from the IPUMS website, you will see that the zero value is a missing value. Since SEI is based on occupation, individuals who were not working receive a zero for SEI. If you leave the zeros in, then you will drastically underestimate mean SEI in the sample. 
+One of the first things you should check in your data is how missing values are coded. In many cases, missing values will be coded with a numeric value rather than a proper missing value. If you don't correct this, then all of your statistics will be incorrect. Codebooks that are provided with the data will normally identify the codes used for missing values. Usually, missing values are coded with numeric values that are impossible or well outside the range of the data, so that they can easily be identified. For example, if you look at the [codebook for yrimmig](https://usa.ipums.org/usa-action/variables/YRIMMIG#codes_section) from the IPUMS website, you will see that the zero value is a missing value. Since `yrimmig` is the calendar year of immigration to the United States, zero is a non-sensical value. However, `r formatC(sum(census$yrimmig==0), big.mark=",")` individuals have a value of zero. These are all individuals who should be `NA` on `yrimmig` because they are native-born and thus never had to migrate to the US. If you leave the zeros in, then you will drastically change any calculation you make with this variable. 
 
-In R, we can easily code in missing values by identifying a subset of the variable with a proper boolean statement and then assigning the special `NA` value to that subset. 
+In R, we can easily code in missing values by identifying a subset of the variable with a boolean statement and then assigning the special `NA` value to that subset. 
 
-```{r}
-summary(census$sei)
-census$sei[census$sei==0] <- NA
-summary(census$sei)
+```{r missing-value-bracket-boolean}
+summary(census$yrimmig)
+census$yrimmig[census$yrimmig==0] <- NA
+summary(census$yrimmig)
 ```
 
-The mean and median change dramatically once I code in all of the missing values. thats because I had a lot of non-workers without a proper value for SEI who were being reported as zero. 
+  The mean and median change dramatically once I code in all of the missing values because I had a lot of native-born individuals without a proper value for `yrimmig` who were being reported as zero. 
 
-Notice that there was no comma here for the `col_index` in my brackets. Because I am identifying a specific variable here rather than the full dataset, there is only one dimension (the "rows") to subset along. 
+Notice that there was no comma here for the `col_index` in my brackets. Because I am identifying a specific variable here rather than the full dataset, there is only one dimension (the "rows") to subset along. I refer to this approach to replacing values in a dataset as the **bracket-and-boolean** approach. 
 
-The bracket-and-boolean approach is one of the standard ways to re-code certain values for a variable in R. Another common approach is to use the `ifelse` statement. An `ifelse` command takes three arguments. The first argument is a boolean statement. The second argument is what value should be returned if the first argument evaluates to TRUE and the third argument is what value should be returned if the first argument evaluates to FALSE. Here is how I can use the `ifelse` command in this example:
+The bracket-and-boolean approach is one of the standard ways to re-code certain values for a variable in R. Another approach that I prefer for its greater flexibility is to use the `ifelse` command. An `ifelse` command takes three arguments. The first argument is a boolean statement. The second argument is what value should be returned if the first argument evaluates to TRUE and the third argument is what value should be returned if the first argument evaluates to FALSE. Here is how I can use the `ifelse` command in this example:
 
 ```{r}
-#re-load the data to get the original SEI values
-census <- read_dta("../resources/rawdata_ipums.dta")
-census$sei <- ifelse(census$sei==0, NA, census$sei)
-summary(census$sei)
+census$yrimmig <- ifelse(census$yrimmig==0, NA, census$yrimmig)
 ```
-When `census$sei==0` is TRUE, the `ifelse` command returns `NA` and when `census$sei==0` is false, the `ifelse` command returns the original value of `sei`. This command accomplishes the same thing as the bracket-and-boolean approach above. Where the `ifelse` command really shines is when you can string together multiple `ifelse` commands. 
 
-## Recoding
+When `census$yrimmig==0` is TRUE, the `ifelse` command returns `NA` and when `census$yrimmig==0` is false, the `ifelse` command returns the original value of `yrimmig`. This command accomplishes the same thing as the bracket-and-boolean approach above. Where the `ifelse` command really shines is when you can string together multiple `ifelse` commands as I will demonstrate below.
 
-Recoding variables is an integral part of preparing your data for analysis. Rarely will all the variables come in exactly the form that you want for the reserch question at hand. In many cases, you will want to *collapse* and/or *combine* categorical variables and *transform* quantitative variables.  It will also frequently be useful to use **sensitivity analysis** to try out muliple approaches to coding your variables to see how sensitive your results are to coding decisions.  When you recode variables, its usually a good idea to generate a new version of the variable with a different name. This allows you both to check the new variable against the old variable to ensure that your code is working correclty and the ability to go back to the original variable when necessary. 
+### Recoding
+
+Recoding variables is an integral part of preparing your data for analysis. Rarely will all the variables come in exactly the form that you want for the reserch question at hand. In many cases, you will want to *collapse* and/or *combine* categorical variables and *transform* quantitative variables.  It will also frequently be useful to use **sensitivity analysis** to try out muliple approaches to coding your variables to see how sensitive your results are to coding decisions.  When you recode variables, it is usually a good idea to generate a new version of the variable with a different name. This allows you to check the new variable against the old variable to ensure that your code is working correctly. 
 
 ### Collapsing and Combining Categorical Variables
 
-Collapsing categorical variables means reducing the number of categories to a smaller set of categories, by lumping some categories together. As an example, lets look at the full set of categories for the detailed education variable `educd` in the Census data. 
+Collapsing categorical variables means reducing the number of categories to a smaller set of categories, by lumping some categories together. As an example, take a look at the full set of categories for the detailed educational attainment category `educd`:
 
-```{r}
-summary(census$educd)
+```
+000		N/A or no schooling
+001		N/A
+002		No schooling completed
+010		Nursery school to grade 4
+011		Nursery school, preschool
+012		Kindergarten
+013		Grade 1, 2, 3, or 4
+014		Grade 1
+015		Grade 2
+016		Grade 3
+017		Grade 4
+020		Grade 5, 6, 7, or 8
+021		Grade 5 or 6
+022		Grade 5
+023		Grade 6
+024		Grade 7 or 8
+025		Grade 7
+026		Grade 8
+030		Grade 9
+040		Grade 10
+050		Grade 11
+060		Grade 12
+061		12th grade, no diploma
+062		High school graduate or GED
+063		Regular high school diploma
+064		GED or alternative credential
+065		Some college, but less than 1 year
+070		1 year of college
+071		1 or more years of college credit, no degree
+080		2 years of college
+081		Associate's degree, type not specified
+082		Associate's degree, occupational program
+083		Associate's degree, academic program
+090		3 years of college
+100		4 years of college
+101		Bachelor's degree
+110		5+ years of college
+111		6 years of college (6+ in 1960-1970)
+112		7 years of college
+113		8+ years of college
+114		Master's degree
+115		Professional degree beyond a bachelor's degree
+116		Doctoral degree
+999		Missing
 ```
 
+There are a a lot of categories here. Its unlikely that this fine level of detail will be helpful in any analyses that we will perform. Lets also take a look at the case counts for these categories:
 
-There are a a lot of categories. Its unlikely that this fine level of detail will be helpful in any analyses that we will perform. In addition there are a lot of categories that seem to overlap and have zero responses. The [reason for these zero categories](https://usa.ipums.org/usa-action/variables/EDUC#comparability_section) is that the set of categories was created to capture all of the ways that educational attainment was recorded across censuses since 1850, but many of the codes are not used in the particular data that we have.
-
-A first step to collapsing this data would be to remove all of the unused categories. There is a very handy function in R called `droplevels` that will do this for us. Before I do that I will also code the missing value category of "N/A" as a proper missing value:
-
-```{r}
-census$educd[census$educd=="N/A"] <- NA
-census$educd <- droplevels(census$educd)
-summary(census$educd)
+```{r case-counts-educd}
+table(census$educd)
 ```
 
-This is a bit more compact and missing values are now properly coded,  but we still have 24 unique categories, which is probably too many for most analyses. Many scholars use a parsimonious four-category coding of educational attainment: less than high school, high school diploma, some college, four-year college degree or more. In R, we can collapse the `educd` variable into this four category variable by defining a new variable and assigning values to it based on boolean statements.
+A lot of categories are not even showing up in our data. The [reason for these zero categories](https://usa.ipums.org/usa-action/variables/EDUC#comparability_section) is that the set of categories was created to capture all of the ways that educational attainment was recorded across censuses since 1850, but many of the codes are not used in the particular 1980 data that we have.
 
-```{r}
-census$edattain <- NA
-census$edattain[census$educd=="No schooling completed" |
-                  census$educd=="Nursery school, preschool" |
-                  census$educd=="Kindergarten" |
-                  census$educd=="Grade 1" |
-                  census$educd=="Grade 2" |
-                  census$educd=="Grade 3" |
-                  census$educd=="Grade 4" |
-                  census$educd=="Grade 5" |
-                  census$educd=="Grade 6" |
-                  census$educd=="Grade 7" |
-                  census$educd=="Grade 8" |
-                  census$educd=="Grade 9" |
-                  census$educd=="Grade 10" |
-                  census$educd=="Grade 11" |
-                  census$educd=="12th grade, no diploma"] <- "Less than HS"
-census$edattain[census$educd=="GED or alternative credential" |
-                  census$educd=="Regular high school diploma"] <- "HS Diploma"
-census$edattain[census$educd=="Some college, but less than 1 year" |
-                  census$educd=="Associate's degree, type not specified"|
-                  census$educd=="1 or more years of college credit, no degree"] <- "Some College"
-census$edattain[census$educd=="Bachelor's degree" |
-                  census$educd=="Master's degree"|
-                  census$educd=="Professional degree beyond a bachelor's degree" |
-                  census$educd=="Doctoral degree"] <- "College"
-census$edattain <- factor(census$edattain, levels=c("Less than HS", "HS Diploma",
-                                                    "Some College","College"), 
-                          ordered=TRUE)
-table(census$educd, census$edattain, exclude=NULL)
+Many scholars use a parsimonious four-category coding of educational attainment: less than high school diploma, high school diploma, some college including associate's degree, four-year college degree or more. We can collapse our full set of categories into this five-category system using the bracket-and-boolean approach. We start by creating a new variable `edattain_bb` that we assign all missing values. 
+
+```{r create-edattain-bb}
+census$edattain_bb <- NA
+```
+
+Next we use the bracket-and-boolean approach to replace values in our new variable with character strings. Notice how I use the greater than and less than signs combined with AND statements to create ranges. This is much simpler than having to string together every single possibility
+
+```{r bb-edattain}
+census$edattain_bb[census$educd>=2 & census$educd<62] <- "Less than HS"
+census$edattain_bb[census$educd>=62 & census$educd<70] <- "HS Diploma"
+census$edattain_bb[census$educd>=70 & census$educd<101] <- "Some College"
+census$edattain_bb[census$educd>=101 & census$educd<114] <- "College"
+```
+
+We now have a variable called `edattain_bb` but it is just a variable of character strings rather than a factor. We can convert to a factor by using the factor command. We will have to specify the levels exactly as I specified them above. 
+
+```{r factor-edattain-bb}
+census$edattain_bb <- factor(census$edattain_bb, 
+                             levels=c("Less than HS", "HS Diploma",
+                                      "Some College","College"))
+table(census$educd, census$edattain_bb, exclude=NULL)
 ```
 
 The first line of code creates a new variable called `edattain` that is entirely made up of missing values. This gives me a starting "empty" variable to which I can then assign values. The next four lines of code assign different character string labels to the `edattain` variable depending on the value of the `educd` variable. I am stinging together multiple categories of the original variable by the use of the OR (`|`) statement. At this point, the recoding is done,  but my new variable is not a proper factor variable but rather a character string variable. In order to convert this into a proper factor variable, I use the `factor` command on this variable to turn those character strings into factors. By specifying the levels of the factor variable and that these categories are ordered, I can make sure that my ordinal variable has the correct order and that it will be possible to run "greater than" or "less than" type boolean statements on it. The last line of code crosstabs `educd` and `edattain` to make sure that all of my categories are in the right places. I included the `exclude=NULL` option here to include missing values in this table to also make sure that missing values match between the two datasets.
@@ -188,11 +219,11 @@ movies$runtime.spline <- ifelse(movies$Runtime<90, 0, movies$Runtime)
 plot(movies$Runtime, movies$runtime.spline)
 ```
 
-## Aggregating Data
+### Aggregating Data
 
 It is not uncommon to want to aggregate data at one unit of analysis up to a higher unit of analysis. For example, the individual-level census data that we have contains a variable that identifies the state of residence for each respondent (`statefip`). What if I wanted to aggregate my individual level data up to the state-level? As a simple example, lets say that I wanted to calculate mean SEI across each state. 
 
-### Using `tapply`
+#### Using `tapply`
 
 The simplest approach to this problem is to use the `tapply` command that we have already seen elsewhere.
 
@@ -243,7 +274,7 @@ head(as.data.frame.table(state_race_sei))
 Do you see how these are different?
 
 
-### Using `aggregate`
+#### Using `aggregate`
 
 The `aggregate` command works similarly to `tapply` but has more flexibility, namely that you can aggregate multiple variables at once. There are two different syntax forms for `aggregate` but we will focus on the formula syntax. This syntax works like `agg_var~by_var1+by_var2` where the `agg_var` is the variable that you want to aggregate on and `by_var1` and `by_var2` are the variables that you want to aggregate by. Here is a simple example of getting the mean for SEI by state. 
 
@@ -277,7 +308,7 @@ temp <- aggregate(cbind(pwhite=raceethnic=="NH White",
 head(temp)
 ```
 
-# Using `table` and `prop.table`
+#### Using `table` and `prop.table`
 
 You can also use `table` and prop.table to get the proportions of respondents in categories of a categorical variable.
 
