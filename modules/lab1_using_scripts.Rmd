@@ -7,7 +7,7 @@ One of the primary advantages of using statistical software like *R* or *Stata* 
 
 Lets put together a simple script in R. In RStudio, you can go to `File > New File > R Script` to get a new script up and running. This will open a text pane in the upper left corner of RStudio. This is your R script. Lets start by writing a simple "Hello World" script. Type the following command into your script:
 
-```{r eval=FALSE}
+```{r eval=FALSE, echo=TRUE}
 cat("Hello World!")
 2+2
 ```
@@ -33,20 +33,18 @@ Hello World
 Now, lets save this script as `helloworld.R` (".R" is the expected suffix for R scripts) and source it from the console:
 
 ```{r}
-source("resources/helloworld.R", echo=TRUE)
+source("helloworld.R", echo=TRUE)
 ```
 
-Now lets try a slightly more useful script. In this script, I am going to do the following:
+Now lets try a slightly more useful script. In this script, I am going to use the politics dataset to do the following:
 
-- load in the politics dataset
 - re-code the gay marriage support variable into support for gay marriage vs. all else, and the religion variable as evangelical vs. all else
 - Create a two-way table (crosstab) of these two new variables. 
 - Calculate the odds ratio between the two new variables.
 
 I don't expect you to know how all of this code works yet. I just want to show you an example of a script that actually does something interesting. 
 
-```{r eval=FALSE}
-load("example_datasets/politics/politics.RData")
+```{r eval=FALSE, echo=TRUE}
 politics$supportgmar <- politics$gaymarriage=="Support gay marriage"
 politics$evangelical <- politics$relig=="Evangelical Protestant"
 tab <- table(politics$supportgmar, politics$evangelical)
@@ -59,7 +57,7 @@ OR
 If I run this script, I will get:
 
 ```{r}
-source("resources/politics.R", echo=TRUE)
+source("politics.R", echo=TRUE)
 ```
 
 About 49% of non-evangelicals supported gay marriage while only 24% of evangelicals supported it. That works out to an odds ratio of 0.33, meaning that the odds of gay marriage support were about a third as high for evangelicals as for non-evangelicals. 
@@ -69,14 +67,6 @@ Lets say I then wanted to change this script to broaden the definition of suppor
 ```
 politics$supportgmar <- politics$gaymarriage=="Support gay marriage" | politics$gaymarriage=="Civil unions"
 ```
-
-If I re-run this new script, I will get:
-
-```{r}
-source("resources/politics2.R", echo=TRUE)
-```
-
-The percentage of overall support gets higher, of course, but the odds ratio between evangelicals and everyone else stays about the same. 
 
 ### Not Everything Goes Into Your Script
 
@@ -94,7 +84,7 @@ There is one big thing missing from the scripts listed above: comments! Comments
 
 Here is the script from above, but now with some helpful commenting:
 
-```{r eval=FALSE}
+```{r eval=FALSE, echo=TRUE}
 #################################################################
 # Aaron Gullickson
 # Program to analyze the differences in support for gay marriage
@@ -106,7 +96,7 @@ Here is the script from above, but now with some helpful commenting:
 
 #load the politics dataset. Note that this command will not work if 
 #you have the dataset loaded into a different directory. 
-load("example_datasets/politics/politics.RData")
+load("politics.RData")
 
 #dichotomize both the support for gay marriage and the religious variable
 politics$supportgmar <- politics$gaymarriage=="Support gay marriage"
