@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 load("../example_datasets/politics/politics.RData")
 ```
 
-#Handout 13: Fill out the "slopes" for the regression models with different references
+# Handout 13: Fill out the "slopes" for the regression models with different references
 
 ```{r}
 round(tapply(politics$income, politics$race, mean, na.rm=TRUE),0)

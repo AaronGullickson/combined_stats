@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 load("../example_datasets/politics/politics.RData")
 ```
 
-#Handout 8: Confidence interval for proportion supporting gay marriage
+# Handout 8: Confidence interval for proportion supporting gay marriage
 
 ```{r} 
 table(politics$gaymarriage)
