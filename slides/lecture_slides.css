@@ -4,6 +4,19 @@
     text-align:left;
 }
 
+.remark-slide-content {
+    font-size: 18px;
+    padding: 1em 4em 1em 4em;
+}
+
+h2 {
+ font-size: 40px; 
+}
+
+h3 { 
+  font-size: 30px;
+}
+
 iframe {
   border: none;
   width: 100%;
