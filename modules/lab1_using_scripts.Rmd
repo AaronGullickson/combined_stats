@@ -56,6 +56,10 @@ OR
 
 If I run this script, I will get:
 
+```{r include=FALSE}
+load("../example_datasets/politics/politics.RData")
+```
+
 ```{r}
 source("politics.R", echo=TRUE)
 ```

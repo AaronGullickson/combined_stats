@@ -1,113 +1,149 @@
-# Combining and Merging Data
+## Reshaping and Merging Data
 
-It is not uncommon to have data from multiple sources that you want to combine in some way. In some cases, data from the same source may also need to be split, sliced, and re-combined in order to analyze it. Knowing how to efficiently re-organize and combine data is a crucial skill for doing real data analysis. 
+In this lab, I want to cover two important components of data wrangling, reshaping data from one format to one another and merging two diffent datasets together. As an example for this section, we are going to use some data from The [World Bank Development Indicators](http://databank.worldbank.org/data/reports.aspx?source=world-development-indicators#) and the [International Labour Organization](http://www.ilo.org/ilostat/faces/wcnav_defaultSelection?_afrLoop=107076059659881&_afrWindowMode=0&_afrWindowId=kaen3qrnf_51#!%40%40%3F_afrWindowId%3Dkaen3qrnf_51%26_afrLoop%3D107076059659881%26_afrWindowMode%3D0%26_adf.ctrl-state%3Dkaen3qrnf_71). Both of these sites have nice designs that allow users to filter an extract of their choosing by country, year, and variable type. They also allow download of the data in a variety of formats including CSV. The labor data provides information on unemployment rates by age and sex and I have limited the years to 2014 or later. I then pulled an extract of the world bank data from 2014 on all countries for the variables of GDP per capita, life expectancy at birth, and population size. You can download the World Bank extract here and the ILO data here.^[I should note that the World Bank CSV file had notes at the bottom that weren't part of the data. I had to open up the CSV file in Excel in order to remove this junk, and then re-save it to get data that would be machine-readable by R. This is Very Bad but Unfortunately Common Practice.]
 
-As an example, we are going to look at some data from the [World Bank Development Indicators](http://databank.worldbank.org/data/reports.aspx?source=world-development-indicators#) and the [International Labour Organization](http://www.ilo.org/ilostat/faces/wcnav_defaultSelection?_afrLoop=107076059659881&_afrWindowMode=0&_afrWindowId=kaen3qrnf_51#!%40%40%3F_afrWindowId%3Dkaen3qrnf_51%26_afrLoop%3D107076059659881%26_afrWindowMode%3D0%26_adf.ctrl-state%3Dkaen3qrnf_71). Both of these sites have nice designs that allow users to filter an extract of their choosing by country, year, and variable type. They also allow download of the data in a variety of formats including CSV. The labor data provides information on unemployment rates by age and sex and I have limited the years to 2014 or later. I then pulled an extract of the world bank data from 2014 on all countries for the variables of GDP per capita, life expectancy at birth, and population size. You can download the World Bank extract here and the ILO data here, if you want to follow along.^[I should note that the World Bank CSV file had notes at the bottom that weren't part of the data. I had to open up the CSV file in Excel in order to remove this junk, and then re-save it to get data that would be machine-readable by R. This is Very Bad but Unfortunately Common Practice.]
+Ultimately, I want to create a final dataset which combined these sources. The final dataset should have an observation for each country with the variables of GDP per capita, life expectancy at birth, population size, and unemployment rates. In order to get there though, I am going to have to deal with some data issues.
 
-##Re-organizing data
+### Reshaping
 
-Ultimately, I want to combine these two data sources together, but before I can do that they both will need quite a bit of internal processing. Lets start by looking at the world bank data. 
+All of the data that we have looked at so far have been in what is called a *wide* format. Each row is an observation is a column. This is usually the easiest way for us to work with data, but sometimes data can come in a *long* format instead. In the long format, each row gives the value for a certain variable for a certain observation. The observation and variable are identified by id columns and the values themselves are a third column.
+
+To give a simple example, here is a very small dataset in wide form:
+
+name  | age | height
+------|-----|-------
+Bob   | 25  | 71
+Susie | 37  | 65
+Linda | 28  | 68
+
+Here is that same dataset in long form:
+
+name  | variable | value
+------|----------|------
+Bob   | age      | 25
+Bob   | height   | 71
+Susie | age      | 37
+Susie | height   | 65
+Linda | age      | 28
+Linda | height   | 68
+
+Notice that in the long format each person shows up once for each variable from the wide dataset. In this case, the "name" variable is my *id* variable that identified unique observations. Its possible to have more than one id variable in the long format. For example, I might also have a year variable which identifies an observation-year case.
+
+Lets take a look at the world bank data that I have and you will see another example of the long format.
 
 ```{r}
-worldbank <- read.csv("resources/worldbank.csv")
+library(readr)
+worldbank <- read_csv("resources/worldbank.csv")
+#better variable names
+colnames(worldbank) <- c("country_name","country_code","series_name","series_code",
+                         "time","time_code","value")
 head(worldbank)
 ```
 
-This data is in a very different format than we are used to seeing. Each line is for a single variable in a single year. Since we have three variables and one year, there are three separate lines for each country. This is not how we want the data to be structured. We want a single row for each country with all three variables listed in separate columns on the same row. As a first step to reconstructing this dataset, I can use the `Series.Code` variable to pull out each of my desiered variables as a separate vector of data. 
+You can see that this data is in long format with the actual value for each of my variables given in the "Value" colum. The "Country Code" variable identifies the country  and the "Series Code" variable identifies the specific variable. I also have a "Time Code" but in my case that is not particularly relevant since I only downloaded 2014 data. This is the standard format of the World Bank's World Development Indicators data.
+
+In order to create my analytical dataset I want to *reshape* this data from long to wide. Given what we know about data.frames in R, it is actually possible to manipulate this dataset with our existing skills to get it in the right format, but this is not the best approach because it opens up to significant errors. We could for example, use a `subset` command to just grab each variable's value and save those two different vectors. We could then use a `data.frame` command or a `cbind` command to comnbine those together into a new data.frame. However, we would be assuming that the ordering and existence of countries was consistent across all of the vectors that we are combining - and this assumption could prove dangerous if it turned out that in one vector country values were reversed or some were missing. We would then have incorrect values for some countries. 
+
+A better approach would be to save subsets that include the country code and then use the `merge` command that we will learn below to merge them together into a single dataset by country code. This will ensure that the values are correct for countries, but it still involves quite a bit of code.
+
+An even better solution is to use one of the functions in R that can do this reshaping for us. Base R comes with a `reshape` command but we will not be using that command here. Instead we are going to use the `dcast` function from the `reshape2` library. You will need to install the `reshape2` library to gain access to it.
+
+The `dcast` function in the `reshape2` library is one of the "cast" functions that will turn a dataset in long format to a dataset in wide format. There is an analagous function called `melt` to for from wide to long format (melting and casting, get it?). To use `dcast` we need to feed in three arguments:
+
+1. the name of the data.frame object in long form
+2. A formula that defines the id variable(s) and the variable that identifies distinct variables from the wide format.
+3. A `values.var` variable that identifies which variable contains the actual values.
+
+In my case, it should look like:
 
 ```{r}
-gdpcap <- worldbank$Value[worldbank$Series.Code=="NY.GDP.PCAP.CD"]
-lifeexp <- worldbank$Value[worldbank$Series.Code=="SP.DYN.LE00.IN"]
-pop <- worldbank$Value[worldbank$Series.Code=="SP.POP.TOTL"]
-summary(gdpcap)
-summary(lifeexp)
-summary(pop)
-length(gdpcap)
-length(lifeexp)
-length(pop)
+library(reshape2)
+worldbank_wide <- dcast(worldbank, country_code + country_name + time ~ series_code, 
+                        value.var = "value")
+head(worldbank_wide)
 ```
 
-I have created three separate vectors for each variable. The `summary` and `length` commands check that everything is working correctly. In all three cases, I had 217 country values and the summary statistics for each variable look reasonable for what they are measuring. I now want to combine these vectors together as columns of a dataframe. However, I first need to get vectors for the names and codes of each country so that I will know what country each observation is referencing. There are multiple ways that I could go about this, but the `unique` command should pull out all of the unique country names in the correct order. I will just want to check that it is the same length as my other vectors. 
+Just like that we have data in wide format. Notice how the formula works here. My id variable(s) go to the left of the tilde. In this case, I didn't really need to specify "time" because I only have one year, but I wanted to show you how this can work with multiple id variables. I also didn't need both "country_code" and "country_name" but by doing it this way, I will get both variables in my wide data format, which can be useful if I need to look up which country is which code. The series_code that identifies variable names for the wide dataset goes to the right of the tilde. 
+
+My only problem now is that the variable names are ugly, but I can fix that up pretty easily:
 
 ```{r}
-name <- unique(as.character(worldbank$Country.Name))
-length(name)
-head(name)
-code <- unique(as.character(worldbank$Country.Code))
-length(code)
-head(code)
+colnames(worldbank_wide) <- c("country_code","country_name","year",
+                              "gdp_cap","life_exp","pop")
+head(worldbank_wide)
 ```
 
-The length matches and the ordering looks good. I now have five vectors that I need to combine back together into a data.frame object. The easiest way to do this is with the `data.frame` command.
+Now lets take a look at the ILO data and see what needs to be done with it. Note that I needed to specify a few column types that were giving `readr` parsing problems, although we don't really care about those variables anyway. I also recast the `tibble` to a standard `data.frame` for the `head` command so you can see all of the variables.
 
 ```{r}
-worldbank <- data.frame(name, code, gdpcap, lifeexp, pop)
-head(worldbank)
-dim(worldbank)
-summary(worldbank)
+ilo <- read_csv("resources/ilostat.csv",
+                col_types=cols(obs_status=col_character(),
+                               obs_status.label=col_character()))
+head(as.data.frame(ilo))
 ```
 
-Everything looks good with this data now. Now we need to check the ILO data. Lets take a look at it.
+This data is also in a long format but there is a lot going on here. ILO is breaking down unemployment rates by sex and age within each country over time, with detailed notes on data quality and sources. This is all interesting data, but I don't need all of it, so let me use a subset command to pull out just what I need which is the total unemployment rate across both sexes and all ages in 2014.
 
 ```{r}
-ilo <- read.csv("resources/ilostat.csv")
+ilo <- subset(ilo, sex=="SEX_T" & classif1=="AGE_AGGREGATE_TOTAL" & time==2014,
+              select=c("ref_area", "ref_area.label","source","source.label",
+                       "time","obs_value","note_classif","note_classif.label",
+                       "notes_source","notes_source.label"))
 head(ilo)
-summary(ilo)
 ```
 
-Just like the World Bank data, the ILO data has multiple lines per country. I am only measuring one variable, unemployment rates, which is given by the variable names `obs_value`. However, there are multiple breakdowns of this variable for different age groups, gender, and data sources, all reported on different rows for the same country. Let me first limit the data to umemployment rates for the total population (all age and all sex). Since the World Bank data are from 2014, I will further limit the data to the year of 2014. 
+You will notice right away that we have multiple entries for at least one country (Argentina). We can check this more formally by running a table command on `ref_area.label` or `ref_area`. 
 
 ```{r}
-ilo.sub <- subset(ilo, sex=="SEX_T" & classif1=="AGE_AGGREGATE_TOTAL" & time==2014)
-table(ilo.sub$ref_area)
+temp <- table(ilo$ref_area.label)
+temp[temp>1]
 ```
 
-The `table` command gives me a tabulation of how many records I now have per country. For most countries, I now only have one record for the overall unemployment rate. However, for a few countries (e.g. Argentina, Brazil, China) there are still multiple records per year. Lets look at Brazil to explore further.
+A few cases have more than one entry. Lets check out Brazil more closely as it has three entries:
 
 ```{r}
-ilo.sub[ilo.sub$ref_area=="BRA",]
+head(as.data.frame(subset(ilo, ref_area.label=="Brazil")))
 ```
-It seems that there are multiple sources for each unemployment rate. The notes provide some indication of how these different numbers were developed. There is no easy programmatic way to make a decision about which source to choose. If I were doing a real research project, I would carefully study the documentation here and reach a decision about each country separately. For our purposes, it seems like the broadest scope measure is generally in the first source listed for a country, so I will just take the first row for countries with multiple rows. I can do this easily in R using the `duplicated` command to remove repeat country entries. The duplicated command will return a TRUE for values in a vector that duplicate earlier entries. I will also restrict this data to the variable that I actually care about, along with the country names and codes.
+
+It seems that there are multiple sources for each unemployment rate. The notes provide some indication of how these different numbers were developed. There is no easy programmatic way to make a decision about which source to choose. If I were doing a real research project, I would carefully study the documentation here and reach a decision about each country separately. For our purposes, it seems like the broadest scope measure is generally in the first source listed for a country, so I will just take the first row for countries with multiple rows. I can do this easily in R using the duplicated command to remove repeat country entries. The duplicated command will return a TRUE for values in a vector that duplicate earlier entries. I will also restrict this data to the variable that I actually care about, along with the country names and codes.
 
 ```{r}
-ilo.sub <- subset(ilo.sub, !duplicated(ref_area),
+ilo <- subset(ilo, !duplicated(ref_area),
                   select=c("ref_area","ref_area.label","obs_value"))
-table(ilo.sub$ref_area)
+head(ilo)
+table(ilo$ref_area)
 ```
 
-Finally,  I will rename the variables to something more intuitive. 
+Now, everything looks good. This dataset is still technically in a long format, but since I only have one variable (total unemployment rate), the difference between a long and a wide format is now just in the variable names. Changing the variable names gives me the format I want:
 
 ```{r}
-colnames(ilo.sub) <- c("code","country_name","unemployment")
-dim(ilo.sub)
-head(ilo.sub)
-
-colnames(worldbank)[[1]] <- "wb_name"
-colnames(ilo.sub)[[2]] <- "ilo_name"
-ilo.sub <- ilo.sub[,c("ilo_name","code","unemployment")]
+colnames(ilo) <- c("country_code","country_name","unemployment")
+head(ilo)
 ```
 
-## Merging data
+I now have the World Bank and ILO data in similar formats with a country code, country name, and then the variables of interest. I now just need to combine them together into a single dataset. For that I need to learn how to *merge* data.
 
-I am now finally ready to merge my data. I noticed that both sources use a three letter capitalized code to identify countries, so I am crossing my fingers that they are using the same coding system and that I can use this code to link countries across the two datasets. 
+### Merging data
+
+In order to merge datasets, you need some kind of id variable(s) that can be used to link observations across datasets. In my data here, both sources use a three letter capitalized code to identify countries. I am crossing my fingers that they are using the same coding system and that I can use this code to link countries across the two datasets. 
 
 Generally speaking, there are two different kinds of merges one can perform. In a **one-to-one** merge, each observation in one dataset should be linked to one and only one observation in the other dataset. In this case, the identifier used to link the two datasets should be unique (not be repeated) within each dataset. In this example, I am performing a one-to-one merge. I can check that my identifiers are unique by running the `duplicated` command:
 
 ```{r}
-sum(duplicated(worldbank$code))
-sum(duplicated(ilo.sub$code))
+sum(duplicated(worldbank_wide$country_code))
+sum(duplicated(ilo$country_code))
 ```
 
-No duplicates, so everything looks good. 
+No duplicates, so we are of to a good start. 
 
-The other kind of merge that can be performed is a **many to one** merge. In this case, multiple observations in one dataset would all be linked to a single observation in the other dataset. For example, lets say I wanted to link the academic records of elementary school students to information about their teachers. In this case, multiple students would be linked to the same teacher data. We will see more examples of this kind of merging next term, when we delve into multilevel models. In practice, R handles both of these merge types with the same basic syntax.
+The other kind of merge that can be performed is a **many to one** merge. In this case, multiple observations in one dataset would all be linked to a single observation in the other dataset. This is most common for *multilevel* data in which you are linking lower-level observations to the higher level unit they are nested within. For example, I might want to link the academic records of elementary school students to information about their teachers. In this case, multiple students would be linked to the same teacher data. We will see more examples of this kind of merging next term, when we delve into multilevel models. In practice, R handles both of these merge types with the same basic syntax.
 
-The `merge` command in R will take two different data.frame objects and merge them together by matching the columns identified in the `by`,`by.x`, or `by.y` option. Notice that I renamed the country codes in my ILO dataset with the name `code` in order to match the name in the world bank data. This will allow me to use the `by` option rather than separate `by.x` and `by.y` options. You can also not specificy any id variable for the matching, and `merge` will then try to match on every variable with the same name in the two datasets. 
+The `merge` command in R will take two different data.frame objects and merge them together by matching the columns identified in the `by`,`by.x`, or `by.y` option. Notice that I renamed the country codes in my datasets to both be `country_code` in order to simplify my merging by allowing me to use the `by` option rather than separate `by.x` and `by.y` options. It is also better to match on these three letter codes than the `country_name` variable which is more likely to vary between the two datasets (one dataset may refer to "Ivory Coast" while another refers to "Cote d'Ivoire", for example).   You can also not specificy any id variable for the matching, and `merge` will then try to match on every variable with the same name in the two datasets - this is not recommended. 
 
 Here is the basic `merge` command. 
 
 ```{r}
-test <- merge(worldbank, ilo.sub, by="code", all.x=TRUE, all.y=TRUE)
+test <- merge(worldbank_wide, ilo, by="country_code", all.x=TRUE, all.y=TRUE)
 ```
 
 Merging can be tricky and you should always check and double-check your results to make sure the merge worked properly. In this case, I have saved my merged data.frame as a new object named `test`. The `all.x` and `all.y` option indicates that the final merged object should include rows for both the first and second data.frame even if they didn't find a match in the other data.frame. 
@@ -115,57 +151,52 @@ Merging can be tricky and you should always check and double-check your results 
 Lets begin our checks by examining the number of observations in our datasets. 
 
 ```{r}
-nrow(worldbank)
-nrow(ilo.sub)
+nrow(worldbank_wide)
+nrow(ilo)
 nrow(test)
 ```
 
-There is something odd going on here. The world bank data included 217 countries, while the ILO data only had 115 countries. So the ILO data is presumably missing a lot of countries that are in the world bank data. When we merge the data together, we now get 223 total countries. How did we end up with six more countries in total than the world bank data? 
+There is something odd going on here. The World Bank data included 217 countries, while the ILO data only had 115 countries. So the ILO data is presumably missing a lot of countries that are in the World Bank data. We expect this because the world bank data has more coverage than the ILO data. However when we merge the data together, we now get 223 total countries which is six more than the number of countries in the World Bank data. How did we end up with six more countries in total than the world bank data? 
 
-There are three possible outomes for each observation in our merged test dataset. In some cases, a match was made and there should be valid data for that observation. In other cases, an observation from the World Bank data failed to find a match in the ILO data. We expect this to happen frequently and are not troubled by it because the world bank data has more coverage than the ILO data. Finally, an observation from the ILO data may fail to find a match with the world bank data. We can find out whether a match was made by looking for NA values for the `name` variable which comes from the world bank data, and NA values for the `country_name` variable that comes from the ILO data. 
+There are three possible outomes for each observation in our merged test dataset. In some cases, a match was made and there should be valid data for that observation. In other cases, an observation from the World Bank data failed to find a match in the ILO data. As I noted above, this is not problematic because we know the ILO data has lower coverage than the World Bank data. Finally, an observation from the ILO data may fail to find a match with the World Bank data. This last case is the problematic one and the one where the extra six cases are coming from. 
 
-```{r}
-table(is.na(test$name), is.na(test$country_name))
-```
-
-In 109 cases, we found a match. A further 108 cases from the world bank data were not found in the ILO data and 6 cases from the ILO data were not found in the world bank data. We can also think about this graphically in terms of a venn diagram. 
-
-
-```{r venn_merge, echo=FALSE, message=FALSE, warning=FALSE}
-library(VennDiagram)
-grid.draw(draw.pairwise.venn(217,115,109, category=c("World Bank data", "ILO data"), fill=c("blue","yellow")))
-```
-
-The problematic categories here are the six cases from ILO that were not matched in the World Bank data. I want to check those cases out in detail to see if we missed a match. I can do that with a boolean statement:
+How can we find out what these extra six cases are? R has a very nice operator called `%in%` which can be used to identify cases of overlap and non-overlap between two variables. It will return a TRUE/FALSE value which we can use in this case to identify the cases in the ILO data that were not matched to World Bank data.
 
 ```{r}
-subset(test, is.na(test$name))
+subset(ilo, !(ilo$country_code %in% worldbank_wide$country_code))
 ```
-These are the six missing countries. Looking for the corresponding countries in the World Bank data, I can see that three of these cases (Isle of Man, Kosovo, and Romania) have different codes in the two datasets. The three remaining cases don't exist in the World Bank data (Taiwan and Palestine for political reasons). 
 
-I can fix the code for Isle of Man, Kosovo, and Romania by changing these codes in the ILO dataset and then re-running the merge. There is a bit of a catch here, however. The codes are recorded as a factor variable in `code`. Normally, you can't change the values of factor variables to a different value. For example, the code `ilo.sub$code[ilo.sub$code=="IMN"] <- "IMY"` to replace the "IMN" code for Isle of Man to "IMY" would just generate a missing value. 
+Notice that by wrapping the entire `%in%` statement in a `!`, I basically turned this into "not in." In colluquial terms, we are identifying all country codes in the ILO data that are not in the World Bank country codes.
 
+Why did these six countries fail to find a match? If I look for the corresponding countries in the World Bank data, I can see that three of these cases (Isle of Man, Kosovo, and Romania) have different codes in the two datasets. The three remaining cases don't exist in the World Bank data (Taiwan and Palestine for political reasons).
 
-In order to change the values, I first have to convert this factor variable to a character variable with the `as.character` command, make my changes and then convert it back to a factor variable with the `as.factor` command. 
+I can fix the code for Isle of Man, Kosovo, and Romania by changing these codes in the ILO dataset.
 
 ```{r}
-ilo.sub$code <- as.character(ilo.sub$code)
-ilo.sub$code[ilo.sub$code=="IMN"] <- "IMY"
-ilo.sub$code[ilo.sub$code=="KOS"] <- "KSV"
-ilo.sub$code[ilo.sub$code=="ROU"] <- "ROM"
-ilo.sub$code <- as.factor(ilo.sub$code)
+ilo$country_code[ilo$country_code=="IMN"] <- "IMY"
+ilo$country_code[ilo$country_code=="KOS"] <- "KSV"
+ilo$country_code[ilo$country_code=="ROU"] <- "ROM"
 ```
 
 Now, I should be able to re-run my merge command and pick up those three matches. Note that I am setting `all.y=FALSE` because I can't do anything about the last three cases of Palestine, Taiwan, and Jersey, so I might as well drop them.  
 
 ```{r}
-combined <- merge(worldbank, ilo.sub, by="code", all.x=TRUE, all.y=FALSE)
+combined <- merge(worldbank_wide, ilo, by="country_code", all.x=TRUE, all.y=FALSE)
 nrow(combined)
-sum(is.na(combined$country_name))
 ```
 
-The total size is now correct and I have reduced the non-matches from the World Bank data to the ILO data from 108 to 105, as expected. I now have a full merged dataset. I can do a last `summary` command to check that everything looks as expected. 
+The total size is now what I expected. I can do a last `summary` command to check that everything looks as expected. 
 
 ```{r}
 summary(combined)
+```
+
+Note that I now have a `country_name.x` and a `country_name.y` variable. This is because there was a `country_name` variable in both datasets. Rather than overwrite them, R has put them both in the final dataset with a subscript identifying which original dataset they came from. Sometimes this can be useful in testing out whether the merge worked correctly. To clean things up, I can remove one of these variables with a `subset` command and then rename the other one.
+
+```{r}
+combined <- subset(combined,
+                   select=c("country_code","country_name.x","gdp_cap",
+                            "life_exp","pop","unemployment"))
+colnames(combined)[2] <- "country_name"
+head(combined)
 ```
