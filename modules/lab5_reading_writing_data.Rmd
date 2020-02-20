@@ -89,39 +89,50 @@ Notice that the actual starting location of each variable is the same within eac
 mydata <- read_fwf("resources/data_fw.txt", 
                    col_positions = fwf_positions(start=c(1, 6,16,21,27),
                                                  end  =c(5,15,20,26,28),
-                                                 col_names=c("name","location","race","gender","yrsed")))
+                                                 col_names=c("name","location","race",
+                                                             "gender","yrsed")))
 mydata
 ```
 
 I have to do a little more work than I did with CSV files. First I need to define a `col_positions` argument and feed in the results from the function `fwf_positions`. This `fwf_positions` function needs to have a vector of starting and ending positions for each variable. I also use the `col_names` argument in this function to assign names to each of my variables.
 
-Now I want to show you an example from my own work that demonstrates how flexible these methods are. The data here are fixed-width data created from an [IPUMS](https://usa.ipums.org/usa/) extract of the 1980 US Census. The data come zipped up as a "G-zip" file with suffix "gz" which is a standard method of compressing data files. You can download the file here. You can also download the codebook that IPUMS provides which shows where the start and ending positions are for each variable. 
+Now I want to show you an example of fixed width data that is more realistic. The data I will use here were created from an extract of the 2018 [American Community Survey](https://www.census.gov/programs-surveys/acs) data downloaded from [IPUMS](https://usa.ipums.org/usa/). The data come zipped up as a "G-zip" file with suffix "gz" which is a standard method of compressing data files. You can download the file [here](https://aarongullickson.github.io/stat_book/resources/usa_00083.data.gz). You can also [view the codebook](https://aarongullickson.github.io/stat_book/resources/usa_00083.cbk.txt) that IPUMS provides which shows where the starting and ending positions are for each variable. Here is the relevant part of that codebook:
 
-One of the nice features of all of the tidyverse input packages is that they can read in data directly from zipped files without having to unzip them first. This saves you room on your computer and in your git repository (GitHub has a limit of 100MB for files). I am going to use that feature here as well as a couple of other nifty features. Here is my input command:
-
-```{r read-ipums}
-census1980 <- read_fwf("resources/usa_00074.dat.gz", 
-                       col_positions = fwf_positions(start = c(1, 7,15,25,33,37,47,48,51,52,53,
-                                                               56,60,63,71,75,83,86,90,
-                                                               93,94,97,100,103,107,109),
-                                                     end   = c(4,14,24,27,36,46,47,50,51,
-                                                               52,54,58,62,65,74,76,85,89,92,
-                                                               93,96,99,102,106,108,111),
-                                                     col_names = c("year","hhid","hhwt","metarea",
-                                                                   "pernum","perwt","sex",
-                                                                   "age","marst","marrno",
-                                                                   "agemarr","raced","hispand",
-                                                                   "bpl","yrimmig","language",
-                                                                   "educd","pernum_sp","age_sp",
-                                                                   "marrno_sp","raced_sp","hispand_sp",
-                                                                   "bpl_sp","yrimmig_sp","language_sp",
-                                                                   "educd_sp")),
-                       col_types = cols(.default = "i"), #ensure that all variables are read in as integers
-                       progress = FALSE)
-census1980
+```
+File Type:                    rectangular
+Case Selection:               No
+  Variable               Columns        Len    2018   
+  YEAR               H   1-4            4      X 
+  SAMPLE             H   5-10           6      X 
+  SERIAL             H  11-18           8      X 
+  CBSERIAL           H  19-31          13      X 
+  HHWT               H  32-41          10      X 
+  CLUSTER            H  42-54          13      X 
+  STRATA             H  55-66          12      X 
+  GQ                 H  67              1      X 
+  PERNUM             P  68-71           4      X 
+  PERWT              P  72-81          10      X 
+  SEX                P  82              1      X 
+  AGE                P  83-85           3      X 
+  YRMARR             P  86-89           4      X 
+  EDUC               P  90-91           2      X 
+  EDUCD              P  92-94           3      X 
 ```
 
-If you look closely, you will see that I am skipping some index positions in my data because I don't want to bother with some variables. I am also using the `col_types` argument to force `read_fwf` to read in all variables as numeric integers because this is how all the data come from IPUMS. Finally, I set `progress=FALSE` for the output here, but I can ghange that to the `progress=TRUE` option to get a progresss bar as my data is read in that lets me know how long I can expect to wait.
+I don't need all of these variables. Some of them are just defaults that come with every IPUMS extract like HHWT, CLUSTER, and STRATA. For my purposes, lets say I only want the variables of YEAR, SEX, AGE, YRMARR, and EDUCD. Using `read_fwf`, I can just skip the indices of variables I don't need. Another nice feature of the `readr` package is that all of the functions can read directly directly from zipped data, which saves me  room on my computer and my git repository (GitHub has a limit of 100MB for files). Here is my command to read in the data:
+
+```{r read-ipums}
+acs <- read_fwf("resources/usa_00083.dat.gz", 
+                col_positions = fwf_positions(start = c(1,82,83,86,92),
+                                              end   = c(4,82,85,89,94),
+                                              col_names = c("year","sex","age","yrmarr",
+                                                            "educd")),
+                col_types = cols(.default = "i"), 
+                progress = FALSE)
+acs
+```
+
+I am also using the `col_types` argument to force `read_fwf` to read in all variables as numeric integers because this is how all the data come from IPUMS. I also set `progress=FALSE` for the output here, but I can ghange that to the `progress=TRUE` option to get a progresss bar as my data is read in that lets me know how long I can expect to wait.
 
 ### Data in binary format
 
