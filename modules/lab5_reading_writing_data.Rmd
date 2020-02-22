@@ -19,7 +19,7 @@ All three of these packages read data into an object called a [tibble](https://t
 df <- as.data.frame(df)
 ```
 
-### plain text files
+### Plain text files
 
 Plain text files (also known as [ASCII](http://www.asciitable.com/) files), in contrast to binary files, are easily readable across any platform without specialized (and often proprietary) software. When you write a document in WordPad in Windows or TextEdit in OSX, you are writing a plain text file. When you write a document in Microsoft Word, you are writing a binary file. Plain text files are easily transportable across a variety of different program formats, usually take up less memory, and are better for tracking changes in version control systems. If you want to share data with others, plain text is the best format to use because it is accessible regardless of statistical software or computer platform. 
 
@@ -96,7 +96,7 @@ mydata
 
 I have to do a little more work than I did with CSV files. First I need to define a `col_positions` argument and feed in the results from the function `fwf_positions`. This `fwf_positions` function needs to have a vector of starting and ending positions for each variable. I also use the `col_names` argument in this function to assign names to each of my variables.
 
-Now I want to show you an example of fixed width data that is more realistic. The data I will use here were created from an extract of the 2018 [American Community Survey](https://www.census.gov/programs-surveys/acs) data downloaded from [IPUMS](https://usa.ipums.org/usa/). The data come zipped up as a "G-zip" file with suffix "gz" which is a standard method of compressing data files. You can download the file [here](https://aarongullickson.github.io/stat_book/resources/usa_00083.data.gz). You can also [view the codebook](https://aarongullickson.github.io/stat_book/resources/usa_00083.cbk.txt) that IPUMS provides which shows where the starting and ending positions are for each variable. Here is the relevant part of that codebook:
+Now I want to show you an example of fixed width data that is more realistic. The data I will use here were created from an extract of the 2018 [American Community Survey](https://www.census.gov/programs-surveys/acs) data downloaded from [IPUMS](https://usa.ipums.org/usa/). The data come zipped up as a "G-zip" file with suffix "gz" which is a standard method of compressing data files. You can download the file [here](https://aarongullickson.github.io/stat_book/resources/usa_00084.data.gz). You can also [view the codebook](https://aarongullickson.github.io/stat_book/resources/usa_00084.cbk.txt) that IPUMS provides which shows where the starting and ending positions are for each variable. Here is the relevant part of that codebook:
 
 ```
 File Type:                    rectangular
@@ -108,25 +108,26 @@ Case Selection:               No
   CBSERIAL           H  19-31          13      X 
   HHWT               H  32-41          10      X 
   CLUSTER            H  42-54          13      X 
-  STRATA             H  55-66          12      X 
-  GQ                 H  67              1      X 
-  PERNUM             P  68-71           4      X 
-  PERWT              P  72-81          10      X 
-  SEX                P  82              1      X 
-  AGE                P  83-85           3      X 
-  YRMARR             P  86-89           4      X 
-  EDUC               P  90-91           2      X 
-  EDUCD              P  92-94           3      X 
+  STATEFIP           H  55-56           2      X 
+  STRATA             H  57-68          12      X 
+  GQ                 H  69              1      X 
+  PERNUM             P  70-73           4      X 
+  PERWT              P  74-83          10      X 
+  SEX                P  84              1      X 
+  AGE                P  85-87           3      X 
+  YRMARR             P  88-91           4      X 
+  EDUC               P  92-93           2      X 
+  EDUCD              P  94-96           3      X 
 ```
 
-I don't need all of these variables. Some of them are just defaults that come with every IPUMS extract like HHWT, CLUSTER, and STRATA. For my purposes, lets say I only want the variables of YEAR, SEX, AGE, YRMARR, and EDUCD. Using `read_fwf`, I can just skip the indices of variables I don't need. Another nice feature of the `readr` package is that all of the functions can read directly directly from zipped data, which saves me  room on my computer and my git repository (GitHub has a limit of 100MB for files). Here is my command to read in the data:
+I don't need all of these variables. Some of them are just defaults that come with every IPUMS extract like HHWT, CLUSTER, and STRATA. For my purposes, lets say I only want the variables of STATEFIP, YEAR, SEX, AGE, YRMARR, and EDUCD. Using `read_fwf`, I can just skip the indices of variables I don't need. Another nice feature of the `readr` package is that all of the functions can read directly directly from zipped data, which saves me  room on my computer and my git repository (GitHub has a limit of 100MB for files). Here is my command to read in the data:
 
 ```{r read-ipums}
-acs <- read_fwf("resources/usa_00083.dat.gz", 
-                col_positions = fwf_positions(start = c(1,82,83,86,92),
-                                              end   = c(4,82,85,89,94),
-                                              col_names = c("year","sex","age","yrmarr",
-                                                            "educd")),
+acs <- read_fwf("resources/usa_00084.dat.gz", 
+                col_positions = fwf_positions(start = c(1,55,84,85,88,94),
+                                              end   = c(4,56,84,87,91,96),
+                                              col_names = c("year","statefip","sex",
+                                                            "age","yrmarr","educd")),
                 col_types = cols(.default = "i"), 
                 progress = FALSE)
 acs
