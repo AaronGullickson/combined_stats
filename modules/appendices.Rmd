@@ -15,11 +15,26 @@
 
 # R Stat Lab
 
-```{r child="lab1_using_scripts.Rmd", echo=TRUE, eval=TRUE}
+```{r child="lab1_using_scripts.Rmd", echo=TRUE}
 ```
 
 ```{r child="lab2_object_types.Rmd", echo=TRUE, eval=TRUE}
 ```
 
 ```{r child="lab3_pretty_pictures.Rmd", echo=TRUE, eval=TRUE}
+```
+
+```{r child="lab4_using_git.Rmd", echo=TRUE, eval=TRUE}
+```
+
+```{r child="lab5_reading_writing_data.Rmd", echo=TRUE, eval=TRUE}
+```
+
+```{r child="lab6_cleaning_data.Rmd", echo=TRUE, eval=TRUE}
+```
+
+```{r child="lab7_merging_data.Rmd", echo=TRUE, eval=TRUE}
+```
+
+```{r child="lab8_programming.Rmd", echo=TRUE, eval=TRUE}
 ```
