@@ -1,17 +1,15 @@
----
-output: 
-  html_document: 
-    self_contained: no
----
-# Programming
+## Programming
 
-R is the free and open-source version of an older program called Splus. Splus is so named because its syntax was designed to be very similar to C++, one of the most powerful programming languages used in real software development. R carries forward all of this programming capability. Because it was built as a programming language from the ground up, you can do almost anything you want with R if you know enough. We are only going to scratch the surface of the programming capabilities of R in this exercise. I want to show you two important programming features in R: the ability to create your own custom functions and the ability to process pieces of code iteratively. 
+R is the free and open-source version of an older program called Splus. Splus is so named because its syntax was designed to be very similar to C++, one of the most powerful programming languages used in real software development. R carries forward all of this programming capability. Because it was built as a programming language from the ground up, you can do almost anything you want with R if you know enough. We are only going to scratch the surface of the programming capabilities of R in this lab. I want to show you two important programming features in R:
 
-## Theil's H
+1. The ability to create your own custom functions
+2. The ability to repeat the same piece of code on new data iteratively. 
+
+### An Example: Theil's H
 
 As an example, we are going to calculate a measure of segregation called the *Information Theory Index* or sometimes just *Theil’s H*, after its creator. Theil’s H provides a measure of the diversity in areas within a region (e.g. tracts within a city, counties within a state), relative to the overall diversity of the region. When Theil’s H equals one, there is no diversity in the subregions of a region, and when Theil’s H equals zero, the diversity in each subregion is equal to the overall diversity of the region.
 
-In order to measure Theil’s H, one has to first calculate a measure of diversity for each sub-region and the total region. This measure of diversity is called entropy and is based on the proportions of different groups within the area. If $p_j$ is the proportion of group $j$ in the region and there are $J$ total groups, then the formula for entropy ($E$) is given by:
+In order to measure Theil’s H, one has to first calculate a measure of diversity for each sub-region and the total region. This measure of diversity is called *entropy* and is based on the proportions of different groups within the area. If $p_j$ is the proportion of group $j$ in the region and there are $J$ total groups, then the formula for entropy ($E$) is given by:
 
 $$E=\sum_{j=1}^J p_j\log(1/p_j)$$
 Entropy will be at its maximum value when the proportion $p_j$ is the same for each group, and entropy will be at its minimum value of zero when the area is made up entirely of one group. Lets take a simple example where we have three groups and the first group is 60% of the population of an area and the remaining two groups are 20% each. Entropy would be:
@@ -19,23 +17,23 @@ Entropy will be at its maximum value when the proportion $p_j$ is the same for e
 $$E=(0.6)*\log(1/0.6)+0.2*\log(1/0.2)+0.2*log(1/0.2)=0.95$$
 With the natural log used here for three groups, the maximum value of entropy is $\log(3)=1.0986123$, so this area would be considered fairly diverse.
 
-In order to calculate Theil’s H, one has to first calculate entropy for each sub-region ($E_i$) as well as the overall entropy for the whole region ($E$). One also needs the population totals for each sub-region ($t_i$) as well as the total population of the region ($T$). Theil’s H is then given by:
+In order to calculate Theil’s H, one has to first calculate entropy for each sub-region $i$ ($E_i$) as well as the overall entropy for the whole region ($E$). One also needs the population totals for each sub-region ($t_i$) as well as the total population of the region ($T$). Theil’s H is then given by:
 
 $$H=1-\sum_{i=1}^n \frac{t_i*E_i}{T*E}$$
 
 Theil’s H is a weighted average of of how much the diversity of each sub-region varies from the total region. Higher values of H indicate more segregation in the sense that the diversity of the sub-regions is low relatively to the overall diversity of the region.
 
-## Our Example
+### Our Data
 
-For this example, I have data on the number of racial groups (white, black, Latino, Asian, indigenous, and other) in 2010 for each census tract in all 50 states (no Washington DC). Here is a glimpse of the data. 
+For this example, I have [data](/stat_book/resources/tracts_state.csv) on the number of racial groups (white, black, Latino, Asian, indigenous, and other) in 2010 for each census tract in all 50 states (no Washington DC). Here is a glimpse of the data. 
 
 ```{r readdata}
-tracts <- read.csv("resources/tracts_state.csv")
+library(readr)
+tracts <- read_csv("resources/tracts_state.csv")
 head(tracts)
-
 ```
 
-Each observation here is a census tract and we have census tracts identified by state. To see the number of census tracts within each states:
+Each observation here is a census tract and we have census tracts identified by state. To see the number of census tracts within each state:
 
 ```{r} 
 table(tracts$statename)
@@ -43,10 +41,12 @@ table(tracts$statename)
 
 In order to calculate Theil's H for each state, we will need to: 
 
-1) Create code that calculates Theil's H for the tract data from a single state.
-2) Iteratively run that code for each state. 
+1. Create code that calculates Theil's H for the tract data from a single state.
+2. Iteratively run that code for each state. 
 
 ### Calculating Theil's H for a single state
+
+Clearly we need to do some work here that is going to be *iterative*. We want to calculate Theil's H for each state, so however we do that calculation we will need to repeat it for all fifty states. Below, we will learn easy ways to make our work iterative, but the first step here is to make sure we understand how to do this calculation for a single case. Once we are satisfied with how we handled that case, we can learn how to generalize our code and make it iterative. 
 
 To get started, I am going to use Alabama as an example. Let me first pull out these census tracts and save them to a different object. 
 
@@ -55,18 +55,14 @@ alabama_tracts <- subset(tracts, statename=="Alabama")
 head(alabama_tracts)
 ```
 
-The first step is to calculate the proportion of each racial group within each census tract. There are number of ways to do this, but the most straightforward to do this would be to first calculate the total population of each tract and then divide each of the other count variables by this total. We can use the `apply` command to sum up values. The `apply` command will apply a function across either rows or columns. 
+The first step is to calculate the proportion of each racial group within each census tract. There are number of ways to do this, but the most straightforward approach would be to just use a `prop.table` on a subset of the data that just includes the counts, being sure to specify that I want proportions within rows. There is one caveat to this approach.  The `prop.table` command expects a matrix or an array object not a data.frame so I need to recast my subset into a matrix with the `as.matrix` command.
 
-```{r, error=TRUE}
-alabama_tracts$total <- apply(alabama_tracts[,c("white","latino","black","asian",
-                                                "indigenous","other")],1,sum)
-head(alabama_tracts)
-props <- alabama_tracts[,c("white","latino","black","asian",
-                           "indigenous","other")]/alabama_tracts$total
+```{r}
+props <- prop.table(as.matrix(alabama_tracts[,c("white","latino","black","asian","indigenous","other")]), 1)
 head(props)
 ```
 
-Its worthwile to check and make sure that all of these values sum up to one across the rows. I can do this with the `apply` command. 
+Lets make sure that the proportions add up to one in each row:
 
 ```{r}
 summary(apply(props, 1, sum))
@@ -82,14 +78,20 @@ summary(alabama_tracts$entropy)
 
 The `na.rm=TRUE` is important here because groups with a proportion of zero need to be ignored since the log of zero is not defined. 
 
-In order to calculate Theil's H, I now need the entropy for the state itself and the total population for the state for the denominator of the equation. I can sum up the numbers for the state by again using the `apply` function, but this time sum down the columns rather than across rows:
+In order to calculate Theil's H, I also need a couple of other pieces of information. First, I need $t_i$ which is the total population of each tract. I can get this with the `apply` command.
 
 ```{r}
-alabama <- apply(alabama_tracts[,c("white","latino","black","asian",
-                                   "indigenous","other","total")], 2, sum)
-alabama
-props_alabama <- alabama[1:6]/alabama[7]
-props_alabama
+alabama_tracts$total <- apply(alabama_tracts[,c("white","latino","black","asian","indigenous","other")], 
+                            1, sum)
+head(alabama_tracts)
+```
+
+Now I just need to calculate entropy for the whole state of Alabama. I can do this by using `apply` again to sum up tract populations by race and then using `prop.table` again.
+
+```{r}
+props_alabama <- prop.table(apply(alabama_tracts[,c("white","latino","black",
+                                                    "asian","indigenous","other")], 
+                                  2, sum))
 sum(props_alabama)
 alabama_entropy <- sum(props_alabama*log(1/props_alabama))
 alabama_entropy
@@ -98,23 +100,24 @@ alabama_entropy
 Ok, now I have all the pieces that I need to calculate Theil's H for alabama:
 
 ```{r}
-1-sum((alabama_tracts$total * alabama_tracts$entropy)/(alabama["total"]*alabama_entropy))
+1-sum(alabama_tracts$total * alabama_tracts$entropy)/
+  (sum(alabama_tracts$total)*alabama_entropy)
 ```
 
 So, to re-capitulate, here is the code altogether that will calculate entropy for Alabama:
 
 ```{r}
 state_tracts <- subset(tracts, statename=="Alabama")
+props <- prop.table(as.matrix(state_tracts[,c("white","latino","black",
+                                              "asian","indigenous","other")]), 1)
+state_tracts$entropy <- apply(props*log(1/props), 1, sum, na.rm=TRUE)
 state_tracts$total <- apply(state_tracts[,c("white","latino","black","asian",
-                               "indigenous","other")], 1, sum)
-state <- apply(state_tracts[,c("white","latino","black","asian",
-                               "indigenous","other","total")], 2, sum)
-props <- state_tracts[,c("white","latino","black","asian",
-                           "indigenous","other")]/state_tracts$total
-props_state <- state[1:6]/state[7]
-state_tracts$entropy <- state_tracts$entropy <- apply(props*log(1/props), 1, sum, na.rm=TRUE)
+                                            "indigenous","other")], 1, sum)
+props_state <- prop.table(apply(state_tracts[,c("white","latino","black",
+                                                "asian","indigenous","other")], 2, sum))
 entropy_state <- sum(props_state*log(1/props_state))
-theil_h <- 1-sum((state_tracts$total * state_tracts$entropy)/(state["total"]*entropy_state))
+theil_h <- 1-sum(state_tracts$total * state_tracts$entropy)/
+  (sum(state_tracts$total)*entropy_state)
 theil_h
 ```
 
@@ -122,22 +125,24 @@ Notice that I have changed all of the names of objects I create here that contai
 
 ```{r}
 state_tracts <- subset(tracts, statename=="Oregon")
+props <- prop.table(as.matrix(state_tracts[,c("white","latino","black",
+                                              "asian","indigenous","other")]), 1)
+state_tracts$entropy <- apply(props*log(1/props), 1, sum, na.rm=TRUE)
 state_tracts$total <- apply(state_tracts[,c("white","latino","black","asian",
-                               "indigenous","other")], 1, sum)
-state <- apply(state_tracts[,c("white","latino","black","asian",
-                               "indigenous","other","total")], 2, sum)
-props <- state_tracts[,c("white","latino","black","asian",
-                           "indigenous","other")]/state_tracts$total
-props_state <- state[1:6]/state[7]
-state_tracts$entropy <- state_tracts$entropy <- apply(props*log(1/props), 1, sum, na.rm=TRUE)
+                                            "indigenous","other")], 1, sum)
+props_state <- prop.table(apply(state_tracts[,c("white","latino","black",
+                                                "asian","indigenous","other")], 2, sum))
 entropy_state <- sum(props_state*log(1/props_state))
-theil_h <- 1-sum((state_tracts$total * state_tracts$entropy)/(state["total"]*entropy_state))
+theil_h <- 1-sum(state_tracts$total * state_tracts$entropy)/
+  (sum(state_tracts$total)*entropy_state)
 theil_h
 ```
 
 ### Creating Functions
 
-In cases like this where you will end up re-using the same code on different but identically structured objects, its often useful to create your own custom function. Custom functions can be created with the following syntax:
+In cases like this where you will end up re-using the same code on different but identically structured objects, I strongly recommend that you create your own custom function. By creating a custom function, you will only have to write the code you need in one place. Also, if you realize there are bugs in the code later, you only need to fix it in one place. 
+
+Custom functions can be created with the following syntax:
 
 ```{r functionform, eval=FALSE}
 myfunctionname <- function(argument1, argument2, ...) {
@@ -150,21 +155,23 @@ In the call to `function` you can define how many arguments you wish to feed int
 
 ```{r afunction}
 calculateTheilH <- function(state_tracts) {
+  props <- prop.table(as.matrix(state_tracts[,c("white","latino","black",
+                                                "asian","indigenous","other")]), 
+                      1)
+  state_tracts$entropy <- apply(props*log(1/props), 1, sum, na.rm=TRUE)
   state_tracts$total <- apply(state_tracts[,c("white","latino","black","asian",
-                                              "indigenous","other")], 1, sum)
-  state <- apply(state_tracts[,c("white","latino","black","asian",
-                                 "indigenous","other","total")], 2, sum)
-  props <- state_tracts[,c("white","latino","black","asian",
-                           "indigenous","other")]/state_tracts$total
-  props_state <- state[1:6]/state[7]
-  state_tracts$entropy <- state_tracts$entropy <- apply(props*log(1/props), 1, sum, na.rm=TRUE)
+                                              "indigenous","other")], 
+                              1, sum)
+  props_state <- prop.table(apply(state_tracts[,c("white","latino","black",
+                                                  "asian","indigenous","other")], 
+                                  2, sum))
   entropy_state <- sum(props_state*log(1/props_state))
-  theil_h <- 1-sum((state_tracts$total * state_tracts$entropy)/(state["total"]*entropy_state))
+  theil_h <- 1-sum(state_tracts$total * state_tracts$entropy)/(sum(state_tracts$total)*entropy_state)
   return(theil_h)
 }
 ```
 
-The function feeds in an object called `state_tracts` which should be the data.frame of tracts for a given stat. The function then runs the same lines of code that I created above. Lets try it out on a couple of states.
+The function feeds in an object called `state_tracts` which should be the data.frame of tracts for a given state. The function then runs the same lines of code that I created above. Lets try it out on a couple of states.
 
 ```{r}
 calculateTheilH(subset(tracts, statename=="Alabama"))
@@ -224,7 +231,7 @@ head(state_data)
 
 #### The `lapply` command
 
-It turns out that [R is not very efficient with iterative loops](http://stackoverflow.com/questions/7142767/why-are-loops-slow-in-r). So, while iterative looping can help solve problems, its better to look for a different solution before you start using iteration in R. That different solution is often the `lapply` command. 
+It turns out that [R is not very efficient with iterative loops](http://stackoverflow.com/questions/7142767/why-are-loops-slow-in-r). So, while iterative looping can help solve problems, its better to look for a different solution before you start using iteration in R. That different solution is usually the `lapply` command or its closely related cousin `sapply`. 
 
 The `lapply` command will apply a given function to every object in a list. If we were to put all of our state-specific tract datasets into a list, we could run an `lapply` command calling `calculateTheilH` on the entire list at once. Generally, this will be much faster than a for-loop. The code would look something like:
 
@@ -257,25 +264,31 @@ head(theil_h)
 ```
 
 
+
 ### Putting It All Together
 
-Without the use of functions and iterative methods, calculating this measure would have been a nightmare. We would have had to copy and paste code fifty different times for each state. Instead, we have been able to reduce the entire process to thirteen lines of code, most of which is just code for the function.
+Without the use of functions and iterative methods, calculating this measure would have been a nightmare. We would have had to copy and paste code fifty different times for each state. Instead, we have been able to reduce the entire process to just a few lines of code, most of which is just code for the function:
 
 ```{r}
 calculateTheilH <- function(state_tracts) {
-  state_tracts$total <- apply(state_tracts[,c("white","latino","black","asian","indigenous","other")], 1, sum)
-  state <- apply(state_tracts[,c("white","latino","black","asian","indigenous","other","total")], 2, sum)
-  props <- state_tracts[,c("white","latino","black","asian","indigenous","other")]/state_tracts$total
-  props_state <- state[1:6]/state[7]
-  state_tracts$entropy <- state_tracts$entropy <- apply(props*log(1/props), 1, sum, na.rm=TRUE)
+  props <- prop.table(as.matrix(state_tracts[,c("white","latino","black",
+                                                "asian","indigenous","other")]), 
+                      1)
+  state_tracts$entropy <- apply(props*log(1/props), 1, sum, na.rm=TRUE)
+  state_tracts$total <- apply(state_tracts[,c("white","latino","black","asian",
+                                              "indigenous","other")], 
+                              1, sum)
+  props_state <- prop.table(apply(state_tracts[,c("white","latino","black",
+                                                  "asian","indigenous","other")], 
+                                  2, sum))
   entropy_state <- sum(props_state*log(1/props_state))
-  theil_h <- 1-sum((state_tracts$total * state_tracts$entropy)/(state["total"]*entropy_state))
+  theil_h <- 1-sum(state_tracts$total * state_tracts$entropy)/
+    (sum(state_tracts$total)*entropy_state)
   return(theil_h)
 }
-tracts <- read.csv("resources/tracts_state.csv")
+tracts <- read_csv("resources/tracts_state.csv")
 theil_h <- sapply(split(tracts, tracts$statename), calculateTheilH)
 theil_h <- data.frame(statename=names(theil_h), theil_h)
+rownames(theil_h) <- NULL
 head(theil_h)
 ```
-
-The result here is also easily *scalable* to larger numbers of higher-level units. It would be easy to re-use this code for metropolitan areas rather than states. I would just need to change a few of the references to states to match the underlying data and I could re-run this code on cities without adding a single new line of code. 

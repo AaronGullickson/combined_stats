@@ -2,7 +2,7 @@
 
 Cleaning data is a major component of any quantitative project. Rarely will data come to you in exactly the form that you want for your research question. In this section, we will focus on three of the most important components of data cleaning: (1) assigning and handling missing values, (2) recoding variables, and (3) aggregating data.
 
-For this analysis, we will use the same data extract from the [American Community Survey](https://www.census.gov/programs-surveys/acs) that we used for the reading and writing data lab. I downloaded this extract from [IPUMS](https://usa.ipums.org/usa/). You can download the file [here](https://aarongullickson.github.io/stat_book/resources/usa_00084.data.gz). You can also [view the codebook](https://aarongullickson.github.io/stat_book/resources/usa_00084.cbk.txt) that IPUMS provides
+For this analysis, we will use the same data extract from the [American Community Survey](https://www.census.gov/programs-surveys/acs) that we used for the reading and writing data lab. I downloaded this extract from [IPUMS](https://usa.ipums.org/usa/). You can download the file [here](/stat_book/resources/usa_00084.data.gz). You can also [view the codebook](/stat_book/resources/usa_00084.cbk.txt) that IPUMS provides
 
 The data is a sample of individuals in the US. In the `read_fwf` command below, I am only going to read in a few variables that we will use for our data cleaning examples.
 

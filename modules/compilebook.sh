@@ -13,5 +13,8 @@ rm -r ~/Professional/blog/stat_book
 #create new stat_book
 Rscript -e 'bookdown::render_book("index.Rmd", bookdown::gitbook(split_by="section+number", number_section=FALSE), output_dir="~/Professional/blog/stat_book")'
 
+#copy over everything from the resources directory
+cp -n resources/* ~/Professional/blog/stat_book/resources/
+
 #a little cleanup
 rm -r _bookdown_files
