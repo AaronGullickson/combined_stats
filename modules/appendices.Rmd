@@ -38,3 +38,6 @@
 
 ```{r child="lab8_programming.Rmd", echo=TRUE, eval=TRUE}
 ```
+
+```{r child="lab9_using_rmarkdown.Rmd", echo=TRUE, eval=TRUE}
+```
