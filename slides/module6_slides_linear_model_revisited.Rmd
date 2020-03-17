@@ -1,0 +1,294 @@
+class: inverse, center, middle
+
+background-image: url(images/ridham-nagralawala-kuJkUTxR0z4-unsplash.jpg)
+background-size: cover
+
+# The Linear Model Revisited
+
+---
+
+## Review of linear model
+
+$$\hat{y}_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$
+
+--
+
+- $\hat{y}_i$ is the predicted value of the outcome/dependent variable which must be quantitative.
+
+--
+
+- The $x$ values are different independent/explanatory variables which may be quantitative or categorical (by using dummy coding).
+
+--
+
+- The $\beta$ values are the slopes/effects/coefficients that, *holding all other independent variables constant*, tell us the:
+    - The predicted change in $y$ for a one unit increase in $x$ if $x$ is quantitative
+    - The mean difference in $y$ between the indicated category and the reference category if $x$ is categorical.
+    
+--
+
+### Interpret these values
+
+```{r lm-example}
+coef(lm(indegree~nsports+I(parentinc-45)+sex, data=popularity))
+```
+
+---
+
+## The residual term
+
+$$\epsilon_i=\hat{y}_i-y_i$$
+
+The residual/error term $\epsilon_i$ gives us the difference between the actual value of the outcome variable for a given observation and the value predicted by the model.
+
+Lets use algebra to rewrite this equatiion with $y_i$ on the left-hand side:
+
+--
+
+$$y_i=\hat{y}_i+\epsilon_i$$
+
+If we plug in our linear model formula for $\hat{y}_i$, we can get the full model formula:
+
+--
+
+$$y_i=\underbrace{\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}}_{\hat{y}_i}+\epsilon_i$$
+
+---
+
+## Linear model as a partition of the variance in $y$
+
+
+$$y_i = \underbrace{\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}}_\text{structural} +
+    \underbrace{\epsilon_i}_\text{stochastic}$$
+    
+- The structural part is the predicted value from our model which is typically a linear function of the independent variables.
+- The stochastic component is the leftover residual or error component, that is not accounted for by the model.
+
+--
+
+Depending on disciplinary norms, there are different conceptual ways to view this basic relationship:
+
+--
+
+- **Description:** observed = summary + residual
+
+--
+
+- **Prediction:** observed = predicted + error
+
+--
+
+- **Causation:** observed = true process + disturbance
+
+---
+
+## Two key assumptions of linear models
+
+--
+
+
+.pull-left[
+### Linearity
+```{r linear-violation, echo=FALSE, fig.height=4}
+ggplot(subset(gapminder, year==2007), aes(x=gdpPercap, y=lifeExp))+
+  geom_point(alpha=0.7)+
+  geom_smooth(method="lm", se=FALSE)+
+  geom_text_repel(data=subset(gapminder, year==2007 & gdpPercap>5000 & lifeExp<60), 
+                  aes(label=country), size=2)+
+  labs(x="GDP per capita", y="Life expectancy at birth", subtitle = "2007 data from Gapminder")+
+  scale_x_continuous(labels=scales::dollar)+
+```
+
+* If you fit a model with the wrong functional form, it is considered a *specification error*.
+* We can correct this through a variety of more advanced model specifications.
+]
+
+--
+
+.pull-right[
+### Error terms are iid
+```{r heteroskedasticity, echo=FALSE, fig.height=4}
+model <- lm(BoxOffice~TomatoRating, data=movies)
+ggplot(augment(model), aes(x=.fitted, y=.resid))+
+  geom_jitter(alpha=0.2)+
+  geom_hline(yintercept = 0, linetype=2)+
+  labs(x="predicted values of box office returns by tomato rating", y="model residuals")+
+```
+* iid = **independent and identically distributed** which is typically violated either by **heteroscedasticity** or **autocorrelation**. 
+* The consequence of violating the i.i.d. assumption is usually incorrect standard errors. 
+]
+
+---
+
+## How are linear model parameters estimated?
+
+`r emo::ji("warning")` Heavy math ahead!
+
+- We have simple formulas for the slope and intercept for the case of a single independent variable. 
+- With multiple independent variables, a simple formula will not suffice. To estimate model parameters with multiple independent variables we need to use some matrix algebra. 
+
+--
+
+### The matrix algebra approach to linear models
+
+We can use matrix algebra to represent our linear regression model equation using one-dimensional **vectors** and two-dimensional **matrices**. 
+
+$$\mathbf{y}=\mathbf{X\beta+\epsilon}$$
+
+- $\mathbf{y}$ is a vector of known values of the independent variable of length $n$.
+- $\mathbf{X}$ is a matrix of known values of the independent variables of dimensions $n$ by $p+1$.
+- $\mathbf{\beta}$ is a vector of to-be-estimated values of intercepts and slopes of length $p+1$.
+- $\mathbf{\epsilon}$ is a vector of residuals of length $n$ that will be equal to $\mathbf{y-X\beta}$.
+
+---
+
+## `r emo::ji("warning")` Linear model in matrix form
+
+.pull-left[
+$$\mathbf{y}=\begin{pmatrix}
+y_{1}\\
+y_{2}\\
+\vdots\\
+y_{n}\\
+\end{pmatrix}$$
+
+
+
+$$\mathbf{X}=\begin{pmatrix}
+1 & x_{11} & x_{12} & \ldots & x_{1p}\\
+1 & x_{21} & x_{22} & \ldots & x_{2p}\\
+\vdots & \vdots & \ldots & \vdots\\
+1 & x_{n1} & x_{n2} & \ldots & x_{np}\\
+\end{pmatrix}$$
+]
+
+.pull-right[
+$$\mathbf{\beta}=\begin{pmatrix}
+\beta_{1}\\
+\beta_{2}\\
+\vdots\\
+\beta_{p}\\
+\end{pmatrix}$$
+
+$$\mathbf{\epsilon}=\begin{pmatrix}
+\epsilon_{1}\\
+\epsilon_{2}\\
+\vdots\\
+\epsilon_{n}\\
+\end{pmatrix}$$
+]
+
+--
+
+Putting it all together gives us this beast `r emo::ji("japanese_ogre")`:
+$$\begin{pmatrix}
+y_{1}\\
+y_{2}\\
+\vdots\\
+y_{n}\\
+\end{pmatrix}=\begin{pmatrix}
+1 & x_{11} & x_{12} & \ldots & x_{1p}\\
+1 & x_{21} & x_{22} & \ldots & x_{2p}\\
+\vdots & \vdots & \ldots & \vdots\\
+1 & x_{n1} & x_{n2} & \ldots & x_{np}\\
+\end{pmatrix}\begin{pmatrix}
+\beta_{1}\\
+\beta_{2}\\
+\vdots\\
+\beta_{p}\\
+\end{pmatrix}+\begin{pmatrix}
+\epsilon_{1}\\
+\epsilon_{2}\\
+\vdots\\
+\epsilon_{n}\\
+\end{pmatrix}$$
+
+---
+
+## `r emo::ji("warning")` Minimize sum of squred residuals
+
+Our goal is to choose a $\mathbf{\beta}$ vector that minimizes the sum of squared residuals, $SSR$, which is just given by the $\epsilon$ vector squared and summed up. We can rewrite the matrix albegra formula to isolate $e$ on one side:
+
+$$\begin{align*}
+\mathbf{y}&=&\mathbf{X\beta+\epsilon}\\
+\epsilon&=&\mathbf{y}-\mathbf{X\beta}
+\end{align*}$$
+
+--
+
+In matrix form, $SSR$ can be represented as a function of $\mathbf{\beta}$, like so:
+
+$$\begin{align*}
+SSR(\beta)&=&(\mathbf{y}-\mathbf{X\beta})'(\mathbf{y}-\mathbf{X\beta})\\
+&=&\mathbf{y}'\mathbf{y}-2\mathbf{y}'\mathbf{X\beta}+\mathbf{\beta}'\mathbf{X'X\beta}
+\end{align*}$$
+
+--
+
+We want to choose a $\mathbf{\beta}$ to plug into this function that provides the smallest possible value (the minimum). It turns out that we can get this value by using calculus to get the derivative with respect to $\mathbf{\beta}$ and solving for zero:
+
+$$0=-2\mathbf{X'y}+2\mathbf{X'X\beta}$$
+
+--
+
+Applying some matrix algebra will give us the estimator of $\mathbf{\beta}$:
+
+$$\mathbf{\beta}=(\mathbf{X'X})^{-1}\mathbf{X'y}$$
+
+---
+
+## Estimating linear models manually
+
+<div class="footer">
+<body>Sociology 513, Model Complications: The Linear Model, Revisited</body>
+</div>
+
+```{r matrixreg}
+#set up the design matrix
+X <- as.matrix(cbind(rep(1, nrow(movies)), movies[,c("Runtime","BoxOffice")]))
+#the outcome variable vector
+y <- movies$TomatoMeter
+#crossprod(X) will do matrix multiplication, solve will invert
+beta <- solve(crossprod(X))%*%crossprod(X,y)
+beta
+#how does it compare to lm?
+model <- lm(TomatoMeter~Runtime+BoxOffice, data=movies)
+coef(model)
+```
+
+It works!
+
+---
+
+## `r emo::ji("warning")` Estimating standard errors using matrix algebra
+
+If we treat $\sigma^2$ as the variance of the error term $\epsilon$, then we can also use matrix algebra to calculate the **covariance matrix**:
+
+$$\sigma^{2}(\mathbf{X'X})^{-1}$$
+
+The values of this matrix give us information about the correlation between different independent variables. Most importantly, the square root of the diagonal values of this matrix are the standard errors for the estimated values of $\beta$. 
+
+--
+
+In practice, we don't have $\sigma^2$, but we can estimate from the fitted values of $y$ by:
+
+$$s^2=\frac{\sum(y_i-\hat{y}_i)^2}{n-p-1}$$
+We can then use these estimated standard errors to calculate t-statistics and p-values, confidence intervals, and so on. 
+
+---
+
+## Calculating SEs manually
+
+```{r matrixse}
+y.hat <- X%*%beta
+df <- length(y)-ncol(X)
+s.sq <- sum((y-y.hat)^2)/df
+covar.matrix <- s.sq*solve(crossprod(X))
+se <- sqrt(diag(covar.matrix))
+t.stat <- beta/se
+p.value <- 2*pt(-1*abs(t.stat), df)
+data.frame(beta,se,t.stat,p.value)
+summary(model)$coef
+```
+
+
