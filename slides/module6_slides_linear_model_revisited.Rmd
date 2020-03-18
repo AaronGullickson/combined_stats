@@ -82,10 +82,92 @@ Depending on disciplinary norms, there are different conceptual ways to view thi
 
 ---
 
-## Two key assumptions of linear models
+## Calculating marginal effects
+
+The **marginal effect** of $x$ on $y$ is simply the predicted change in $y$ for a one unit increase in $x$ from its current value, holding all else constant. Sound familiar?
 
 --
 
+In a basic linear model, the marginal effect is just given by the slope itself. 
+
+$$y_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\epsilon_i$$
+- $\beta_1$ is the marginal effect of $x_1$
+- $\beta_2$ is the marginal effect of $x_2$
+
+--
+
+Technically, the marginal effect is the derivative of $y$ with respect to a given $x$. This gives us the **tangent line** for the curve at any value of $x$.
+
+$$\frac{\partial y}{\partial x_1}=\beta_1$$
+$$\frac{\partial y}{\partial x_2}=\beta_2$$
+
+`r emo::ji("scream")` I am not expecting you to know the calculus behind this, but it may help some people
+
+---
+
+## Marginal effects with interaction terms
+
+.pull-left[
+Marginal effects can get more complicated when we move to more complex model. Consider this model with an interaction terrm:
+
+$$y_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\beta_3(x_{i1})(x_{i2})+\epsilon_i$$
+
+--
+
+The marginal effects are now given by:
+
+$$\frac{\partial y}{\partial x_1}=\beta_1+\beta_3x_{i2}$$
+$$\frac{\partial y}{\partial x_2}=\beta_2+\beta_3x_{i1}$$
+
+This is a very math-y way of saying: **the main effects depend on the effect of the other variable**.
+]
+
+--
+
+.pull-right[
+```{r marginal-fx}
+model <- lm(indegree~nsports*sex,
+            data=popularity)
+as.data.frame(coef(model))
+```
+
+$$\hat{y}_i=4.21+0.49(nsports_i)-0.54(male_i)-0.09(nsports_i)(male_i)$$
+
+The marginal effect for number of sports played is:
+
+$$0.49-0.09(male_i)$$
+
+The marginal effect for gender is:
+
+$$-0.54-0.09(nsports_i)$$
+]
+
+---
+
+## Marginal effects plot
+
+.pull-left[
+```{r marginal-fx-plot, fig.show="hide"}
+nsports <- 0:6
+gender_diff <- -0.54-0.09*nsports
+ggplot(data.frame(nsports, gender_diff),
+       aes(x=nsports, y=gender_diff))+
+  geom_line()+
+  labs(x="number of sports played",
+       y="predicted popularity difference between boys and girls")
+```
+]
+
+.pull-right[
+```{r ref.label = 'marginal-fx-plot', echo = FALSE}
+```
+]
+
+---
+
+## Two key assumptions of linear models
+
+--
 
 .pull-left[
 ### Linearity
@@ -93,10 +175,11 @@ Depending on disciplinary norms, there are different conceptual ways to view thi
 ggplot(subset(gapminder, year==2007), aes(x=gdpPercap, y=lifeExp))+
   geom_point(alpha=0.7)+
   geom_smooth(method="lm", se=FALSE)+
-  geom_text_repel(data=subset(gapminder, year==2007 & gdpPercap>5000 & lifeExp<60), 
+  geom_text_repel(data=subset(gapminder, 
+                              year==2007 & gdpPercap>5000 & lifeExp<60), 
                   aes(label=country), size=2)+
   labs(x="GDP per capita", y="Life expectancy at birth", subtitle = "2007 data from Gapminder")+
-  scale_x_continuous(labels=scales::dollar)+
+  scale_x_continuous(labels=scales::dollar)
 ```
 
 * If you fit a model with the wrong functional form, it is considered a *specification error*.
@@ -112,7 +195,7 @@ model <- lm(BoxOffice~TomatoRating, data=movies)
 ggplot(augment(model), aes(x=.fitted, y=.resid))+
   geom_jitter(alpha=0.2)+
   geom_hline(yintercept = 0, linetype=2)+
-  labs(x="predicted values of box office returns by tomato rating", y="model residuals")+
+  labs(x="predicted values of box office returns by tomato rating", y="model residuals")
 ```
 * iid = **independent and identically distributed** which is typically violated either by **heteroscedasticity** or **autocorrelation**. 
 * The consequence of violating the i.i.d. assumption is usually incorrect standard errors. 
