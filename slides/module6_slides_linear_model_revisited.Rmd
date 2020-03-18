@@ -1,6 +1,6 @@
 class: inverse, center, middle
 
-background-image: url(images/ridham-nagralawala-kuJkUTxR0z4-unsplash.jpg)
+background-image: url(images/jeremy-bishop-FzrlPh20l7Q-unsplash.jpg)
 background-size: cover
 
 # The Linear Model Revisited
