@@ -1,0 +1,246 @@
+class: inverse, center, middle
+
+background-image: url(images/bence-balla-schottner-o5ttfkZU9_Q-unsplash.jpg)
+background-size: cover
+
+# The IID Violation and Robust Standard Errors
+
+---
+
+##  Linear model as data-generating process
+
+$$y_i=\underbrace{\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}}_{\hat{y}_i}+\epsilon_i$$
+
+--
+
+- To get values of $y_i$, you feed in values of $x_i$ to the structural component and get back out a predicted $\hat{y_i}$ value.
+
+--
+
+- To get the stochastic (random) part, you then reach into some distribution to grab a random value of $\epsilon_i$ that you add to your predicted value to get an actual value of $y_i$.
+
+--
+
+- What distribution are you reaching into when you grab $\epsilon_i$? The linear model framework assumes two things about this distribution:
+
+--
+
+    - **Independence**: The number you pull out each time doesn't depend on other numbers that you pull out. This is most commonly violated by **autocorrelation** or the clustering of **repeated observations**.
+--
+
+    - **Identical distribution**: You reach into the same distribution for all observations. This is most commonly violated by **heteroscedasticity** which means non-constant variance in the residuals.
+
+--
+
+- Together these assumptions give us the **IID** assumption of the linear model: the error terms are **independent and identically distributed**.
+
+---
+
+## Violations of independence
+
+--
+
+.pull-left[
+### Serial autocorrelation
+
+```{r longley, echo=FALSE, fig.height=3.5}
+longley$year <- rownames(longley)
+ggplot(longley, 
+       aes(x=GNP,
+           y=Unemployed))+
+  geom_point()+
+  geom_line()+
+  geom_smooth(method="lm", se=FALSE)+
+  geom_text_repel(aes(label=year))+
+  labs(x="Gross National Product, US",
+       y="Number Unemployed, US")
+```
+
+In time series data, sequential observations in time are likely to either be highly positively or negatively correlated. In this case, when one year has a higher or lower than expected value, the next and previous years are also likely to have a higher or lower than expected value. 
+]
+
+--
+
+.pull-right[
+### Repeated observations
+
+.center[![](images/classroom.jpg)]
+
+When observations are drawn repeatedly from a sample of some larger units (i.e. a multilevel structure), then observations within the same unit are likely to vary from predicted values in the same way. For example, students in the same classroom might tend to have either lower or higher test scores than predicted by the model due to some unobserved feature of that classroom.
+]
+
+---
+
+##  Serial autocorrelation example
+
+.pull-left[
+
+```{r searialautocor, fig.show="hide"}
+model <- lm(Employed~GNP, data=longley)
+temp <- augment(model)$.resid
+temp <- data.frame(x=temp[1:15], y=temp[2:16])
+ggplot(temp, aes(x=x, y=y))+
+  geom_point()+
+  geom_smooth(method="lm", se=FALSE)+
+  geom_hline(yintercept = 0, linetype=2)+
+  labs(x="residuals from 1947-1961",
+       y="residuals from 1948-1962")+
+  annotate("text",0.25, 0.5, label="r=0.16")
+```
+
+As an example of serial autocorrelation, I will use the `longley` time series dataset in R to fit the following model predicting the number of people employed by GNPfrom 1947 to 1962 (n=16):
+
+I can then plot the residuals values from years 1947 to 1961  by the residual values for years 1948 to 1962. The positive correlation in the residuals here suggests serial autocorrelation.
+
+]
+
+.pull-right[
+```{r ref.label = 'searialautocor', echo = FALSE}
+```
+]
+
+---
+
+## Heteroscedasticity
+
+.pull-left[
+.center[![](images/mary_poppins.jpg)]
+- Heteroscedasticity means that the variance of the residuals is not constant but depends on the values of $x_i$, and therefore, implicitly, $\hat{y}_i$. 
+- A classic example of heteroscedasticity is when the variance of the residuals increases with larger values of $\hat{y}_i$ giving you a cone shape in a residual by fitted value plot. 
+]
+
+
+.pull-right[
+```{r heteroscedasticity, echo=FALSE}
+model <- lm(BoxOffice~TomatoRating, data=movies)
+segments <- data.frame(x=c(20,40,60),
+                       y=c(-40,-60,-80),
+                       xend=c(20,40,60),
+                       yend=c(80,200,340))
+ggplot(augment(model), aes(x=.fitted, y=.resid))+
+  geom_point(alpha=0.7)+
+  geom_hline(yintercept=0, linetype=2)+
+  geom_segment(data=segments,
+               aes(x=x, y=y, xend=xend, yend=yend),
+               color="red", size=2,
+               arrow = arrow(length = unit(0.03, "npc"), end="both"),
+               alpha=0.5)+
+  labs(x="fitted values of box office returns by Tomato Rating",
+       y="model residuals")
+```
+]
+
+---
+
+##  Correcting for iid violations
+
+Violating the iid. assumption does not bias your results, but it will lead to inefficient estimates and poorly estimated standard errors. 
+
+There are a number of potential solutions to the iid problem. These include:
+
+--
+
+- **Transformations** (particularly the log transformation) can often solve the problem of heteroscedasticity. 
+
+--
+
+- **Weighted least squares** models can correct for iid when the nature of the violation is understood.
+
+--
+
+- **Robust standard errors** can be used as a crude brute-force solution when the nature of the violation is not well understood. I would recommend that this only be done for diagnostic reasons. 
+
+--
+
+- In general, the best approach is to re-think your model. If you have an iid violation then you are probably not applying the best type of model to the problem at hand. 
+
+---
+
+##  Fixing heteroscedasticity with a transformation
+
+.pull-left[
+```{r heteroscedasticity-original, echo=FALSE}
+model <- lm(BoxOffice~TomatoRating, data=movies)
+ggplot(augment(model), aes(x=.fitted, y=.resid))+
+  geom_point(alpha=0.7)+
+  geom_hline(yintercept=0, linetype=2)+
+  labs(x="fitted values of box office returns by Tomato Rating",
+       y="model residuals",
+       title="Original scale")
+```
+]
+
+--
+
+.pull-right[
+```{r heteroscedasticity-log, echo=FALSE}
+model <- lm(log(BoxOffice)~TomatoRating, data=movies)
+ggplot(augment(model), aes(x=.fitted, y=.resid))+
+  geom_point(alpha=0.7)+
+  geom_hline(yintercept=0, linetype=2)+
+  labs(x="fitted values of log box office returns by Tomato Rating",
+       y="model residuals",
+       title="After logging box office returns")
+```
+]
+
+---
+
+##  Using Weighted Least Squares
+
+The weighted least squares technique uses a weighting matrix $\mathbf{W}$ in its calculation of regression slopes like so:
+
+
+$$\mathbf{\beta}=(\mathbf{X'W^{-1}X})^{-1}\mathbf{X'W^{-1}y}$$
+$$SE_{\beta}=\sqrt{\sigma^{2}(\mathbf{X'W^{-1}X})^{-1}}$$
+
+The exact form of this weighting matrix depends on the nature of the iid violation, but in general it is used to represent the covariance between residuals. Values in the diagonal cells adjust for heteroscedasticity and values in other cells adjust for autocorrelation. This technique is used routinely in time series analysis to adjust for serial autocorrelation. 
+
+---
+
+##  GLS Example
+
+We can use the `gls` command in the `nmle` package to adjust for serial autocorrelation in the prior model.We will assume that the autocorrelation follows an "AR1" pattern in which each subsequent residual is only correlated with its immediate predecessor (AR1 stands for auto-regressive 1, where 1 indicates the lag). 
+
+```{r longleyar1}
+summary(lm(Employed~GNP+Population, data=longley))$coef
+library(nlme)
+model.ar1 <- gls(Employed~GNP+Population, correlation=corAR1(form=~Year),data=longley)
+summary(model.ar1)$tTable
+```
+
+---
+
+## Robust Standard Errors
+
+.pull-left[
+We won't delve into the math behind the robust standard error, but the general idea is that robust standard errors will give you "correct" standard errors even when the model is mis-specified due to issues such a non-linearity, heteroscedasticity, and autocorrelation.
+
+Robust standard errors can be estimated in R using the `sandwich` and `lmtest` packages, and specifically with the `coeftest` command. Within this command, it is possible to specify different types of robust standard errors, but we will use the "HC1" version which is equivalent to the robust standard errors produced in Stata by default. 
+]
+
+--
+
+.pull-right[
+```{r robustse, message=FALSE, error=FALSE}
+library(sandwich)
+library(lmtest)
+model <- lm(BoxOffice~TomatoRating, data=movies)
+summary(model)$coef[,1:2]
+coeftest(model, vcov=vcovHC(model, "HC1"))[,1:2]
+```
+Note that the estimates are the same, but the robust standard errors are considerably larger. That difference in magnitude is telling us that our basic regression model is problematic. In this case, we already know that the problem is heteroscedasticity.
+
+]
+
+---
+
+##  `r emo::ji("warning")` Robust standard errors diagnose problems that they do not fix!
+
+```{r robustse3}
+model <- lm(log(BoxOffice)~TomatoRating, data=movies)
+summary(model)$coef
+coeftest(model, vcov=vcovHC(model, "HC1"))
+```
+
+When the dependent variable is logged to remove heteroscedasticity, the difference between robust and regular standard errors goes away.
