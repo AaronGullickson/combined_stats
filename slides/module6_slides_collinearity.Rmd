@@ -1,0 +1,465 @@
+# Multicollinearity and Scales
+
+##  The problem of multicollinearity
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+>- Given that adding more independent variables to your model allows you to account for potential omitted variable bias, why wouldn't you just put in as many variables as you can?
+>- Because of **multicollinearity**. Multicollinearity occurs when there is moderate to high correlation between the independent variables in the model.
+>- Intuitively, its easy to understand why multicollinearity is a problem. When two $x$ variables are highly correlated with one another, it becomes hard to separate out their effect on the $y$ variable. 
+>- Technically, the effect of multicollinearity is to inflate standard errors and make coefficient estimates highly unstable across different combinations of highly collinear terms in the model. 
+
+##  Two kinds of multicollinearity
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+>- **Structural multicollinearity**: Structural multicollinearity occurs when one independent variable is completely determined by another independent variable or set of independent variables. This really isn't an issue with the data, but rather a specification error by the researcher. 
+>- **Data-based multicollinearity**: Data-based multicollinearity occurs when a set of variables are highly but not perfectly correlated with one another in the empirical data. It is a hazard of using observational data where the characteristics for which you want to get separate effects are difficult to separate.
+
+##  Example of structural multicollinearity {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+Lets predict violent crime by % female and % male.
+
+```{r structural_multicol}
+crimes$PctFemale <- 100-crimes$PctMale
+summary(lm(Violent~PctMale+PctFemale, data=crimes))
+```
+
+
+##  Singularity! Not as cool as it sounds. {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+One of the terms was dropped from the model because the terms are perfectly collinear.
+
+```{r perfectcollinear}
+cor(crimes$PctFemale,crimes$PctMale)
+```
+
+This is not a problem of the model, but our thinking. Either term by itself will give you full information.
+
+```{r structural_multicol2}
+coef(lm(Violent~PctMale, data=crimes))
+coef(lm(Violent~PctFemale, data=crimes))
+```
+
+##  Detecting Data-based Multicollinearity
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+>- Standard errors increase substantially across nested models with more covariates. 
+>- Regression coefficients are highly unstable across nested models. 
+>- Examination of correlation matrix. 
+>- Calculating variance inflation factors. 
+
+##  Multicollinearity example: NYC non-profits {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+For an example of multicollinearity, we will look at data collected by myself and Nicole Marwell on the spatial distribution of money for social services by the City of New York from 1997-2001. Money is distributed by contracting out social services to non-profit organizations. The unit of analysis is a NYC health area, which can loosely be thought of as a neighborhood. We are interested in the relationship between socioeconomic disadvantage and the amount of money provided to a neighborhood. The variables are:
+
+- **amountcapita**: The dollar amount of money provided to the health area divided by the population size of the health area. This variable is heavily right-skewed, so we will log it. 
+- **poverty**: percent of population below the poverty line in the health area. 
+- **unemployed**: unemployment rate for the health area.
+- **income**: median household income of the health area. This variable is also right-skewed, so we will log it. 
+
+##  Building the models, NYC example
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+```{r nycmodels}
+nyc$lincome <- log(nyc$income)
+model.pov <- lm(log(amtcapita)~poverty, data=nyc)
+model.unemp <- update(model.pov,.~.-poverty+unemployed)
+model.income <- update(model.pov,.~.-poverty+lincome)
+model.povunemp <- update(model.pov, .~.+unemployed)
+model.unempinc <- update(model.unemp, .~.+lincome)
+model.povinc <- update(model.pov, .~.+lincome)
+model.allthree <- update(model.povunemp, .~.+lincome)
+```
+
+## Model results, NYC example {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+<div class="stargazer">
+```{r nycmodel_table, echo=FALSE, message=FALSE, error=FALSE, results="asis"}
+stargazer(model.pov, model.unemp, model.income, 
+          model.povunemp, model.povinc, model.unempinc,
+          model.allthree, 
+          type="html",
+          keep.stat=c("n","rsq"),
+          covariate.labels = c("poverty rate", "unemployment rate", "median income (logged)"),
+          dep.var.caption = "Social service funding per capita (logged)",
+          dep.var.labels.include = FALSE)
+
+```
+</div>
+
+The models exhibit classic signs of multicollinearity:
+
+>- Highly unstable regression coefficients across models. Note how much the effects change in models 5 and 6 when median income is added. 
+>- Increase in standard errors. The standard errors in the final model 7 are more than double the standard errors from bivariate models 1-3 and are also blown up in the intermediate models 4-6. 
+
+##  The correlation matrix as diagnostic
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+```{r correlation_nyc}
+cor(nyc[,c("poverty","unemployed","lincome")])
+```
+
+The correlation between the three variables is very high, suggesting strong multicollinearity.
+
+Note that, while the correlation matrix is often helpful, it may not reveal the full extent of multicollinearity because it only looks at bivariate relationships between the variables.
+
+## Visualize correlation matrix as correlogram
+
+```{r corrgram-nyc, fig.width=7.5, fig.height=4, fig.align='center', out.width='750px', out.height='400px', dpi=300, dev.args = list(bg = 'transparent')}
+library(corrgram)
+corrgram(nyc[,c("poverty","unemployed","lincome")],
+         upper.panel="panel.cor", lower.panel="panel.pts")
+```
+
+##  Variance inflation factors {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+The **variance inflation factor** (VIF) is the multiplicative factor by which the variance in the estimation of any one coefficient from the current model is increased due to multicollinearity relative to variance in the estimation of that coefficient from the bivariate model. The square root of the VIF is roughly the expected factor increase in the standard error. It can be shown that the VIF for the $i$th variable is given by:
+
+$$VIF_i=\frac{1}{1-R_i^2}$$
+Where $R_i^2$ is the r-squared value when the given independent variable is predicted by all of the other independent variables in the model. For example, we could calculate the VIF for poverty in the full model by:
+
+```{r vif_poverty}
+1/(1-summary(lm(poverty~unemployed+lincome, data=nyc))$r.squared)
+```
+
+The square root of this VIF is 2.45, indicating that the standard error for poverty is almost tripled due to multicollinearity in the full model. 
+
+##  Estimating VIF with the `vif` command
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+We can also use the `vif` function in the `car` package to quickly estimate all VIFs for a given model:
+
+```{r vif_full}
+library(car)
+vif(model.allthree)
+```
+
+The general rule of thumb is that a VIF over four is problematic enough that it needs to be addressed in some manner. Clearly, multicollinearity is a big problem here. 
+
+##  What to do about multicollinearity? 
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+>- A simple approach is to remove some of the highly correlated covariates. However, because the variables are not perfectly correlated, you are basically throwing out some information. 
+>- Another approach is to run separate models with only one of the highly collinear variables in each model. This can also be unsatisfying because each of the models is underestimating the total effect of the variables collectively in terms of variance explained and in terms of controlling for other variables in the model. 
+>- In cases where the collinear variables are all thought to represent the same underlying conceptual variable, another approach is to combine them into a single scale. 
+
+##  Standardization and reverse ordering 
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+>- In many cases, the variables that are thought to make up a scale might be measured in the same manner. This is true of many variables in psychological research (where scale construction was largely developed) where each item might be a likert scale variable or a simple yes/no variable. 
+>- When variables are measured differently (as in our example), then they must be standardized in some way to make them comparable before scale construction and evaluation. The most common way to do this is by creating **z-scores** by subtracting by the mean and dividing by the standard deviation of each variable. 
+>- Some variables may be positively related to the underlying concept while others may be negatively related. For example, poverty and unemployment are positively related to socioeconomic deprivation, but median income is negatively related to socioeconomic deprivation. It may be necessary to reverse the coding of a variable to make all variables positively related to the underlying concept. 
+
+##  Standardization, NYC example
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+The `scale` command will perform z-score standardization, but its also easy enough to do by hand. Note that I am multiplying the `lincome` result by -1 to reverse code it. 
+
+```{r standardize_reversecode_nyc}
+nyc$poverty.z <- (nyc$poverty-mean(nyc$poverty))/sd(nyc$poverty)
+nyc$unemployed.z <- (nyc$unemployed-mean(nyc$unemployed))/sd(nyc$unemployed)
+nyc$lincome.z <- -1*(nyc$lincome-mean(nyc$lincome))/sd(nyc$lincome)
+```
+
+##  Cronbach's Alpha {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+Cronbach's Alpha ($\alpha$) is a statistic developed in psychology to test the degree to which different variables (or "items" in psych speak) measure the same underlying concept. It is thought of as a test of the *internal reliability* of a scale. You can think about it as a summary measure of the correlation matrix we saw earlier. It goes from 0 to 1, with 0 indicating no shared correlation, and 1 indicating perfect correlation between all items. The `pysch` package includes and `alpha` command that will calculate $\alpha$. Note that I need to standardize and reverse code my variables before entering them here. 
+
+```{r cronbachalpha, error=FALSE, message=FALSE}
+library(psych)
+alpha(nyc[,c("poverty.z","unemployed.z","lincome.z")])$total
+'```
+
+The $\alpha$ of 0.96 indicates a very high level of shared covariance between the three variables. We kind of already knew that, but this gives us a single summary measure.
+
+##  Summated scale {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+Once I have standardized and (if necessary) reverse coded all of the variables for my scale, I can create a simple scale (called a **summated scale**) by simply adding them up. I am also going to scale this variable with the `scale` command so that it has a mean of zero and a standard deviation of one. 
+
+```{r summatedscale}
+nyc$deprivation.summated <- scale(nyc$poverty.z+nyc$unemployed.z+nyc$lincome.z)
+summary(lm(log(amtcapita)~deprivation.summated, data=nyc))$coef
+```
+
+A one standard deviation increase on my deprivation scale is associated with a 45% increase in the amount for social services in a neighborhood. Remember that because the dependent variable is logged and the slope is large, I need to exponentiate it to interpret the result. 
+
+
+##  Factor Analysis {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+Another approach to creating a scale is **factor analysis**. Factor analysis is a method to extract the underlying latent variables (the factors) from a set of observed variables. We will start with an example where we assume a single underlying latent factor. 
+
+Lets say we have three variables $z_1$, $z_2$, and $z_3$ all measured as z-scores. We can construct a system of equations that relate each of these variables to a common shared factor $F$ (also on a standard scale with a mean of 0 and SD of 1) and three unique factors, $Q_1$, $Q_2$, and $Q_3$.
+
+$$z_{i1}=b_1F_i+u_1Q_{i1}$$
+$$z_{i2}=b_2F_i+u_2Q_{i2}$$
+$$z_{i3}=b_3F_i+u_3Q_{i3}$$
+The $F_i$ are called the **factor scores** and are the values of the common factor for each observation. The $b$ values are called the **factor loadings** and give the correlation ($r$) between each observed variable and the common factor. The unique factor components are not actually estimated in factor analysis but serve as the "residual" components. 
+
+## Estimation in Factor Analysis
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+The factor scores and factor loadings for a factor analysis can be estimated by mathematical manipulation of the observed correlation matrix between variables, but we won't get into the mathematical details here. 
+
+- The `factanal` command in base R will estimate a factor analysis by maximum likelihood estimation (a technique we will learn in the next module).
+- The `fa` command in the `psych` package will also estimate factor analysis using a variety of techniques. It also has some nice additional tools that will make it more useful.
+
+##  Factor Analysis, NYC data 
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+```{r factoranal_nyc}
+factor.nyc <- fa(nyc[,c("poverty","unemployed","lincome")], 1,
+                        rotate="oblimin")
+```
+
+The second argument specifies that we want only one common factor. It is not necessary to standardize or reverse-code variables prior to feeding them into `fa`.
+
+We also need to specify a technique of *rotation* for the factor loadings because there are an infinite number of possible ways to express them. The oblimin method is a standard approach that helps to maximize differences between factors without forcing them to be uncorrelated. 
+
+The resulting object `factor.nyc` contains information about both the factor loadings and scores. 
+
+## Factor Loadings {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+```{r factorloading_nyc}
+loadings(factor.nyc)
+```
+
+The bottom part shows that 79.9% of the variation in the three variables is accounted for by the common factor. 
+
+The loadings themselves show the correlation coefficient ($r$) between each observed variable and the common factor. The weakest correlation is between `unemployed` and the common factor, but even in this case, its a very high correlation. 
+
+## Visualize Factor Loadings {.smaller}
+
+The `fa.diagram` function in the `psych` library can be used to visualize the factor loadings.
+
+```{r visualize-factor-loading, fig.width=7.5, fig.height=4, fig.align='center', out.width='750px', out.height='400px', dpi=300, dev.args = list(bg = 'transparent')}
+fa.diagram(factor.nyc)
+```
+
+##  Factor Scores
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+I can easily extract my factor scores from the the factor analysis object and use them as my scale measure of deprivation. 
+
+```{r factormodel_nyc}
+nyc$deprivation.factor <- factor.nyc$scores[,"MR1"]
+summary(lm(log(amtcapita)~deprivation.factor, data=nyc))$coef
+```
+
+A one standard deviation increase on my deprivation scale is associated with a 30% increase in the amount for social services in a neighborhood.
+
+## Whats the Difference? 
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+```{r compare-factor-summated, fig.width=7.5, fig.height=4, fig.align='center', out.width='750px', out.height='400px', dpi=300, dev.args = list(bg = 'transparent'), message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(nyc, aes(x=deprivation.summated, y=deprivation.factor))+
+  geom_point()+
+  geom_smooth(se=FALSE)+
+  labs(x="deprivation score, summated", y="deprivation score, factor analysis")+
+  theme_bw()
+```
+
+## Whats the Difference? 
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+>- The summated scale uses all the variation in the three variables to generate the score.
+>- The factor analysis only uses the shared component to generate the score. The unique component is left out. 
+>- A closely related technique to factor analysis called **principal component analysis** uses all of the variation in the items and will produce results virtually identical to the summated score. 
+
+##  Factor Analysis with Multiple Factors {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+The previous example only used one factor and produced results that were very similar to a simple summated scale. However, it is also possible to use factor analysis to identify more than one common factor shared among a set of variables. 
+
+The formulas for factor analysis above can be generalized to a set of $J$ observed variables and $m$ factors by a set of $J$ equations. For the $j$th observed variable:
+
+$$z_{ji}=b_{j1}F_{1i}+b_{j2}F_{2i}+\ldots+b_{jm}F_{ji}+u_jQ_{ji}$$
+
+There will be a set of $J$ factor loadings for each of the $m$ factors. The key question with this technique is what are the appropriate number of factors? This is typically determined by an analysis of:
+
+- how much total variation is explained by a given number of factors.
+- whether the factor loadings for a given number of factors make theoretical sense. 
+
+##  Example: Social Conservatism among Muslims {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+In 2008-2008 and 2011-12, The Pew Research Center surveyed Muslims from numerous countries around the world on a variety of attitudinal questions. Among the questions asked, respondents were asked about the moral acceptability of these practices:
+
+- divorce
+- polygamy
+- fertility
+- alcohol
+- euthansia
+- suicide
+- abortion
+- prostitution
+- premarital sex
+- homosexuality
+
+We might expect that responses reflect some underlying measure of "social conservatism" but do all of these individual items represent the same construct?
+
+## Setting up the data {.smaller}
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+The data are coded as an ordinal response:
+
+- Morally acceptable
+- Depends/Not a moral issue
+- Morally wrong
+
+I re-code the data on a numeric scale from 1 to 3.
+
+```{r}
+morality <- cbind(moral_divorce=as.numeric(pew$moral_divorce),
+                  moral_fertility=as.numeric(pew$moral_fertility),
+                  moral_alcohol=as.numeric(pew$moral_alcohol),
+                  moral_euthansia=as.numeric(pew$moral_euthanasia),
+                  moral_suicide=as.numeric(pew$moral_suicide),
+                  moral_abortion=as.numeric(pew$moral_abortion),
+                  moral_prostitution=as.numeric(pew$moral_prostitution),
+                  moral_premar_sex=as.numeric(pew$moral_premar_sex),
+                  moral_gay=as.numeric(pew$moral_gay))
+```
+
+## Correlogram of responses
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+```{r correlogram_moral, fig.width=8, fig.height=4.5, fig.align='center', out.width='800px', out.height='450px', dpi=300, dev.args = list(bg = 'transparent')}
+corrgram(morality, upper.panel="panel.cor", order="PCA")
+```
+
+## Using the correlation matrix as data
+
+- Factor analysis only needs the correlation matrix between variables rather than the original data itself. 
+- This is one case, where available-case analysis makes sense. I can maximize the number of cases on each pairwise correlation coefficient to use all of the available data.
+
+- The `use="pairwise.complete.obs"` argument in the `cor` function will use available-case analysis when it computes the correlation coefficient between each pair of variables.
+
+```{r}
+morality_r <- cor(morality, use="pairwise.complete.obs")
+```
+
+## Try factor analysis with up to three factors
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+ 
+```{r, message=FALSE, warning=FALSE}
+morality_fa1 <- fa(morality_r, 1)
+morality_fa2 <- fa(morality_r, 2)
+morality_fa3 <- fa(morality_r, 3)
+```
+ 
+
+## Comparing models with `fa.diagram`
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+```{r nfactors, echo=FALSE, fig.width=8.5, fig.height=4.5, fig.align='center', out.width='850px', out.height='450px', dpi=300, dev.args = list(bg = 'transparent'), message=FALSE}
+par(mfrow=c(1,3), mar=c(0,0,0,0))
+fa.diagram(morality_fa1, main="Single factor")
+fa.diagram(morality_fa2, main="Two factors")
+fa.diagram(morality_fa3, main="Three factors")
+```
+
+##  Extending Factor Analysis
+
+<div class="footer">
+<body>Sociology 513, Model Complications: Multicollinearity and Scales</body>
+</div>
+
+>- Factor analysis is part of a larger family of methods that are often described as **data reduction** techniques: How can you reduce the amount of information in a given set of variables into a smaller set of variables. 
+>- One important cousin of factor analysis is **latent class analysis** which can be used for categorical variables. 
+>- The idea of factor analysis can be generalized to construct entire systems of equations that involve both latent and observed variables. This is called **structural equation modeling**. Typically, the researcher has a set of observed variables that measure a certain number of latent constructs and the researcher is really interested in the relationship between the latent constructs. 
+
