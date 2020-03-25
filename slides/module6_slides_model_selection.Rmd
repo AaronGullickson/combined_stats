@@ -1,11 +1,13 @@
+class: inverse, center, middle
+
+background-image: url(images/caleb-jones-J3JMyXWQHXU-unsplash.jpg)
+background-size: cover
+
 # Model Selection
-Model Complications
+
+---
 
 ##  Predicting violent crime rates
-
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
 
 Lets predict violent crime rates in US States by a variety of characteristics. Note that some of these models are **nested** within other models, meaning that the more complex models just add additional variables to earlier models. Other models are non-nested. 
 
@@ -18,105 +20,130 @@ model.justunemp <- lm(Violent~Unemployment, data=crimes)
 model.another <- update(model.justunemp,.~.+Gini+MedianAge)
 ```
 
-## Which model is best? {.smaller}
+---
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+## Which model is best?
 
-<div class="stargazer">
+.stargazer[
 ```{r modelcompare, echo=FALSE, message=FALSE, error=FALSE, results="asis"}
-stargazer(model.demog, model.ineq, model.pov, model.unemp, 
-          model.justunemp, model.another,
-          keep.stat=c("n","rsq","adj.rsq"),
-          type="html",digits=2,
-          dep.var.caption = "Violent crimes per 100,000",
-          dep.var.labels.include = FALSE,
-          covariate.labels=c("Median Age", "Percent Male","Gini","Poverty Rate",
-                             "Unemployment Rate"))
+htmlreg(list(model.demog, model.ineq, model.pov, model.unemp, 
+             model.justunemp, model.another),
+        custom.coef.names = c("Intercept","Median Age", "Percent Male",
+                              "Gini","Poverty Rate","Unemployment Rate"),
+        include.adjrs=FALSE, include.rmse=FALSE,
+        head.tag = FALSE, doctype = FALSE,
+        caption="Models predicting violent crime rate",
+        caption.above=TRUE)
+
 ```
-</div>
+]
 
-- Models 1-4 are nested. Models 5-6 are also nested. The two sets of models are not nested within one another. 
-- Statistical significance comes and goes for most variables. 
-- Some results are highly dependent on what else is in the model. 
-- Multicollinearity is not the source of the problem except for possibly percent male. 
+---
 
-##  Accuracy vs. Parsimony
+##  A tradeoff: accuracy vs. parsimony
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+.pull-left[
+.center[![](images/bullseye.jpg)]
+### Accuracy
+ We want our models to be accurate, or more formally we want them to have high **goodness of fit**. This is measured in OLS regression models primarily by the $R^2$ value. A more accurate model accounts for more of the variation in the dependent variable. 
+]
 
->- We want our models to be accurate, or more formally we want them to have high **goodness of fit**. This is measured in OLS regression models primarily by the $R^2$ value. A more accurate model explains more of the variation in the dependent variable. 
->- We want our models to be parsimonious. They should account for variation in the dependent variable with a minimal number of explanatory variables. 
->- We can always add more variables, interactions, non-linear terms, and so forth to get a more accurate model, but this comes at the cost of parsimony. Ultimately, this would lead to us simply throwing up our hands and saying "everybody is different." We knew that already. Our goal is to see if a substantial part of the observed variation in outcome can be explained by a minimal set of predictors, in theoretically expected (or sometimes unexpected) ways.
+--
 
-##  How **Not** to Choose a Model
+.pull-right[
+.center[![](images/piggybank.jpg)]
+### Parsimony
+We want our models to be parsimonious. They should account for variation in the dependent variable with a minimal number of explanatory variables. Models that are not parsimonious are rarely theoretically very interesting.
+]
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+???
 
->- **Do not** choose a model based on all of the coefficients being statistically significant. Thats a misuse of statistical inference based on an incorrect interpretation of a p-value.
->- **Do not** choose a model because it produces the results you like the best. Thats not science. 
->- **Do not** choose a model based on some purely mechanical algorithm. Model choice needs to be driven by what questions you want to ask as much as goodness of fit and parsimony. It might be better to control for that variable if it addresses a potential theoretical concern even if the model fit statistics say its not worth it. 
->- **Do not** choose a model based on $R^2$ values. And additional variable will make the $R^2$ value somewhat better, so there is no end to the complexity of the model you fit. 
+We can always add more variables, interactions, non-linear terms, and so forth to get a more accurate model, but this comes at the cost of parsimony. Ultimately, this would lead to us simply throwing up our hands and saying "everybody is different." We knew that already. Our goal is to see if a substantial part of the observed variation in outcome can be explained by a minimal set of predictors, in theoretically expected (or sometimes unexpected) ways.
 
-##  Good Practices for Choosing a Model
+---
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+##  How to choose a model
 
->- **Do** think theoretically about what is the best model for the question at hand. Maybe the control variable needs to be in there because prior work or theory says its important, regardless of what the model fit statistics say. Perhaps interactions need to be in the model because your key interest is in intersectionality. And so on. 
->- **Do** make use of model selection tools to help make a decision, but not in a mechanistic way. Use multiple tools. 
->- **Do** conduct and report sensitivity analyses showing how dependent your results is upon the selected model vs. other models. 
->- **Do** weigh both parsimony and accuracy, relative to the goals of your research question.
+--
 
-##  Some model selection tools
+.pull-left[
+### Do Nots
+- **Do not** choose a model based on all of the coefficients being statistically significant. Thats a misuse of statistical inference based on an incorrect interpretation of a p-value.
+- **Do not** choose a model because it produces the results you like the best. Thats not science. 
+- **Do not** choose a model based on some purely mechanical algorithm. Model choice needs to be driven by what questions you want to ask as much as goodness of fit and parsimony.
+- **Do not** choose a model based on $R^2$ values. An additional variable will make the $R^2$ value somewhat better, so there is no end to the complexity of the model you fit. 
+]
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+--
+
+.pull-right[
+### Good Practices
+- **Do** think theoretically about what is the best model for the question at hand.
+- **Do** make use of model selection tools to help make a decision, but not in a mechanistic way. Use multiple tools. 
+- **Do** conduct and report sensitivity analyses showing how dependent your result is upon the selected model vs. other models. 
+- **Do** weigh both parsimony and accuracy, relative to the goals of your research question.
+]
+
+???
+
+ Maybe the control variable needs to be in there because prior work or theory says its important, regardless of what the model fit statistics say. Perhaps interactions need to be in the model because your key interest is in intersectionality. And so on. 
+---
+
+##  Model selection tools
 
 - The F-Test
 - Adjusted $R^2$
 - Bayesian Information Criterion (BIC)
 - Bayesian Model Averaging (BMA)
 
+---
+
 ##  Null vs. saturated model
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+Many model selection tools utilize a distinction between the **null model** and the **saturated model**.
 
->- Many model selection tools utilize a distinction between the **null model** and the **saturated model**.
->- The null model is the regression model with no predictors. In other words, predicting $y$ by $\bar{y}$ for all observations. This model is the most parsimonious, but the least accurate. 
->- The saturated model is a hypothetical model in which the number of predictors equals the number of observations and we fit each $y_i$ exactly. This model is the most accurate, but the least parsimonious. 
+--
 
-##  The F-Test {.smaller}
+.pull-left[
+### Null model
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+$$\hat{y}_i=\bar{y}$$
+
+The null model is the regression model with no predictors. This model is the most parsimonious, but the least accurate.
+]
+
+--
+
+.pull-right[
+### Saturated model
+$$\hat{y}_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$
+Where,
+$$n=p$$
+The saturated model is a hypothetical model in which the number of predictors equals the number of observations and we fit each $y_i$ exactly. This model is the most accurate with $R^2=1$, but the least parsimonious. 
+]
+
+---
+
+##  The F-Test
 
 The F-test is a classical hypothesis test for comparing two different models in which one model is nested within the other. This means that the second model includes all of the same independent variables as model 1 as well as an additional $g$ independent variables. The null hypothesis for the F-test is that the effects for all of the additional $g$ variables are zero. 
+
+--
 
 The F-test produces a test statistic called the **F-statistic**:
 
 $$F=\frac{(SSR_1-SSR_2)/g}{SSR_2/(n-g-k-1)}$$
 Where $SSR$ is the sum of squared residuals for a given model, $g$ is the additional terms added to the second model, and $k$ is the number of terms in the first model. The F-statistic is a ratio of the mean amount of variation explained by the new predictors in the second model (numerator) by the mean amount of variation unexplained per degree of freedom in the second model (denominator).
 
+--
+
 Assuming the null hypothesis is true, the F-statistic will come from an F-distribution with degrees of freedom equal to $g$ and $n-g-k-1$ (the F-distribution has two DF parameters). Thus, its possible to determine how far out in the tail of this distribution the estimated F-statistic is to calculate a p-value for the hypothesis test.
 
+---
 
-## Calculating F-statistic {.smaller}
+## Calculating F-statistic
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
-
+.pull-left[
 ```{r ftest}
 model.null <- lm(Violent~1, data=crimes)
 SSR1 <- sum(model.null$residuals^2)
@@ -129,31 +156,26 @@ Fstat
 1-pf(Fstat, g, n-g-k-1)
 ```
 
-The p-value for the hypothesis test is 0.094. So, I would likely not reject the null hypothesis and would prefer the null model to the model predicting violent crime by median age and percent male. 
+The p-value for the hypothesis test is 0.00026. So, I would likely not reject the null hypothesis and would prefer the null model to the model predicting violent crime by median age and percent male. 
+]
 
-##  F-distribution assuming $H_0$
-
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
-
-```{r anovaplot, echo=FALSE, fig.width=8, fig.height=5, fig.align='center', out.width='800px', out.height='500px', dpi=300, dev.args = list(bg = 'transparent')}
-x <- seq(from=0,to=5,by=0.01)
-y <- df(seq(from=0,to=5,by=0.01),g,n-g-k-1)
+.pull-right[
+```{r anovaplot, echo=FALSE}
+x <- seq(from=0,to=10,by=0.01)
+y <- df(seq(from=0,to=10,by=0.01),g,n-g-k-1)
 plot(x,y, type="l", lwd=2,
      xlab="F-statistic",yaxt="n", ylab="",
      main="F-distribution with 2 and 47 degrees of freedom")
 abline(v=Fstat, lty=2)
-polygon(c(x[250],x[250:501],x[501]),c(0,y[250:501],0), col="grey")
-arrows(2.6,0.04,3,0.2, code=1, length = 0.05)
-text(3,0.2,labels="p-value=0.094")
+polygon(c(x[987],x[987:1001],x[1001]),c(0,y[987:1001],0), col="grey")
+arrows(9.95,0.002,8,0.2, code=1, length = 0.05)
+text(8,0.2,labels="p-value=0.00026")
 ```
+]
+
+---
 
 ##  Using `anova` command for F-test
-
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
 
 Rather than do this by hand, you can feed both models into the `anova` command.
 
@@ -161,11 +183,9 @@ Rather than do this by hand, you can feed both models into the `anova` command.
 anova(model.null, model.demog)
 ```
 
-## Multiple model comparisons {.smaller}
+---
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+## Multiple model comparisons
 
 The `anova` command is not limited to two models. We can feed in a list of models **so long as they are nested models.**
 
@@ -175,11 +195,9 @@ anova(model.null, model.demog, model.ineq, model.unemp)
 
 The F-statistic is somewhat different than the two model comparison because the denominator for each F-statistic always uses the most complex model. 
 
-##  F-test for adding one variable {.smaller}
+---
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+##  F-test for adding one variable
 
 ```{r ftest_anova_onevar}
 anova(model.demog, model.ineq)
@@ -188,67 +206,81 @@ summary(model.ineq)$coef["Gini",]
 
 The p-value for an F-test where only one variable is added is identical to the p-value for a t-statistic of that particular regression coefficient. So, the F-test really only adds something when comparing across models where the more complex model adds multiple new variables. 
 
+---
+
 ##  Limitations of the F-test
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+--
 
->- The F-test can only be used to compare nested models. This limits its use substantially because we can imagine that it might be theoretically important to compare non-nested models. 
->- The F-test for adding a single variable is equal to the same t-test for the regression coefficient of that variable in the new model. If we just add each new variable sequentially to our nested models, the F-test adds nothing new. If we add in clusters of variables, the F-test does not help us distinguish which of the variables in the cluster were most important. 
->- The F-test is based on the logic of null hypothesis significance testing. That means it is largely driven by sample size. the preferred model by the F-test will differ across two different datasets if they vary in sample size but are the same otherwise. Shouldn't we be choosing models based on what we actually think is going on?
+- The F-test can only be used to compare nested models. This limits its use substantially because we can imagine that it might be theoretically important to compare non-nested models. 
+--
+
+- The F-test for adding a single variable is equal to the same t-test for the regression coefficient of that variable in the new model. If we just add each new variable sequentially to our nested models, the F-test adds nothing new. If we add in clusters of variables, the F-test does not help us distinguish which of the variables in the cluster were most important. 
+
+--
+
+- The F-test is based on the logic of null hypothesis significance testing. That means it is largely driven by sample size. The preferred model by the F-test will differ across two different datasets if they vary in sample size but are the same otherwise.
+
+---
 
 ##  Methods for penalizing goodness of fit
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+--
 
->- $R^2$ can be thought of as a goodness-of-fit statistic. It measures the accuracy of the model in predicting the dependent variable.
->- $R^2$ cannot be used directly to select models because it can only get bigger as more independent variables are added to the model. So, it will always prefer the more complex model unless there is literally zero correlation between the new independent variables and the dependent variable. 
->- Various techniques have been developed that apply a "parsimony penalty" to the goodness-of-fit statistic based on the number of independent variables in the model. This gives you a single measure that combines accuracy and parsimony. 
->- Techniques vary in how the weight between accuracy and parsimony is determined. 
->- We will look at the **adjusted $R^2$** and the **Bayesian Information Criterion** (BIC).
+- $R^2$ can be thought of as a goodness-of-fit statistic. It measures the accuracy of the model in predicting the dependent variable.
+
+--
+
+- $R^2$ cannot be used directly to select models because it can only get bigger as more independent variables are added to the model. It will always prefer the more complex model unless there is literally zero correlation between the new independent variables and the dependent variable. 
+
+--
+
+- What if we could penalize $R^2$ by some value that depends on the number of independent variables in the model? This would give us a single measure that combines accuracy and parsimony. 
+
+---
 
 ##  Adjusted $R^2$
-
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
 
 The formula for adjusted $R^2$ is:
 
 $$R^2_{adj}=R^2-(\frac{p}{n-p-1})(1-R^2)$$
 
-Where $p$ is the number of independent variables in the model. The subtracted part is the parsimony penalty and it is a function of the number of variables as a proportion of the sample size and the lack of goodness-of-fit ($1-R^2$).
+Where $p$ is the number of independent variables in the model. The subtracted part is the parsimony penalty and it is a function of the number of variables as a proportion of the sample size and the lack of goodness-of-fit, $1-R^2$.
 
-This value is calculated by default by the `summary` command for a linear model in R. It also shows up in the default output to `stargazer`.
+--
 
-## Bayesian Information Criterion {.smaller}
+This value is calculated by default by the `summary` command for a linear model in R. It also shows up in the default output to `texreg`.
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+```{r}
+summary(model.demog)$r.squared
+summary(model.demog)$adj.r.squared
+```
+
+---
+
+## Bayesian Information Criterion
 
 There are two common forms of BIC:
 
 - BIC is implicitly compared to the saturated model. The `BIC` command in R will give you this value. 
 - BIC' is implicitly compared to the null model.
 
+--
+
 The equation for BIC' for OLS regression models is most intuitive:
 
 $$BIC'=n\log(1-R^2)+p\log(n)$$
 Where $p$ is the number of independent variables in the model. The first component is the accuracy of the model and the second component is the parsimony penalty.
 
+--
+
 BIC is unusual in that lower values are better, and negative values are most preferred. A negative value means you prefer this model to its comparison (e.g. null or saturated model). 
 
 You can directly compare the values of any two given models by BIC' or BIC, and you will prefer the model with the lower value. The models do not need to be nested. 
 
-##  Calculating BIC' {.smaller}
+---
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+##  Calculating BIC
 
 ```{r bicfunction}
 bic.null <- function(model) {
@@ -262,62 +294,80 @@ BIC(model.demog)
 BIC(model.demog)-BIC(model.null)
 ```
 
-##  BIC or BIC' give the same difference
+---
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+##  BIC or BIC' give the same difference
 
 ```{r biccompare}
 bic.null(model.unemp)-bic.null(model.demog)
 BIC(model.unemp)-BIC(model.demog)
 ```
 
+--
+
 We slightly prefer the more complex model with unemployment, poverty, and gini in addition to the demographic characteristics. 
+
+--
 
 A general rule of thumb is that BIC differences less than two give weak preferences, while BIC differences greater than six give strong preferences, and BIC differences greater than ten give very strong preferences. 
 
-## Model comparison {.smaller}
+---
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+## Model comparison
 
-<div class="stargazer">
+.stargazer[
 ```{r modelchoices, echo=FALSE, message=FALSE, error=FALSE, results="asis"}
-bics <- sapply(list(model.null, model.demog, model.ineq, 
-                    model.pov, model.unemp, 
-                    model.justunemp, model.another), bic.null)
-stargazer(model.null, model.demog, model.ineq, model.pov, model.unemp, 
-          model.justunemp, model.another,
-          keep.stat=c("n","rsq","adj.rsq"),
-          add.lines = list(c("BIC'", round(bics,2))),
-          type="html",digits=2,
-          dep.var.caption = "Violent crimes per 100,000",
-          dep.var.labels.include = FALSE,
-          covariate.labels=c("Median Age", "Percent Male","Gini","Poverty Rate",
-                             "Unemployment Rate"))
+convertModel <- function(model) {
+  coef_table <- summary(model)$coef
+  tr <- createTexreg(coef.names = rownames(coef_table),
+                     coef = coef_table[,1], 
+                     se = coef_table[,2], 
+                     pvalues = coef_table[,4],
+                     gof.names = c("R2","Adjusted R2","BIC (null)","N"), 
+                     gof = c(summary(model)$r.squared, 
+                             summary(model)$adj.r.squared,
+                             bic.null(model), 
+                             length(model$residuals)), 
+                     gof.decimal = c(T,T,T,F))
+  return(tr)
+}
+
+knitreg(lapply(list(model.demog, model.ineq, model.pov, model.unemp, 
+                    model.justunemp, model.another), convertModel),
+        custom.coef.names = c("Intercept","Median Age", "Percent Male",
+                              "Gini","Poverty Rate","Unemployment Rate"),
+        caption="Models predicting violent crime rate",
+        caption.above=TRUE)
 ```
+]
+
+???
 
 BIC prefers model 6, while adjusted $R^2$ prefers model 7 and is indifferent between models 5 and 6. 
-</div>
+
+---
 
 ## Model uncertainty
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+--
 
->- Given a set of potential independent variables, there is a very large number of potential models that could be chosen, even if we don't consider added complications like interaction or polynomial terms. 
->- Generally, we select only one model from this full set. Even when we examine alternative models, we don't examine every possible set.
->- **Model averaging** techniques iteratively fit all or most models and use some algorithm to decide to average effects across these models.
->- The `BMA` package in R will do **Bayesian Model Averaging** which will provide an expected value for every coefficient across all possible models, as well as the probability a variable is in the model, and the top preferred models. 
+- Given a set of potential independent variables, there is a very large number of potential models that could be chosen, even if we don't consider added complications like interaction or polynomial terms. 
 
-## Bayesian Model Averaging {.smaller}
+--
 
-<div class="footer">
-<body>Sociology 513, Model Complications: Model Selection</body>
-</div>
+- Generally, we select only one model from this full set. Even when we examine alternative models, we don't examine every possible set.
+
+--
+
+- **Model averaging** techniques iteratively fit all or most models and use some algorithm to decide to average effects across these models.
+
+--
+
+- The `BMA` package in R will do **Bayesian Model Averaging** which will provide an expected value for every coefficient across all possible models, as well as the probability a variable is in the model, and the top preferred models. 
+
+---
+
+## Bayesian Model Averaging
 
 ```{r bma_input, message=FALSE, error=FALSE, eval=FALSE}
 library(BMA)
