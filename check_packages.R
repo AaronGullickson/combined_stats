@@ -6,7 +6,8 @@
 
 #add new packages to the chain here
 packages = c("here", "texreg", "pander","stargazer",
-             "broom", "knitr", "kableExtra",
+             "broom", "knitr", "kableExtra", "dplyr",
+             "maptools","sp","rgeos","rgdal",
              "psych","car","MASS","VGAM","nlme",
              "sandwich","lmtest","survey","mice",
              "mfx","nnet","BMA","logistf",
@@ -25,12 +26,19 @@ package.check <- lapply(packages, FUN = function(x) {
 
 if(!require(patchwork)) {
   devtools::install_github("thomasp85/patchwork")
+  library(patchwork)
 }
 
 if(!require(icon)) {
   devtools::install_github("ropenscilabs/icon")
+} else {
+  #don't load to avoid conflicts
+  detach("package:icon", unload=TRUE)
 }
 
 if(!require(emo)) {
   devtools::install_github("hadley/emo")
+} else {
+  #don't load to avoid conflicts
+  detach("package:emo", unload=TRUE)
 }
