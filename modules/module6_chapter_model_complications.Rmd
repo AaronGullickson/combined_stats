@@ -3,6 +3,9 @@
 
 In this chapter, we will expand our understanding of the linear model to address many issues that the practical researcher must face. We begin with a review and reformulation of the linear model. We then move on to discuss how to address violations of assumptions such as non-linearity and heteroskedasticity (yes, this is a real word), sample design and weighting, missing values, multicollinearity, and model selection. By the end of this chapter, you will be well-supplied with the tools for conducting a real-world analysis using the linear model framework. 
 
+Slides for this module can be found [here](https://aarongullickson.github.io/stat_slides/module6_slides_model_complications.html).
+
+
 ---
 
 ## The Linear Model, Revisited
@@ -29,6 +32,90 @@ $$y_i=\hat{y}_i+\epsilon_i$$
 By dividing up the formula into two separate components, we can begin to think of our linear model as containing a structural component and a random (or stochastic) component. The structural component is the linear equation predicting $\hat{y}_i$. This is the formal relationship we are trying to fit between the dependent and independent variables. The stochastic component on the other hand is given by the $\epsilon_i$ term in the second formula. In order to get back to the actual values of the dependent variable, we have to add in the residual component that is not accounted for by the linear model. 
 
 From this perspective, we can rethink our entire linear model as a partition of the total variation in the dependent variable into the structural component that can be accounted for by our linear model and the residual component that is unaccounted for by the model. This is exactly as we envisioned things when we learned to calculate $R^2$ in previous chapters. 
+
+### Marginal effects
+
+The **marginal effect** of $x$ on $y$ gives the expected change in $y$ for a one unit increase in $x$ at a given value of $x$. If that sounds familiar, its because this is very similar to the interpretation we give of the slope in a linear model. In a basic linear model with no interaction terms, the marginal effect of a given independent variable is in fact given by the slope.
+
+The difference in interpretation is the little part about "at a given value of x." In a basic linear model this addendum is irrelevant because the expected increase in $y$ for a one unit increase in $x$ is the same regardless of the current value of $x$ -- thats what it means for an effect to be linear. However, when we start delving into more complex model structures, such as interaction terms and some of the models we will discuss in this module, things get more complicated. The marginal effect can help us make sense of complicated models.
+
+The marginal effect is calculated using calculus. I won't delve too deeply into the details here, but the marginal effect is equal to the partial derivative of y with respect to x. This partial derivative gives us what is called the *tangent line* of a curve at any point of $x$ which measures the instantenous rate of change in some mathematical function. 
+
+Lets take the case of a simple linear model with two predictor variables:
+
+$$y_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\epsilon_i$$
+
+We can calculate the marginal effect of $x_1$ and $x_2$ by taking their partial derivatives. If you don't know how to do that, its fine. But if you do know a little calculus, this is a simple calculation:
+
+$$\frac{\partial y}{\partial x_1}=\beta_1$$
+$$\frac{\partial y}{\partial x_2}=\beta_2$$
+
+As stated above, the marginal effects are just given by the slope for each variable, respectively.
+
+Marginal effects really become useful when we have more complex models. Lets now try a model similar to the one above but with an interaction term:
+
+$$y_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\beta_3x_{i1}x_{i2}+\epsilon_i$$
+
+The partial derivatives of this model turn out to be:
+
+$$\frac{\partial y}{\partial x_1}=\beta_1+\beta_3x_{i2}$$
+$$\frac{\partial y}{\partial x_2}=\beta_2+\beta_3x_{i1}$$
+
+The marginal effect of each independent variable on $y$ now depends on the value of the other independent variable. Thats how interaction terms work, but now we can see that effect much more clearly in a mathematical sense. The slope of each independent variable is itself determined by a linear function rather than being a single constant value. 
+
+#### Marginal effect interaction example
+
+Lets try this with a concrete example. For this case, I will look at the effect on wages of the interaction between number of children in the household and gender:
+
+```{r marginal-interaction}
+model <- lm(wages~nchild*gender, data=earnings)
+round(coef(model), 3)
+```
+
+So, my full model is given by:
+
+$$\hat{\text{wages}}_i=24.720+1.779(\text{nchildren}_i)-2.839(\text{female}_i)-1.335(\text{nchildren}_i)(\text{female}_i)$$
+
+Following the formulas above, the marginal effect of number of children is given by:
+
+$$1.779-1.335(\text{female}_i)$$
+
+Note that this only takes two values because female is an indicator variable. When we have a man, the $\text{female}$ variable will be zero and therefore the effect of an additional child will be 1.779. When we have a woman,  $\text{female}$ variable will be one, and the effect of an additional child will be $1.779-1.335=0.444$.
+
+The marginal effect for the gender gap will be given by:
+
+$$-2.839-1.335(\text{nchildren}_i)$$
+
+So the gender gap starts at 2.839 with no children in the household and grows by 1.335 for each additional child. 
+
+We can also plot up a **marginal effects graph** that shows us how the gender gap changes by number of children in the household. 
+
+```{r marginal-fx-graph, fig.cap='Marginal effect of number of children on the gender gap in wages'}
+nchild <- 0:6
+gender_gap <- -2.839-1.335*nchild
+df <- data.frame(nchild, gender_gap)
+ggplot(df, aes(x=nchild, y=gender_gap))+
+  geom_line(linetype=2, color="grey")+
+  geom_point()+
+  labs(x="number of children in household",
+       y="predicted gender gap in hourly wages")+
+  scale_y_continuous(labels = scales::dollar)+
+  theme_bw()
+```
+
+### Linear model assumptions
+
+Two important assumptions underlie the linear model. The first assumption is the assumption of **linearity**. In short, we assume that the the relationship between the dependent and independent variables is best described by a linear function. In prior chapters, we have seen examples where this assumption of linearity was clearly violated. When we choose the wrong model for the given relationship, we have made a *specification error*. Fitting a linear model to a non-linear relationship is one of the most common forms of specification error. However, this assumption is not as deadly as it sounds. Provided that we correctly diagnose the problem, there are a variety of tools that we can use to fit a non-linear relationship within the linear model framework. We will cover this techniques in the next section. 
+
+The second assumption of linear models is that the residual or error terms $\epsilon_i$ are **independent** of one another and **identically distributed**. This is often called the **i.i.d. assumption**, for short. This assumption is a little more subtle. In order to understand, we need to return to this equation from earlier:
+
+$$y_i=\hat{y}_i+\epsilon_i$$
+
+One way to think about what is going on here is that in order to get an actual value of $y_i$ you feed in all of the independent variables into your linear model equation to get $\hat{y}_i$ and then you reach into some distribution of numbers (or a bag of numbers if you need something more concrete to visualize) to pull out a random value of $\epsilon_i$ which you add to the end of your predicted value to get the actual value. When we think about the equation this way, we are thinking about it as a **data generating process** in which we get $y_i$ values from completing the equation on the right. 
+
+The i.i.d. assumption comes into play when we reach into that distribution (or bag) to draw out our random values. **Independence** assumes that what we drew previously won't affect what we draw in the future. The most common violation of this assumption is in time series data in which peaks and valleys in the time series tend to come clustered in time, so that when you have a high (or low) error in one year, you are likely to have a similar error in the next year. **Identically distributed** means that you are drawn from the same distribution (or bag) each time you make a draw. One of the most common violation of this assumption is when error terms tend to get larger in absolute size as the predicted value grows in size. 
+
+In later sections of this chapter, we will cover the i.i.d. assumption in more detail including the consequences of violating it, diagnostics for detecting it, and some corrections for when it does occur. 
 
 ### Estimating a linear model
 
@@ -256,20 +343,6 @@ summary(model)$coef
 
 And it all works. As I said at the beginning, this is a lot of math and not something you need to think about every day. I am not expecting all of this will stick the first time around, but I want it to be here for you as a handy reference for the future.
 
-### Linear model assumptions
-
-Two important assumptions underlie the linear model. The first assumption is the assumption of **linearity**. In short, we assume that the the relationship between the dependent and independent variables is best described by a linear function. In prior chapters, we have seen examples where this assumption of linearity was clearly violated. When we choose the wrong model for the given relationship, we have made a *specification error*. Fitting a linear model to a non-linear relationship is one of the most common forms of specification error. However, this assumption is not as deadly as it sounds. Provided that we correctly diagnose the problem, there are a variety of tools that we can use to fit a non-linear relationship within the linear model framework. We will cover this techniques in the next section. 
-
-The second assumption of linear models is that the residual or error terms $\epsilon_i$ are **independent** of one another and **identically distributed**. This is often called the **i.i.d. assumption**, for short. This assumption is a little more subtle. In order to understand, we need to return to this equation from earlier:
-
-$$y_i=\hat{y}_i+\epsilon_i$$
-
-One way to think about what is going on here is that in order to get an actual value of $y_i$ you feed in all of the independent variables into your linear model equation to get $\hat{y}_i$ and then you reach into some distribution of numbers (or a bag of numbers if you need something more concrete to visualize) to pull out a random value of $\epsilon_i$ which you add to the end of your predicted value to get the actual value. When we think about the equation this way, we are thinking about it as a **data generating process** in which we get $y_i$ values from completing the equation on the right. 
-
-The i.i.d. assumption comes into play when we reach into that distribution (or bag) to draw out our random values. **Independence** assumes that what we drew previously won't affect what we draw in the future. The most common violation of this assumption is in time series data in which peaks and valleys in the time series tend to come clustered in time, so that when you have a high (or low) error in one year, you are likely to have a similar error in the next year. **Identically distributed** means that you are drawn from the same distribution (or bag) each time you make a draw. One of the most common violation of this assumption is when error terms tend to get larger in absolute size as the predicted value grows in size. 
-
-In later sections of this chapter, we will cover the i.i.d. assumption in more detail including the consequences of violating it, diagnostics for detecting it, and some corrections for when it does occur. 
-
 ---
 
 ## Modeling Non-Linearity
@@ -293,7 +366,7 @@ Figure \@ref(fig:life-exp-non-linear) shows a scatterplot of this relationship. 
 
 Figure \@ref(fig:life-exp-non-linear) also shows the best fitting line for this scatterplot in blue. This line is added with the `geom_smooth(method="lm")` argument in `ggplot`. We can see that this line does not represent the relationship very well. How could it really, given that the underlying relationship clearly curves in a way that a straight line cannot? Even more problematic, the linear fit will produce systematic patterns in the error terms for the linear model. for countries in the middle range of GDP per capita, the line will consistently underestimate life expectancy. At the low and high ends of GDP per capita, the line will consistently overestimate life expectancy. This identifiable pattern in the residuals is an important consequence of fitting a non-linear relationship with a linear model and is in fact one of the ways we will learn to diagnose non-linearity below. 
 
-Non-linearity is not always this obvious. One of the reasons that it is so clear in Figure @\ref(fig:life-exp-non-linear) is that the relationship between GDP per capita and life expectancy is so strong. When the relationship is weaker, then points tend to be more dispersed and non-linearity might not be so easily diagnosed from the scatterplot. Figure \@ref(fig:non-linear-movies) and Figure \@ref(fig:non-linear-wages) show two examples that are a bit more difficult to diagnose.
+Non-linearity is not always this obvious. One of the reasons that it is so clear in Figure \@ref(fig:life-exp-non-linear) is that the relationship between GDP per capita and life expectancy is so strong. When the relationship is weaker, then points tend to be more dispersed and non-linearity might not be so easily diagnosed from the scatterplot. Figure \@ref(fig:non-linear-movies) and Figure \@ref(fig:non-linear-wages) show two examples that are a bit more difficult to diagnose.
 
 ```{r non-linear-movies, fig.cap="Is this scatterplot of tomato rating by box office returns non-linear?", fig.align="center"}
 ggplot(movies, aes(x=TomatoRating, y=BoxOffice))+
@@ -779,7 +852,9 @@ model <- lm(wages~I(age-40)+I((age-40)^2), data=earnings)
 coef(model)
 ```
 
-The coefficients for such a model are a little hard to interpret directly. In this case, it might be useful to start thinking about the **marginal effect** of $x$ on $y$. The marginal effect is simply how much we expect $y$ to change for a one unit increase in $x$ at a given value of $x$. We have not had to think much about marginal effects because in a simple linear model the coefficient/slope itself is the marginal effect. But as we move into non-linear relationships, the marginal effect is more complicated. The marginal effect can be calculated by taking the derivative using calculus of the model equation with respect to $x$. I don't expect you to know how to do this, so I will just tell how it turns out. In a model with a squared term:
+The coefficients for such a model are a little hard to interpret directly. This is a case where **marginal effects** can help us understand what is going on. 
+
+The marginal effect can be calculated by taking the partial derivative using calculus of the model equation with respect to $x$. I don't expect you to know how to do this, so I will just tell how it turns out. In a model with a squared term:
 
 $$\hat{y}=\beta_0+\beta_1x+\beta_2x^2$$
 
@@ -863,6 +938,12 @@ ggplot(earnings, aes(x=age, y=wages))+
 ---
 
 ## The i.i.d. Violation and Robust Standard Errors
+
+Robust standard errors have become popular in recent years, partly due (I believe) to how easy they are to add to standard regression models in Stata. We won't delve into the math behind the robust standard error, but the general idea is that robust standard errors will give you "correct" standard errors even when the model is mis-specified due to issues such a non-linearity, heteroscedasticity, and autocorrelation. 
+
+The problem with robust standard errors is that the "robust" does not necessarily mean "better." Robust standard errors will still be inefficient. Intuitively, it would be better to fit the right model with regular standard errors than the wrong model with robust standard errors. From this perspective, robust standard errors can be an effective diagnostic tool. 
+
+Robust standard errors can be estimated in R using the `sandwich` and `lmtest` packages, and specifically with the `coeftest` command. Within this command, it is possible to specify different types of robust standard errors, but we will use the "HC1" version which is equivalent to the robust standard errors produced in Stata by default. 
 
 ---
 
