@@ -1,0 +1,1017 @@
+class: inverse, center, middle
+
+background-image: url(images/fabian-quintero-nq02weVF_mk-unsplash.jpg)
+background-size: cover
+
+# Modeling Non-Linearity
+
+---
+
+## Linear models fit straight lines
+
+```{r life-exp-non-linear, echo=FALSE, fig.width=12}
+ggplot(subset(gapminder, year==2007), aes(x=gdpPercap, y=lifeExp))+
+  geom_point(alpha=0.7)+
+  geom_smooth(method="lm", se=FALSE)+
+  geom_text_repel(data=subset(gapminder, year==2007 & gdpPercap>5000 & lifeExp<60), 
+                  aes(label=country), size=2)+
+  labs(x="GDP per capita", y="Life expectancy at birth", subtitle = "2007 data from Gapminder")+
+  scale_x_continuous(labels=scales::dollar)
+```
+
+???
+
+- If you try to model a relationship using a straight line when that relationship is more complex (i.e. "bendy") then your model will not fit well and will not represent the relationship accurately. 
+- The technical way of saying this is that the functional form of the relationship is mis-specified in the model. 
+- The most common cases of non-linearity are **diminishing returns** and **exponential** relationships, although more complex forms of non-linearity are also possible. 
+- The example to the left shows a clear diminishing returns between life expectancy and GDP per capita.
+
+---
+
+## Non-linearity can be hard to detect
+
+```{r non-linear-movies, echo=FALSE, fig.width=12}
+ggplot(movies, aes(x=TomatoRating, y=BoxOffice))+
+  geom_jitter(alpha=0.2)+
+  scale_y_continuous(labels = scales::dollar)+
+  labs(x="Rotten Tomatoes Rating", y="Box Office Returns (millions USD)")
+```
+
+---
+
+## Two techniques for detecting non-linearity
+
+--
+
+.pull-left[
+### Non-linear smoothing
+```{r smooth-example, echo=FALSE}
+ggplot(subset(gapminder, year==2007), aes(x=gdpPercap, y=lifeExp))+
+  geom_point(alpha=0.7)+
+  geom_smooth(se=FALSE)+
+  geom_text_repel(data=subset(gapminder, year==2007 & gdpPercap>5000 & lifeExp<60), 
+                  aes(label=country), size=2)+
+  labs(x="GDP per capita", y="Life expectancy at birth", subtitle = "2007 data from Gapminder")+
+  scale_x_continuous(labels=scales::dollar)
+```
+]
+
+--
+
+.pull-right[
+### Diagnostic residual plot
+```{r resid-fitted-example, echo=FALSE}
+model <- lm(lifeExp~gdpPercap, data=subset(gapminder, year==2007))
+ggplot(augment(model), aes(x=.fitted, y=.resid))+
+  geom_point()+
+  geom_hline(yintercept = 0, linetype=2)+
+  geom_smooth(se=FALSE)+
+  labs(x="fitted values of life expectancy", y="model residuals")+
+  theme_bw()
+```
+]
+
+---
+
+## Non-linear smoothing
+
+- A smoothing function uses the values of the $y$ for the closest neighbors for a given observation of $x$ to calculate a smoothed value of $y$ that will reduce extreme values.
+- Smoothing functions vary by 
+     - What function is used to calculate the smoothed values (e.g. mean, median)
+     - The span of how many neighbors are considered. Larger spans will lead to smoother lines.
+
+--
+
+### Median smoothing box office returns for *Rush Hour 3*
+
+.left-column[
+![stat sig other](images/rushhour3.jpg)
+]
+.right-column[
+```{r rush-hour-three, echo=FALSE}
+movies <- movies[order(movies$TomatoRating),]
+i <- which(movies$Title=="Rush Hour 3")
+temp <- movies[(i-2):(i+2),c("Title","TomatoRating","BoxOffice")]
+rownames(temp) <- NULL
+temp$Boxoffice_smoothed <- c("-","-",median(temp$BoxOffice),"-","-")
+kable(temp, align=c("l","r","r","r"),
+      col.names=c("Movie","Tomato Rating","Box Office Returns", "Smoothed Returns"))
+```
+]
+
+---
+
+## Applying a median smoother
+
+```{r median-smoothing, echo=FALSE, fig.width=12}
+movies$BoxOffice.smooth1 <- runmed(movies$BoxOffice, 5)
+movies$BoxOffice.smooth2 <- runmed(movies$BoxOffice, 501)
+temp1 <- subset(movies, select=c("Title","TomatoRating","BoxOffice.smooth1"))
+colnames(temp1)[3] <- "BoxOffice"
+temp1$smoothing <- "Two neighbors either way"
+temp2 <- subset(movies, select=c("Title","TomatoRating","BoxOffice.smooth2"))
+colnames(temp2)[3] <- "BoxOffice"
+temp2$smoothing <- "250 neighbors either way"
+temp3 <- subset(movies, select=c("Title","TomatoRating","BoxOffice"))
+temp3$smoothing <- "None"
+temp <- rbind(temp3, temp1, temp2)
+temp$smoothing <- factor(temp$smoothing,
+                         levels=c("None","Two neighbors either way",
+                                  "250 neighbors either way"))
+
+ggplot(temp, aes(x=TomatoRating, y=BoxOffice))+
+  geom_point(alpha=0.2, aes(color=smoothing))+
+  geom_line(size=1, aes(color=smoothing))+
+  scale_y_continuous(labels = scales::dollar)+
+  scale_color_manual(values=c("grey","blue","red"))+
+  geom_label_repel(data=subset(temp, Title=="Rush Hour 3" & smoothing=="None"),
+                   aes(label=Title))+
+  labs(x="Rotten Tomatoes Rating", y="Box Office Returns (millions)")
+```
+
+---
+
+## The LOESS smoother
+
+.pull-left[
+The LOESS (locally estimated scatterplot smoothing) estimates a smoothed value from a regression model of the focal point and neighbors. This model includes polynomial terms and weights observations to have more influence when close to the focal point.
+
+### Use `geom_smooth`
+```{r loess-example, fig.show = 'hide'}
+ggplot(movies, aes(x=TomatoRating, 
+                   y=BoxOffice))+
+  geom_jitter(alpha=0.2)+
+  geom_smooth(method="loess", se=FALSE)+#<<
+  scale_y_continuous(labels = scales::dollar)+
+  labs(x="Rotten Tomatoes Rating", 
+       y="Box Office Returns (millions USD)")
+```
+]
+
+.pull-right[
+```{r ref.label = 'loess-example', echo = FALSE}
+```
+]
+
+---
+
+## `r icon::fa("user-ninja")` Adjusting span
+
+.pull-left[
+```{r adjust-span, fig.show="hide"}
+ggplot(subset(gapminder, year==2007), 
+       aes(x=gdpPercap, y=lifeExp))+
+  geom_point(alpha=0.7)+
+  geom_smooth(method="loess", span=1, 
+              se=FALSE, color="green")+#<<
+  geom_smooth(method="loess", span=0.75, 
+              se=FALSE, color="red")+#<<
+  geom_smooth(method="loess", span=0.25, 
+              se=FALSE, color="blue")+#<<
+  labs(x="GDP per capita", 
+       y="Life expectancy at birth")+
+  scale_x_continuous(labels=scales::dollar)
+```
+
+The default `span` is 0.75 which is 75% of observations.
+]
+
+.pull-right[
+```{r ref.label = 'adjust-span', echo = FALSE}
+```
+]
+
+---
+
+## `r emo::ji("warning")` LOESS with large `n`  will `r emo::ji("death")` your `r emo::ji("computer")`
+
+.pull-left[
+### Use a GAM instead
+
+Generalized Additive Models (GAM) are another way to create non-linear smoothing that is less computational intensive that LOESS but with similar results.
+
+```{r gam-example, fig.show="hide"}
+ggplot(subset(gapminder, year==2007), 
+       aes(x=gdpPercap, y=lifeExp))+
+  geom_point(alpha=0.7)+
+  geom_smooth(method="loess",
+              se=FALSE, color="blue")+
+  geom_smooth(method="gam", #<<
+              formula = y ~ s(x, bs = "cs"), #<<
+              se=FALSE, color="red")+#<<
+  labs(x="GDP per capita", 
+       y="Life expectancy at birth")+
+  scale_x_continuous(labels=scales::dollar)
+```
+]
+
+.pull-right[
+```{r ref.label = 'gam-example', echo = FALSE}
+```
+]
+
+
+---
+
+## Or let `geom_smooth` figure out best smoother
+
+
+.pull-left[
+```{r geom-smooth, fig.show="hide"}
+ggplot(earnings, aes(x=age, y=wages))+
+  geom_jitter(alpha=0.01, width=1)+
+  geom_smooth(method="lm", se=FALSE, 
+              color="blue")+
+  geom_smooth(se=FALSE, color="red")+#<<
+  scale_y_continuous(labels = scales::dollar)+
+  labs(x="age", y="hourly wages")+
+  theme_bw()
+```
+
+- For datasets over 1000 observations, `geom_smooth` will use GAM and otherwise defaults to LOESS. 
+- Don't forget you can also specify a linear fit with `method="lm"`.
+]
+
+.pull-right[
+```{r ref.label = 'geom-smooth', echo = FALSE}
+```
+]
+
+---
+
+## Residual plots
+
+.pull-left[
+- A scatterplot of the residuals vs. the fitted values from a model can also be useful for detecting non-linearity.
+- If the relationship is linear, then we should expect to see no sign of a relationship in this plot. Drawing a smoothed line can be useful for this diagnosis.
+- Residual plots can also help to detect **heteroskedasticity** which we will talk about later.
+]
+
+.pull-right[
+```{r ref.label = 'resid-fitted-example', echo = FALSE}
+```
+]
+
+---
+
+## Using `broom` and `augment` to get model data
+
+```{r augment-broom}
+library(broom)
+model <- lm(lifeExp~gdpPercap, data=subset(gapminder, year==2007))
+augment(model)
+```
+
+---
+
+## Creating a residual plot
+
+.pull-left[
+```{r resid-fitted-augment, fig.show="hide"}
+ggplot(augment(model), 
+       aes(x=.fitted, y=.resid))+
+  geom_point()+
+  geom_hline(yintercept = 0, linetype=2)+
+  geom_smooth(se=FALSE)+
+  labs(x="fitted values of life expectancy", 
+       y="model residuals")
+```
+]
+
+.pull-right[
+```{r ref.label = 'resid-fitted-augment', echo = FALSE}
+```
+]
+
+---
+
+## Its non-linear, so now what?
+
+--
+
+.pull-left[
+### Transform variables
+```{r transform-example, echo=FALSE, fig.height=3}
+ggplot(subset(gapminder, year==2007), 
+       aes(x=gdpPercap, y=lifeExp))+
+  geom_point(alpha=0.7)+
+  geom_smooth(method="lm", se=FALSE)+
+  scale_x_log10(labels=scales::dollar)+
+  labs(x="GDP per capita (log scale)", 
+       y="Life expectancy at birth")
+```
+]
+
+--
+
+.pull-right[
+### Polynomial terms
+```{r polynomial-example, echo=FALSE, fig.height=3}
+ggplot(subset(gapminder, year==2007), 
+       aes(x=gdpPercap, y=lifeExp))+
+  geom_point(alpha=0.7)+
+  geom_smooth(method="lm", 
+              formula=y~x+I(x^2)+I(x^3),
+              se=FALSE)+
+  scale_x_continuous(labels=scales::dollar)+
+  labs(x="GDP per capita", 
+       y="Life expectancy at birth")
+```
+]
+
+--
+
+.center[
+### Create splines
+```{r spline-example, echo=FALSE, fig.height=2.5}
+temp <- subset(gapminder, year==2007)
+cutoff <- 7500
+temp$gdp.spline <- ifelse(temp$gdpPercap<cutoff, 0,
+                          temp$gdpPercap-cutoff)
+model <- lm(lifeExp~gdpPercap+gdp.spline, data=temp)
+predict_df <- data.frame(gdpPercap=seq(from=0,to=50000,by=100))
+predict_df$gdp.spline <- ifelse(predict_df$gdpPercap<cutoff, 0,
+                                predict_df$gdpPercap-cutoff)
+predict_df$lifeExp <- predict(model, newdata=predict_df)
+ggplot(temp, 
+       aes(x=gdpPercap, y=lifeExp))+
+  geom_point(alpha=0.7)+
+  geom_line(data=predict_df, color="blue", size=1)+
+  scale_x_continuous(labels=scales::dollar)+
+  labs(x="GDP per capita", 
+       y="Life expectancy at birth")
+```
+]
+
+---
+
+## Transforming variables
+
+.left-column[
+![](images/werewolf-transformation.jpg)
+]
+
+.right-column[
+A transformation is a mathematical function that changes the value of a quantitative variable. There are many transformations that one could apply, but we will focus on one - the **log** transformation. This is the most common transformation used in the social sciences. 
+
+Transformations are popular because they can solve multiple problems:
+
+- A transformation can make a non-linear relationship look linear. 
+- A transformation can make a skewed distribution more symmetric. 
+- A transformation can reduce the impact of extreme outliers. 
+]
+
+---
+
+## Plotting the log transformation
+
+.pull-left[
+```{r log-transform, fig.show="hide"}
+ggplot(subset(gapminder, year==2007), 
+       aes(x=gdpPercap, y=lifeExp))+
+  geom_point(alpha=0.7)+
+  geom_smooth(method="lm", se=FALSE)+
+  scale_x_log10(labels=scales::dollar)+#<<
+  labs(x="GDP per capita (log scale)", 
+       y="Life expectancy at birth")
+```
+
+- The scale of the independent variable is now multiplicative
+- The relationship looks more linear now, but what does it mean?
+]
+
+.pull-right[
+```{r ref.label = 'log-transform', echo = FALSE}
+```
+]
+
+---
+
+## The natural log
+
+.left-column[
+![](images/logs.png)
+]
+
+.right-column[
+Although `ggplot` uses log with a base 10, we usually use the *natural log* transformation in practice. Both transformations have the same effect on the relationship, but the natural log provides results that are easier to interpret. 
+
+In R, it is easy to take the natural log of a number by just using the `log` command. Any positive number can be logged. 
+
+```{r}
+log(5)
+```
+
+The natural log of 5 is 1.609, but what does this mean? The natural log of any number is the power that you would have to raise the constant $e$ to in order to get the original number back. In R, we can calculate $e^x$ with `exp(x)`:
+
+```{r}
+exp(log(5))
+```
+]
+
+---
+
+## The log transformation makes multiplicative relationships additive
+
+.left-column[
+![](images/lincoln_logs.jpg)
+]
+
+.right-column[
+The key feature of the log transformation is that it makes multiplicative relationships additive.
+
+$$log(x*y)=log(x)+log(y)$$
+
+```{r}
+log(5*4)
+log(5)+log(4)
+```
+
+We can use this feature to model relative (percent) change rather than absolute change in our models.
+]
+
+---
+
+## Logging box office returns gives us a linear fit
+
+```{r log-scale-movies, echo=FALSE, fig.width=12}
+ggplot(movies, aes(x=TomatoRating, y=BoxOffice))+
+  geom_jitter(alpha=0.2)+
+  geom_smooth(method="lm", color="red", se=FALSE)+
+  scale_y_log10(labels = scales::dollar)+
+  labs(x="Rotten Tomatoes Rating", y="Box Office Returns (millions)")
+```
+
+---
+
+## What does it mean for the model?
+
+To fit the model, we can just use the log transformation directly in the formula of our `lm` command:
+
+```{r}
+model <- lm(log(BoxOffice)~TomatoRating, data=movies)
+coef(model)
+```
+
+$$\log(\hat{returns}_i)=0.973+0.241(rating_i)$$
+
+How do we interpret the slope?
+
+--
+
+- A one point increase in rating is associated with a 0.241 increase in ... the log of box office returns? `r emo::ji("confused")`
+
+.center[
+### What does it mean?
+]
+
+---
+
+## Converting to the original scale
+
+To get back to the original scale of box office returns for the dependent variable, we need to exponentiate both side side of the regression equation by $e$:
+
+--
+
+$$e^{\log(\hat{returns}_i)}=e^{0.973+0.241(rating_i)}$$
+
+--
+
+On the left hand side, I will get back predicted box office returns by the definition of logs. On the right hand side, I can apply some of the mathematical properties of logarithms and powers. 
+
+--
+
+$$\hat{returns}_i=(e^{0.973})(e^{0.241})^{rating_i}$$
+
+--
+
+```{r}
+exp(0.973)
+exp(0.241)
+```
+
+I now have:
+$$\hat{returns}_i=(2.65)(1.27)^{rating_i}$$
+
+---
+
+## A multiplicative relationship
+
+$$\hat{returns}_i=(2.65)(1.27)^{rating_i}$$
+
+Lets calculate predicted box office returns for Tomato Ratings of 0, 1, and 2. 
+
+--
+
+$\hat{returns}_i=(2.65)(1.27)^{0}=2.65$
+
+--
+
+$\hat{returns}_i=(2.65)(1.27)^{1}=2.65(1.27)$
+
+--
+
+$\hat{returns}_i=(2.65)(1.27)^{2}=2.65(1.27)(1.27)$
+
+--
+
+- For each one unit increase in the independent variable, you multiply the previous predicted value by 1.27 to get the new predicted value. Therefore the predicted value increases by 27%.
+
+--
+
+- The model predicts that movies with a zero Tomato rating make 2.65 million dollars, on average. Every one point increase in the Tomato rating is associated with a 27% increase in box office returns, on average.
+
+---
+
+## General form and interpretation
+
+$$\log(\hat{y}_i)=b_0+b_1(x_i)$$
+
+- You must apply the `exp` command to your intercept and slopes in order to interpret them. 
+
+--
+
+- The model predicts that the mean of $y$ when $x$ is zero will be $e^{b_0}$. 
+
+--
+
+- The model predicts that each one unit increase in $x$ is associated with a multiplicative change of $e^{b_1}$ in $y$. It is often easiest to express this in percentage terms. 
+
+--
+
+- An **absolute** change in $x$ is associated with a **relative** change in $y$.
+
+
+---
+
+## Interpret these numbers
+
+```{r}
+coef(lm(log(BoxOffice)~relevel(Rating, "PG"), data=movies))
+```
+
+$$\log(\hat{returns}_i)=3.22+0.50(G_i)-0.24(PG13_i)-1.93(R_i)$$
+
+--
+
+- $e^{3.22}=25$: PG-rated movies make 25 million dollars on average.
+
+--
+
+- $e^{0.5}=1.64$: G-rated movies make 64% more than PG-rated movies, on average.
+
+--
+
+- $e^{-0.24}=0.79$: PG-13 rated movies make 79% as much as (or 21% less than) PG-rated movies, on average. 
+
+--
+
+- $e^{-1.93}=0.14$: R-rated movies make 14% as much as (or 86% less than) PG-rated movies, on average.
+
+---
+
+## Approximating small effects
+
+When $x$ is small (say $x<0.2$), then $e^x\approx1+x$.
+
+We can use this fact to roughly approximate coefficients/slopes as percent change when they are small.
+
+--
+
+```{r}
+model <- lm(log(BoxOffice)~Runtime, data=movies)
+coef(model)
+exp(coef(model))
+```
+
+--
+
+- If we do the full exponentiating, we can see that a one minute increase in runtime is associated with a 4.1% increase in box office returns.
+
+--
+
+- The actual percentage increase is very close to what we got for the slope of the non-exponentiated slope (0.0402). So, you can often get a ballpark estimate without having to exponentiate.
+
+---
+
+## Logging the independent variable
+
+.pull-left[
+Lets return to the relationship between GDP per capita and life expectancy that fit well as a linear relationship when we logged GDP per capita. Lets run the model:
+
+```{r log-gdp-model}
+model <- lm(lifeExp~log(gdpPercap), 
+            data=subset(gapminder, year==2007))
+round(coef(model), 5)
+```
+
+How do we interpret these results? This case requires something different than the case where we logged the dependent variable.
+]
+
+--
+
+.pull-right[
+Our basic model for life expectancy by GDP per capita is:
+
+$$\hat{y}_i=4.9+7.2\log{x_i}$$
+
+What is the predicted value of life expectancy at $1 GDP?
+
+$$\hat{y}_i=4.9+7.2\log{1} = 4.9+7.2 * 0=4.9$$
+
+What happens when we increase GDP per capita by 1% (from 1 to 1.01)?
+
+$$\hat{y}_i=4.9+7.2\log{1.01} = 4.9+7.2 * 0.01=4.9+0.072$$
+
+Predicted life expectancy increases by 0.072 years. 
+]
+
+---
+
+## General form and interpretation
+
+$$\hat{y}_i=b_0+b_1\log(x_i)$$
+
+--
+
+- A one percent increase in $x$ is associated with a $b_1/100$ unit change in $y$, on average.
+
+--
+
+- A **relative** change in $x$ is associated with an **absolute** change in $y$.
+
+--
+
+- $exp(b_0)$ gives the predicted value of $y$ when $x$ equals one. 
+
+--
+
+- Keep in mind that the $log(0)$ is negative infinity so you cannot predict the value of $y$ when $x=0$. 
+
+---
+
+## Logging both variables
+
+```{r transform-wages, echo=FALSE, fig.width=12}
+ggplot(earnings, aes(x=age, y=wages))+
+  geom_jitter(alpha=0.01, width=0.1)+geom_smooth(se=FALSE, method="lm")+
+  scale_y_log10(labels = scales::dollar)+scale_x_log10()+
+  labs(x="age (log-scale)", y="hourly wages (log-scale)")
+```
+
+---
+
+## The elasticity model
+
+```{r elasticity-model}
+model <- lm(log(wages)~log(age), data=earnings)
+coef(model)
+```
+
+--
+
+- This is actually the easiest model to interpret. We can interpret the slope directly as the percent change in $y$ for a one percent increase in $x$. 
+
+--
+
+- Calculating the percent change in one variable by percent change in another is what economists call an **elasticity** so this model is often called an **elasticity** model.
+
+--
+
+- The model predicts that a one percent increase in age is associated with a 0.51% increase in wages, on average. 
+
+---
+
+## A cheat sheet
+
+| Which variable logged | Non-linear shape   | Change in x | Change in y | Interpret $\beta_1$ |
+|-----------------------|--------------------|-------------|-------------|---------------------|
+| Independent variable  | diminishing returns| relative    | absolute    | $\beta_1/100$       |
+| Dependent variable    | exponential        | absolute    | relative    | $e^{\beta_1}$       |
+| Both variables        | both types         | relative    | relative    | $\beta_1$           |
+
+---
+
+## When $x<=0$, logging is bad
+
+.pull-left[
+
+### Log problems
+
+$$log(0)=-\infty$$
+$$log(x)\text{ is undefined when }x<0$$
+
+### Try the square/cube root
+
+- The square root transformation has a similar effect to the log transformation but can include zero values. 
+- The cube root transformation can also include negative values. 
+- The downside of square/cube root transformations is that values are not easy to interpret. 
+]
+
+.pull-right[
+```{r sqrt-transform, echo=FALSE}
+ggplot(movies, aes(x=TomatoMeter, y=BoxOffice))+
+  geom_vline(xintercept = 0, linetype=2)+geom_jitter(alpha=0.5)+
+  scale_y_log10()+scale_x_sqrt()+
+  geom_smooth(se=FALSE)+
+  labs(x="Tomato Meter (square root scale)", y="Box Office Returns (log scale)")
+```
+]
+
+---
+
+## Polynomial models
+
+.pull-left[
+### Polynomial expression
+
+A **polynomial** expression is one that adds together terms involving multiple powers of a single variable. 
+
+if we include a squared value of $x$ we get the classic formula for a parabola:
+
+$$y=a+bx+cx^2$$
+
+```{r echo=FALSE, fig.height=4}
+x <- 0:100
+y <- 10+5*x-0.04*x^2
+plot(x,y, type="l", lwd=2, las=1)
+text(40, 50, expression(y == 10 + 5*x + 0.04*x^2))
+```
+
+]
+
+--
+
+.pull-right[
+### A polynomial model
+
+We can fit such a parabola in a linear model by including a new variable that is simply the square of the original variable:
+
+$$\hat{y}_i=\beta_0+\beta_1x_i+\beta_2x_i^2$$
+
+```{r quadratic-model}
+model <- lm(wages~I(age-40)+I((age-40)^2), 
+            data=earnings)
+coef(model)
+```
+
+Our model is:
+
+$$\hat{y}_i=26.9+0.3171(x_i-40)-0.0178(x_i-40)^2$$
+
+How do we interpret the results?
+]
+
+---
+
+## Calculate the marginal effect
+
+With polynomial terms, the marginal effect of $x$ is more complicated because our $x$ shows up in more than one place in the equation:
+
+$$y_i=\beta_0+\beta_1x_i+\beta_2x_i^2+\epsilon_i$$
+
+--
+
+By calculus, we can mathemagically get the marginal effect for this model as:
+
+$$\frac{\partial y}{\partial x}=\beta_1+\beta_2x$$
+
+--
+
+So, for our case:
+
+$$\hat{y}_i=26.9+0.3171(x_i-40)-0.0178(x_i-40)^2$$
+
+the marginal effect of age on wages is given by:
+
+$$0.3171+2*-0.0178(x-40)=0.3171-0.0356(x-40)$$
+
+- At age 40 (the zero value), a one year increase in age is associated with a salary increase of $0.32, on average. 
+- For every year over 40, this increase is smaller by $0.0356. For every age younger than 40, this increase is larger by $0.0356.
+
+---
+
+## Finding the inflection point
+
+.pull-left[
+If the effect of age on wages goes down by $0.0356 for every year over 40, then at some point the positive effect of age on wages will become negative. 
+
+We can figure out the value of age at this **inflection point** by setting the effect to zero and solving for x. In general, this will give us:
+
+$$\beta_1/(-2*\beta_2)$$
+
+In our case, we get: 
+
+$$0.3171/(-2*-0.0178)=0.3171/0.0356=8.91$$
+
+So the model predicts that the effect of age on wages will shift from positive to negative at age 48.91.
+]
+
+
+.pull-right[
+```{r inflection, echo=FALSE}
+age <- 18:65
+marginal <- 0.3171-0.0356*(age-40)
+ggplot(data.frame(age=age, marginal=marginal),
+       aes(x=age, y=marginal))+
+  geom_line()+
+  geom_hline(yintercept = 0, linetype=2)+
+  geom_vline(xintercept = 48.91, color="red")+
+  labs(x="age",
+       y="marginal effect of age on hourly wages",
+       title="marginal effect graph")
+```
+]
+
+---
+
+## Plotting a polynomial fit
+
+.pull-left[
+```{r parabola-wages, fig.show="hide"}
+ggplot(earnings, aes(x=age, y=wages))+
+  geom_jitter(alpha=0.01, width=1)+
+  geom_smooth(se=FALSE, 
+              method="lm", #<<
+              formula=y~x+I(x^2))+ #<<
+  labs(x="age", y="hourly wages")
+```
+
+in `geom_smooth`, you can specify a formula for the `lm` method that includes a squared term.
+]
+
+.pull-right[
+```{r ref.label = 'parabola-wages', echo = FALSE}
+```
+]
+
+---
+
+## Higher order terms gives you more wiggle
+
+.pull-left[
+```{r poly-wiggle, fig.show="hide"}
+ggplot(subset(gapminder, year==2007), 
+       aes(x=gdpPercap, y=lifeExp))+
+  geom_point()+
+  geom_smooth(se=FALSE, 
+              method="lm", 
+              formula=y~x+I(x^2),
+              color="blue")+
+  geom_smooth(se=FALSE, 
+              method="lm", 
+              formula=y~x+I(x^2)+I(x^3),
+              color="red")+
+  geom_smooth(se=FALSE, 
+              method="lm", 
+              formula=y~x+I(x^2)+I(x^3)+I(x^4),
+              color="green")+
+    labs(x="GDP per capita", 
+         y="life expectancy")
+```
+
+]
+
+.pull-right[
+```{r ref.label = 'poly-wiggle', echo = FALSE}
+```
+]
+
+---
+
+## Spline models
+
+.pull-left[
+```{r spline-wages, echo=FALSE}
+earnings$age.spline <- ifelse(earnings$age<35, 0, earnings$age-35)
+model <- lm(wages~age+age.spline, data=earnings)
+predict_df <- data.frame(age=18:65)
+predict_df$age.spline <- ifelse(predict_df$age<35, 0, predict_df$age-35)
+predict_df$wages <- predict(model, newdata=predict_df)
+ggplot(earnings, aes(x=age, y=wages))+
+geom_jitter(alpha=0.01, width = 1)+
+  geom_line(data=predict_df, size=1.5, color="blue")+
+  geom_vline(xintercept = 35, color="red", linetype=2)+
+  labs(y="hourly wages",
+       title="spline model with hinge at age 35")
+```
+]
+
+.pull-right[
+- The basic idea of a spline model is to allow the slope of the relationship between $x$ and $y$ to be different at different cutpoints or "hinge" values of $x$. 
+
+- These cutpoints create different linear segments where the effect of x on y is different. 
+
+- We will look at the case of one hinge value which gives us an overall slope that looks like a "broken arrow."
+]
+
+---
+
+## Creating the spline variable
+
+The relationship between age and wages suggests that the relationship shifts considerably around age 35. To model this we create a spline variable like so:
+
+$$spline_i=\begin{cases}
+  age-35 & \text{if age>35}\\
+  0 & \text{otherwise}
+  \end{cases}$$
+
+We can then add this variable to our model:
+  
+```{r spline} 
+earnings$age.spline <- ifelse(earnings$age<35, 0, earnings$age-35)
+model <- lm(wages~age+age.spline, data=earnings)
+coef(model)
+```
+
+How do we interpret the results?
+
+---
+
+## Interpreting results in spline model
+
+.pull-left[
+Up to age 35, the spline term is zero, so our model is given by:
+
+$$\hat{wages}_i=-6.04+0.9472(age_i)$$
+
+The model predicts that for individuals age 35 and under, a one year increase in age is associated with a $0.9472 increase in wages, on average. 
+
+After age 35, the spline variable increases by one every time age increases by one, so the marginal effect of age is given by:
+
+$$0.9472-09549=-0.0077$$
+
+The model predicts that for individuals over age 35, a one year increase in age is associated with a $0.0077 reduction in wages, on average.
+]
+
+.pull-right[
+```{r spline-interpret, echo=FALSE}
+ggplot(earnings, aes(x=age, y=wages))+
+geom_jitter(alpha=0.005, width = 1)+
+  geom_line(data=predict_df, size=1.5, color="blue")+
+  geom_vline(xintercept = 35, color="red", linetype=2)+
+  labs(y="hourly wages")+
+  annotate("text", x=28, y=30, 
+           label=paste("beta == ", 0.9472), 
+           parse=TRUE,
+           color="blue")+
+  annotate("text", x=50, y=35, 
+           label=paste("beta == ", -0.0077), 
+           parse=TRUE,
+           color="blue")
+```
+]
+
+---
+
+## `r icon::fa("user-ninja")` Plotting the spline model
+
+.pull-left[
+We cannot use `geom_smooth` to show the fit of this spline model. However, with some additional effort, we can plot the effect on a graph. 
+
+1. Calculate the predicted value of wages for a range of age values based on the model using the `predict` command.
+2. Feed in these predicted values as a dataset to the `geom_line` function in our `ggplot` graph.
+]
+
+--
+
+.pull-right[
+### The `predict` command
+
+The `predict` command takes two important arguments:
+
+1. The model object for which we want predicted values of the dependent variable.
+2. A new dataset that contains all the same independent variables that are in the model.
+
+```{r use-predict-spline}
+model <- lm(wages~age+age.spline, data=earnings)
+pre_df <- data.frame(age=18:65)
+pre_df$age.spline <- ifelse(pre_df$age<35, 0,
+                            pre_df$age-35)
+pre_df$wages <- predict(model, 
+                        newdata=pre_df)
+head(pre_df, n=3)
+```
+]
+
+---
+
+## Adding the spline fit to ggplot
+
+.pull-left[
+```{r spline-wages-predict, fig.show="hide"}
+ggplot(earnings, aes(x=age, y=wages))+
+  geom_jitter(alpha=0.01, width = 1)+
+  geom_line(data=predict_df, #<<
+            color="blue", 
+            size=1.5)
+```
+
+To add the spline fit, we just add a `geom_line` command and specify our `pre_df` dataset through the `data` argument so that it uses the predicted values rather than the actual `earnings` dataset to graph the line.
+]
+
+.pull-right[
+```{r ref.label = 'spline-wages-predict', echo = FALSE}
+```
+]
+
