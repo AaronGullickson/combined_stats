@@ -41,7 +41,7 @@ $$\epsilon_i=\hat{y}_i-y_i$$
 
 The residual/error term $\epsilon_i$ gives us the difference between the actual value of the outcome variable for a given observation and the value predicted by the model.
 
-Lets use algebra to rewrite this equatiion with $y_i$ on the left-hand side:
+Lets use algebra to rewrite this equation with $y_i$ on the left-hand side:
 
 --
 
@@ -108,7 +108,7 @@ $$\frac{\partial y}{\partial x_2}=\beta_2$$
 ## Marginal effects with interaction terms
 
 .pull-left[
-Marginal effects can get more complicated when we move to more complex model. Consider this model with an interaction terrm:
+Marginal effects can get more complicated when we move to more complex model. Consider this model with an interaction term:
 
 $$y_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\beta_3(x_{i1})(x_{i2})+\epsilon_i$$
 
@@ -290,7 +290,7 @@ y_{n}\\
 
 ## `r emo::ji("warning")` Minimize sum of squred residuals
 
-Our goal is to choose a $\mathbf{\beta}$ vector that minimizes the sum of squared residuals, $SSR$, which is just given by the $\epsilon$ vector squared and summed up. We can rewrite the matrix albegra formula to isolate $e$ on one side:
+Our goal is to choose a $\mathbf{\beta}$ vector that minimizes the sum of squared residuals, $SSR$, which is just given by the $\epsilon$ vector squared and summed up. We can rewrite the matrix algebra formula to isolate $e$ on one side:
 
 $$\begin{align*}
 \mathbf{y}&=&\mathbf{X\beta+\epsilon}\\

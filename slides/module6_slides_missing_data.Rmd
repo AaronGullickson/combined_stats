@@ -67,7 +67,7 @@ The different probabilities of missingness can be fully accounted for by other o
 
 ### Not Missing at Random (NMAR)
 
-The different probabilities of missingness depend both on observed and unobserved variables. In this case, we cannoty fully correct for bias that might result from missing data. 
+The different probabilities of missingness depend both on observed and unobserved variables. In this case, we cannot fully correct for bias that might result from missing data. 
 ]
 
 ???
@@ -206,7 +206,7 @@ htmlreg(list(model1.complete, model2.complete, model3.complete),
 ### Predictive or non-Predictive?
 - Imputations vary by whether or not they use other predictors in the data to assign imputed values to missing values. 
 - Predictive imputation is done via a statistical model. 
-- Preditive imputation moves the assumption from MAR to MCAR if the model is good.
+- Predictive imputation moves the assumption from MAR to MCAR if the model is good.
 - Non-predictive imputation will systematically bias correlation between variables downward.
 ]
 
@@ -282,7 +282,7 @@ ggplot(addhealth, aes(x=parentinc, y=indegree))+
 
 ---
 
-##  Quick and Dirty Method
+##  Quick and dirty method
 
 If I do a mean imputation, I can also add the boolean variable indicating missingness as a predictor in my model. When I do this, the effect of the imputed variable will be the same as if if I had thrown out missing values (because we are controlling for missingness), but I can use the full data. 
 
@@ -325,7 +325,7 @@ ggplot(addhealth, aes(x=parentinc, y=indegree))+
 
 ---
 
-##  Regression Imputation
+##  Regression imputation
 
 - I will predict the value of parental income by other independent variables (but never the dependent variable) using a regression model. 
 - In this case, I will transform parental income by the square root as well since it is heavily right skewed. 
@@ -352,7 +352,7 @@ I still have some missing values, because there were missing values on the varia
 
 ---
 
-##  Random Regression Imputation
+##  Random regression imputation
 
 The previous model is deterministic, and will underestimate variance in parental income but I can add a random component to this by sampling from a normal distribution with a mean of zero and standard deviation equal to that of the model residuals. 
 
@@ -394,7 +394,7 @@ ggplot(addhealth, aes(x=parentinc, y=indegree))+
 
 ---
 
-## Chained Equations
+## Chained equations
 
 As you saw above, predictive imputation still leads to some missing values if the variables used for prediction also contain missing values. We can get around this via an iterative procedure called **chained equations**:
 

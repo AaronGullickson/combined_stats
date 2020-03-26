@@ -20,15 +20,15 @@ output:
 ```{r child="setup_chunks.Rmd"}
 ```
 
-```{r child="module6_slides_linear_model_revisited.Rmd", eval=FALSE}
+```{r child="module6_slides_linear_model_revisited.Rmd", eval=TRUE}
 ```
 
 ---
-```{r child="module6_slides_nonlinearity.Rmd", eval=FALSE}
+```{r child="module6_slides_nonlinearity.Rmd", eval=TRUE}
 ```
 
 ---
-```{r child="module6_slides_iid_violation.Rmd", eval=FALSE}
+```{r child="module6_slides_iid_violation.Rmd", eval=TRUE}
 ```
 
 ---
@@ -36,14 +36,14 @@ output:
 ```
 
 ---
-```{r child="module6_slides_missing_values.Rmd", eval=FALSE}
+```{r child="module6_slides_missing_data.Rmd", eval=TRUE}
 ```
 
 ---
-```{r child="module6_slides_collinearity.Rmd", eval=FALSE}
+```{r child="module6_slides_collinearity.Rmd", eval=TRUE}
 ```
 
 ---
-```{r child="module6_slides_model_selection.Rmd", eval=FALSE}
+```{r child="module6_slides_model_selection.Rmd", eval=TRUE}
 ```
 

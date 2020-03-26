@@ -215,7 +215,7 @@ The `survey` package in R will allow you to specify design and correctly adjust 
 - Schools were the primary PSU in a cluster sampling technique, but were also stratified by region, urbanicity, school type, ethnic mix, and size. 
 - Students within schools were stratified by grade and sex and then sampled.
 - Several oversamples were conducted of ethnic groups and genetically related pairs of students, as well as saturated samples from 16 schools. 
-- Poststratification adjustments were made to sampling weights to account for region of the country. 
+- Post-stratification adjustments were made to sampling weights to account for region of the country. 
 - The Add Health documentation indicates that the REGION variable should be applied as a stratification variable but this variable is not available in the public release data so we will focus on the design effects of weights and clustering. 
 ]
 

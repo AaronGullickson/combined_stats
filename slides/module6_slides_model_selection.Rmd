@@ -68,8 +68,8 @@ We can always add more variables, interactions, non-linear terms, and so forth t
 
 .pull-left[
 ### Do Nots
-- **Do not** choose a model based on all of the coefficients being statistically significant. Thats a misuse of statistical inference based on an incorrect interpretation of a p-value.
-- **Do not** choose a model because it produces the results you like the best. Thats not science. 
+- **Do not** choose a model based on all of the coefficients being statistically significant. That is a misuse of statistical inference based on an incorrect interpretation of a p-value.
+- **Do not** choose a model because it produces the results you like the best. That is not science. 
 - **Do not** choose a model based on some purely mechanical algorithm. Model choice needs to be driven by what questions you want to ask as much as goodness of fit and parsimony.
 - **Do not** choose a model based on $R^2$ values. An additional variable will make the $R^2$ value somewhat better, so there is no end to the complexity of the model you fit. 
 ]
@@ -323,12 +323,11 @@ convertModel <- function(model) {
                      coef = coef_table[,1], 
                      se = coef_table[,2], 
                      pvalues = coef_table[,4],
-                     gof.names = c("R2","Adjusted R2","BIC (null)","N"), 
+                     gof.names = c("R2","Adjusted R2","BIC (null)"), 
                      gof = c(summary(model)$r.squared, 
                              summary(model)$adj.r.squared,
-                             bic.null(model), 
-                             length(model$residuals)), 
-                     gof.decimal = c(T,T,T,F))
+                             bic.null(model)), 
+                     gof.decimal = c(T,T,T))
   return(tr)
 }
 

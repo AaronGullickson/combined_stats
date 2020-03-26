@@ -260,9 +260,12 @@ In cases where the collinear variables are all thought to represent the same und
 
 
 ```{r standardize_reversecode_nyc}
-nyc$poverty.z <- (nyc$poverty-mean(nyc$poverty))/sd(nyc$poverty)
-nyc$unemployed.z <- (nyc$unemployed-mean(nyc$unemployed))/sd(nyc$unemployed)
-nyc$lincome.z <- -1*(nyc$lincome-mean(nyc$lincome))/sd(nyc$lincome)
+nyc$poverty.z<-(nyc$poverty-mean(nyc$poverty))/
+  sd(nyc$poverty)
+nyc$unemployed.z<-(nyc$unemployed-mean(nyc$unemployed))/
+  sd(nyc$unemployed)
+nyc$lincome.z<- -1*(nyc$lincome-mean(nyc$lincome))/
+  sd(nyc$lincome)
 ```
 
 Note that I am multiplying the `lincome` result by -1 to reverse code it. 
@@ -278,7 +281,7 @@ nyc$lincome.z <- -1*scale(nyc$lincome)
 
 ---
 
-##  Cronbach's Alpha
+##  Cronbach's alpha
 
 Cronbach's $\alpha$ is a statistic developed in psychology to test the degree to which different variables measure the same underlying concept. 
 
@@ -452,7 +455,7 @@ Between 2008-12, The Pew Research Center surveyed Muslims from numerous countrie
 - polygamy
 - fertility control
 - alcohol
-- euthansia
+- euthanasia
 - suicide
 - abortion
 - prostitution

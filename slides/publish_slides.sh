@@ -3,6 +3,7 @@ Rscript -e 'rmarkdown::render("module2_slides_distribution_variable.Rmd")'
 Rscript -e 'rmarkdown::render("module3_slides_measuring_association.Rmd")'
 Rscript -e 'rmarkdown::render("module4_slides_statistical_inference.Rmd")'
 Rscript -e 'rmarkdown::render("module5_slides_building_models.Rmd")'
+Rscript -e 'rmarkdown::render("module6_slides_model_complications.Rmd")'
 
 
 
@@ -26,6 +27,9 @@ cp -R module4_slides_statistical_inference_files ~/Professional/blog/stat_slides
 
 cp module5_slides_building_models.html ~/Professional/blog/stat_slides/
 cp -R module5_slides_building_models_files ~/Professional/blog/stat_slides/
+
+cp module6_slides_model_complications.html ~/Professional/blog/stat_slides/
+cp -R module6_slides_model_complications_files ~/Professional/blog/stat_slides/
 
 #remove all created files
 rm *.html

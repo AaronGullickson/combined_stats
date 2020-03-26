@@ -88,7 +88,7 @@ ggplot(temp, aes(x=x, y=y))+
   annotate("text",0.25, 0.5, label="r=0.16")
 ```
 
-As an example of serial autocorrelation, I will use the `longley` time series dataset in R to fit the following model predicting the number of people employed by GNPfrom 1947 to 1962 (n=16):
+As an example of serial autocorrelation, I will use the `longley` time series dataset in R to fit the following model predicting the number of people employed by GNP from 1947 to 1962 (n=16):
 
 I can then plot the residuals values from years 1947 to 1961  by the residual values for years 1948 to 1962. The positive correlation in the residuals here suggests serial autocorrelation.
 
