@@ -5,7 +5,6 @@ In this chapter, we will expand our understanding of the linear model to address
 
 Slides for this module can be found [here](https://aarongullickson.github.io/stat_slides/module6_slides_model_complications.html).
 
-
 ---
 
 ## The Linear Model, Revisited
@@ -937,17 +936,426 @@ ggplot(earnings, aes(x=age, y=wages))+
 
 ---
 
-## The i.i.d. Violation and Robust Standard Errors
+## The IID Violation and Robust Standard Errors
 
-Robust standard errors have become popular in recent years, partly due (I believe) to how easy they are to add to standard regression models in Stata. We won't delve into the math behind the robust standard error, but the general idea is that robust standard errors will give you "correct" standard errors even when the model is mis-specified due to issues such a non-linearity, heteroscedasticity, and autocorrelation. 
+Lets return to the idea of the idea of the linear model as a **data-generating process**:
 
-The problem with robust standard errors is that the "robust" does not necessarily mean "better." Robust standard errors will still be inefficient. Intuitively, it would be better to fit the right model with regular standard errors than the wrong model with robust standard errors. From this perspective, robust standard errors can be an effective diagnostic tool. 
+$$y_i=\underbrace{\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}}_{\hat{y}_i}+\epsilon_i$$
+
+
+To get a given value of $y_i$ for some observation $i$ you feed in all of the independent variables for that obseravation into your linear model equation to get a predicted value, $\hat{y}_i$. However, you still need to take account of the stochastic element that is not predicted by your linear function. To do this, imagine reaching into a bag full of numbers and pulling out one value. Thats your $\epsilon_i$ which you add on to your predicted value to get the actual value of $y$. 
+
+What exactly is in that "bag full of numbers?" Each time you reach into that bag, you are drawing a number from some distribution based on the values in that bag. The procedure of estimating linear models makes two key assumption about how this process works:
+
+1. Each observation is drawing from the same bag. In other words, you are drawing values from the same distribution. The shape of this distribution does not matter, even though some people will claim that it must be normally distributed. However, regardless of the shape, all obervations must be drawing from an **identically** shaped distribution.
+2. Each draw from the bag must be **independent**. This means that the value you get on one draw does not depend in any way on other draws.
+
+Together these two assumptions are often called the IID assumption which stands for **independent and identically distributed**.
+
+What is the consequence of violating the IID assumption? The good news is that violating this assumption will not bias your estimates of the slope and intercept. The bad news is that violating this assumption will often produce incorrect standard errors on your estimates. In the worst case, you may drastically underestimate standard errors and thus reach incorrect conclusions from classical statistical inference procedures such as hypothesis tests. 
+
+How do IID violations occur? Lets talk about a couple of common cases. 
+
+### Violations of independence
+
+The two most common ways for the independence assumption to be violated are by **serial autocorrelation** and **repeated observations**.
+
+#### Serial autocorrelation
+
+Serial autocorrelation occurs in longitudinal data, most commonly with time series data. In this case, observations close in time tend to be more similar for reasons not captured by the model and thus you observe a positive correlation between subsequent residuals when they are ordered by time. 
+
+For example, the `longley` data that come as an example dataset in base R provide a classic example of serial autocorrelation, as illustrated in Figure \@ref(fig:longley). 
+
+```{r longley, echo=FALSE, fig.cap="Scatterplot of GNP and number of workers unemployed, US 1947-1962"}
+longley$year <- rownames(longley)
+ggplot(longley, 
+       aes(x=GNP,
+           y=Unemployed))+
+  geom_point()+
+  geom_line()+
+  geom_smooth(method="lm", se=FALSE)+
+  geom_smooth(se=FALSE, color="red", linetype=2)+
+  geom_text_repel(aes(label=year))+
+  labs(x="Gross National Product, US",
+       y="Number Unemployed, US")+
+  theme_bw()
+```
+
+The number unemployed tends to be cyclical and cycles last longer than a year, so we get a an up-down-up pattern show in red that leads to non-independence among the residuals from the linear model (shown in blue).
+
+We can more formally look at this by looking at the correlation between temporally-adjacent residuals, although this requires a bit of work to set up.
+
+```{r autocorrelation-example}
+model <- lm(Employed~GNP, data=longley)
+temp <- augment(model)$.resid
+temp <- data.frame(earlier=temp[1:15], later=temp[2:16])
+head(temp)
+```
+The two values in the first row are the residuals fro 1947 and 1948. The second row contains the residuals for 1948 and 1949, and so on. Notice how the later value becomes the earlier value in the next row.
+
+Lets look at how big the serial autocorrelation is:
+
+```{r}
+cor(temp$earlier, temp$later)
+```
+
+We are definitely seeing some positive serial autocorrelation, but its of a moderate size in this case.
+
+#### Repeated observations
+
+Imagine that you have data on fourth grade students at a particular elementary school. You want to look at the relationship between scores on some test and a measure of socioeconomic status (SES). In this case, the students are clustered into different classrooms with different teachers. Any differences between classrooms and teachers that might affect test performance (e.g. quality of instruction, lower stugdent/teacher ratio, aid in class) will show up in the residual of your model. But because students are clustered into these classrooms, their residuals will not be independent. Students from a "good" classroom will tend to have higher than average residuals while students from a "bad" classroom will tend to have below average residuals. 
+
+The issue here is that our residual terms are  **clustered** by some higher-level identification. This problem most often appears when your data have a **multilevel structure** in which you are drawing repeated observations from some higher-level unit. 
+
+Longitudinal or panel data in which the same respondent is interviewed at different time intervals inherently face this problem. In this case, you are drawing repeated observations on the same individual at different points in time and so you expect that if that respondent has a higher than average residual in time 1, they also likely have a higher than average residual in time 2. However, as in the classroom example above, it can occur in a variety of situations even with cross-sectional data.
+
+### Heteroscedasticity
+
+Say what? Yes, this is a real term. Heteroscedasticity means that the variance of your residuals is not constant but depends in some way on the terms in your model. In this case, observations are not drawn from identical distributions because the variance of this distribution is different for different observations. 
+
+One of the most common ways that heteroscedasticity arises is when the variance of the residuals increases with the predicted value of the dependent variables. This can easily be diagnosed on a residual by fitted value plot, where it shows up as a cone shape as in Figure \@ref(fig:heteroscedasticity-cone).
+
+```{r heteroscedasticity-cone, fig.cap="Residual plot of model predicting box office returns by movie runtime"}
+model <- lm(BoxOffice~Runtime, data=movies)
+ggplot(augment(model), aes(x=.fitted, y=.resid))+
+  geom_point(alpha=0.7)+
+  scale_y_continuous(labels=scales::dollar)+
+  scale_x_continuous(labels=scales::dollar)+
+  geom_hline(yintercept = 0, linetype=2)+
+  theme_bw()+
+  labs(x="predicted box office returns",
+       y="residuals from the model")
+```
+
+Such patterns are common with right-skewed variables that have a lower threshold (often zero). In Figure \@ref(fig:heteroscedasticity-cone), the residuals can never produce an actual value below zero, leading to the very clear linear pattern on the low end. The high end residuals are more scattered but also seem to show a cone pattern. Its not terribly surprising that as our predicted values grow in absolute terms, the residuals from this predicted value also grow in absolute value. In relative terms, the size of the residuals may be more constant. 
+
+### Fixing IID violations
+
+Given that you have identified an IID violation in your model, what can you do about it? The best solution is to **get a better model**. IID violations are often implicitly telling you that the model you have selected is not the best approach to the actual data-generating process that you have. 
+
+Lets take the case of heteroscedasticity. If you observe a cone shape to the residuals, it suggests that the absolute size of the residuals is growing with the size of the predicted value of your dependent variable. In relative terms (i.e. as a percentage of the predicted value), the size of those residuals may be more constant. A simple solution would be to log our dependent variable because this would move us from a model of absolute change in the dependent variable to one of relative change.
+
+```{r heteroscedasticity-log, fig.cap='Residual plot of model predicting the log of box office returns by movie runtime'}
+model <- lm(log(BoxOffice)~Runtime, data=movies)
+ggplot(augment(model), aes(x=.fitted, y=.resid))+
+  geom_point(alpha=0.7)+
+  geom_hline(yintercept = 0, linetype=2)+
+  theme_bw()+
+  labs(x="predicted log of box office returns",
+       y="residuals from the model")
+```
+
+I now no longer observe the cone shape to my residuals. I might be a little concerned about the lack of residuals in the lower right quadrant, but overall this plot does not suggest a strong problem of heteroscedasticity. Furthermore, loggin box office returns may help address issues of non-linearity and outliers and give me results that are more sensible in terms of predicting percent change in box office returns rather than absolute dollars and cents.
+
+Similarly, the problem of repeated observations can be addressed by the use of **multilevel models** that explicitly account for the higher-level units that repeated observations are clustered within. We won't talk about these models in this course, but in aaddition to resolving the IID problem, these models make possible more interesting and complex models that analyze effects at different levels and across levels. 
+
+In some cases, a clear and better alternative may not be readily apparent. In this case, two techniques are common. The first is the use of **weighted least squares** and the second is the use of **robust standard errors**. Both of these techniques mathematically correct for the IID violation on the existing model. Weighted least squares requires the user to specify exacty how the IID violation arises, while robust standard errors seemingly figures it out mathemagically.
+
+### Weighted least squares
+
+To do a weighted least squares regression model, we need to add a weighting matrix,  $\mathbf{W}$, to the standard matrix calculation of model coefficients and standard errors:
+
+$$\mathbf{\beta}=(\mathbf{X'W^{-1}X})^{-1}\mathbf{X'W^{-1}y}$$
+$$SE_{\beta}=\sqrt{\sigma^{2}(\mathbf{X'W^{-1}X})^{-1}}$$
+
+This weighting matrix is an $n$ by $n$ matrix of the residuals. What goes into that weighting matrix depends on what kind of IID violation you are addressing. 
+
+1. To deal with heteroscedasticity, you need to apply a weight to the diagonal terms of that matrix which is equal to the inverse of the variance of the residual for that observation.
+2. For violation of independence, you need to apply some value to the off-diagonal cells that indicates the correlation between those residuals.
+
+In practice, the values of this weighting matrix $\mathbf{W}$ have to be estimated by the results from a basic OLS regression model. Therefore, in practice, people actually use **iteratively-reweighted** estimating or IRWLS for short. To run an IRWLS:
+
+1. First estimate an OLS regression model. 
+2. Use the results from that OLS regression model to determine weights for the weighting matrix $\mathbf{W}$ and run another model using the formulas above for weighted least squares.
+3. Repeat step (2) over and over again until the results stop changing from iteration to iteration. 
+
+For some types of weighted least squares, R has some built-in packages to handle the details internally. The `nlme` package can handle IRWLS using the `gls` function for a variety of weighting structures. For example, we can correct the `longley` data above by using an "AR1" structure for the autocorrelation. The  AR1 pattern (which stands for "auto-regressive 1") assumes that each subsequent residual is only correlated with its immediate temporal predecessor.
+
+```{r longleyar1}
+library(nlme)
+model.ar1 <- gls(Employed~GNP+Population, correlation=corAR1(form=~Year),data=longley)
+summary(model.ar1)$tTable
+```
+
+### Robust standard errors
+
+Robust standard errors have become popular in recent years, partly due (I believe) to how easy they are to add to standard regression models in Stata. We won't delve into the math behind the robust standard error, but the general idea is that robust standard errors will give you "correct" standard errors even when the model is mis-specified due to issues such as non-linearity, heteroscedasticity, and autocorrelation. Unlike weighted least squares, we don't have to specify much about the underlying nature of the IID violation.
 
 Robust standard errors can be estimated in R using the `sandwich` and `lmtest` packages, and specifically with the `coeftest` command. Within this command, it is possible to specify different types of robust standard errors, but we will use the "HC1" version which is equivalent to the robust standard errors produced in Stata by default. 
+
+```{r robustse, message=FALSE, error=FALSE}
+library(sandwich)
+library(lmtest)
+model <- lm(BoxOffice~Runtime, data=movies)
+summary(model)$coef
+coeftest(model, vcov=vcovHC(model, "HC1"))
+```
+
+Notice that the standard error has increased from 0.074 in the OLS regression model to 0.127 for the robust standard error. It is implicitly correcting for the heteroscedasticity problem. 
+
+#### Robust standard errors are diagnostics not corrections
+
+The problem with robust standard errors is that the "robust" does not necessarily mean "better." Robust standard errors will still be inefficient because they are implicitly telling you that your model specification is wrong. Intuitively, it would be better to fit the right model with regular standard errors than the wrong model with robust standard errors. From this perspective, robust standard errors can be an effective diagnostic tool but are generally not a good ultimate solution.
+
+To illustrate this, lets run the same model as above but now with the log of box office returns which we know will resolve the problem of heteroscedasticity:
+
+
+```{r robustlog, message=FALSE, error=FALSE}
+model <- lm(log(BoxOffice)~Runtime, data=movies)
+summary(model)$coef
+coeftest(model, vcov=vcovHC(model, "HC1"))
+```
+
+The robust standard error (0.026) is no longer larger than the regular standard error (0.029). This indicates that we have solved the underlying problem leading to inflated robust standard errors by better model specification. Whenever possible, you should try to fix the problem in your model by better model specification rather than rely on the brute-force method of robust standard errors. 
 
 ---
 
 ## Sample Design and Weighting
+
+Thus far, we have acted as if all of the data we have analyzed comes from a **simple random sample** , or an SRS for short. For a sample to be a simple random sample, it must exhibit the following property:
+
+> In a simple random random sample (SRS) of size $n$, every possible combination of observations from the population must have an equally likely chance of being drawn.
+
+if every possible combination of observations from the population has an equally likely chance of being drawn, then every observation also has an equally likely chance of being drawn. This latter property is important. If each observation from the population has an equally likely chance to be drawn, then any statistic we draw from the sample should be *unbiased* - it should approximate the population parameter except for random bias. In simple terms, our sample should be representative of the population.
+
+However, SRS's have an additional criteria above and beyond each observation having an equally likely chance of being drawn. Every possible combination of observations from the population must have an equally likely chance of being drawn. What does this mean? Imagine that I wanted to sample two students from our classroom. First I divide the class into two equally sized groups and then I sample one student from each group. In this case, each student has an equal likelihood of being drawn, specifically $2/N$ where $N$ is the number of students in the class. However, not every possible combination of two students from the class is possible. Students will never be drawn in combination with another student from their own cluster. 
+
+This additional criteria for an SRS is necessary for the standard errors that we have been using to be accurate for measures of statistical inference such as hypothesis tests and confidence intervals. If this criteria is not true, then we must make adjustments to our standard errors to account for the sample design. These adjustments will typically lead to larger standarde errors. 
+
+In practice, due to issues of cost and efficiency, most large scale samples are not simple random samples and we must take into account these issues of sample design. In addition, samples sometimes  intentionally *oversample* some groups (typically small groups in the population) and thus statustical results must be **weighted** in order to calculate unbiased statistics. 
+
+### Cluster/multistage sampling
+
+Cluster or multistage sampling is a sampling technique often used to reduce the time and costs of surveying. When surveys are conducted over a large area such as the entire United States, simple random samples are not cost effective. Surveyors would have to travel extensively across every region of the United States to interview respondents chosen for the sample. Therefore, in practice most surveys use some form of multistage sampling, which is a particular form of cluster sampling. 
+
+The idea of multistage sampling is that observations are first grouped into **primary sampling units** or PSUs. These PSUs are typically defined geographically. For example, the General Social Survey uses PSUs that are made up of a combination of metropolitan areas and clusters of rural counties. In the first stage of this sampling process, certain PSUs are sampled. Then at the second stage, individual observations are sampled within the PSUs. PSUs of unequal size are typically sampled relative to population size so that each observation still has an equally likely chance of being drawn. 
+
+In practice, there may be even more than two stages of sampling. For example, one might sample a counties as the PSU and then within sample counties may sample census tracts or blocks, before then sampling households within those tracts. A sample of schoolchildren might first sample school districts, and then schools within the district before sampling individual students. 
+
+If PSUs are sample with correct probability, then the resulting sample will still be representative because every observation in the population had an equally likely chance of being drawn. However, it will clearly violate the assumption of an SRS. The consequence of cluster sampling is that if the variable of interest is distributed differently across clusters, the resulting standard error for statistical inference will be greater than that calculated in our default formulas. 
+
+To see why this happens, lets take a fairly straightforward example: what percent of the US population is Mormon? The General Social Survey (GSS) collects information on religious affiliation, so this should be a fairly straightforward calculation. To do this I have extracted a subset of GSS data from 1972-2014 that includes religious affiliation. For reasons that will be explained in more detail in the next section, religious affiliation is divided into three categories and the Mormon affiliation is in the "other" variable. Taking account of some missing value issues, I can calculate the percent mormon by year:
+
+```{r mormon_percent}
+relig$mormon <- ifelse(is.na(relig$relig), NA, 
+                       ifelse(!is.na(relig$other) & 
+                                relig$other=="mormon", TRUE,
+                              FALSE))
+mormons <- tapply(relig$mormon, relig$year, mean, na.rm=TRUE)
+mormons <- data.frame(year=as.numeric(rownames(mormons)), 
+                      proportion=mormons,
+                      n=as.numeric(table(relig$year)))
+rownames(mormons) <- NULL
+head(mormons)
+```
+
+Lets go ahead and plot this proportion up over time.
+
+```{r mormon-graph, echo=FALSE, fig.cap="Sample percent Mormon over time from the General Social Survey, with a red band indicating expected 95% confidence intervals under assumption of SRS"}
+mormonmean <- mean(relig$mormon, na.rm=TRUE)
+se <- sqrt((mormonmean*(1-mormonmean))/table(relig$year))*100
+mormons$highmark <- 100*mormonmean+1.96*se
+mormons$lowmark <- 100*mormonmean-1.96*se
+ggplot(mormons, aes(x=year, y=proportion*100))+
+  geom_ribbon(aes(ymin=lowmark, ymax=highmark), 
+              alpha=0.4, fill="red")+
+  geom_line()+
+  geom_point()+
+  geom_hline(yintercept = mormonmean*100, linetype=2)+
+  annotate("text", 1980, 1.5, label="expected 95% confidence\ninterval under SRS",
+           color="red")+
+  labs(x="year",
+       y="sample percent Mormon")
+```
+
+In addition to the time series, I have included two other features. The dotted line gives the mean proportion across all years (1.19%). The red band gives the expected 95% confidence interval for sampling assuming that the mean across all years is correct and this proportion hasn't changed over time. For each year this is given by:
+
+$$0.0119 \pm 1.96(\sqrt{0.0119(1-0.0119)/n})$$
+
+Where $n$ is the sample size in that year.
+
+What should be clear from this graph is that the actual variation in the sample proportion far exceeds that expected by simple random sampling. We would expect 19 out of 20 sample proportions to fall within that red band and most within the red band to fall close to the dotted line, but most values fall either outside the band or at its very edge. Our sample estimate of the percent Mormon fluctuates drastically from year to year. 
+
+Why do we have such large variation. The GSS uses geographically based cluster sampling and Mormons are not evenly distributed across the US. They are highly clustered in a few states (e.g. Utah, Idaho, Colorado, Nevada) and more commo in the western US than elsewhere. Therefore, in years where a Mormon PSU makes it into the sample we get overestimates of the percent Mormon and in years where a Mormon PSU does not make it into the sample, we get underestimates. Over the long term (assuming no change over time in the population) the average across years should give us an unbiased estimate of around 1.19%. 
+
+### Stratification
+
+In a stratified sample, we split our population into various *strata* by some characteristic and then sample observations from every stratum. For example, I might split households by household income strata of $25K. I would then sample observations from every single one of those income stratum.
+
+On the surface, stratified sampling sounds very similar to clustering sample, but it has one important difference. In cluster/multistage sampling, only certain clusters are sampled. In stratified sampling, observations are drawn from **all** stratum. The goal is not cost savings or efficiency but ensuring adequate coverage in the final dataset for some variable of interest.
+
+Stratified sampling also often has the opposite effect as clustered sampling. Greater similarity in some variable of interest within strata will actually reduce standard errors below that expected for simple random sampling, whereas greater similarity in some variable of interest in clusters will increase standard errors. 
+
+Observations can be drawn from stratum relative to population size in order to maintain the representativeness of the sample. However, researchers often intentionally sample some stratum with a higher frequency than their population size in order to ensure that small groups are present in enough size in the sample that representative statistics can be drawn for that group and comparisons can be made to other groups. For example, it is often common to oversample racial minorities in samples to ensure adequate inferences can be made for smaller groups. This is called **oversampling**. 
+
+If certain strata/groups are oversampled, then the sample will no longer be representative without applying some kind of weight. This leads us into a discussion of the issue of **weights** in sample design.
+
+### Weights
+
+The use of weights in sample design can get quite complex and we will only scratch the surface here. The basic idea is that if your sample is not representative, you need to adjust all statistical results a **sampling weight** for each observation. The sampling weight for each observation should be equal to the inverse of that observation's probability of being sampled $p_i$. So:
+
+$$w_i=\frac{1}{p_i}$$
+
+To illustrate this, lets create a fictional population and draw a sample from it. For this exercise, I want to sample from the Dr. Seuss town of Sneetchville. There are two kinds of Sneetches in Sneetchville, those with stars on their bellies (Star-Bellied Sneetches) and regular Sneetches. Star-bellied Sneetches are relatively more advantaged and make up only 10% of the population. Lets create our populations by sampling incomes from the normal distribution.
+
+```{r setseed, include=FALSE}
+set.seed(10)
+```
+
+```{r create-sneetchville, fig.cap="Distribution of income in Sneetchville by Sneetch type for the full population"}
+reg_sneetch <- rnorm(18000, 10, 2)
+sb_sneetch <- rnorm(2000, 15, 2)
+sneetchville <- data.frame(type=factor(c(rep("regular",18000), rep("star-bellied",2000))),
+                           income=c(reg_sneetch, sb_sneetch))
+mean(sneetchville$income)
+tapply(sneetchville$income, sneetchville$type, mean)
+ggplot(sneetchville, aes(x=type, y=income))+
+  geom_boxplot()
+```
+
+We can see that Star-bellied Sneetches make considerably more than regular Sneetches on average. Because there are far more regular Sneetches, the mean income in Sneetchville of 10.5 is very close to the regular Sneetch mean income of 10. 
+
+Those are the population values which we get to see because we are omnipotent in this case. But our poor researcher needs to draw a sample to figure out these numbers. Lets say the researcher decides to draw a stratified sample that includes 100 of each type of Sneetch.
+
+```{r sneetch-sample, fig.cap="Distribution of income in Sneetchville by Sneetch type for statified sample"}
+sneetch_sample <- sneetchville[c(sample(1:18000, 100, replace=FALSE),
+                                 sample(18001:20000, 100, replace=FALSE)),]
+mean(sneetch_sample$income)
+tapply(sneetch_sample$income, sneetch_sample$type, mean)
+ggplot(sneetch_sample, aes(x=type, y=income))+
+  geom_boxplot()
+```
+
+When I separate mean income by Sneetch type, I get estimates that are pretty close to the population values of 10 and 15. However, when I estimate mean income for the whole sample, I overestimate the population parameter substantially. It should be about `r round(mean(sneetchville$income), 1)` but I get `r round(mean(sneetch_sample$income), 1)`. Why? My sample contains equal numbers of Star-bellied and regular Sneetches, but Star-bellied Sneetches are only about 10% of the population. Star-bellied Sneetches are thus over-represented and since they have higher incomes on average, I systematically overestimate income for Sneetchville as a whole.
+
+I can correct for this problem if I apply weights that are equal to the inverse of the probability of being drawn. There are 2000 Star-bellied Sneetches in the population and I sampled 100, so the probability of being sampled is 100/2000. Similarly for regular Sneetches the probability is 100/18000.
+
+```{r apply-sneetch-weights}
+sneetch_sample$sweight <- ifelse(sneetch_sample$type=="regular", 
+                                 18000/100, 2000/100)
+tapply(sneetch_sample$sweight, sneetch_sample$type, mean)
+```
+
+The weights represent how many observations in the population a given observation in the sample represents. I can use these weights to get a **weighted mean**. A weighted mean can be calculated as:
+
+$$\frac{\sum w_i*x_i}{\sum w_i}$$
+
+```{r weighted-mean}
+sum(sneetch_sample$sweight*sneetch_sample$income)/sum(sneetch_sample$sweight)
+weighted.mean(sneetch_sample$income, sneetch_sample$sweight)
+```
+
+Our weighted sample mean is now very close to the population mean of `r round(mean(sneetchville$income), 1)`.
+
+So why add this complication to my sample? Lets say I want to do a hypothesis test on the mean income difference between Star-bellied Sneetches and regular Sneetches in my sample. Lets calculate the standard error for that test:
+
+```{r}
+sqrt(sum((tapply(sneetch_sample$income, sneetch_sample$type, sd))^2/
+  table(sneetch_sample$type)))
+```
+
+Now instead of a stratified sample, lets draw a simple random sample of the same size (200) and calculate the same standard error.
+
+```{r}
+sneetch_srs <- sneetchville[sample(1:20000,200, replace = FALSE),]
+sqrt(sum((tapply(sneetch_srs$income, sneetch_srs$type, sd))^2/
+  table(sneetch_srs$type)))
+```
+
+The standard errors on the mean difference are nearly doubled. Why? Remember that the sample size of each group is a factor in the standard error calculation. In this SRS we had the following:
+
+```{r}
+table(sneetch_srs$type)
+```
+
+We had far fewer Star-bellied Sneetches because we did not oversample them and this led to higher standard errors on any sort of comparison we try to draw between the two groups. 
+
+#### Post-stratification weighting
+
+In some cases where oversamples are drawn for particular cases and population numbers are well known, it may be possible to calculate simple sample weights as we have done above. However, in many cases, researchers are less certain about how the sampling procedure itself might have under-represented or over-represented some groups. In these cases, it is common to construct **post-stratification weights** by comparing sample counts across a variety of strata to that from some trusted population source and then constructing weights that adjust for discrepancies. These kinds of calculations can be quite complex and we won't go over them in detail here.
+
+#### Weighting and standard errors
+
+Regardless of how sample weights are constructed, they also have an effect on the variance in sampling. The use of sampling weights will increase the standard error of estimates above and beyond what we would expect in simple random sampling and this must be accounted for in statistical inference techniques. The greater the variation in sample weights, the bigger the design effect will be on standard errors.
+
+### Correcting for sample design in models
+
+Clustering, stratification and weighting can all effect the representativeness and sampling variability of our sample. In samples that are not simple random samples, we need to take account of these **design effects** in our models. 
+
+To illustrate such design effects, we will consider the Add Health data that we have been using. This data is the result of a very complex sampling design. Schools were the PSU in a multistage sampling design. The school sample and the individual sample of students within schools were also stratified by a variety of characteristics. For example, the school sample was stratified by region of the US to ensure that all regions were represented. Certain ethnic/racial groups were also oversampled by design and post-stratification weights were also calculated.
+
+In the publically available Add Health data, we do not have information on stratification variables, but we do have measures of clustering and weighting.
+
+```{r addhealth-design-vars}
+head(popularity[,c("cluster","sweight")])
+```
+
+The `cluster` variable is a numeric id for each school and tells us which students were sampled from which PSU. The `sweight` variable is our sampling weight variable and tells us how many students in the US this observation represents. 
+
+Lets start with a naive model that ignores all of these design effects and just tries to predict number of friend nominations by our pseudoGPA measure:
+
+```{r design-model-naive}
+model_basic <- lm(indegree~pseudoGPA, data=popularity)
+round(summary(model_basic)$coef, 3)
+```
+
+This model is not necessarily representative of the population because it does not take account of the differential weight for each student. We can correct these estimates by adding in a weight argument to the `lm` command. This will essentially run a weighted least squares (WLS) model with these weights along the diagonal of the weight matrix. Intuitively, we are trying to minimize the weighted sum of squared residuals rather than the unweighted sum of squared residuals.
+
+```{r}
+model_weighted <- lm(indegree~pseudoGPA, data=popularity, weights = sweight)
+round(summary(model_weighted)$coef, 3)
+```
+
+In this case, the unweighted slope of 0.837 is not very differnet from the weighted slope of 0.826. 
+
+This model give us more representative and generalizable results, but we are still not taking account of the design effects that increase the standard errors of our estimates. Therefore, we are underestimating standard errors in the current model. There are two sources of these design effects that we need to account for:
+
+1. The variance in sample weights
+2. The cluster sampling 
+
+We can address the first issue of variance in sample weights by using robust standard errors:
+
+```{r}
+library(sandwich)
+library(lmtest)
+model_robust <- coeftest(model_weighted, vcov=vcovHC(model_weighted, "HC1"))
+model_robust
+```
+
+Notice that the standard error increased from about 0.075 to 0.095.
+
+Robust standard errors will adequately address the design effect resulting from the variance of the sampling weights, but it does not address the design effect arising from clustering. Doing that is more mathematically complicated. We won't go into the details here, but we will use the `survey` library in R that can account for a variety of design effects. To make use of this library, we first need to create a `svydesign` object that identifies the sampling design effects:
+
+```{r svydesign}
+library(survey)
+popularity_svy <- svydesign(ids=~cluster, weight=~sweight, data=popularity)
+```
+
+The `survey` library comes with a variety of functions that can be used to run a variety of models that expect this `svydesign` object rathre than a traditional data.frame. In this case, we want the `svyglm` command which can ge used to run "generalized linear models" which include our basic linear model.
+
+```{r svyglm}
+model_svy <- svyglm(indegree~pseudoGPA, design=popularity_svy)
+round(summary(model_svy)$coef, 3)
+```
+
+We now get standard errors of about 0.109 which should reflect both the sampling weight heterogeneity and the cluster sampling design effects. Note that our point estimate of the slope is so large that even with this enlarged standard error, we are pretty confident the result is not zero.
+
+```{r addhealthweight-compare, echo=FALSE, message=FALSE, error=FALSE, results="asis"}
+popularity_svy2 <- svydesign(ids=~1, weight=~sweight, data=popularity)
+model_svy2 <- svyglm(indegree~pseudoGPA, design=popularity_svy2)
+htmlreg(list(model_basic, model_weighted, model_robust, model_svy2, model_svy),
+        head.tag = FALSE,
+        doctype = FALSE,
+        custom.model.names = c("unweighted  ","weighted  ","robust SE  ","survey: weights  ","survey: weights+cluster"),
+        custom.coef.names = c("Intercept","GPA"),
+        include.adjrs=FALSE, include.rmse=FALSE,
+        include.deviance=FALSE, include.dispersion=FALSE,
+        caption="(#tab:addhealthweight-compare) Linear models predicting number of friend nominations by GPA",
+        caption.above=TRUE,
+        digits=3)
+```
+
+Table \@ref(tab:addhealthweight-compare) shows all of the models estimated above plus an additional model that uses the `survey` library but only adjust for weights. All of the techniques except for the unweighted linear model produce identical and properly weighted estimates of the slope and intercept. They vary in the standard errors. The robust standard error approach produces results identical to the `survey` library method that only adjusts for weights. Only the final model using the `survey` library for weights and clustering addresses all of the design effects. 
 
 ---
 
