@@ -3,6 +3,8 @@ class: inverse, center, middle
 background-image: url(images/bence-balla-schottner-o5ttfkZU9_Q-unsplash.jpg)
 background-size: cover
 
+name: iid
+
 # The IID Violation and Robust Standard Errors
 
 ---

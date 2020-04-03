@@ -3,6 +3,8 @@ class: inverse, center, middle
 background-image: url(images/nareeta-martin-z7LRp54Yulw-unsplash.jpg)
 background-size: cover
 
+name: multicollinearity
+
 # Multicollinearity and Scale Creation
 
 ---

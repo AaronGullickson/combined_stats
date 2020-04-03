@@ -3,6 +3,8 @@ class: inverse, center, middle
 background-image: url(images/fabian-quintero-nq02weVF_mk-unsplash.jpg)
 background-size: cover
 
+name: nonlinearity
+
 # Modeling Non-Linearity
 
 ---

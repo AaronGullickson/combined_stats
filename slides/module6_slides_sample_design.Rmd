@@ -3,6 +3,8 @@ class: inverse, center, middle
 background-image: url(images/cyril-saulnier-TsVN31Dzyv4-unsplash.jpg)
 background-size: cover
 
+name: sample-design
+
 # Sample Design and Weighting
 
 ---
@@ -143,7 +145,11 @@ Stratification in sampling operates in a manner somewhat similar to cluster samp
 
 ##  Weights in Sneetchville
 
+.left-column[
+![sneetches](images/sneetches.jpg)
+]
 
+.right-column[
 In Sneetchville, there are 3 star-bellied and 7 regular sneetches. Lets say I take a stratified sample of two star-bellied and two regular sneetches. Here is the population data:
 
 ```{r starbellied1}
@@ -152,6 +158,8 @@ sneetches <- data.frame(type=factor(c(rep("Star-bellied", 3),rep("Regular",7))),
 sneetches$prob <- c(rep(2/3,3),rep(2/7,7))
 sneetches
 ```
+]
+
 
 ---
 
@@ -289,8 +297,8 @@ I can use the `svydesign` command in the `survey` package to correctly specify b
 
 ```{r addhealthweight-survey, message=FALSE, error=FALSE}
 library(survey)
-addhealth.svy <- svydesign(ids=~cluster, weight=~sweight, data=addhealth)
-model.svy <- svyglm(indegree~nsports, design=addhealth.svy)
+popularity.svy <- svydesign(ids=~cluster, weight=~sweight, data=popularity)
+model.svy <- svyglm(indegree~nsports, design=popularity.svy)
 summary(model.svy)$coef
 ```
 

@@ -20,6 +20,23 @@ output:
 ```{r child="setup_chunks.Rmd"}
 ```
 
+## Jump to...
+
+[Linear Model, Revisited](#lm-revisited)
+
+[Nonlinearity](#nonlinearity)
+
+[IID Violations](#iid)
+
+[Sample Design and Weighting](#sample-design)
+
+[Missing Data](#missing-data)
+
+[Multicollinearity and Scale Creation](#multicollinearity)
+
+[Model Selection](#model-selection)
+
+---
 ```{r child="module6_slides_linear_model_revisited.Rmd", eval=TRUE}
 ```
 

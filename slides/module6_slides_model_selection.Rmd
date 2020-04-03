@@ -3,6 +3,8 @@ class: inverse, center, middle
 background-image: url(images/caleb-jones-J3JMyXWQHXU-unsplash.jpg)
 background-size: cover
 
+name: model-selection
+
 # Model Selection
 
 ---

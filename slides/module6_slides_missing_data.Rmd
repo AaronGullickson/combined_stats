@@ -3,6 +3,8 @@ class: inverse, center, middle
 background-image: url(images/kyaw-tun-UvL9JrLkagM-unsplash.jpg)
 background-size: cover
 
+name: missing-data
+
 # Missing Data
 
 ---
