@@ -2154,3 +2154,255 @@ In closing, I should note that factor analysis is a huge area of research and I 
 ---
 
 ## Model Selection
+
+In practice, researchers often have to decide between a variety of possible models. The different models available to a researcher can derive from a number of factors, but most often arise because the researcher has a wide set of possible control variables that could be added to the model. In addition, these models could be added as simple additive effects, or the researcher could add additional interaction terms, squared terms, splines, etc. In practice, the number of possible models one could construct from a set of variables is quite large. How does one go about choosing the "right" model? 
+
+For example, Table \@ref(tab:modelcompare) shows a variety of models that could be used to predict violent crime rates across US states. Note that the model estimates for some variables such as percent male differ substantially across models. How can we possibly decide which of these models is the best model? 
+
+```{r modelcompare, echo=FALSE, message=FALSE, error=FALSE, results="asis"}
+model.demog <- lm(Violent~MedianAge+PctMale, data=crimes)
+model.ineq <- update(model.demog,.~.+Gini)
+model.pov <- update(model.ineq,.~.+Poverty)
+model.unemp <- update(model.pov,.~.+Unemployment)
+model.justunemp <- lm(Violent~Unemployment, data=crimes)
+model.another <- update(model.justunemp,.~.+Gini+MedianAge)
+htmlreg(list(model.demog, model.ineq, model.pov, model.unemp, 
+             model.justunemp, model.another),
+        custom.coef.names = c("Intercept","Median Age", "Percent Male",
+                              "Gini","Poverty Rate","Unemployment Rate"),
+        include.adjrs=FALSE, include.rmse=FALSE,
+        head.tag = FALSE, doctype = FALSE,
+        caption="(#tab:modelcompare) Models predicting violent crime rate",
+        caption.above=TRUE)
+
+```
+
+### There is no "right" model
+
+By definition, models are not a 100% accurate representation of reality. Therefore, its silly to think that a single model can be the "right" one. In this chapter, we will learn some tools that can help with making decisions about model selection, but the decision about model selection is one that must be driven first and foremost by the research question at hand. For example, if my goal is to understand the relationship between percent male and violent crimes, then only models 1-4 from  Table \@ref(tab:modelcompare) are relevant, because only these models include the percent male variable as a predictor. Within that set, it probably makes more sense to think about how robust my results are to several different model specifications than to focus on a single model. Generally, so long as issues of multicollinearity do not arise it might be better to control for more variables rather than less in this context.
+
+A different research question might focus on two different competing explanations for an outcome. In this case, I might need to directly compare the results of two different models to address my research question. In this case, some of the model selection tools we develop below will be more crucial in making this decision, but I still might need to consider how robust my results are to the inclusion of different control variables.
+
+Ultimately, model selection can never be simplified into an automated process that protects the researcher from having to make decisions. There is no one way to make such decisions and must be considering such things as the research question, theoretical arguments about the process, the results of prior research, and the sensitivity of results to alternative specifications.
+
+### The accuracy vs. parsimony tradeoff
+
+If we have an additional variable avaliable to us, why not throw it into the model? More control variables allow us to eliminate potential sources of confounding in the relationships we care about, so isn't more always better than less? There are two reasons, why we don't always want to use this kitchen sink approach.
+
+First, as discussed in the previous section, adding in additional variables can lead to problems of **multicollinearity**. Collinearity between your independent varibles can increase standard errors on your estimates and lead you to a situation in wich in spite of strong point estimates of association, none of your results are statistically significant. For this reason, you should never just look at statistically significance when you observe that the addition of another variable made the relationship between $x$ and $y$ go away. If might have become non-significant because of an inflation in standard errors rather than a reducation in the correlation. 
+
+Second, we generally value the concept of **parsimony** as well as **accuracy**. Accuracy is measured by goodness-of-fit statistics like $R^2$. Your model is more accurate if it can account for more variation in the outcome variable $y$. However, an additional independent variable can never make $R^2$ decrease and will almost always make it increase by some amount. Therefore, if we only prioritize accuracy we will continue to add variables into our models indefinitely. 
+
+We also prize **parsimony**. We want a model that gets the most "bang for our buck" so to speak. We prefer simpler explanations and models to more complex ones if those simpler models can be almost as accurate as the more complex model. 
+
+One important feature of parsimony and the very idea of scientific "models" in general is that we are not simply trying to reproduce reality. If we wanted to do that, we could simply create a dummy variable for each observation and produce a model with an $R^2=1$. Yet, such a model would tell us nothing about the underlying process that produces variation in our outcome - we would just reproduce the world as it is. In principle, the very idea of scientific modeling is to reduce the complexity of the actual data in order to hopefully understand better the process. Including more and more variables into a model is rarely theoretically interesting and may in fact be misleading or confusing as to the underlying causal processes we hope to uncover. 
+
+In practice, we must balance these two features of models. Gains in parsimony will be offset by reductions in accuracy, and vice versa. There is no precise way to say where the threshold for that tradeoff should be, but as a practical researcher, you should always understand that this is the tradeoff you are making when you choose between models.
+
+### Null vs. saturated model
+
+Two conceptual models illustrate the extreme ends of the accuracy vs. parsimony spectrum. The most parsimonious model that we can ever have is one without any independent variables. In this case, our predicted value for the outcome variable would always equal the mean of the outcome variable. Formally, we would have:
+
+$$\hat{y}_i=\bar{y}$$
+
+This **null model** has zero accuracy. It doesn't even pretend to be accurate. We can estimate this model easily enough in R:
+
+```{r null-model}
+model_null <- lm(Violent~1, data=crimes)
+coef(model_null)
+summary(model_null)$r.squared
+```
+
+At the other end of the spectrum, we have the **saturated model**. In the saturated model, we have a number of variables equal to the number of observations minus one. The saturated model is not something we typically observe in practice because these independent variables must be uncorrelated enough that we don't observe perfect collinearity. A simple example would be to simply include a dummy variable for each observation. Since we have the state as a variable in the crimes dataset, we can actually calculate the saturated model here:
+
+```{r saturated-model}
+model_saturated <- lm(Violent~State, data=crimes)
+summary(model_saturated)$r.squared
+```
+
+In practice, all real models fall somewhere between these two extremes. Most of the model selection tools that we discuss below will make use of these two conceptual models theoretically. 
+
+### A not-very-useful tool: the F-test
+
+The F-test is not terribly useful in practice, but we will build some important principles from it for later tools in this module and the next module. The F-test is a classic tool that uses the framework of hypothesis testing to adjudicate between models.
+
+The F-test can compare any two **nested** models. For one model to be nested within another, it must contain all of the original variables in the other model plus additional variables. When models are built by starting with a few variables and then adding in additional variables in a sort of reverse stairstep, then we have nested models. Models 1-4 from Table \@ref(tab:modelcompare) above are nested models, while models 5-6 are not nested within models 1-4.
+
+If we take any two nested models, the null hypothesis of the F-test is that none of the additional variables in the more complex model are correlated with the outcome (e.g. the $\beta$ slope is zero on all additional variables). To test this, we calculate the *F-statistic*:
+
+$$F=\frac{(SSR_1-SSR_2)/g}{SSR_2/(n-g-k-1)}$$
+
+Where $SSR$ is the sum of squared residuals for the given model, $g$ is the number of additional variables in model 2 and $k$ is the number of variables in model 1. Basically we are taking the reduction in SSR per variable added in model 2 divided by the SSR left in model 2 per remaining degree of freedom. If the null hypothesis is correct, we expect this number to be one. The larger the F-statistic gets, the more suspicious we are of the null hypothesis. We can formalize this by calculating the p-value from the right tail of an *F-distribution* for a given F-statistic. This F-distribution will 
+As an example, lets calculat the F-statistic between the null model predicting violent crimes and a model that predicts violent crimes by the median age and percent male in a state.
+
+```{r f-stat}
+model_null <- lm(Violent~1, data=crimes)
+model_demog <- lm(Violent~MedianAge+PctMale, data=crimes)
+SSR1 <- sum(model_null$residuals^2)
+SSR2 <- sum(model_demog$residuals^2)
+g <- length(model_demog$coef)-length(model_null$coef)
+k <- length(model_null$coef)-1
+n <- length(model_null$residuals)
+Fstat <- ((SSR1-SSR2)/g)/(SSR2/(n-g-k-1))
+Fstat
+```
+
+That seems quite a bit bigger than one. We can find out the probability of getting an F-statistic this large or larger if median age and percent male were really uncorrelated with violent crime rates in the population by getting the area of the right tail for a corresponding F-distribution:
+
+```{r f-dist}
+1-pf(Fstat, g, n-g-k-1)
+```
+
+There is a very small probability that we would have gotten an F-statistic this large or larger if the null hypothesis was true. Therefore we reject the null hypothesis and prefer the model with median age and percent male to the null model. 
+
+Rather than doing this by hand, we could have used the `anova` command in R to make the comparison:
+
+```{r anova}
+anova(model_null, model_demog)
+```
+
+ANOVA stands for Analysis of Variance and can be used to conduct F-tests between models. We can also use it to compare more than two models at the same time, so long as they are all nested:
+
+```{r anova-multiple3}
+model_gini <- update(model_demog, .~.+Gini)
+model_complex <- update(model_gini, .~.+Poverty+Unemployment)
+anova(model_null, model_demog, model_gini, model_complex)
+```
+
+The F-test prefers model 2 to model 1 and model 3 to model 2, but does not prefer model 4 to 3. The additional reduction in SSR from model 3 to 4 (78179) is not enough higher than what could be expected by chance if these two additional parameters were not correlated with violent crime rates. 
+
+However, you need to be careful about making model selections here because the order in which things are entered can affect the results. Lets say for example that we included unemployment with the gini coefficient and then added poverty rates separately in model 4.
+
+```{r anova-multiple-another}
+model_giniplus <- update(model_demog, .~.+Gini+Unemployment)
+model_complex <- update(model_gini, .~.+Poverty)
+anova(model_null, model_demog, model_giniplus, model_complex)
+```
+
+Now we prefer to have unemployment in the model. However, it gets even worse than this. Lets take a look at the actual results of the third model:
+
+```{r}
+summary(model_giniplus)
+```
+
+Percent male is not statistically significant and has a small substantive effect, because its large negative effect was driven by an indirect association with the gini coefficient. Unemployment has a marginally significnat but also small effect. But we never tested a model with just median age and the gini coefficient. What happens if we try that?
+
+```{r anova-multiple}
+model_another <- lm(Violent~MedianAge+Gini, data=crimes)
+anova(model_another, model_giniplus)
+```
+
+Now we prefer another model that was nested within our more complex model but not nested within the original model structure. F-tests can easily lead you into situations like this. 
+
+If you add in variables one at a time, the F-test will also produce the exact same result as a t-test on the additional variable:
+
+```{r f-t-test}
+model_one <- lm(Violent~MedianAge, data=crimes)
+model_two <- update(model_one, .~.+Poverty)
+anova(model_one, model_two)
+summary(model_two)$coef
+```
+
+Notice that the p-value for the poverty variable in model 2 is identical to the p-value for the F-test between models 1 and 2. Thus the F-test does not really do much for us that we couldn't already do with a t-test one variable at a time.
+
+Aside from the issues highlighted above, the primary problem with the F-test is that its decisions are driven by the logic of hypothesis testing and the search for "statistically significant" results. Putting aside that this logic makes no sense for the crime data because they are not a sample, this is not a good practice in general. If we decide what to prioritize by statistical significance, then in smaller datasets we will prefer different, more parsimonious, models than in larger datasets. It would be better to choose models based on theoretical principles that are consistent across sample size than to mechanistically determine them in this way. 
+
+### Tools with a parsimony penalty
+
+Two model selection tools allow us to more formally consider the parsimony vs. accuracy tradeoff. We can think of the $R^2$ value as a measure of accuracy. These two tools then apply a "parsimony penalty" to this measure of accuracy to get a single score that measures the quality of the model. In both cases, lack of parsimony is reflected by $p$, the number of independent variables in the model. 
+
+#### Adjusted $R^2$
+
+The adjusted $R^2$ subtracts a certain value from $R^2$ based on the number of independent variables in the model. Formally:
+
+$$R^2_{adj}=R^2-(\frac{p}{n-p-1})(1-R^2)$$
+
+The parsimony penalty is based on a scaling of the lack of goodness of fit $(1-R^2)$ and the number of variables proportionate to the size of the sample. 
+
+Adjusted $R^2$ is provided by default in the summary of an `lm` object:
+
+```{r adj-r2}
+summary(model_demog)
+summary(model_demog)$adj.r.squared
+```
+
+The parsimony penalty in the adjusted $R^2$ will be smaller as $n$ increases. Therefore this tool will tend to prefer more complex models in larger samples. This feature distinguishes its approach from the Bayesian Information Criterion (BIC) below. 
+
+#### Bayesian Information Criterion
+
+The Bayesian Information Criterion, or BIC for short, is based implicitly on a Bayesian logic to statistical inference that we are going to gloss over for now. In practice, there are two forms of the BIC:
+
+* BIC, which is implicitly compared to the **saturated model**.  The R command `BIC` will give you this version.
+* BIC', which is implicitly compared to the **null model**. There is no R command for BIC' but we will create our own function below.
+
+I find that the BIC' formulation is more pleasing and so we will focus on that version here. However, you can compare any two non-null models directly using either criterion and the differences between them will be the same. 
+
+The formula for $BIC'$ is:
+
+$$BIC'=n\log(1-R^2)+p\log(n)$$
+
+The first term includes $R^2$ and is our measure of accuracy. Because we are actually loggin something less than one, we will get a negative value here. For the BIC, lower scores are better and negative scores are the best. bove, I said that each BIC type was implicitly being compared to either the saturated or the null model. If the respective BIC score is below zero then this model is preferred to the null or saturated model, respectively.
+
+The second term $p\log(n)$ is the parsimony penalty. In this case, we actually weight the parsimony penalty **higher** in larger samples. As a result, BIC will tend to prefer the same model more consistently in different sample sizes. 
+
+Since, *R* does not give us a BIC' calculations, lets go ahead and create our own with a function:
+
+```{r bic-function}
+bic_null <- function(model) {
+  rsq <- summary(model)$r.squared
+  n <- length(model$resid)
+  p <- length(model$coef)-1
+  return(n*log(1-rsq)+p*log(n))
+}
+bic_null(model_demog)
+```
+
+The negative value for BIC' tells us that we prefer the model with median age and percent male as predictors to the null model.
+
+We can also compare two non-null models directly by comparing their BIC or BIC' scores. Whichever is lower is the preferred model. These models do not have to be nested.
+
+```{r compare-bic}
+bic_null(model_demog)
+model_econ <- lm(Violent~Poverty+Unemployment+Gini, data=crimes)
+bic_null(model_econ)
+BIC(model_demog)
+BIC(model_econ)
+
+```
+
+In this situation, we slightly prefer the demographic explanation to the economic one. Note that although `bic_null` and `BIC` give us different values, the differences between them in different models are the same:
+
+```{r diff-bic}
+bic_null(model_demog)-bic_null(model_econ)
+BIC(model_demog)-BIC(model_econ)
+```
+
+You can use the general rule of thumb to evaluate differences in BIC:
+
+Difference in BIC | Strength of Preference
+------------------|-----------------------
+0-2               | Weak
+2-6               | Moderate
+6-10              | Strong
+greater than 10   | Very Strong
+
+### Model Averaging
+
+None of the tools mentioned above can fully address the complexity of model selection. One of the key difficulties is that given a set of potential variables, it includes not only what gets included but the order of inclusion. As we have seen above, percent male seems to have a large negative effect on violent crime rates until we consider a model that includes Gini coefficients. Where and how we include these variables in sequential models might affect our ultimate model selection.
+
+One way of addressing this is to use a technique of **model averaging**. In the model averaging approach, we use a computer to iteratively fit all of the possible models from a set of candidate variables. We then use some procedure to average results across these models to account more formally for model uncertainty in our final conclusion. There are a variety of ways in which such model averaging can be done. The `BMA` package in R will use a Bayesian model averaging approach that implicitly uses a Bayesian logic and the BIC to adjudicate between models. Lets try that with our crime data:
+
+```{r bma}
+library(BMA)
+model.bma <- bic.glm(crimes[,c("MedianAge","PctMale","PctLessHS",
+                               "MedianIncomeHH","Unemployment",
+                               "Poverty", "Gini")], 
+                     crimes$Violent, glm.family=gaussian)
+summary(model.bma)
+```
+
+The BMA approahc has given us what it considers the five most likely models. The first column (`p!=0`) gives us the probaility that the parameter is actually not zero across models. Two variables, the poverty rate and median household income have high probabilities here. The second term, (`EV`) gives us the expected value of that slope across the most likely models. This is basically the average across models. The BMA results also show us the five most likely models. Note that they are ordered by BIC' which is the primary technique this procedure uses to evaluate models.
+
+Note that none of these models are even close to what we were estimating before. We were not seeing high effects of poverty in the models and didn't consider median household income. This model averaging approach suggests that we might want to reconsider our approach.
+
+Remember the advice from the beginning of this section. The model averaging approach is seductive because it seems to do the hard work for us, but it should only be used as a tool for the researcher to ultimately make that decision.
