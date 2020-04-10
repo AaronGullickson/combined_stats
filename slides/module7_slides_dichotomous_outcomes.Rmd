@@ -1,0 +1,249 @@
+class: inverse, center, middle
+
+background-image: url(images/riho-kroll-m4sGYaHYN5o-unsplash.jpg)
+background-size: cover
+
+name: dichotomous
+
+# Dichotomous Outcomes and The Binomial Distribution
+
+---
+
+##  Categorical dependent variables?
+
+--
+
+.pull-left[
+###  Life and death on the Titanic
+
+.center[![titanic](images/titanic.jpg)]
+
+
+- Survival of the Titanic is a **dichotomous** outcome, meaning it is a categorical variable with two possible outcomes. 
+- We can use a two-way table or mean differences to look at bivariate relationships.
+- A linear model framework predicting survival would allow us to control for variables, add non-linearity, and include interactions.
+]
+
+--
+
+.pull-right[
+### We don't know how to do that
+
+.center[`r emo::ji("confused")`]
+
+- We know how to include categorical variables on the right hand side of regression model using indicator/dummy variables, but we can't use OLS regression to predict categorical outcomes on the left-hand side of the equation. 
+- We need a linear model framework that allows us to predict categorical outcomes.
+- In order to develop that framework, we need to develop our understanding of the actual **data-generating process** producing our outcomes.
+]
+
+---
+
+##  The binomial distribution
+
+The binomial distribution arises in situations where:
+
+--
+
+- $n$ repeated **independent** trials are performed where the result of each trial is either a **success** or **failure**
+
+--
+
+- the probability of success on each trial is given by $p$ and the probability of failure is $1-p$
+
+--
+
+- We are interested in a **random variable** $X$ that gives the number of successes
+
+--
+
+.right-column[
+### `r emo::ji("game_die")` Dice pools
+
+A simple example of this type of process would be rolling five dice $(n=5)$ and counting the number of sixes $(p=0.167)$. 
+]
+
+.left-column[
+![5d6](images/5d6.jpg)
+]
+
+---
+
+##  The binomial formula
+
+The binomial formula gives the probability that the random variable representing the number of successes $X$ will be some specific number $k$. This formula is:
+
+$$P(X=k)={n \choose k}p^k(1-p)^{n-k}$$
+
+This formula can be broken down into two parts. 
+
+--
+
+- The first part, ${n \choose k}$ is called "n choose k" and gives the number of ways that $k$ successes and $n-k$ failures can be combined.
+
+--
+
+- The second part, $p^k(1-p)^{n-k}$ gives the probability of any particular sequence of $k$ successes and $n-k$ failures. 
+
+---
+
+## The binomial formula, broken down
+
+--
+
+.pull-left[
+###  Probability of a sequence
+
+**When events are independent of one another**, then the probability that they all occur is given by multiplying their individual probabilities together.
+
+For example, if we wanted to know the probability of getting 2 successes and 3 failures for the dice rolling example we would just take:
+
+$$(1/6)(1/6)(5/6)(5/6)(5/6)=(1/6)^2(5/6)^3=0.016$$
+More generally, we can just say:
+$$p^k(1-p)^{n-k}$$
+]
+
+--
+
+.pull-right[
+###  Possible sequences
+
+Does 1.6% seem like a low probability of rolling exactly two sixes in five dice rolls? That is because it is! This is only the probability of rolling any particular sequence of successes and failures. However, its possible to roll two successes and three failures in multiple permutations:
+
+SSFFF, SFSFF, SFFSF, SFFFS, FSSFF, FSFSF, FSFFS, FFSSF, FFSFS, FFFSS
+
+There are ten possible ways to combine two successes and three failures. Therefore, the total probability of rolling exactly two sixes in five dice rolls is:
+
+$$10*(1/6)^2(5/6)^3=0.161$$
+]
+
+---
+
+##  The n choose k formula
+
+The ${n \choose k}$ formula provides a mathematical way to determine how many ways $k$ successes can be distributed in $n$ trials. The full formula is:
+
+$${n \choose k}=\frac{n!}{k!(n-k)!}$$
+
+--
+
+The exclamation points indicate a factorial which means you multiply that number by each integer lower than it in succession. For example:
+
+$$4!=4*3*2*1$$
+
+Typically, many of these values will cancel in the numerator and denominator, so calculation is not too hard for small $n$ and $k$. Lets take the example of two successes in five trials:
+
+$${5 \choose 2}=\frac{5!}{2!(5-2)!}=\frac{5*4*3*2}{2*3*2}=5*2=10$$
+
+---
+
+##  Calculate all the probabilities
+
+.pull-left[
+```{r binomialdist, fig.show = 'hide'}
+k <- 0:5
+p <- 1/6
+n <- 5
+prob <- choose(n,k)*p^k*(1-p)^(n-k)
+ggplot(data.frame(k,prob), aes(x=k, y=prob))+
+  geom_col()+
+  scale_y_continuous(labels=scales::percent)+
+  labs(x="number of sixes in five dice rolls",
+       y="probability")
+```
+]
+
+.pull-right[
+```{r ref.label = 'binomialdist', echo = FALSE}
+```
+]
+
+---
+
+##  What about twenty dice?
+
+.pull-left[
+```{r binomialdist2, fig.show = 'hide'}
+k <- 0:20
+p <- 1/6
+n <- 20
+prob <- choose(n,k)*p^k*(1-p)^(n-k)
+ggplot(data.frame(k,prob), aes(x=k, y=prob))+
+  geom_col()+
+  scale_y_continuous(labels=scales::percent)+
+  labs(x="number of sixes in twenty dice rolls",
+       y="probability")
+```
+]
+
+.pull-right[
+```{r ref.label = 'binomialdist2', echo = FALSE}
+ggplot(data.frame(k,prob), aes(x=k, y=prob))+
+  geom_col()+
+  scale_y_continuous(labels=scales::percent)+
+  labs(x="number of sixes in twenty dice rolls",
+       y="probability")
+```
+]
+
+---
+
+##  Features of the binomial distribution
+
+--
+
+.pull-left[
+```{r expected-value-binomial, echo=FALSE, fig.height=5.5}
+ggplot(data.frame(k,prob), aes(x=k, y=prob))+
+  geom_col()+
+  scale_y_continuous(labels=scales::percent)+
+  geom_vline(xintercept = 20/6, color="red", size=2)+
+  annotate("text", x=6, y=0.25, label="E(X)=20/6=3.333")+
+  labs(x="number of sixes in twenty dice rolls",
+       y="probability")
+```
+The mean (or *expected value*) of the binomial distribution is always given by $(np)$.
+]
+
+--
+
+.pull-right[
+```{r varbinom, echo=FALSE, fig.height=5.5}
+p <- seq(from=0.001,to=0.999, by=.001)
+v <- 20*p*(1-p)
+ggplot(data.frame(p,v), aes(x=p, y=sqrt(v)))+
+  geom_line()+
+  geom_vline(xintercept = 1/6, linetype=2)+
+  annotate("text", x=0.3, y=1.66, label="For p=1/6,\nthe SD is 1.66")+
+  labs(x="probability of success",
+       y="standard deviation in number of successes for n=20")
+```
+The variance of the binomial distribution is given by:
+
+$$(n)(p)(1-p)$$
+]
+
+---
+
+##  The Bernoulli distribution
+
+.pull-left[
+
+.center[![jacob bernoulli](images/jakob_bernoulli.jpg)]
+
+The Bernoulli distribution is a special case of the binomial distribution where $n=1$. The only two possible outcomes for $X$ in the Bernoulli distribution are 0 and 1. 
+
+$$E(X)=p$$
+$$V(X)=(p)(1-p)$$
+]
+
+--
+
+.pull-right[
+###  Back to the Titanic
+
+.center[![titanic](images/titanic.jpg)]
+
+- We can think of each passenger on the Titanic as a single Bernoulli trial where the probability of success is given by $p_i$.
+- We don't observe the $p_i$ values for individual passengers. We only observe the "count"" of successes - 0 or 1. 
+- How can we attempt to recover predicted values of $p_i$ that are related to our independent variables? 
+]
