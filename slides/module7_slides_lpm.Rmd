@@ -1,0 +1,221 @@
+class: inverse, center, middle
+
+background-image: url(images/rachel-ferriman-0_2sDFbiBp8-unsplash.jpg)
+background-size: cover
+
+name: lpm
+
+# Linear Probability Model
+
+---
+
+## The linear probability model
+
+
+--
+
+.pull-left[
+###  `r emo::ji("wink")` I lied, sort of
+
+You can put a dichotomous outcome on the left-hand side of a linear model equation! R will estimate a model with a boolean variable on the left-hand side by turning that boolean variable into 0s and 1s. 
+
+Lets try this out with survival on the left hand side and fare paid on the right hand side.
+
+```{r lpm_survival}
+model_lpm <- lm((survival=="Survived")~fare, 
+                data=titanic)
+coef(model_lpm)
+```
+]
+
+--
+
+.pull-right[
+```{r lpm_plot, echo=FALSE}
+ggplot(titanic, aes(x=fare, 
+                    y=as.numeric(survival=="Survived")))+
+  geom_point(alpha=0.1)+
+  geom_smooth(method="lm", se=FALSE)+
+  scale_y_continuous(breaks = c(0,1), labels=c("0","1"))+
+  labs(x="fare paid in pounds", y="Titanic survival as numeric value")
+```
+]
+
+---
+
+## The linear probability model interpreted
+
+By treating survival as a 1 and death as a 0, we are implicitly modeling the probability of surviving as a function of fare:
+
+$$\hat{p}_i=0.3059+0.0023(fare_i)$$
+
+--
+
+We would interpret the intercept and slope as follows:
+
+--
+
+- The model predicts that individuals who paid no fare had a 30.59% probability of surviving the Titanic. 
+
+--
+
+- The model predicts that each additional pound paid in fare is associated with an increase of 0.23% in the probability of surviving the Titanic. 
+
+--
+
+The linear probability model has two major flaws:
+
+--
+
+.pull-left[
+### `r emo::ji("cop")` IID Violation
+
+The outcome variable is distributed as a bernoulli variable with a variance equal to $(p_i)(1-p_i)$. This will vary by observatrion and thus we have **heteroscedasticity**.
+]
+
+--
+
+.pull-right[
+### `r emo::ji("confused")` Nonsense values
+The linear probability model can produce predicted values that lie outside the range from 0 to 1. These are nonsensical values for a probability to take, which suggests that we aren't using a very good model.
+]
+
+---
+
+## Using GLS to fix heteroscedasticity
+
+Remember that Generalize Least Squares (GLS) applies a weighting matrix to model estimation to account for autocorrelation or heteroscedasticity. In the case of heteroscedasticity, the solution is to use the inverse of the variance for each observation as weights. 
+
+--
+
+Since we know that the variance is given by $(p_i)(1-p_i)$, we can use the predicted values from an OLS regression model to derive weights:  
+
+```{r fgls_example}
+p_predicted <- model_lpm$fitted.values
+p_predicted[p_predicted>0.99] <- 0.99
+w <- 1/(p_predicted*(1-p_predicted))
+model_fgls <- update(model_lpm, weights=w)
+cbind(coef(model_lpm),coef(model_fgls))
+```
+
+Because we are using an estimate to generate the weights, this method is called **feasible generalized least squares** (FGLS) estimation.
+
+---
+
+## Iterating to perfection
+
+FGLS can be improved by iterating it multiple times until the results stop varying. At this point, we have performed **iteratively reweighted least squares** (IRLS) estimation which should correct for heteroscedasticity. Lets try iterating 8 times to see if that stabilizes the result.
+
+```{r irls_example}
+model_last <- model_lpm
+coefs <- coef(model_lpm)
+for(i in 1:8) {
+  p_predicted <- model_last$fitted.values
+  p_predicted[p_predicted>=1] <- max(p_predicted[p_predicted<1])
+  w <- 1/(p_predicted*(1-p_predicted))
+  model_last <- update(model_last, weights=w)
+  coefs <- cbind(coefs,coef(model_last))
+}
+round(coefs, 4)
+```
+
+We reached convergence down to the fourth decimal place by the eighth iteration.
+
+???
+
+I technically only "sort of" solved for heteroscedasticity in this model because I had to initially fudge my predicted values to get them in the range of 0 to 1 and it turns out the results are highly dependent on how that fudge is done.
+
+---
+
+##  Predicted values still oustide the range
+
+```{r lpm_plot2, echo=FALSE, fig.width=12}
+y_lpm <- predict(model_lpm, data.frame(fare=0:500))
+y_irls <- predict(model_last, data.frame(fare=0:500))
+predicted_df <- data.frame(fare=rep(0:500, 2),
+                           y=c(y_lpm, y_irls),
+                           model=c(rep("lpm",501),
+                                   rep("irls",501)))
+ggplot(titanic, aes(x=fare, 
+                    y=as.numeric(survival=="Survived")))+
+  annotate("rect",xmin=-Inf, xmax=Inf, ymin=1, ymax=Inf, alpha=0.2,
+           fill="red")+
+  annotate("text", x=250, y=1.2, label="Nonsense region")+
+  annotate("rect",xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=0, alpha=0.2,
+           fill="red")+
+  geom_hline(yintercept = c(0,1), linetype=2)+
+  geom_point(alpha=0.1)+
+  geom_line(data=predicted_df, aes(y=y, color=model))+
+  scale_y_continuous(breaks = c(0,1), labels=c("0","1"))+
+  labs(x="fare paid in pounds", y="Titanic survival as numeric value")
+```
+
+???
+## Should you use the LPM?
+
+- **No!**
+- While heteroscedasticity can theoretically be corrected, the range problem cannot be corrected. Furthermore, the range problem may lead to difficulty in estimating IRLS because of predicted probabilities below zero or above one. 
+- The LPM is a poor model because it doesn't properly model the outcome which *must* be restricted to the range between zero and one. 
+
+---
+
+## The logit transformation
+
+The LPM is bad but hints at the solution: we need a model that transforms probabilities so that the predicted probabilities always remains between 0 and 1. 
+
+--
+
+The **logit** transformation will do this for us. The logit is the log-odds of success. It can be calculated as:
+
+$$logit(p)=\log(\frac{p}{1-p})$$
+
+--
+
+- The part inside the log function is the **odds** of success, which is just the ratio of the probability of success to the probability of failure.
+
+--
+
+- Probabilities must lie between 0 and 1, but the odds lies between 0 and $\infty$. If we log the odds then the resulting number will lie between $-\infty$ and $\infty$.
+
+--
+
+- For any real value of the logit $g$, you can compute the probability by reversing the formula:
+
+$$p=\frac{e^g}{1+e^g}$$
+
+---
+
+## The logistic curve
+
+```{r logit_plot, echo=FALSE, fig.width=12}
+g <- seq(from=-8,to=8,by=0.01)
+p <- exp(g)/(1+exp(g))
+ggplot(data.frame(g,p),
+       aes(x=g, y=p))+
+  geom_hline(yintercept = c(0,1),
+             linetype=2)+
+  geom_line()+
+  labs(x="logit value, logit(p)",
+       y="probability (p)",
+       subtitle="logits always produce probabilities between 0 and 1")
+```
+
+---
+
+## Using the logit transformation
+
+If we predict the logit of the probability of survival rather than the probability of survival, then all of the predicted probabilities will be between zero and one when reverse-transformed.
+
+$$\log(\frac{p_i}{1-p_i})=\beta_0+\beta_1(fare_i)$$
+
+--
+
+### The Catch
+
+We cannot apply this transformation because we don't actually have the $p_i$ values to directly transform. All we have are the 1 and 0 values and we can't logit transform these values.
+
+We need a new kind of model and a new means of estimation. We need...
+
+--
+
+### Generalized Linear Models
