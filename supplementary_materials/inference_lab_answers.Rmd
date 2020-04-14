@@ -1,0 +1,201 @@
+---
+title: "Stat Inference Lab Answers"
+author: "Aaron Gullickson"
+date: "8/9/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+source(here("example_datasets","load_all_data.R"))
+```
+
+
+## For students born in January, February, March, or April:
+
+### Conduct a hypothesis test on the politics data, where the null hypothesis is that the same proportion of Democrats and Republicans in the US population have no religious affiliation.
+
+```{r}
+props <- prop.table(table(politics$party, 
+                          politics$relig),1)[c("Democrat","Republican"),
+                                             "Non-religious"]
+props
+pdiff <- diff(props)
+pdiff
+n <- table(politics$party)[c("Democrat","Republican")]
+n
+se <- sqrt(sum(props*(1-props)/n))
+se
+tstat <- pdiff/se
+tstat
+2*pt(-abs(tstat), min(n)-1)
+```
+
+Assuming the same proportion of Democrats and Republican have no religious affiliation in the population, there is less than a 0.00000001% chance of observing a sample proportion difference of `r abs(round(pdiff, 4))` or greater in a sample of this size. Therefore, I **reject** the null hypothesis and conclude that a higher proportion of Democracts are non-religious than Republicans.
+
+\newpage
+
+### Conduct a hypothesis test on the sexual frequency data, where the null hypothesis is that individuals with no religious affiliation in the US population have the same sexual frequency as mainline Protestants.
+
+```{r}
+means <- tapply(sex$sexf, sex$relig, mean)[c("None","Mainline Protestant")]
+means
+mdiff <- diff(means)
+mdiff
+sds <- tapply(sex$sexf, sex$relig, sd)[c("None","Mainline Protestant")]
+sds
+n <- table(sex$relig)[c("None","Mainline Protestant")]
+n
+se <- sqrt(sum(sds^2/n))
+se
+tstat <- mdiff/se
+tstat
+2*pt(-abs(tstat), min(n)-1)
+```
+
+Assuming that Mainline Protestants and those with no religious affiliation have the same sexual frequency in the population, there is less than a 0.007% chance of observing a sample mean difference of `r abs(round(mdiff, 3))` in a sample of this size. Therefore, I **reject** the null hypothesis and conclude that those with no religious affilation have more sex than Mainline Protestants, on average.
+
+\newpage
+
+### Conduct a hypothesis test on the sexual frequency data, where the null hypothesis is that there is no association between years of education and sexual frequency.
+
+```{r}
+r <- cor(sex$educ, sex$sexf)
+r
+n <- nrow(sex)
+n
+se <- sqrt((1-r^2)/(n-2))
+se
+tstat <- r/se
+tstat
+2*pt(-abs(tstat), n-2)
+```
+
+Assuming there is no relationship between education and sexual frequency in the population, there is a 95% chance of observing a sample correlation coefficient of `r abs(round(r,3))` in absolute magnitude just by random chance in a sample this size. I therefore **fail to reject** the null hypothesis that there is no relationship between education and sexual frequency.
+
+\newpage
+
+## For students born in May, June, July, or August:
+
+### Conduct a hypothesis test on the earnings data, where the null hypothesis is that STEM workers and managers have the same hourly wage, on average, in the US population. 
+
+```{r}
+means <- tapply(earnings$wages, earnings$occup, mean)[c("STEM","Manager")]
+means
+mdiff <- diff(means)
+mdiff
+sds <- tapply(earnings$wages, earnings$occup, sd)[c("STEM","Manager")]
+sds
+n <- table(earnings$occup)[c("STEM","Manager")]
+n
+se <- sqrt(sum(sds^2/n))
+se
+tstat <- mdiff/se
+tstat
+2*pt(-abs(tstat), min(n)-1)
+```
+
+Assuming that STEM workers and managers have the same average hourly wage in the population , there is less than a 0.00000001% chance of observing a sample mean difference of `r abs(round(mdiff, 3))` in a sample of this size. Therefore, I **reject** the null hypothesis and conclude that those STEM workers make more than managers, on average. 
+
+\newpage
+
+### Conduct a hypothesis test on the popularity data, where the null hypothesis is that the number of sports played in school is not associated with the number of friend nominations received in school among US adolescents.
+
+```{r}
+r <- cor(popularity$nsports, popularity$indegree)
+r
+n <- nrow(popularity)
+n
+se <- sqrt((1-r^2)/(n-2))
+se
+tstat <- r/se
+tstat
+2*pt(-abs(tstat), n-2)
+```
+
+Assuming there is no relationship between number of sports played and the number of friend nominations recieved in the population of adolescents, there is less than a 0.00000001% chance of observing a sample correlation coefficient of `r abs(round(r,3))` in absolute magnitude just by random chance in a sample this size. I therefore **reject** the null hypothesis and conclude that the number of sports played is positively associated with the number of friend nominations recieved.
+
+\newpage
+
+### Conduct a hypothesis test on the popularity data, where the null hypothesis is that the same proportion of men and women drink frequently.
+
+```{r}
+props <- prop.table(table(popularity$sex, 
+                          popularity$alcoholuse),1)[,"Drinker"]
+props
+pdiff <- diff(props)
+pdiff
+n <- table(popularity$sex)
+n
+se <- sqrt(sum(props*(1-props)/n))
+se
+tstat <- pdiff/se
+tstat
+2*pt(-abs(tstat), min(n)-1)
+```
+
+Assuming the same proportion of boys and girls drink frequently in the population, there is less than a 0.015% chance of observing a sample proportion difference of `r abs(round(pdiff, 4))` or greater in a sample of this size. Therefore, I **reject** the null hypothesis and conclude that a higher proportion of boys drink than girls.
+
+\newpage
+
+## For students born in September, October, November, or December:
+
+### Conduct a hypothesis test on the popularity data where the null hypothesis is that there is no association between parental income and the number of friend nominations received in school among US adolescents.
+
+```{r}
+r <- cor(popularity$parentinc, popularity$indegree)
+r
+n <- nrow(popularity)
+n
+se <- sqrt((1-r^2)/(n-2))
+se
+tstat <- r/se
+tstat
+2*pt(-abs(tstat), n-2)
+```
+
+Assuming there is no relationship between parental income and the number of friend nominations recieved in the population of adolescents, there is less than a 0.00000001% chance of observing a sample correlation coefficient of `r abs(round(r,3))` in absolute magnitude just by random chance in a sample this size. I therefore **reject** the null hypothesis and conclude that parental income is positively associated with the number of friend nominations recieved.
+
+\newpage
+
+### Conduct a hypothesis test on the sexual frequency data where the null hypothesis is that mainline Protestants and fundamentalist Protestants have the same sexual frequency, on average, in the US population.
+
+```{r}
+means <- tapply(sex$sexf, sex$relig, mean)[c("Fund Protestant","Mainline Protestant")]
+means
+mdiff <- diff(means)
+mdiff
+sds <- tapply(sex$sexf, sex$relig, sd)[c("Fund Protestant","Mainline Protestant")]
+sds
+n <- table(sex$relig)[c("Fund Protestant","Mainline Protestant")]
+n
+se <- sqrt(sum(sds^2/n))
+se
+tstat <- mdiff/se
+tstat
+2*pt(-abs(tstat), min(n)-1)
+```
+
+Assuming that Mainline Protestants and Fundamentalist Protestants have the same sexual frequency in the population, there is about an 8% chance of observing a sample mean difference of `r abs(round(mdiff, 3))` in a sample of this size. Therefore, I **fail to reject** the null hypothesis that Fundamentalist and Mainline Protestants have the same average sexual frequency in the population. 
+
+\newpage
+
+### Conduct a null hypothesis test on the politics data where the null hypothesis is that the same proportion of men and women voted for Trump in the US population.
+
+```{r}
+props <- prop.table(table(politics$gender, 
+                          politics$president),1)[c("Male","Female"),"Trump"]
+props
+pdiff <- diff(props)
+pdiff
+n <- table(politics$gender)[c("Male","Female")]
+n
+se <- sqrt(sum(props*(1-props)/n))
+se
+tstat <- pdiff/se
+tstat
+2*pt(-abs(tstat), min(n)-1)
+```
+
+Assuming the same proportion of men and women voted for Trump in the population, there is less than a 0.4% chance of observing a sample proportion difference of `abs(r round(pdiff, 4))` or greater in a sample of this size. Therefore, I **reject** the null hypothesis and conclude that a higher proportion of men voted for Trump than women.
