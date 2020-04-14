@@ -160,10 +160,9 @@ summary(mydata$gender)
 
 R has its own binary format for keeping track of data. You can save any object or set of objects to your filesystem with the `save` command. This will save a file in a binary \*.RData format. These objects can then be loaded back into R with the `load` command: 
 
-```{r}
+```{r eval=FALSE}
 save(mydata, file="resources/data.RData")
 load("resources/data.RData")
-mydata
 ```
 
 I recommend saving your own analytical data as RData files because these files are light-weight and contain all of the added meta-information that you have created for categorical variables and such. However, for sharing data more widely I recommend that you provide data in plain text format. The `readr` has a variety of `write_*` functions including `write_csv`, `write_delim`, and `write_tsv` for outputing data as delimited plain text. For example, I could write my data to a csv with: 
