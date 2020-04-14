@@ -7,20 +7,10 @@ library(ggplot2)
 #load the crimes dataset
 load("example_datasets/movies/movies.RData")
 
-makeTable <- function(indep, dep) {
-  r <- cor(dep, indep)
-  coefs <- lm(dep~indep)$coef
-  mytab <- cbind(c(r,r^2,coefs))
-  rownames(mytab) <- c("r","r-squared","Intercept","Slope")
-  colnames(mytab) <- c("Statistics")
-  return(mytab)
-}
-
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   
   output$scatterPlot <- renderPlot({
-  
     #make the scatterplot
     ggplot(movies, aes(x=TomatoRating, y=BoxOffice))+
       geom_point(alpha=0.1)+
@@ -44,6 +34,7 @@ ui <- shinyUI(fluidPage(
       helpText("Adjust the span width to see how it effects the LOESS smoothed line for the scatterplot.")
     ),
     mainPanel(plotOutput("scatterPlot"))
-              )
-              ))
+  )
+))
+
 shinyApp(ui = ui, server = server)
