@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Missing Values | Statistical Analysis in Sociology</title>
+  <meta name="description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Missing Values | Statistical Analysis in Sociology" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Missing Values | Statistical Analysis in Sociology" />
+  
+  <meta name="twitter:description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  
+
+<meta name="author" content="Aaron Gullickson" />
+
+
+<meta name="date" content="2020-04-14" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="sample-design-and-weighting.html"/>
+<link rel="next" href="multicollinearity-and-scale-creation.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.1/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.49.4/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.49.4/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="" data-path="understanding-data.html"><a href="understanding-data.html"><i class="fa fa-check"></i>Understanding Data</a><ul>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html"><i class="fa fa-check"></i>What Does Data Look Like?</a><ul>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html#the-observations"><i class="fa fa-check"></i>The observations</a></li>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html#the-variables"><i class="fa fa-check"></i>The variables</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html"><i class="fa fa-check"></i>What Can We Do With Data?</a><ul>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#how-is-a-variable-distributed"><i class="fa fa-check"></i>How is a variable distributed?</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#measuring-association"><i class="fa fa-check"></i>Measuring association</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#making-statistical-inferences"><i class="fa fa-check"></i>Making statistical inferences</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#building-models"><i class="fa fa-check"></i>Building Models</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#observational-data-experimental-thinking"><i class="fa fa-check"></i>Observational Data, Experimental Thinking</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-distribution-of-a-variable.html"><a href="the-distribution-of-a-variable.html"><i class="fa fa-check"></i>The Distribution of a Variable</a><ul>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html"><i class="fa fa-check"></i>Looking at Distributions</a><ul>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html#looking-at-the-distribution-of-a-categorical-variable"><i class="fa fa-check"></i>Looking at the distribution of a categorical variable</a></li>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html#looking-at-the-distribution-of-a-quantitative-variable"><i class="fa fa-check"></i>Looking at the distribution of a quantitative variable</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html"><i class="fa fa-check"></i>Measuring the Center of a Distribution</a><ul>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-mean"><i class="fa fa-check"></i>The mean</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-median"><i class="fa fa-check"></i>The median</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-mode"><i class="fa fa-check"></i>The mode</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#comparing-the-mean-and-median"><i class="fa fa-check"></i>Comparing the mean and median</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html"><i class="fa fa-check"></i>Percentiles and the Five Number Summary</a><ul>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#percentiles"><i class="fa fa-check"></i>Percentiles</a></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#the-five-number-summary"><i class="fa fa-check"></i>The five number summary</a></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#boxplots"><i class="fa fa-check"></i>Boxplots</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html"><i class="fa fa-check"></i>Measuring the Spread of a Distribution</a><ul>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html#range-and-interquartile-range"><i class="fa fa-check"></i>Range and interquartile range</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html#variance-and-standard-deviation"><i class="fa fa-check"></i>Variance and standard deviation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-association-1.html"><a href="measuring-association-1.html"><i class="fa fa-check"></i>Measuring Association</a><ul>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html"><i class="fa fa-check"></i>The Two-Way Table</a><ul>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html#conditional-distributions"><i class="fa fa-check"></i>Conditional distributions</a></li>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html#odds-ratio-advanced"><i class="fa fa-check"></i>Odds ratio (advanced)</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html"><i class="fa fa-check"></i>Mean Differences</a><ul>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html#graphically-examining-differences-in-distributions"><i class="fa fa-check"></i>Graphically examining differences in distributions</a></li>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html#comparing-differences-in-the-mean"><i class="fa fa-check"></i>Comparing differences in the mean</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html"><i class="fa fa-check"></i>Scatterplot and Correlation Coefficient</a><ul>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html#the-scatterplot"><i class="fa fa-check"></i>The scatterplot</a></li>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html#the-correlation-coefficient"><i class="fa fa-check"></i>The correlation coefficient</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="statistical-inference.html"><a href="statistical-inference.html"><i class="fa fa-check"></i>Statistical Inference</a><ul>
+<li class="chapter" data-level="" data-path="the-problem-of-statistical-inference.html"><a href="the-problem-of-statistical-inference.html"><i class="fa fa-check"></i>The Problem of Statistical Inference</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html"><i class="fa fa-check"></i>The Concept of the Sampling Distribution</a><ul>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#example-class-height"><i class="fa fa-check"></i>Example: class height</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#central-limit-theorem-and-the-normal-distribution"><i class="fa fa-check"></i>Central limit theorem and the normal distribution</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#what-can-we-do-with-the-sampling-distribution"><i class="fa fa-check"></i>What can we do with the sampling distribution?</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html"><i class="fa fa-check"></i>Confidence Intervals</a><ul>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#what-do-we-mean-by-confident"><i class="fa fa-check"></i>What do we mean by “confident?”</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#calculating-the-confidence-interval-for-the-sample-mean"><i class="fa fa-check"></i>Calculating the confidence interval for the sample mean</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#calculating-the-confidence-interval-for-other-sample-statistics"><i class="fa fa-check"></i>Calculating the confidence interval for other sample statistics</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-proportions"><i class="fa fa-check"></i>Example with proportions</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-mean-differences"><i class="fa fa-check"></i>Example with mean differences</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-proportion-differences"><i class="fa fa-check"></i>Example with proportion differences</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-correlation-coefficient"><i class="fa fa-check"></i>Example with correlation coefficient</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html"><i class="fa fa-check"></i>Hypothesis Tests</a><ul>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#example-coke-winners"><i class="fa fa-check"></i>Example: Coke winners</a></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#the-general-procedure-of-hypothesis-testing"><i class="fa fa-check"></i>The general procedure of hypothesis testing</a></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#hypothesis-tests-of-relationships"><i class="fa fa-check"></i>Hypothesis tests of relationships</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="building-models-1.html"><a href="building-models-1.html"><i class="fa fa-check"></i>Building Models</a><ul>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html"><i class="fa fa-check"></i>The OLS Regression Line</a><ul>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#the-formula-for-a-line"><i class="fa fa-check"></i>The Formula for a Line</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#calculating-the-best-fitting-line"><i class="fa fa-check"></i>Calculating the Best-Fitting Line</a></li>
+<li><a href="the-ols-regression-line.html#using-the-lm-command-to-calculate-ols-regression-lines-in-r">Using the <code>lm</code> command to calculate OLS regression lines in <em>R</em></a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#adding-an-ols-regression-line-to-a-plot"><i class="fa fa-check"></i>Adding an OLS regression line to a plot</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#the-ols-regression-line-as-a-model"><i class="fa fa-check"></i>The OLS regression line as a model</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#interpeting-slopes-and-intercepts"><i class="fa fa-check"></i>Interpeting Slopes and Intercepts</a></li>
+<li><a href="the-ols-regression-line.html#how-good-is-x-as-a-predictor-of-y">How good is <span class="math inline">\(x\)</span> as a predictor of <span class="math inline">\(y\)</span>?</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#inference-for-ols-regression-models"><i class="fa fa-check"></i>Inference for OLS Regression models</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#regression-line-cautions"><i class="fa fa-check"></i>Regression Line Cautions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html"><i class="fa fa-check"></i>The Power of Controlling for Other Variables</a><ul>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#interpreting-results-in-a-multivariate-ols-regression-models"><i class="fa fa-check"></i>Interpreting results in a multivariate OLS regression models</a></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#including-more-than-two-independent-variables"><i class="fa fa-check"></i>Including more than two independent variables</a></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#how-to-read-a-table-of-regression-results"><i class="fa fa-check"></i>How to read a table of regression results</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html"><i class="fa fa-check"></i>Including Categorical Variables as Predictors</a><ul>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#indicator-variables"><i class="fa fa-check"></i>Indicator variables</a></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#categorical-variables-with-more-than-two-categories"><i class="fa fa-check"></i>Categorical variables with more than two categories</a></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#categorical-and-quantitative-variables-combined-in-a-single-model"><i class="fa fa-check"></i>Categorical and quantitative variables combined in a single model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html"><i class="fa fa-check"></i>Interaction Terms</a><ul>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#the-nature-of-additive-models"><i class="fa fa-check"></i>The nature of additive models</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#the-interaction-term"><i class="fa fa-check"></i>The interaction term</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interpreting-interaction-terms"><i class="fa fa-check"></i>Interpreting interaction terms</a></li>
+<li><a href="interaction-terms.html#interaction-terms-in-r">Interaction terms in <em>R</em></a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interaction-terms-with-multiple-categories"><i class="fa fa-check"></i>Interaction terms with multiple categories</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interaction-terms-with-two-categorical-variables"><i class="fa fa-check"></i>Interaction terms with two categorical variables</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-complications.html"><a href="model-complications.html"><i class="fa fa-check"></i>Model Complications</a><ul>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html"><i class="fa fa-check"></i>The Linear Model, Revisited</a><ul>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#reformulating-the-linear-model"><i class="fa fa-check"></i>Reformulating the linear model</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#marginal-effects"><i class="fa fa-check"></i>Marginal effects</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#linear-model-assumptions"><i class="fa fa-check"></i>Linear model assumptions</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#estimating-a-linear-model"><i class="fa fa-check"></i>Estimating a linear model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html"><i class="fa fa-check"></i>Modeling Non-Linearity</a><ul>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#smoothing"><i class="fa fa-check"></i>Smoothing</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#residual-plots"><i class="fa fa-check"></i>Residual Plots</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#transformations"><i class="fa fa-check"></i>Transformations</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#polynomial-models"><i class="fa fa-check"></i>Polynomial Models</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#splines"><i class="fa fa-check"></i>Splines</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html"><i class="fa fa-check"></i>The IID Violation and Robust Standard Errors</a><ul>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#violations-of-independence"><i class="fa fa-check"></i>Violations of independence</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#heteroscedasticity"><i class="fa fa-check"></i>Heteroscedasticity</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#fixing-iid-violations"><i class="fa fa-check"></i>Fixing IID violations</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#weighted-least-squares"><i class="fa fa-check"></i>Weighted least squares</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#robust-standard-errors"><i class="fa fa-check"></i>Robust standard errors</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html"><i class="fa fa-check"></i>Sample Design and Weighting</a><ul>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#clustermultistage-sampling"><i class="fa fa-check"></i>Cluster/multistage sampling</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#stratification"><i class="fa fa-check"></i>Stratification</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#weights"><i class="fa fa-check"></i>Weights</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#correcting-for-sample-design-in-models"><i class="fa fa-check"></i>Correcting for sample design in models</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i>Missing Values</a><ul>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#identifying-valid-skips"><i class="fa fa-check"></i>Identifying Valid Skips</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#kinds-of-missingness"><i class="fa fa-check"></i>Kinds of Missingness</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#removing-cases"><i class="fa fa-check"></i>Removing Cases</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#imputation"><i class="fa fa-check"></i>Imputation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html"><i class="fa fa-check"></i>Multicollinearity and Scale Creation</a><ul>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#avoid-the-singularity"><i class="fa fa-check"></i>Avoid the Singularity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#detecting-data-based-multicollinearity"><i class="fa fa-check"></i>Detecting Data-Based Multicollinearity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#addressing-multicollinearity"><i class="fa fa-check"></i>Addressing Multicollinearity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#creating-scales"><i class="fa fa-check"></i>Creating Scales</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#factor-analysis"><i class="fa fa-check"></i>Factor Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html"><i class="fa fa-check"></i>Model Selection</a><ul>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#there-is-no-right-model"><i class="fa fa-check"></i>There is no “right” model</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#the-accuracy-vs.-parsimony-tradeoff"><i class="fa fa-check"></i>The accuracy vs. parsimony tradeoff</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#null-vs.-saturated-model"><i class="fa fa-check"></i>Null vs. saturated model</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#a-not-very-useful-tool-the-f-test"><i class="fa fa-check"></i>A not-very-useful tool: the F-test</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#tools-with-a-parsimony-penalty"><i class="fa fa-check"></i>Tools with a parsimony penalty</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#model-averaging"><i class="fa fa-check"></i>Model Averaging</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="modeling-categorical-outcomes.html"><a href="modeling-categorical-outcomes.html"><i class="fa fa-check"></i>Modeling Categorical Outcomes</a><ul>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html"><i class="fa fa-check"></i>Dichotomous Outcomes and The Binomial Distribution</a></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html"><i class="fa fa-check"></i>Linear Probability Model</a></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
+<li class="chapter" data-level="" data-path="maximum-likelihood-estimation.html"><a href="maximum-likelihood-estimation.html"><i class="fa fa-check"></i>Maximum Likelihood Estimation</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression-model.html"><a href="logistic-regression-model.html"><i class="fa fa-check"></i>Logistic Regression Model</a></li>
+<li class="chapter" data-level="" data-path="models-for-nominal-polytomous-outcomes.html"><a href="models-for-nominal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Nominal Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="models-for-ordinal-polytomous-outcomes.html"><a href="models-for-ordinal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Ordinal Polytomous Outcomes</a></li>
+</ul></li>
+<li class="appendix"><span><b>Appendices</b></span></li>
+<li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html"><i class="fa fa-check"></i>Example Datasets</a><ul>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#crimes"><i class="fa fa-check"></i>Crimes</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#movies"><i class="fa fa-check"></i>Movies</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#politics"><i class="fa fa-check"></i>Politics</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#popularity"><i class="fa fa-check"></i>Popularity</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#sex"><i class="fa fa-check"></i>Sex</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#titanic"><i class="fa fa-check"></i>Titanic</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#wages"><i class="fa fa-check"></i>Wages</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html"><i class="fa fa-check"></i>Common R Commands</a><ul>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#univariate-statistics"><i class="fa fa-check"></i>Univariate Statistics</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#bivariate-statistics"><i class="fa fa-check"></i>Bivariate Statistics</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#statistical-inference-1"><i class="fa fa-check"></i>Statistical Inference</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#ols-regression-models"><i class="fa fa-check"></i>OLS Regression Models</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#utility-functions"><i class="fa fa-check"></i>Utility functions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html"><i class="fa fa-check"></i>Plotting Cookbook</a><ul>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#barplots"><i class="fa fa-check"></i>Barplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#histograms"><i class="fa fa-check"></i>Histograms</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#boxplots-1"><i class="fa fa-check"></i>Boxplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#comparative-barplots"><i class="fa fa-check"></i>Comparative Barplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#comparative-boxplots"><i class="fa fa-check"></i>Comparative Boxplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#scatterplots"><i class="fa fa-check"></i>Scatterplots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="r-stat-lab.html"><a href="r-stat-lab.html"><i class="fa fa-check"></i>R Stat Lab</a><ul>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html"><i class="fa fa-check"></i>Using Scripts</a><ul>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#getting-started-with-scripts"><i class="fa fa-check"></i>Getting Started with Scripts</a></li>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#not-everything-goes-into-your-script"><i class="fa fa-check"></i>Not Everything Goes Into Your Script</a></li>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#commenting-for-sanity"><i class="fa fa-check"></i>Commenting for Sanity</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html"><i class="fa fa-check"></i>Object Types</a><ul>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#atomic-modes"><i class="fa fa-check"></i>Atomic Modes</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#vectors-and-matrices"><i class="fa fa-check"></i>Vectors and Matrices</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#factors"><i class="fa fa-check"></i>Factors</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#logical-values-and-boolean-statements"><i class="fa fa-check"></i>Logical Values and Boolean Statements</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#missing-values-1"><i class="fa fa-check"></i>Missing Values</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#lists"><i class="fa fa-check"></i>Lists</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#data-frames"><i class="fa fa-check"></i>Data Frames</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html"><i class="fa fa-check"></i>Pretty Pictures</a><ul>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html#base-plot"><i class="fa fa-check"></i>Base Plot</a></li>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html#ggplot"><i class="fa fa-check"></i>ggplot</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html"><i class="fa fa-check"></i>Using Git</a><ul>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html#plain-text-is-better"><i class="fa fa-check"></i>Plain Text is Better</a></li>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html#git"><i class="fa fa-check"></i>Git</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html"><i class="fa fa-check"></i>Reading and Writing Data</a><ul>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#data-formats"><i class="fa fa-check"></i>Data Formats</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#plain-text-files"><i class="fa fa-check"></i>Plain text files</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#data-in-binary-format"><i class="fa fa-check"></i>Data in binary format</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#saving-data"><i class="fa fa-check"></i>Saving data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i>Cleaning Data</a><ul>
+<li><a href="cleaning-data.html#the-most-important-rule-check-yourself-before-you-wreck-yourself">The Most Important Rule: <span>Check yourself before you wreck yourself</span></a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#assigning-missing-values"><i class="fa fa-check"></i>Assigning missing values</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#recoding"><i class="fa fa-check"></i>Recoding</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#collapsing-categorical-variables"><i class="fa fa-check"></i>Collapsing Categorical Variables</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#transforming-quantitative-variables"><i class="fa fa-check"></i>Transforming Quantitative Variables</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#after-cleaning-you-still-need-to-tidy"><i class="fa fa-check"></i>After Cleaning You Still Need to Tidy</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#aggregating-data"><i class="fa fa-check"></i>Aggregating Data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html"><i class="fa fa-check"></i>Reshaping and Merging Data</a><ul>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html#reshaping"><i class="fa fa-check"></i>Reshaping</a></li>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html#merging-data"><i class="fa fa-check"></i>Merging data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html"><i class="fa fa-check"></i>Programming</a><ul>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#an-example-theils-h"><i class="fa fa-check"></i>An Example: Theil’s H</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#our-data"><i class="fa fa-check"></i>Our Data</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#calculating-theils-h-for-a-single-state"><i class="fa fa-check"></i>Calculating Theil’s H for a single state</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#creating-functions"><i class="fa fa-check"></i>Creating Functions</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#iteration"><i class="fa fa-check"></i>Iteration</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#putting-it-all-together"><i class="fa fa-check"></i>Putting It All Together</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html"><i class="fa fa-check"></i>Using R Markdown</a><ul>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#plain-text-science"><i class="fa fa-check"></i>Plain Text Science</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#markdown-syntax"><i class="fa fa-check"></i>Markdown Syntax</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#r-markdown"><i class="fa fa-check"></i>R Markdown</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#figures-in-r-markdown"><i class="fa fa-check"></i>Figures in R Markdown</a></li>
+</ul></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Analysis in Sociology</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="missing-values" class="section level2">
+<h2>Missing Values</h2>
+<p>Up until this point, we have analyzed data that had no missing values. In actuality, the data did have missing values, but I used an imputation technique to remove the missing values to simplify our analyses. However, we now need to think more clearly about the consequences of missing values in datasets, because the reality is that most datasets that you want to use will have some missing data. Howe you handle this missing data can have important implications for your results.</p>
+<div id="identifying-valid-skips" class="section level3">
+<h3>Identifying Valid Skips</h3>
+<p>A missing value occurs when a value is missing for an observation on a particular value. Its important to distinguish in your data between situations in which a missing value is actually a valid response, from situations in which it is invalid and must be addressed.</p>
+<p>It may seem unusual to think of some missing values as valid, but based on the structure of survey questionnaires is not unusual to run into valid missing values. In particular, <strong>valid skips</strong> are a common form of missing data. Valid skips occur when only a subset of respondents are asked a question that is a follow-up to a previous question. Typically to be asked the follow up question, respondents have to respond to the original question in a certain way. All respondents who weren’t asked the follow up question then have <strong>valid skips</strong> for their response.</p>
+<p>As an example, lets look at how the General Social Survey asks about a person’s religious affiliation. The GSS asks this using a set of three questions. First, all respondents are asked “What is your religious preference? Is it Protestant, Catholic, Jewish, some other religion, or no religion?” After 1996, the GSS also started recording more specific responses for the “some other religion” category, but for simplicity lets just look at the distribution of this variable in 1996.</p>
+<div class="sourceCode" id="cb380"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb380-1" title="1"><span class="kw">table</span>(gss<span class="op">$</span>relig, <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
+<pre><code>## 
+##   catholic     jewish       none      other protestant       &lt;NA&gt; 
+##        685         68        339        143       1664          5</code></pre>
+<p>On this variable, we have five cases of <strong>item nonresponse</strong> in which the respondent did not answer the question. They might have refused to answer it or perhaps they just did not know the answer.</p>
+<p>For most of the respondents, this is the only question on religious affiliation. However, those who responded as Protestant are then asked further questions to determine more information about their particular denomination. This <code>denom</code> question includes prompts for most of the large denominations in the US. Here is the distribution of that variable.</p>
+<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb382-1" title="1"><span class="kw">table</span>(gss<span class="op">$</span>denom, <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
+<pre><code>## 
+##     afr meth ep zion   afr meth episcopal    am bapt ch in usa 
+##                    8                   11                   28 
+##      am baptist asso          am lutheran     baptist-dk which 
+##                   57                   51                  181 
+##            episcopal     evangelical luth   luth ch in america 
+##                   79                   33                   15 
+##    lutheran-dk which    lutheran-mo synod   methodist-dk which 
+##                   25                   48                   23 
+##  nat bapt conv of am    nat bapt conv usa      no denomination 
+##                   12                    8                   99 
+##                other       other baptists       other lutheran 
+##                  304                   69                   15 
+##      other methodist   other presbyterian presbyterian c in us 
+##                   12                   19                   34 
+##   presbyterian-dk wh presbyterian, merged     southern baptist 
+##                   11                   13                  273 
+##     united methodist united pres ch in us   wi evan luth synod 
+##                  190                   29                   11 
+##                 &lt;NA&gt; 
+##                 1246</code></pre>
+<p>Notice that we seem to have a lot of missing values here (1246). Did a lot of people just not know their denomination? No, in fact there is very little item nonresponse on this measure. The issue is that all of the people who were not asked this question because they didn’t respond as Protestant are listed as missing values here, but they are actually <strong>valid skips</strong>. We can see this more easily by crosstabbing the two variables based on whether the response was <code>NA</code> or not.</p>
+<div class="sourceCode" id="cb384"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb384-1" title="1"><span class="kw">table</span>(gss<span class="op">$</span>relig, <span class="kw">is.na</span>(gss<span class="op">$</span>denom), <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
+<pre><code>##             
+##              FALSE TRUE
+##   catholic       0  685
+##   jewish         0   68
+##   none           0  339
+##   other          0  143
+##   protestant  1658    6
+##   &lt;NA&gt;           0    5</code></pre>
+<p>You can see that almost all of the cases of <code>NA</code> here are respondents who did not identify as Protestants and therefore were not asked the <code>denom</code> question, i.e. valid skips. We have only six cases of individuals who were asked the denom question and did not respond.</p>
+<p>For Protestants who did not identify with one of the large denominations prompted in <code>denom</code> were identified as “other”. For this group, a third question (called <code>other</code> in the GSS) was asked in which the respondent’s could provide any response. I won’t show the full table here as the number of denominations is quite large, but we can use the same logic as above to identify all of the valid skips vs. item nonresponses.</p>
+<div class="sourceCode" id="cb386"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb386-1" title="1"><span class="kw">table</span>(gss<span class="op">$</span>denom, <span class="kw">is.na</span>(gss<span class="op">$</span>other), <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
+<pre><code>##                       
+##                        FALSE TRUE
+##   afr meth ep zion         0    8
+##   afr meth episcopal       0   11
+##   am bapt ch in usa        0   28
+##   am baptist asso          0   57
+##   am lutheran              0   51
+##   baptist-dk which         0  181
+##   episcopal                0   79
+##   evangelical luth         0   33
+##   luth ch in america       0   15
+##   lutheran-dk which        0   25
+##   lutheran-mo synod        0   48
+##   methodist-dk which       0   23
+##   nat bapt conv of am      0   12
+##   nat bapt conv usa        0    8
+##   no denomination          0   99
+##   other                  300    4
+##   other baptists           0   69
+##   other lutheran           0   15
+##   other methodist          0   12
+##   other presbyterian       0   19
+##   presbyterian c in us     0   34
+##   presbyterian-dk wh       0   11
+##   presbyterian, merged     0   13
+##   southern baptist         0  273
+##   united methodist         0  190
+##   united pres ch in us     0   29
+##   wi evan luth synod       0   11
+##   &lt;NA&gt;                     0 1246</code></pre>
+<p>We can see here that of the individuals who identified with an “other” Protestant denomination, only four of those respondents did not provide a write-in response.</p>
+<p>Valid skips are generally not a problem so long as we take account of them when we construct our final variable. In this example, we ultimately would want to use these three questions to create a parsimonious religious affiliation variable, perhaps by separating Protestants into evangelical and “mainline” denominations. In that case, the only item nonresponses will be the five cases for <code>relig</code>, the six cases for <code>denom</code>, and the four cases for <code>other</code> for a total of 15 real missing values.</p>
+</div>
+<div id="kinds-of-missingness" class="section level3">
+<h3>Kinds of Missingness</h3>
+<p>In statistics, missingness is actually a word. It describes how we think values came to be missing from the data. In particular, we are concerned with whether missingness might be related to other variables that are related to the things we want to study. In this case, our results might be biased as a result of missing values. For example, income is a variable that often has lots of missing data. If missingness on income is related to education, gender, or race, then we might be concerned about how representative our results are in understanding the process. The biases that results from relationships between missingness and other variables can be hard to understand and therefore particularly challenging.</p>
+<p>Missingness is generally considered as one of three types. The best case scenario is that the data are <strong>missing completely at random</strong> (MCAR). A variable is MCAR if every observation has the same probability of missingness. In other words, the missingness of a variable has no relationship to other observed or unobserved variables. If this is true, then removing observations with missing values will not bias results. However, it pretty rare that MCAR is a reasonable assumption for missingness. Perhaps if you randomly spill coffee on a page of your data, you might have MCAR.</p>
+<p>A somewhat more realistic assumption is that the data are **missing at random* (MAR). Its totally obvious how this is different, right? A variable is MAR if the different probabilities of missingness can be fully accounted for by other observed variables in the dataset. If this is true, then various techniques can be used to produce unbiased results by imputing values for the missing values.</p>
+<p>A more honest assessment is that the data are <strong>not missing at random</strong> (NMAR). A variable is NMAR if the different probabilities of missingness depend both on observed and unobserved variables. For example, some respondents may not provide income data because they are just naturally more suspicious. This variation in suspiciousness among respondents is not likely to be observed directly even though it may be partially correlated with other observed variables. The key issue here is the unobserved nature of some of the variables that produce missingness. Because they are unobserved, I have no way to account for them in my corrections. Therefore, I can never be certain that bias from missing values has been removed from my results.</p>
+<p>In practice, although NMAR is probably the norm in most datasets, the number of missing values on a single variable may be small enough that even the incorrect assumption of MAR or MCAR might have little effect on the results. In my previous example, I had only 16 missing values on religious affiliation for 2904 respondents. So, its not likely to have a large effect on the results no matter how I deal with the missing values.</p>
+<p>How exactly does one deal with those missing values? The data analyst typically has two choices. You can either remove cases with missing values or you can do some form of imputation. These two techniques are tied to the assumptions above. Removing cases is equivalent to assuming MCAR while imputation is equivalent to MAR.</p>
+<p>To illustrate these different approaches below, we will look at a new example. We are going to examine the Add Health data again, but this time I am going to use a dataset that does not have imputed values for missing values. In particular, we are going to look at the relationship between parental income and popularity. Lets look at how many missing values we have for income.</p>
+<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb388-1" title="1"><span class="kw">summary</span>(addhealth<span class="op">$</span>parentinc)</a></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##    0.00   23.00   40.00   45.37   60.00  200.00    1027</code></pre>
+<p>Yikes! We are missing 1027 cases of parental income. That seems like a lot. Lets go ahead and calculate the percent of missing cases for all of the variables in our data.</p>
+<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb390-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">apply</span>(<span class="kw">is.na</span>(addhealth), <span class="dv">2</span>, mean)<span class="op">*</span><span class="dv">100</span>, <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb390-2" title="2">temp &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">variable=</span><span class="kw">names</span>(temp), <span class="dt">percent_missing=</span>temp)</a>
+<a class="sourceLine" id="cb390-3" title="3"><span class="kw">rownames</span>(temp) &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb390-4" title="4"><span class="kw">pander</span>(<span class="kw">as.data.frame</span>(temp))</a></code></pre></div>
+<table style="width:46%;">
+<colgroup>
+<col width="20%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">variable</th>
+<th align="center">percent_missing</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">indegree</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="center">race</td>
+<td align="center">0.05</td>
+</tr>
+<tr class="odd">
+<td align="center">sex</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="center">grade</td>
+<td align="center">1.18</td>
+</tr>
+<tr class="odd">
+<td align="center">pseudoGPA</td>
+<td align="center">1.91</td>
+</tr>
+<tr class="even">
+<td align="center">honorsociety</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="center">alcoholuse</td>
+<td align="center">0.66</td>
+</tr>
+<tr class="even">
+<td align="center">smoker</td>
+<td align="center">0.93</td>
+</tr>
+<tr class="odd">
+<td align="center">bandchoir</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="center">academicclub</td>
+<td align="center">0</td>
+</tr>
+<tr class="odd">
+<td align="center">nsports</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="center">parentinc</td>
+<td align="center">23.36</td>
+</tr>
+<tr class="odd">
+<td align="center">cluster</td>
+<td align="center">0</td>
+</tr>
+<tr class="even">
+<td align="center">sweight</td>
+<td align="center">0</td>
+</tr>
+</tbody>
+</table>
+<p>For most variables, we only have a very small number of missing values, typically less than 1% of cases. however, for parental income we are missing values for nearly a quarter of respondents.</p>
+</div>
+<div id="removing-cases" class="section level3">
+<h3>Removing Cases</h3>
+<p>The simplest approach to dealing with missing values is to just drop observations (cases) that have missing values. In R, this is what will either happen by default or if you give a function the argument <code>na.rm=TRUE</code>. For example, lets calculate the mean income in the Add Health data:</p>
+<div class="sourceCode" id="cb391"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb391-1" title="1"><span class="kw">mean</span>(addhealth<span class="op">$</span>parentinc)</a></code></pre></div>
+<pre><code>## [1] NA</code></pre>
+<p>If we don’t specify how R should handle the missing values, R will report back a missing value for many basic calculations like the mean, median, and standard deviation. In order to get the mean for observations with valid values of income, we need to include the <code>na.rm=TRUE</code> option:</p>
+<div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb393-1" title="1"><span class="kw">mean</span>(addhealth<span class="op">$</span>parentinc, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## [1] 45.37389</code></pre>
+<p>The <code>lm</code> command in R behaves a little differently. It will automatically drop any observations that are missing values on any of the variables in the model. Lets look at this for a model predicting popularity by parental income and number of sports played:</p>
+<div class="sourceCode" id="cb395"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb395-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc<span class="op">+</span>nsports, <span class="dt">data=</span>addhealth)</a>
+<a class="sourceLine" id="cb395-2" title="2"><span class="kw">summary</span>(model)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = indegree ~ parentinc + nsports, data = addhealth)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.7920 -2.6738 -0.7722  1.8585 22.2967 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 3.526054   0.114310  30.846  &lt; 2e-16 ***
+## parentinc   0.012309   0.001884   6.534 7.39e-11 ***
+## nsports     0.451061   0.048920   9.220  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.652 on 3367 degrees of freedom
+##   (1027 observations deleted due to missingness)
+## Multiple R-squared:  0.04164,    Adjusted R-squared:  0.04107 
+## F-statistic: 73.14 on 2 and 3367 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Note the comment in parenthesis at the bottom that tells us we lost 1027 observations due to missingness.</p>
+<p>This approach is easy to implement but comes at a significant cost to the actual analysis. First, removing cases is equivalent to assuming MCAR, which is a strong assumption. Second, since most cases that you will remove typically have valid values on most of their variables, you are throwing away a lot of valid information as well as reducing your sample size. For example, all 1027 observations that were dropped in the model above due to missing values on parental income had valid responses the variable on number of sports played. If you are using a lot of variables in your analysis, then even with moderate amounts of missingness, you may reduce your sample size substantially.</p>
+<p>In situations where only a very small number of values are missing, then removing cases may be a reasonable strategy for reasons of practicality. For example, in the Add Health data, the race variable has missing values on two observations. Regardless of whether the assumption of MCAR is violated or not, the removal of two observations in a sample of 4,397 is highly unlikely to make much difference. Rather, than use more complicated techniques that are labor intensive, it probably makes much more sense remove them.</p>
+<p>Two strategies are available when you remove cases. You can either do <strong>available-case analysis</strong> or <strong>complete-case analysis</strong>. Both strategies refer to how you treat missing values in an analysis which will include multiple measurements that may use different numbers of variables. The most obvious and frequent case here is when you run multiple nested models in which you include different number of variables. For example, lets say we want to predict a student’s popularity by in a series of nested models:
+- Model 1: predict popularity by number of sports played
+- Model 2: add smoking and drinking behavior as predictors model 1
+- Model 3: add parental income as a predictor to model 2</p>
+<p>In this case, my most complex model is model 3 and it includes five variables: popularity, number of sports played, smoking behavior, drinking behavior, and parental income. I need to consider carefully how I am going to go about removing cases.</p>
+<div id="available-case-analysis" class="section level4">
+<h4>Available-case analysis</h4>
+<p>In available-case analysis (also called <strong>pairwise deletion</strong>) observations are only removed for each particular component of the analysis (e.g. a model) in which they are used. This is what R will do by default when you run nested models because it will only remove cases if a variable in that particular model is missing.</p>
+<div class="sourceCode" id="cb397"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb397-1" title="1">model1.avail &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>nsports, <span class="dt">data=</span>addhealth)</a>
+<a class="sourceLine" id="cb397-2" title="2">model2.avail &lt;-<span class="st"> </span><span class="kw">update</span>(model1.avail, .<span class="op">~</span>.<span class="op">+</span>alcoholuse<span class="op">+</span>smoker)</a>
+<a class="sourceLine" id="cb397-3" title="3">model3.avail &lt;-<span class="st"> </span><span class="kw">update</span>(model2.avail, .<span class="op">~</span>.<span class="op">+</span>parentinc)</a></code></pre></div>
+<p>As a sidenote, I am introducing a new function here called <code>update</code> that can be very useful for model building. The <code>update</code> function can be used on a model object to make some changes to it and then re-run it. In this case, I am changing the model formula, but you could also use it to change the data (useful for looking at subsets), add weights, etc. When you want to update the model formula, the syntax <code>.~.+</code> will include all of the previous elements of the formula and then you can make additions. I am using it to build nested models without having to repeat the entire model syntax every time.</p>
+<table cellspacing="0" align="center" style="border: none;">
+<caption align="top" style="margin-bottom:0.3em;">
+<span id="tab:avail-case-table">Table 19: </span> Models predicting number of friend nominations in Add Health data, using available-case analysis
+</caption>
+<tr>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b></b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 1</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 2</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 3</b>
+</th>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+(Intercept)
+</td>
+<td style="padding-right: 12px; border: none;">
+3.997<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+3.851<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+3.391<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.072)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.079)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.120)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+nsports
+</td>
+<td style="padding-right: 12px; border: none;">
+0.504<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.508<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.454<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.043)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.043)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.049)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+alcoholuseDrinker
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+0.707<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.663<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.155)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.180)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+smokerSmoker
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+0.194
+</td>
+<td style="padding-right: 12px; border: none;">
+0.383<sup style="vertical-align: 0px;">*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.162)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.188)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+parentinc
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+0.012<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.002)
+</td>
+</tr>
+<tr>
+<td style="border-top: 1px solid black;">
+R<sup style="vertical-align: 0px;">2</sup>
+</td>
+<td style="border-top: 1px solid black;">
+0.031
+</td>
+<td style="border-top: 1px solid black;">
+0.037
+</td>
+<td style="border-top: 1px solid black;">
+0.048
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+Num. obs.
+</td>
+<td style="border-bottom: 2px solid black;">
+4397
+</td>
+<td style="border-bottom: 2px solid black;">
+4343
+</td>
+<td style="border-bottom: 2px solid black;">
+3332
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;" colspan="5">
+<span style="font-size:0.8em"><sup style="vertical-align: 0px;">***</sup>p &lt; 0.001; <sup style="vertical-align: 0px;">**</sup>p &lt; 0.01; <sup style="vertical-align: 0px;">*</sup>p &lt; 0.05</span>
+</td>
+</tr>
+</table>
+<p>Table <a href="missing-values.html#tab:avail-case-table">19</a> shows the results of the nested models in table form. Pay particular attention to the change in the number of observations in each model. In the first model, there are no missing values on <code>nsports</code> or <code>indegree</code> so we have the full sample size of 4397. In model 2, we are missing a few values on drinking and smoking behavior, so the sample size drops to 4343. In Model 3, we are missing a large number of observations, so the sample size drops to 3332. We lose nearly a quarter of the data from Model 2 to Model 3.</p>
+<p>The changing sample sizes across models make model comparisons extremely difficult. We don’t know if changes from model to model are driven by different combinations of independent variables or changes in sample size. Note for example that the effect of smoking on popularity almost doubles from Model 2 to Model 3. Was that change driven by the fact that we controlled for parental income or was it driven by the exclusion of nearly a quarter of the sample. We have no way of knowing.</p>
+<p>For this reason, available-case analysis is generally not the best way to approach your analysis. You don’t want your sample sizes to be changing across models. There are a few special cases (I will discuss one in the next section) where it may be acceptable and sometimes it is just easier in the early exploratory phase of a project, but in general you should use complete-case analysis.</p>
+</div>
+<div id="complete-case-analysis" class="section level4">
+<h4>Complete-case analysis</h4>
+<p>In complete-case analysis (also called <strong>listwise deletion</strong>) you remove observations that are missing on any variables that you will use in the analysis even for some calculations that may not involve those variables. This techniques ensures that you are always working with the same sample throughout your analysis so any comparisons (e.g. across models) are not comparing apples and oranges.</p>
+<p>In our example, I need to restrict my sample to only observations that have valid responses for all five of the variables that will be used in my most complex model. I can do this easily with the <code>na.omit</code> command which will remove any observation that is missing any value in a given dataset:</p>
+<div class="sourceCode" id="cb398"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb398-1" title="1">addhealth.complete &lt;-<span class="st"> </span><span class="kw">na.omit</span>(addhealth[,<span class="kw">c</span>(<span class="st">&quot;indegree&quot;</span>,<span class="st">&quot;nsports&quot;</span>,<span class="st">&quot;alcoholuse&quot;</span>,<span class="st">&quot;smoker&quot;</span>,<span class="st">&quot;parentinc&quot;</span>)])</a>
+<a class="sourceLine" id="cb398-2" title="2">model1.complete &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>nsports, <span class="dt">data=</span>addhealth.complete)</a>
+<a class="sourceLine" id="cb398-3" title="3">model2.complete &lt;-<span class="st"> </span><span class="kw">update</span>(model1.complete, .<span class="op">~</span>.<span class="op">+</span>alcoholuse<span class="op">+</span>smoker)</a>
+<a class="sourceLine" id="cb398-4" title="4">model3.complete &lt;-<span class="st"> </span><span class="kw">update</span>(model2.complete, .<span class="op">~</span>.<span class="op">+</span>parentinc)</a></code></pre></div>
+<table cellspacing="0" align="center" style="border: none;">
+<caption align="top" style="margin-bottom:0.3em;">
+<span id="tab:complete-case-table">Table 20: </span> Models predicting number of friend nominations in Add Health data, using complete-case analysis
+</caption>
+<tr>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b></b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 1</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 2</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 3</b>
+</th>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+(Intercept)
+</td>
+<td style="padding-right: 12px; border: none;">
+4.051<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+3.876<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+3.391<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.085)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.091)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.120)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+nsports
+</td>
+<td style="padding-right: 12px; border: none;">
+0.490<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.494<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.454<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.049)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.049)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.049)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+alcoholuseDrinker
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+0.717<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.663<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.181)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.180)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+smokerSmoker
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+0.372<sup style="vertical-align: 0px;">*</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.383<sup style="vertical-align: 0px;">*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.189)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.188)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+parentinc
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+0.012<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.002)
+</td>
+</tr>
+<tr>
+<td style="border-top: 1px solid black;">
+R<sup style="vertical-align: 0px;">2</sup>
+</td>
+<td style="border-top: 1px solid black;">
+0.029
+</td>
+<td style="border-top: 1px solid black;">
+0.037
+</td>
+<td style="border-top: 1px solid black;">
+0.048
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+Num. obs.
+</td>
+<td style="border-bottom: 2px solid black;">
+3332
+</td>
+<td style="border-bottom: 2px solid black;">
+3332
+</td>
+<td style="border-bottom: 2px solid black;">
+3332
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;" colspan="5">
+<span style="font-size:0.8em"><sup style="vertical-align: 0px;">***</sup>p &lt; 0.001; <sup style="vertical-align: 0px;">**</sup>p &lt; 0.01; <sup style="vertical-align: 0px;">*</sup>p &lt; 0.05</span>
+</td>
+</tr>
+</table>
+<p>Table <a href="missing-values.html#tab:complete-case-table">20</a> shows the results for the models using complete-case analysis. Note that the sample size for each model is the same and is equivalent to that for the most complex model in the available-case analysis above.</p>
+<p>It is now apparent that the change in the effect of smoking on popularity above was driven by the removal of cases and not the controls for parental income. I can see this because now that I have performed the same sample restriction on Model 2, I get a similar effect size for smoking. Its worth noting that this is not really a great thing, because it suggests that by dropping cases, I am biasing the sample in some way, but at least I can make consistent comparisons across models.</p>
+<p>When only a small number of cases are missing, then complete-case analysis is a reasonable option that is practical and not labor intensive. For example, I wouldn’t worry too much about the 54 cases lost due to the inclusion of smoking and drinking behavior in the models above. However, when you are missing substantial numbers of cases, either from a single variable or from the cumulative effects of dropping a moderate number of observations for lots of variables, then both case removal techniques are suspect. In those cases, it is almost certainly better to move to an imputation strategy.</p>
+</div>
+</div>
+<div id="imputation" class="section level3">
+<h3>Imputation</h3>
+<p>Imputing a “fake” value for a missing value may seem worse than just removing it, but in many cases imputation is a better alternative than removing cases. First, imputation allows us to preserve the original sample size as well as all of the non-missing data that would be thrown way for cases with some missing values. Second, depending on methodology, imputation may move from a MCAR assumption to a MAR assumption.</p>
+<p>There are a variety of imputation procedures, but they can generally be divided up along two dimensions. First, <strong>predictive</strong> imputations use information about other variables in the dataset to impute missing values, while <strong>non-predictive</strong> imputations do not. In most cases, predictive imputation uses some form of model structure to predict missing values. Predictive imputation moves the assumption on missingness from MCAR to MAR, but is more complex (and thus prone to its own problems of model mis-specification) and more labor-intensive.</p>
+<p>Second, <strong>random</strong> imputations include some randomness in the imputation procedure, while <strong>deterministic</strong> imputations do not include randomness. Including randomness is necessary in order to preserve the actual variance in the variable that is being imputed. Deterministic imputations will always decrease this variance and thus lead to under-estimation of inferential statistics. However, random imputation identify an additional issue because random imputations will produce slightly different results each time the imputation procedure is conducted. To be accurate, the researcher must account for this additional <strong>imputation variabilty</strong> in their results.</p>
+<p>In general, the gold standard for imputation is called <strong>multiple imputation</strong> which is a predictive imputation that include randomness and adjusts for imputation variability. However, this technique is also complex and labor-intensive, so it may not be the best practical choice when the number of missing values is small. Below, I outline several of these different approaches, from simplest to most complex.</p>
+<div id="non-predictive-imputation" class="section level4">
+<h4>Non-predictive imputation</h4>
+<p>The simplest form of imputation is to just replace missing values with a single value. Since the mean is considered the “best guess” for the non-missing cases, it is customary to impute the mean value here and so this technique is generally called <strong>mean imputation</strong>. We can perform mean imputation in R simply by using the bracket-and-boolean approach to identify and replace missing values:</p>
+<div class="sourceCode" id="cb399"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb399-1" title="1">addhealth<span class="op">$</span>parentinc.meani &lt;-<span class="st"> </span>addhealth<span class="op">$</span>parentinc</a>
+<a class="sourceLine" id="cb399-2" title="2">addhealth<span class="op">$</span>incmiss &lt;-<span class="st"> </span><span class="kw">is.na</span>(addhealth<span class="op">$</span>parentinc)</a>
+<a class="sourceLine" id="cb399-3" title="3">addhealth<span class="op">$</span>parentinc.meani[addhealth<span class="op">$</span>incmiss] &lt;-<span class="st"> </span><span class="kw">mean</span>(addhealth<span class="op">$</span>parentinc, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<p>I create a separate variable called <code>parentinc.meani</code> for the mean imputation so that I can compare it to other imputation procedures later. I also create an <code>incmiss</code> variable that is just a boolean indicating whether income is missing for a given respondent.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig-mean-impute"></span>
+<img src="stat_book_files/figure-html/fig-mean-impute-1.png" alt="The effect of mean imputation of parental income on the scatterplot between parental income and number of friend nominations" width="672" />
+<p class="caption">
+Figure 83: The effect of mean imputation of parental income on the scatterplot between parental income and number of friend nominations
+</p>
+</div>
+<p>Figure <a href="missing-values.html#fig:fig-mean-impute">83</a> shows the effect of mean imputation on the scatterplot of the relationship between parental income and number of friend nominations. All of the imputed values fall along a vertical line that corresponds to the mean parental income for the non-missing values. The effect on the variance of parental income is clear. Because this imputation procedure fits a single value, its imputation does not match the spread of observations along parental income. We can also see this by comparing the standard deviations of the original variable and the mean imputed one:</p>
+<div class="sourceCode" id="cb400"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb400-1" title="1"><span class="kw">sd</span>(addhealth<span class="op">$</span>parentinc, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## [1] 33.6985</code></pre>
+<div class="sourceCode" id="cb402"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb402-1" title="1"><span class="kw">sd</span>(addhealth<span class="op">$</span>parentinc.meani)</a></code></pre></div>
+<pre><code>## [1] 29.50069</code></pre>
+<p>Since the variance of the independent variable is a component of the standard error calculation (see the first section of this chapter for details), underestimating the variance will lead to underestimates of the standard error in the linear model. A similar method that will account for the variance in the independent variable is to just randomly sample values of parental income from the valid responses. I can do this in R using the <code>sample</code> function.</p>
+<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb404-1" title="1">addhealth<span class="op">$</span>parentinc.randi &lt;-<span class="st"> </span>addhealth<span class="op">$</span>parentinc</a>
+<a class="sourceLine" id="cb404-2" title="2">addhealth<span class="op">$</span>parentinc.randi[addhealth<span class="op">$</span>incmiss]&lt;-<span class="kw">sample</span>(addhealth<span class="op">$</span>parentinc[<span class="op">!</span>addhealth<span class="op">$</span>incmiss], </a>
+<a class="sourceLine" id="cb404-3" title="3">                                                     <span class="kw">sum</span>(addhealth<span class="op">$</span>incmiss),</a>
+<a class="sourceLine" id="cb404-4" title="4">                                                     <span class="dt">replace =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p>I create a new variable for this imputation. The <code>sample</code> function will sample from a given data vector (in this case the valid responses to parental income) a specified number of times (in this case the number of missing values). I also specify that I want to sample with replacement, which means that I replace values that I have already sampled before drawing a new value.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig-random-impute"></span>
+<img src="stat_book_files/figure-html/fig-random-impute-1.png" alt="The effect of random imputation of parental income on the scatterplot between parental income and number of friend nominations" width="672" />
+<p class="caption">
+Figure 84: The effect of random imputation of parental income on the scatterplot between parental income and number of friend nominations
+</p>
+</div>
+<p>Figure <a href="missing-values.html#fig:fig-random-impute">84</a> shows the same scatterplot as above, but this time with random imputation. You can see that my imputed values are now spread out across the range of parental income, thus preserving the variance in that variable.</p>
+<p>Although random imputation is preferable to mean imputation, both methods have a serious drawback. Because I am imputing values without respect to any other variables, these imputed values will by definition be uncorrelated with the dependent variable. You can see this in figure <a href="missing-values.html#fig:fig-random-impute">84</a> where I have drawn the best fitting line for the imputed and non-imputed values. The red line for the imputed values is basically flat because there will be no association except for that produced by sampling variability. Because imputed values are determined without any prediction, non-predictive imputation will always bias estimates of association between variables downward.</p>
+<table>
+<caption>
+<span id="tab:compare-nd-impute">Table 21: </span>Comparison of measures of assocation between parental income and number of friend nominations and variance of parental income in Add Healt data, using different imputation techniques.
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+sample
+</th>
+<th style="text-align:right;">
+correlation
+</th>
+<th style="text-align:right;">
+slope
+</th>
+<th style="text-align:right;">
+sd
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Valid cases
+</td>
+<td style="text-align:right;">
+0.132
+</td>
+<td style="text-align:right;">
+0.0146
+</td>
+<td style="text-align:right;">
+33.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Valid cases + mean imputed
+</td>
+<td style="text-align:right;">
+0.117
+</td>
+<td style="text-align:right;">
+0.0146
+</td>
+<td style="text-align:right;">
+29.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Valid cases + random imputed
+</td>
+<td style="text-align:right;">
+0.105
+</td>
+<td style="text-align:right;">
+0.0114
+</td>
+<td style="text-align:right;">
+33.9
+</td>
+</tr>
+</tbody>
+</table>
+<p>Table <a href="missing-values.html#tab:compare-nd-impute">21</a> compares measures of association and variance in the Add Health data for these two techniques to the same numbers when only valid cases are used. The reduction in correlation in the two imputed samples is apparent, relative to the case with only valid responses. The reduction in variance of parental income is also clear for the case of mean imputation. Interestingly, the mean imputation does not downwardly bias the measure of slope because the reduction in correlation is perfectly offset by the reduction in variance. However, this special feature only holds when there are no other independent variables in the model and is also probably best thought of as a case of two wrongs (errors) not making a right (correct measurement).</p>
+<p>In general, because of these issues with downward bias, non-predictive imputation is not and advisable technique. However, in some cases it may be preferable as a “quick and dirty” method that is useful for initial exploratory analysis or because the number of missing cases is moderate. It may also be reasonable if the variable that needs to be imputed is intended to serve primarily as a control variable and inferences are not necessarily going to be drawn for this variable itself.</p>
+<p>In these cases where non-predictive imputation serves as a quick and dirty method, one additional technique, which I call <strong>mean imputation with dummy</strong> is advisable. In this case, the researcher performs mean imputation as above but also includes the missingness boolean variable into the model specification as above. The effect of this dummy is to estimate a slope and intercept for the imputed variable that is unaffected by the imputation, while at the same time producing a measure of how far out mean imputation is off relative to where the model expects the missing cases to fall.</p>
+<p>Since, we already have an <code>incmiss</code> dummy variable, we can implement this model very easily. Lets try it in a model that predicts number of friend nominations by parental income and number of sports played.</p>
+<div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb405-1" title="1">model.valid &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc<span class="op">+</span>nsports, <span class="dt">data=</span>addhealth)</a>
+<a class="sourceLine" id="cb405-2" title="2">model.meani &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc.meani<span class="op">+</span>nsports, <span class="dt">data=</span>addhealth)</a>
+<a class="sourceLine" id="cb405-3" title="3">model.mdummyi &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc.meani<span class="op">+</span>nsports<span class="op">+</span>incmiss, <span class="dt">data=</span>addhealth)</a></code></pre></div>
+<table cellspacing="0" align="center" style="border: none;">
+<caption align="top" style="margin-bottom:0.3em;">
+<span id="tab:mdummy-table">Table 22: </span> Models predicting number of friend nominations in Add Health data, using different methods of imputation
+</caption>
+<tr>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b></b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>No imputation</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Mean imputation</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Mean imputation w/dummy</b>
+</th>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Parent income
+</td>
+<td style="padding-right: 12px; border: none;">
+0.01231<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.00188)
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Parent income, mean imputed
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+0.01220<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.01221<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.00186)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.00186)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Number of sports played
+</td>
+<td style="padding-right: 12px; border: none;">
+0.45106<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.47134<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+0.46945<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.04892)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.04292)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.04297)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Income missing dummy
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.12163
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.12911)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Intercept
+</td>
+<td style="padding-right: 12px; border: none;">
+3.52605<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+3.47950<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+3.50954<sup style="vertical-align: 0px;">***</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.11431)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.10678)
+</td>
+<td style="padding-right: 12px; border: none;">
+(0.11144)
+</td>
+</tr>
+<tr>
+<td style="border-top: 1px solid black;">
+R<sup style="vertical-align: 0px;">2</sup>
+</td>
+<td style="border-top: 1px solid black;">
+0.04164
+</td>
+<td style="border-top: 1px solid black;">
+0.03999
+</td>
+<td style="border-top: 1px solid black;">
+0.04018
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+Num. obs.
+</td>
+<td style="border-bottom: 2px solid black;">
+3370
+</td>
+<td style="border-bottom: 2px solid black;">
+4397
+</td>
+<td style="border-bottom: 2px solid black;">
+4397
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;" colspan="5">
+<span style="font-size:0.8em"><sup style="vertical-align: 0px;">***</sup>p &lt; 0.001; <sup style="vertical-align: 0px;">**</sup>p &lt; 0.01; <sup style="vertical-align: 0px;">*</sup>p &lt; 0.05</span>
+</td>
+</tr>
+</table>
+<p>Table <a href="missing-values.html#tab:mdummy-table">22</a> shows the results of these models. In this case, the results are very similar. The coefficient on the income missing dummy basically tells us how far the average number of friend nominations was off for cases with income missing relative to what was predicted by the model. In this case, the model is telling us that with a mean imputation the predicted value of friend nominations for respondents with missing income data is 0.12 nominations higher than where it is in actuality. If we believe our model, this might suggest that the parental income of those with missing income is somewhat lower than those who are not missing, on average.</p>
+<p>This quick and dirty method is often useful in practice, but keep in mind that it still has the same problems of underestimating variance and assuming MCAR. A far better solution would be to move to predictive imputation.</p>
+</div>
+<div id="predictive-imputation" class="section level4">
+<h4>Predictive imputation</h4>
+<p>In a predictive imputation, we use other variables in the dataset to get predicted values for cases that are missing. In order to do this, an analyst must specify some sort of model to determine predicted values. A wide variety of models have been developed for this, but for this course, we will only discuss the simple case of using a linear model to predict missing values (sometimes called <strong>regression imputation</strong>).</p>
+<p>In the case of the Add Health data, we have a variety of other variables that we can consider using to predict parental income including race, GPA, alcohol use, smoking, honor society membership, band/choir membership, academic club participation, and number of sports played. We also could consider using the dependent variable (number of friend nominations) here but there is some debate on whether dependent variables should be used to predict missing values, so we will not consider it here.</p>
+<p>There is really no reason not to use as much information as possible here, so I will use all of these variables. However, in order to model this correctly, I want to consider the skewed nature of the my parental income data. To reduce the skewness and produce better predictions, I will transform parental income in my predictive model by square rooting it. I can then fit a model predicting parental income:</p>
+<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb406-1" title="1">addhealth<span class="op">$</span>parentinc.regi &lt;-<span class="st"> </span>addhealth<span class="op">$</span>parentinc</a>
+<a class="sourceLine" id="cb406-2" title="2">model &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">sqrt</span>(parentinc)<span class="op">~</span>race<span class="op">+</span>pseudoGPA<span class="op">+</span>honorsociety<span class="op">+</span>alcoholuse<span class="op">+</span>smoker</a>
+<a class="sourceLine" id="cb406-3" title="3">            <span class="op">+</span>bandchoir<span class="op">+</span>academicclub<span class="op">+</span>nsports, <span class="dt">data=</span>addhealth)</a>
+<a class="sourceLine" id="cb406-4" title="4">predicted &lt;-<span class="st"> </span><span class="kw">predict</span>(model, addhealth)</a>
+<a class="sourceLine" id="cb406-5" title="5">addhealth<span class="op">$</span>parentinc.regi[addhealth<span class="op">$</span>incmiss] &lt;-<span class="st"> </span>predicted[addhealth<span class="op">$</span>incmiss]<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb406-6" title="6"><span class="kw">summary</span>(addhealth<span class="op">$</span>parentinc.regi)</a></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##    0.00   25.19   39.83   43.87   54.20  200.00      39</code></pre>
+<p>After fitting the model, I just use the <code>predict</code> command to get predicted parental income values (square rooted) for all of my observations. I remember to square these predicted values when I impute them back.</p>
+<p>One important thing to note is that my imputed parental income still has 39 missing values. That is a lot less than 1027, but how come we didn’t remove all the missing values? The issue here is that some of my predictor variables (particularly smoking, alcohol use, and GPA) also have missing values. Therefore, for observations that are missing on those values as well as parental income, I will get missing values in my prediction. I will address how to handle this problem further below.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig-reg-impute"></span>
+<img src="stat_book_files/figure-html/fig-reg-impute-1.png" alt="The relationship between predicted values of imputed parental income and actual or imputed values, using regression imputation" width="672" />
+<p class="caption">
+Figure 85: The relationship between predicted values of imputed parental income and actual or imputed values, using regression imputation
+</p>
+</div>
+<p>This regression imputation only accounts for variability in parental income that is accountable for in the model and ignores residual variation. This can be clearly seen in Figure <a href="missing-values.html#fig:fig-reg-impute">85</a> where the actual values of parental income are widely dispersed around the predicted values, except for cases where missing values were imputed. This imputation procedure therefore underestimates the total variance in parental income with similar consequences as above.</p>
+<p>To address this problem, we can use <strong>random regression imputation</strong> which basically adds a random “tail” onto each predicted value based on the variance of our residual terms. It is also necessary to define a distribution from which to sample our random tails. We will use the normal distribution.</p>
+<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb408-1" title="1">addhealth<span class="op">$</span>parentinc.rregi &lt;-<span class="st"> </span>addhealth<span class="op">$</span>parentinc</a>
+<a class="sourceLine" id="cb408-2" title="2">model &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">sqrt</span>(parentinc)<span class="op">~</span>race<span class="op">+</span>pseudoGPA<span class="op">+</span>honorsociety<span class="op">+</span>alcoholuse<span class="op">+</span>smoker</a>
+<a class="sourceLine" id="cb408-3" title="3">            <span class="op">+</span>bandchoir<span class="op">+</span>academicclub<span class="op">+</span>nsports, <span class="dt">data=</span>addhealth)</a>
+<a class="sourceLine" id="cb408-4" title="4">predicted &lt;-<span class="st"> </span><span class="kw">predict</span>(model, addhealth)</a>
+<a class="sourceLine" id="cb408-5" title="5">addhealth<span class="op">$</span>parentinc.rregi[addhealth<span class="op">$</span>incmiss] &lt;-<span class="st"> </span>(predicted[addhealth<span class="op">$</span>incmiss]<span class="op">+</span></a>
+<a class="sourceLine" id="cb408-6" title="6"><span class="st">                                                   </span><span class="kw">rnorm</span>(<span class="kw">sum</span>(addhealth<span class="op">$</span>incmiss), <span class="dv">0</span>, <span class="kw">sigma</span>(model)))<span class="op">^</span><span class="dv">2</span></a></code></pre></div>
+<p>The <code>rnorm</code> function samples from a normal distribution with a given mean and standard deviation. We use the <code>sigma</code> function to pull the standard deviation of the residuals from our model.</p>
+<div class="figure" style="text-align: center"><span id="fig:fig-rreg-impute"></span>
+<img src="stat_book_files/figure-html/fig-rreg-impute-1.png" alt="The relationship between predicted values of imputed parental income and actual or imputed values, using random regression imputation" width="672" />
+<p class="caption">
+Figure 86: The relationship between predicted values of imputed parental income and actual or imputed values, using random regression imputation
+</p>
+</div>
+<p>Figure <a href="missing-values.html#fig:fig-rreg-impute">86</a> shows that the variation of our imputed values now mimics that of the actual values. We can also compare the standard deviations across imputations to see that we have preserved the variation in our valid data:</p>
+<div class="sourceCode" id="cb409"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb409-1" title="1"><span class="kw">sd</span>(addhealth<span class="op">$</span>parentinc, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## [1] 33.6985</code></pre>
+<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb411-1" title="1"><span class="kw">sd</span>(addhealth<span class="op">$</span>parentinc.regi, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## [1] 30.10024</code></pre>
+<div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb413-1" title="1"><span class="kw">sd</span>(addhealth<span class="op">$</span>parentinc.rregi, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## [1] 32.99728</code></pre>
+</div>
+<div id="chained-equations" class="section level4">
+<h4>Chained equations</h4>
+<p>As we saw above, one downside of using a model to predict missing values is that missing values on other variables in the dataset can cause the imputation procedure to not impute all of the missing values. There are a few different ways of handling this but the most popular technique is to use an iterative procedure called **multiple imputation by chained equations* or MICE for short. The basic procedure is as follows:</p>
+<ol style="list-style-type: decimal">
+<li>All missing values are given some placeholder value. This might be the mean value, for example.</li>
+<li>For one variable, the placeholder values are removed and missing values put back in. These missing values are then predicted and imputed by some model for this variable.</li>
+<li>Step 2 is repeated for all variables with missing values. When all variables have been imputed, we have completed one iteration.</li>
+<li>Steps 2-3 are then repeated again for some number of iterations. The number of iterations necessary may vary by data, but five iterations is typical.</li>
+</ol>
+<p>The purpose of the iterations is to improve the imputation by moving further and further away from the mean imputation that was used to get an initial fit.</p>
+<p>This procedure is complicated to implement in practice, but luckily the <code>mice</code> library in R already provides an excellent implementation. Furthermore, the <code>mice</code> library has a variety of modeling options that include the ability to handle missing values in both quantitative and categorical models. For quantitative variables, it does not by default use regression imputation, but rather a technique called <a href="https://stefvanbuuren.name/fimd/sec-pmm.html">predictive mean matching</a> that is more flexible and resistant to mis-specification.</p>
+<p>The basic command in the <code>mice</code> library to run MICE is … <code>mice</code>:</p>
+<div class="sourceCode" id="cb415"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb415-1" title="1"><span class="kw">library</span>(mice)</a>
+<a class="sourceLine" id="cb415-2" title="2">addhealth.complete &lt;-<span class="st"> </span><span class="kw">mice</span>(addhealth[,<span class="kw">c</span>(<span class="st">&quot;indegree&quot;</span>,<span class="st">&quot;race&quot;</span>,<span class="st">&quot;sex&quot;</span>,<span class="st">&quot;grade&quot;</span>,<span class="st">&quot;pseudoGPA&quot;</span>,</a>
+<a class="sourceLine" id="cb415-3" title="3">                                        <span class="st">&quot;honorsociety&quot;</span>,<span class="st">&quot;alcoholuse&quot;</span>,<span class="st">&quot;smoker&quot;</span>,<span class="st">&quot;bandchoir&quot;</span>,</a>
+<a class="sourceLine" id="cb415-4" title="4">                                        <span class="st">&quot;academicclub&quot;</span>,<span class="st">&quot;nsports&quot;</span>,<span class="st">&quot;parentinc&quot;</span>)], <span class="dt">m=</span><span class="dv">5</span>)</a></code></pre></div>
+<pre><code>## 
+##  iter imp variable
+##   1   1  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   1   2  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   1   3  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   1   4  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   1   5  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   2   1  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   2   2  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   2   3  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   2   4  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   2   5  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   3   1  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   3   2  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   3   3  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   3   4  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   3   5  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   4   1  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   4   2  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   4   3  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   4   4  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   4   5  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   5   1  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   5   2  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   5   3  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   5   4  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
+##   5   5  race  grade  pseudoGPA  alcoholuse  smoker  parentinc</code></pre>
+<p>In this case, I specified all of the variables that I wanted to go into my multiple imputation. If you want all of the variables in your dataset to be used, you can just feed in the dataset with no list of variable names. You can see that <code>mice</code> went through five iterations of imputation, with a list of the variables imputed and the order in which they were imputed. You can also see that it cycled through something called “imp.” This value corresponds to the <code>m=5</code> argument I specified. This is the number of times that <code>mice</code> performed the entire imputation procedure. In this case, I now have five <em>complete</em> datasets (datasets with no missing values) in the object <code>addhealth.complete</code>. To access any one of them, I need to use the <code>complete</code> function with an id number:</p>
+<div class="sourceCode" id="cb417"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb417-1" title="1"><span class="kw">summary</span>(<span class="kw">complete</span>(addhealth.complete, <span class="dv">1</span>))</a></code></pre></div>
+<pre><code>##     indegree                                    race          sex           
+##  Min.   : 0.000    White                          :2638   Length:4397       
+##  1st Qu.: 2.000    Black/African American         :1145   Class :character  
+##  Median : 4.000   Latino                          : 400   Mode  :character  
+##  Mean   : 4.551    Asian/Pacific Islander         : 161                     
+##  3rd Qu.: 6.000    Other                          :  27                     
+##  Max.   :30.000    American Indian/Native American:  26                     
+##      grade          pseudoGPA     honorsociety          alcoholuse  
+##  Min.   : 7.000   Min.   :1.000   Mode :logical   Non-drinker:3669  
+##  1st Qu.: 8.000   1st Qu.:2.250   FALSE:3990      Drinker    : 728  
+##  Median :10.000   Median :3.000   TRUE :407                         
+##  Mean   : 9.507   Mean   :2.832                                     
+##  3rd Qu.:11.000   3rd Qu.:3.500                                     
+##  Max.   :12.000   Max.   :4.000                                     
+##         smoker     bandchoir       academicclub       nsports     
+##  Non-smoker:3732   Mode :logical   Mode :logical   Min.   :0.000  
+##  Smoker    : 665   FALSE:3340      FALSE:3578      1st Qu.:0.000  
+##                    TRUE :1057      TRUE :819       Median :1.000  
+##                                                    Mean   :1.098  
+##                                                    3rd Qu.:2.000  
+##                                                    Max.   :6.000  
+##    parentinc     
+##  Min.   :  0.00  
+##  1st Qu.: 22.00  
+##  Median : 40.00  
+##  Mean   : 44.83  
+##  3rd Qu.: 60.00  
+##  Max.   :200.00</code></pre>
+<p>I can run a model on my first complete dataset like so:</p>
+<div class="sourceCode" id="cb419"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb419-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc, <span class="dt">data=</span><span class="kw">complete</span>(addhealth.complete,<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb419-2" title="2"><span class="kw">summary</span>(model)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = indegree ~ parentinc, data = complete(addhealth.complete, 
+##     1))
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.0257 -2.6372 -0.7634  1.7695 25.0963 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 3.921902   0.092148  42.561   &lt;2e-16 ***
+## parentinc   0.014026   0.001646   8.523   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.662 on 4395 degrees of freedom
+## Multiple R-squared:  0.01626,    Adjusted R-squared:  0.01604 
+## F-statistic: 72.64 on 1 and 4395 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="addressing-imputation-variability" class="section level4">
+<h4>Addressing imputation variability</h4>
+<p>Why did I run five different imputations using the <code>mice</code> function in the example above? To explore this question, lets first look at the slope predicting the number of friend nominations by parental income across all five complete imputations:</p>
+<div class="sourceCode" id="cb421"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb421-1" title="1">coefs &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb421-2" title="2"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>) {</a>
+<a class="sourceLine" id="cb421-3" title="3">  coefs &lt;-<span class="st"> </span><span class="kw">c</span>(coefs, </a>
+<a class="sourceLine" id="cb421-4" title="4">             <span class="kw">coef</span>(<span class="kw">lm</span>(indegree<span class="op">~</span>parentinc, <span class="dt">data=</span><span class="kw">complete</span>(addhealth.complete,i)))[<span class="dv">2</span>])</a>
+<a class="sourceLine" id="cb421-5" title="5">}</a>
+<a class="sourceLine" id="cb421-6" title="6">coefs</a></code></pre></div>
+<pre><code>##  parentinc  parentinc  parentinc  parentinc  parentinc 
+## 0.01402563 0.01459309 0.01415435 0.01400471 0.01483226</code></pre>
+<p>I get different values on each complete imputation. This is because there is an element of randomness in my imputation procedure. That randomness is needed to correctly impute while preserving the variance in the underlying variables, but it adds an additional layer of uncertainty to understanding my results. Which of these values should I use for my results? This additional layer of uncertainty is called <strong>imputation variability</strong>. Imputation variability adds additional uncertainty above and beyond sampling variability when attempting to make statistical inferences.</p>
+<p>To accurately account for imputation variability, we need to use <strong>multiple imputation</strong>. The multiple imputation process is as follows:</p>
+<ol style="list-style-type: decimal">
+<li>Use imputation process with random component to impute missing values and repeat this process to produce m separate complete datasets. Each of these datasets will be somewhat different due to the randomization of imputation. Usually <code>m=5</code> is sufficient.</li>
+<li>Run <code>m</code> separate parallel models on each imputed dataset. As a result, you will have <code>m</code> sets of regression coefficients and standard errors.</li>
+<li>Pool the regression coefficients across datasets by taking the mean across all <code>m</code> datasets.</li>
+<li>Pool standard errors by taking the average standard errors across all <code>m</code> datasets plus the between model standard deviation in coefficients. The formula for the overall standard error is:</li>
+</ol>
+<p><span class="math display">\[SE_{\beta}=\sqrt{W+B+\frac{B}{m}}\]</span>
+Where <span class="math inline">\(W\)</span> is the squared average standard error across all <span class="math inline">\(m\)</span> datasets and <span class="math inline">\(B\)</span> is the variance in coefficient estimates across all <span class="math inline">\(m\)</span> models.</p>
+<p>The <code>mice</code> library provides some nice utilities for accounting for multiple imputation in basic linear models. However, it is worth learning how to to do this procedure by hand, so I will first show you how to do it without using built-in functions.</p>
+<p>The first step is to loop through each imputation, calculate the model and extract the coefficients and standard errors:</p>
+<div class="sourceCode" id="cb423"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb423-1" title="1">b &lt;-<span class="st"> </span>se &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb423-2" title="2"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>) {</a>
+<a class="sourceLine" id="cb423-3" title="3">  model &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc<span class="op">+</span>smoker<span class="op">+</span>alcoholuse<span class="op">+</span>nsports, </a>
+<a class="sourceLine" id="cb423-4" title="4">              <span class="dt">data=</span><span class="kw">complete</span>(addhealth.complete,i))</a>
+<a class="sourceLine" id="cb423-5" title="5">  b &lt;-<span class="st"> </span><span class="kw">cbind</span>(b, <span class="kw">coef</span>(model))</a>
+<a class="sourceLine" id="cb423-6" title="6">  se &lt;-<span class="st"> </span><span class="kw">cbind</span>(se, <span class="kw">summary</span>(model)<span class="op">$</span>coef[,<span class="dv">2</span>])</a>
+<a class="sourceLine" id="cb423-7" title="7">}</a></code></pre></div>
+<p>The <code>b</code> and <code>se</code> objects are just matrices of the regression coefficients and standard errors across imputations. For example:</p>
+<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb424-1" title="1"><span class="kw">round</span>(b,<span class="dv">3</span>)</a></code></pre></div>
+<pre><code>##                    [,1]  [,2]  [,3]  [,4]  [,5]
+## (Intercept)       3.392 3.365 3.376 3.383 3.360
+## parentinc         0.011 0.012 0.012 0.011 0.012
+## smokerSmoker      0.227 0.210 0.203 0.214 0.181
+## alcoholuseDrinker 0.599 0.620 0.640 0.624 0.630
+## nsports           0.468 0.468 0.469 0.471 0.465</code></pre>
+<p>With the application of the <code>apply</code> command we can estimate averages for these values across imputations as well as the variability in regression coefficients across models.</p>
+<div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb426-1" title="1">b.pool &lt;-<span class="st"> </span><span class="kw">apply</span>(b,<span class="dv">1</span>,mean)</a>
+<a class="sourceLine" id="cb426-2" title="2">between.var &lt;-<span class="st"> </span><span class="kw">apply</span>(b,<span class="dv">1</span>,var)</a>
+<a class="sourceLine" id="cb426-3" title="3">within.var &lt;-<span class="st"> </span><span class="kw">apply</span>(se<span class="op">^</span><span class="dv">2</span>,<span class="dv">1</span>,mean)</a>
+<a class="sourceLine" id="cb426-4" title="4">se.pool &lt;-<span class="st"> </span><span class="kw">sqrt</span>(within.var<span class="op">+</span>between.var<span class="op">+</span>between.var<span class="op">/</span><span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb426-5" title="5">t.pool &lt;-<span class="st"> </span>b.pool<span class="op">/</span>se.pool</a>
+<a class="sourceLine" id="cb426-6" title="6">pvalue.pool &lt;-<span class="st"> </span>(<span class="dv">1</span><span class="op">-</span><span class="kw">pnorm</span>(<span class="kw">abs</span>(t.pool)))<span class="op">*</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb426-7" title="7">results &lt;-<span class="st"> </span><span class="kw">data.frame</span>(b.pool, se.pool, t.pool, pvalue.pool)</a>
+<a class="sourceLine" id="cb426-8" title="8"><span class="kw">round</span>(results,<span class="dv">4</span>)</a></code></pre></div>
+<pre><code>##                   b.pool se.pool  t.pool pvalue.pool
+## (Intercept)       3.3751  0.1037 32.5503      0.0000
+## parentinc         0.0118  0.0017  6.9758      0.0000
+## smokerSmoker      0.2071  0.1604  1.2909      0.1967
+## alcoholuseDrinker 0.6226  0.1546  4.0269      0.0001
+## nsports           0.4681  0.0430 10.8793      0.0000</code></pre>
+<p>We now have results that make use of a complete dataset and also adjust for imputation variability. We can also use the results above to estimate the relative share of the between and within variation to our total uncertainty. Figure <a href="missing-values.html#fig:share-impute-var">87</a> shows the relative contribution of between and within variability to our total uncertainty. Because most variables in this model are missing few or no values, the contribution of between sample imputation variability is quite small for most cases. However, for parental income which was missing a quarter of observations, it is a substantial share of around 30% of the total variability.</p>
+<div class="figure" style="text-align: center"><span id="fig:share-impute-var"></span>
+<img src="stat_book_files/figure-html/share-impute-var-1.png" alt="Share of variability for each estimated coefficient that comes from between sample imputation variability vs. within sample sampling variabilty" width="672" />
+<p class="caption">
+Figure 87: Share of variability for each estimated coefficient that comes from between sample imputation variability vs. within sample sampling variabilty
+</p>
+</div>
+<p>The for-loop approach above is an effective method for pooling results for multiple imputation and is flexible enough that you can utilize a wide variety of techniques within the for-loop, such as adjustments for sample design. However, if you are just running vanilla <code>lm</code> commands, then the <code>mice</code> library also has an easier approach:</p>
+<div class="sourceCode" id="cb428"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb428-1" title="1">model.mi &lt;-<span class="st"> </span><span class="kw">pool</span>(<span class="kw">with</span>(addhealth.complete, <span class="kw">lm</span>(indegree<span class="op">~</span>parentinc<span class="op">+</span>smoker<span class="op">+</span>alcoholuse<span class="op">+</span>nsports)))</a>
+<a class="sourceLine" id="cb428-2" title="2"><span class="kw">summary</span>(model.mi)</a></code></pre></div>
+<pre><code>##                     estimate   std.error statistic       df      p.value
+## (Intercept)       3.37512372 0.103689400 32.550325 3182.639 0.000000e+00
+## parentinc         0.01175002 0.001684391  6.975823 1090.345 5.265122e-12
+## smokerSmoker      0.20712655 0.160449662  1.290913 3630.841 1.968160e-01
+## alcoholuseDrinker 0.62262913 0.154619376  4.026851 3792.738 5.763470e-05
+## nsports           0.46810932 0.043027384 10.879335 4337.942 0.000000e+00</code></pre>
+<p>As I said earlier, multiple imputation is the gold standard for dealing with missing values. However, it is important to realize that it is not a bulletproof solution to the problem of missing values. It still assumes MAR and if the underlying models used to predict missing values are not good, then it may not produce the best results. Ideally, when doing any imputation procedure you should also perform an analysis of your imputation results to ensure that they are reasonable. These techniques are beyond the scope of this class, but further reading links can be found on Canvas.</p>
+<hr />
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="sample-design-and-weighting.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="multicollinearity-and-scale-creation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

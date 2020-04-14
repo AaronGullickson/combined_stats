@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Reshaping and Merging Data | Statistical Analysis in Sociology</title>
+  <meta name="description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Reshaping and Merging Data | Statistical Analysis in Sociology" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Reshaping and Merging Data | Statistical Analysis in Sociology" />
+  
+  <meta name="twitter:description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  
+
+<meta name="author" content="Aaron Gullickson" />
+
+
+<meta name="date" content="2020-04-14" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="cleaning-data.html"/>
+<link rel="next" href="programming.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.1/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.49.4/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.49.4/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="" data-path="understanding-data.html"><a href="understanding-data.html"><i class="fa fa-check"></i>Understanding Data</a><ul>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html"><i class="fa fa-check"></i>What Does Data Look Like?</a><ul>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html#the-observations"><i class="fa fa-check"></i>The observations</a></li>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html#the-variables"><i class="fa fa-check"></i>The variables</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html"><i class="fa fa-check"></i>What Can We Do With Data?</a><ul>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#how-is-a-variable-distributed"><i class="fa fa-check"></i>How is a variable distributed?</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#measuring-association"><i class="fa fa-check"></i>Measuring association</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#making-statistical-inferences"><i class="fa fa-check"></i>Making statistical inferences</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#building-models"><i class="fa fa-check"></i>Building Models</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#observational-data-experimental-thinking"><i class="fa fa-check"></i>Observational Data, Experimental Thinking</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-distribution-of-a-variable.html"><a href="the-distribution-of-a-variable.html"><i class="fa fa-check"></i>The Distribution of a Variable</a><ul>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html"><i class="fa fa-check"></i>Looking at Distributions</a><ul>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html#looking-at-the-distribution-of-a-categorical-variable"><i class="fa fa-check"></i>Looking at the distribution of a categorical variable</a></li>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html#looking-at-the-distribution-of-a-quantitative-variable"><i class="fa fa-check"></i>Looking at the distribution of a quantitative variable</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html"><i class="fa fa-check"></i>Measuring the Center of a Distribution</a><ul>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-mean"><i class="fa fa-check"></i>The mean</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-median"><i class="fa fa-check"></i>The median</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-mode"><i class="fa fa-check"></i>The mode</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#comparing-the-mean-and-median"><i class="fa fa-check"></i>Comparing the mean and median</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html"><i class="fa fa-check"></i>Percentiles and the Five Number Summary</a><ul>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#percentiles"><i class="fa fa-check"></i>Percentiles</a></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#the-five-number-summary"><i class="fa fa-check"></i>The five number summary</a></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#boxplots"><i class="fa fa-check"></i>Boxplots</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html"><i class="fa fa-check"></i>Measuring the Spread of a Distribution</a><ul>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html#range-and-interquartile-range"><i class="fa fa-check"></i>Range and interquartile range</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html#variance-and-standard-deviation"><i class="fa fa-check"></i>Variance and standard deviation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-association-1.html"><a href="measuring-association-1.html"><i class="fa fa-check"></i>Measuring Association</a><ul>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html"><i class="fa fa-check"></i>The Two-Way Table</a><ul>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html#conditional-distributions"><i class="fa fa-check"></i>Conditional distributions</a></li>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html#odds-ratio-advanced"><i class="fa fa-check"></i>Odds ratio (advanced)</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html"><i class="fa fa-check"></i>Mean Differences</a><ul>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html#graphically-examining-differences-in-distributions"><i class="fa fa-check"></i>Graphically examining differences in distributions</a></li>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html#comparing-differences-in-the-mean"><i class="fa fa-check"></i>Comparing differences in the mean</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html"><i class="fa fa-check"></i>Scatterplot and Correlation Coefficient</a><ul>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html#the-scatterplot"><i class="fa fa-check"></i>The scatterplot</a></li>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html#the-correlation-coefficient"><i class="fa fa-check"></i>The correlation coefficient</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="statistical-inference.html"><a href="statistical-inference.html"><i class="fa fa-check"></i>Statistical Inference</a><ul>
+<li class="chapter" data-level="" data-path="the-problem-of-statistical-inference.html"><a href="the-problem-of-statistical-inference.html"><i class="fa fa-check"></i>The Problem of Statistical Inference</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html"><i class="fa fa-check"></i>The Concept of the Sampling Distribution</a><ul>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#example-class-height"><i class="fa fa-check"></i>Example: class height</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#central-limit-theorem-and-the-normal-distribution"><i class="fa fa-check"></i>Central limit theorem and the normal distribution</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#what-can-we-do-with-the-sampling-distribution"><i class="fa fa-check"></i>What can we do with the sampling distribution?</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html"><i class="fa fa-check"></i>Confidence Intervals</a><ul>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#what-do-we-mean-by-confident"><i class="fa fa-check"></i>What do we mean by “confident?”</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#calculating-the-confidence-interval-for-the-sample-mean"><i class="fa fa-check"></i>Calculating the confidence interval for the sample mean</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#calculating-the-confidence-interval-for-other-sample-statistics"><i class="fa fa-check"></i>Calculating the confidence interval for other sample statistics</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-proportions"><i class="fa fa-check"></i>Example with proportions</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-mean-differences"><i class="fa fa-check"></i>Example with mean differences</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-proportion-differences"><i class="fa fa-check"></i>Example with proportion differences</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-correlation-coefficient"><i class="fa fa-check"></i>Example with correlation coefficient</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html"><i class="fa fa-check"></i>Hypothesis Tests</a><ul>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#example-coke-winners"><i class="fa fa-check"></i>Example: Coke winners</a></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#the-general-procedure-of-hypothesis-testing"><i class="fa fa-check"></i>The general procedure of hypothesis testing</a></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#hypothesis-tests-of-relationships"><i class="fa fa-check"></i>Hypothesis tests of relationships</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="building-models-1.html"><a href="building-models-1.html"><i class="fa fa-check"></i>Building Models</a><ul>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html"><i class="fa fa-check"></i>The OLS Regression Line</a><ul>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#the-formula-for-a-line"><i class="fa fa-check"></i>The Formula for a Line</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#calculating-the-best-fitting-line"><i class="fa fa-check"></i>Calculating the Best-Fitting Line</a></li>
+<li><a href="the-ols-regression-line.html#using-the-lm-command-to-calculate-ols-regression-lines-in-r">Using the <code>lm</code> command to calculate OLS regression lines in <em>R</em></a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#adding-an-ols-regression-line-to-a-plot"><i class="fa fa-check"></i>Adding an OLS regression line to a plot</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#the-ols-regression-line-as-a-model"><i class="fa fa-check"></i>The OLS regression line as a model</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#interpeting-slopes-and-intercepts"><i class="fa fa-check"></i>Interpeting Slopes and Intercepts</a></li>
+<li><a href="the-ols-regression-line.html#how-good-is-x-as-a-predictor-of-y">How good is <span class="math inline">\(x\)</span> as a predictor of <span class="math inline">\(y\)</span>?</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#inference-for-ols-regression-models"><i class="fa fa-check"></i>Inference for OLS Regression models</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#regression-line-cautions"><i class="fa fa-check"></i>Regression Line Cautions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html"><i class="fa fa-check"></i>The Power of Controlling for Other Variables</a><ul>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#interpreting-results-in-a-multivariate-ols-regression-models"><i class="fa fa-check"></i>Interpreting results in a multivariate OLS regression models</a></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#including-more-than-two-independent-variables"><i class="fa fa-check"></i>Including more than two independent variables</a></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#how-to-read-a-table-of-regression-results"><i class="fa fa-check"></i>How to read a table of regression results</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html"><i class="fa fa-check"></i>Including Categorical Variables as Predictors</a><ul>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#indicator-variables"><i class="fa fa-check"></i>Indicator variables</a></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#categorical-variables-with-more-than-two-categories"><i class="fa fa-check"></i>Categorical variables with more than two categories</a></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#categorical-and-quantitative-variables-combined-in-a-single-model"><i class="fa fa-check"></i>Categorical and quantitative variables combined in a single model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html"><i class="fa fa-check"></i>Interaction Terms</a><ul>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#the-nature-of-additive-models"><i class="fa fa-check"></i>The nature of additive models</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#the-interaction-term"><i class="fa fa-check"></i>The interaction term</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interpreting-interaction-terms"><i class="fa fa-check"></i>Interpreting interaction terms</a></li>
+<li><a href="interaction-terms.html#interaction-terms-in-r">Interaction terms in <em>R</em></a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interaction-terms-with-multiple-categories"><i class="fa fa-check"></i>Interaction terms with multiple categories</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interaction-terms-with-two-categorical-variables"><i class="fa fa-check"></i>Interaction terms with two categorical variables</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-complications.html"><a href="model-complications.html"><i class="fa fa-check"></i>Model Complications</a><ul>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html"><i class="fa fa-check"></i>The Linear Model, Revisited</a><ul>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#reformulating-the-linear-model"><i class="fa fa-check"></i>Reformulating the linear model</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#marginal-effects"><i class="fa fa-check"></i>Marginal effects</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#linear-model-assumptions"><i class="fa fa-check"></i>Linear model assumptions</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#estimating-a-linear-model"><i class="fa fa-check"></i>Estimating a linear model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html"><i class="fa fa-check"></i>Modeling Non-Linearity</a><ul>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#smoothing"><i class="fa fa-check"></i>Smoothing</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#residual-plots"><i class="fa fa-check"></i>Residual Plots</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#transformations"><i class="fa fa-check"></i>Transformations</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#polynomial-models"><i class="fa fa-check"></i>Polynomial Models</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#splines"><i class="fa fa-check"></i>Splines</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html"><i class="fa fa-check"></i>The IID Violation and Robust Standard Errors</a><ul>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#violations-of-independence"><i class="fa fa-check"></i>Violations of independence</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#heteroscedasticity"><i class="fa fa-check"></i>Heteroscedasticity</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#fixing-iid-violations"><i class="fa fa-check"></i>Fixing IID violations</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#weighted-least-squares"><i class="fa fa-check"></i>Weighted least squares</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#robust-standard-errors"><i class="fa fa-check"></i>Robust standard errors</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html"><i class="fa fa-check"></i>Sample Design and Weighting</a><ul>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#clustermultistage-sampling"><i class="fa fa-check"></i>Cluster/multistage sampling</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#stratification"><i class="fa fa-check"></i>Stratification</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#weights"><i class="fa fa-check"></i>Weights</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#correcting-for-sample-design-in-models"><i class="fa fa-check"></i>Correcting for sample design in models</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i>Missing Values</a><ul>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#identifying-valid-skips"><i class="fa fa-check"></i>Identifying Valid Skips</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#kinds-of-missingness"><i class="fa fa-check"></i>Kinds of Missingness</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#removing-cases"><i class="fa fa-check"></i>Removing Cases</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#imputation"><i class="fa fa-check"></i>Imputation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html"><i class="fa fa-check"></i>Multicollinearity and Scale Creation</a><ul>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#avoid-the-singularity"><i class="fa fa-check"></i>Avoid the Singularity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#detecting-data-based-multicollinearity"><i class="fa fa-check"></i>Detecting Data-Based Multicollinearity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#addressing-multicollinearity"><i class="fa fa-check"></i>Addressing Multicollinearity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#creating-scales"><i class="fa fa-check"></i>Creating Scales</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#factor-analysis"><i class="fa fa-check"></i>Factor Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html"><i class="fa fa-check"></i>Model Selection</a><ul>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#there-is-no-right-model"><i class="fa fa-check"></i>There is no “right” model</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#the-accuracy-vs.-parsimony-tradeoff"><i class="fa fa-check"></i>The accuracy vs. parsimony tradeoff</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#null-vs.-saturated-model"><i class="fa fa-check"></i>Null vs. saturated model</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#a-not-very-useful-tool-the-f-test"><i class="fa fa-check"></i>A not-very-useful tool: the F-test</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#tools-with-a-parsimony-penalty"><i class="fa fa-check"></i>Tools with a parsimony penalty</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#model-averaging"><i class="fa fa-check"></i>Model Averaging</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="modeling-categorical-outcomes.html"><a href="modeling-categorical-outcomes.html"><i class="fa fa-check"></i>Modeling Categorical Outcomes</a><ul>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html"><i class="fa fa-check"></i>Dichotomous Outcomes and The Binomial Distribution</a></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html"><i class="fa fa-check"></i>Linear Probability Model</a></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
+<li class="chapter" data-level="" data-path="maximum-likelihood-estimation.html"><a href="maximum-likelihood-estimation.html"><i class="fa fa-check"></i>Maximum Likelihood Estimation</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression-model.html"><a href="logistic-regression-model.html"><i class="fa fa-check"></i>Logistic Regression Model</a></li>
+<li class="chapter" data-level="" data-path="models-for-nominal-polytomous-outcomes.html"><a href="models-for-nominal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Nominal Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="models-for-ordinal-polytomous-outcomes.html"><a href="models-for-ordinal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Ordinal Polytomous Outcomes</a></li>
+</ul></li>
+<li class="appendix"><span><b>Appendices</b></span></li>
+<li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html"><i class="fa fa-check"></i>Example Datasets</a><ul>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#crimes"><i class="fa fa-check"></i>Crimes</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#movies"><i class="fa fa-check"></i>Movies</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#politics"><i class="fa fa-check"></i>Politics</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#popularity"><i class="fa fa-check"></i>Popularity</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#sex"><i class="fa fa-check"></i>Sex</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#titanic"><i class="fa fa-check"></i>Titanic</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#wages"><i class="fa fa-check"></i>Wages</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html"><i class="fa fa-check"></i>Common R Commands</a><ul>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#univariate-statistics"><i class="fa fa-check"></i>Univariate Statistics</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#bivariate-statistics"><i class="fa fa-check"></i>Bivariate Statistics</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#statistical-inference-1"><i class="fa fa-check"></i>Statistical Inference</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#ols-regression-models"><i class="fa fa-check"></i>OLS Regression Models</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#utility-functions"><i class="fa fa-check"></i>Utility functions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html"><i class="fa fa-check"></i>Plotting Cookbook</a><ul>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#barplots"><i class="fa fa-check"></i>Barplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#histograms"><i class="fa fa-check"></i>Histograms</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#boxplots-1"><i class="fa fa-check"></i>Boxplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#comparative-barplots"><i class="fa fa-check"></i>Comparative Barplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#comparative-boxplots"><i class="fa fa-check"></i>Comparative Boxplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#scatterplots"><i class="fa fa-check"></i>Scatterplots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="r-stat-lab.html"><a href="r-stat-lab.html"><i class="fa fa-check"></i>R Stat Lab</a><ul>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html"><i class="fa fa-check"></i>Using Scripts</a><ul>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#getting-started-with-scripts"><i class="fa fa-check"></i>Getting Started with Scripts</a></li>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#not-everything-goes-into-your-script"><i class="fa fa-check"></i>Not Everything Goes Into Your Script</a></li>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#commenting-for-sanity"><i class="fa fa-check"></i>Commenting for Sanity</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html"><i class="fa fa-check"></i>Object Types</a><ul>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#atomic-modes"><i class="fa fa-check"></i>Atomic Modes</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#vectors-and-matrices"><i class="fa fa-check"></i>Vectors and Matrices</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#factors"><i class="fa fa-check"></i>Factors</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#logical-values-and-boolean-statements"><i class="fa fa-check"></i>Logical Values and Boolean Statements</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#missing-values-1"><i class="fa fa-check"></i>Missing Values</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#lists"><i class="fa fa-check"></i>Lists</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#data-frames"><i class="fa fa-check"></i>Data Frames</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html"><i class="fa fa-check"></i>Pretty Pictures</a><ul>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html#base-plot"><i class="fa fa-check"></i>Base Plot</a></li>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html#ggplot"><i class="fa fa-check"></i>ggplot</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html"><i class="fa fa-check"></i>Using Git</a><ul>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html#plain-text-is-better"><i class="fa fa-check"></i>Plain Text is Better</a></li>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html#git"><i class="fa fa-check"></i>Git</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html"><i class="fa fa-check"></i>Reading and Writing Data</a><ul>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#data-formats"><i class="fa fa-check"></i>Data Formats</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#plain-text-files"><i class="fa fa-check"></i>Plain text files</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#data-in-binary-format"><i class="fa fa-check"></i>Data in binary format</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#saving-data"><i class="fa fa-check"></i>Saving data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i>Cleaning Data</a><ul>
+<li><a href="cleaning-data.html#the-most-important-rule-check-yourself-before-you-wreck-yourself">The Most Important Rule: <span>Check yourself before you wreck yourself</span></a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#assigning-missing-values"><i class="fa fa-check"></i>Assigning missing values</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#recoding"><i class="fa fa-check"></i>Recoding</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#collapsing-categorical-variables"><i class="fa fa-check"></i>Collapsing Categorical Variables</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#transforming-quantitative-variables"><i class="fa fa-check"></i>Transforming Quantitative Variables</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#after-cleaning-you-still-need-to-tidy"><i class="fa fa-check"></i>After Cleaning You Still Need to Tidy</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#aggregating-data"><i class="fa fa-check"></i>Aggregating Data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html"><i class="fa fa-check"></i>Reshaping and Merging Data</a><ul>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html#reshaping"><i class="fa fa-check"></i>Reshaping</a></li>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html#merging-data"><i class="fa fa-check"></i>Merging data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html"><i class="fa fa-check"></i>Programming</a><ul>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#an-example-theils-h"><i class="fa fa-check"></i>An Example: Theil’s H</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#our-data"><i class="fa fa-check"></i>Our Data</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#calculating-theils-h-for-a-single-state"><i class="fa fa-check"></i>Calculating Theil’s H for a single state</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#creating-functions"><i class="fa fa-check"></i>Creating Functions</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#iteration"><i class="fa fa-check"></i>Iteration</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#putting-it-all-together"><i class="fa fa-check"></i>Putting It All Together</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html"><i class="fa fa-check"></i>Using R Markdown</a><ul>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#plain-text-science"><i class="fa fa-check"></i>Plain Text Science</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#markdown-syntax"><i class="fa fa-check"></i>Markdown Syntax</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#r-markdown"><i class="fa fa-check"></i>R Markdown</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#figures-in-r-markdown"><i class="fa fa-check"></i>Figures in R Markdown</a></li>
+</ul></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Analysis in Sociology</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="reshaping-and-merging-data" class="section level2">
+<h2>Reshaping and Merging Data</h2>
+<p>In this lab, I want to cover two important components of data wrangling, reshaping data from one format to one another and merging two diffent datasets together. As an example for this section, we are going to use some data from The <a href="http://databank.worldbank.org/data/reports.aspx?source=world-development-indicators#">World Bank Development Indicators</a> and the <a href="http://www.ilo.org/ilostat/faces/wcnav_defaultSelection?_afrLoop=107076059659881&amp;_afrWindowMode=0&amp;_afrWindowId=kaen3qrnf_51#!%40%40%3F_afrWindowId%3Dkaen3qrnf_51%26_afrLoop%3D107076059659881%26_afrWindowMode%3D0%26_adf.ctrl-state%3Dkaen3qrnf_71">International Labour Organization</a>. Both of these sites have nice designs that allow users to filter an extract of their choosing by country, year, and variable type. They also allow download of the data in a variety of formats including CSV. The labor data provides information on unemployment rates by age and sex and I have limited the years to 2014 or later. I then pulled an extract of the world bank data from 2014 on all countries for the variables of GDP per capita, life expectancy at birth, and population size. You can download the World Bank extract <a href="/stat_book/resources/worldbank.csv">here</a> and the ILO data <a href="/stat_book/resources/ilostat.csv">here</a>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>Ultimately, I want to create a final dataset which combined these sources. The final dataset should have an observation for each country with the variables of GDP per capita, life expectancy at birth, population size, and unemployment rates. In order to get there though, I am going to have to deal with some data issues.</p>
+<div id="reshaping" class="section level3">
+<h3>Reshaping</h3>
+<p>All of the data that we have looked at so far have been in what is called a <em>wide</em> format. Each row is an observation is a column. This is usually the easiest way for us to work with data, but sometimes data can come in a <em>long</em> format instead. In the long format, each row gives the value for a certain variable for a certain observation. The observation and variable are identified by id columns and the values themselves are a third column.</p>
+<p>To give a simple example, here is a very small dataset in wide form:</p>
+<table>
+<thead>
+<tr class="header">
+<th>name</th>
+<th>age</th>
+<th>height</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Bob</td>
+<td>25</td>
+<td>71</td>
+</tr>
+<tr class="even">
+<td>Susie</td>
+<td>37</td>
+<td>65</td>
+</tr>
+<tr class="odd">
+<td>Linda</td>
+<td>28</td>
+<td>68</td>
+</tr>
+</tbody>
+</table>
+<p>Here is that same dataset in long form:</p>
+<table>
+<thead>
+<tr class="header">
+<th>name</th>
+<th>variable</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Bob</td>
+<td>age</td>
+<td>25</td>
+</tr>
+<tr class="even">
+<td>Bob</td>
+<td>height</td>
+<td>71</td>
+</tr>
+<tr class="odd">
+<td>Susie</td>
+<td>age</td>
+<td>37</td>
+</tr>
+<tr class="even">
+<td>Susie</td>
+<td>height</td>
+<td>65</td>
+</tr>
+<tr class="odd">
+<td>Linda</td>
+<td>age</td>
+<td>28</td>
+</tr>
+<tr class="even">
+<td>Linda</td>
+<td>height</td>
+<td>68</td>
+</tr>
+</tbody>
+</table>
+<p>Notice that in the long format each person shows up once for each variable from the wide dataset. In this case, the “name” variable is my <em>id</em> variable that identified unique observations. Its possible to have more than one id variable in the long format. For example, I might also have a year variable which identifies an observation-year case.</p>
+<p>Lets take a look at the world bank data that I have and you will see another example of the long format.</p>
+<div class="sourceCode" id="cb857"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb857-1" title="1"><span class="kw">library</span>(readr)</a>
+<a class="sourceLine" id="cb857-2" title="2">worldbank &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;resources/worldbank.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb857-3" title="3"><span class="co">#better variable names</span></a>
+<a class="sourceLine" id="cb857-4" title="4"><span class="kw">colnames</span>(worldbank) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;country_name&quot;</span>,<span class="st">&quot;country_code&quot;</span>,<span class="st">&quot;series_name&quot;</span>,<span class="st">&quot;series_code&quot;</span>,</a>
+<a class="sourceLine" id="cb857-5" title="5">                         <span class="st">&quot;time&quot;</span>,<span class="st">&quot;time_code&quot;</span>,<span class="st">&quot;value&quot;</span>)</a>
+<a class="sourceLine" id="cb857-6" title="6"><span class="kw">head</span>(worldbank)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 7
+##   country_name country_code series_name      series_code   time time_code  value
+##   &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;            &lt;chr&gt;        &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;
+## 1 Afghanistan  AFG          GDP per capita … NY.GDP.PCAP…  2014 YR2014    6.34e2
+## 2 Afghanistan  AFG          Life expectancy… SP.DYN.LE00…  2014 YR2014    6.04e1
+## 3 Afghanistan  AFG          Population, tot… SP.POP.TOTL   2014 YR2014    3.16e7
+## 4 Albania      ALB          GDP per capita … NY.GDP.PCAP…  2014 YR2014    4.57e3
+## 5 Albania      ALB          Life expectancy… SP.DYN.LE00…  2014 YR2014    7.78e1
+## 6 Albania      ALB          Population, tot… SP.POP.TOTL   2014 YR2014    2.89e6</code></pre>
+<p>You can see that this data is in long format with the actual value for each of my variables given in the “Value” colum. The “Country Code” variable identifies the country and the “Series Code” variable identifies the specific variable. I also have a “Time Code” but in my case that is not particularly relevant since I only downloaded 2014 data. This is the standard format of the World Bank’s World Development Indicators data.</p>
+<p>In order to create my analytical dataset I want to <em>reshape</em> this data from long to wide. Given what we know about data.frames in R, it is actually possible to manipulate this dataset with our existing skills to get it in the right format, but this is not the best approach because it opens up to significant errors. We could for example, use a <code>subset</code> command to just grab each variable’s value and save those two different vectors. We could then use a <code>data.frame</code> command or a <code>cbind</code> command to comnbine those together into a new data.frame. However, we would be assuming that the ordering and existence of countries was consistent across all of the vectors that we are combining - and this assumption could prove dangerous if it turned out that in one vector country values were reversed or some were missing. We would then have incorrect values for some countries.</p>
+<p>A better approach would be to save subsets that include the country code and then use the <code>merge</code> command that we will learn below to merge them together into a single dataset by country code. This will ensure that the values are correct for countries, but it still involves quite a bit of code.</p>
+<p>An even better solution is to use one of the functions in R that can do this reshaping for us. Base R comes with a <code>reshape</code> command but we will not be using that command here. Instead we are going to use the <code>dcast</code> function from the <code>reshape2</code> library. You will need to install the <code>reshape2</code> library to gain access to it.</p>
+<p>The <code>dcast</code> function in the <code>reshape2</code> library is one of the “cast” functions that will turn a dataset in long format to a dataset in wide format. There is an analagous function called <code>melt</code> to for from wide to long format (melting and casting, get it?). To use <code>dcast</code> we need to feed in three arguments:</p>
+<ol style="list-style-type: decimal">
+<li>the name of the data.frame object in long form</li>
+<li>A formula that defines the id variable(s) and the variable that identifies distinct variables from the wide format.</li>
+<li>A <code>values.var</code> variable that identifies which variable contains the actual values.</li>
+</ol>
+<p>In my case, it should look like:</p>
+<div class="sourceCode" id="cb859"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb859-1" title="1"><span class="kw">library</span>(reshape2)</a>
+<a class="sourceLine" id="cb859-2" title="2">worldbank_wide &lt;-<span class="st"> </span><span class="kw">dcast</span>(worldbank, country_code <span class="op">+</span><span class="st"> </span>country_name <span class="op">+</span><span class="st"> </span>time <span class="op">~</span><span class="st"> </span>series_code, </a>
+<a class="sourceLine" id="cb859-3" title="3">                        <span class="dt">value.var =</span> <span class="st">&quot;value&quot;</span>)</a>
+<a class="sourceLine" id="cb859-4" title="4"><span class="kw">head</span>(worldbank_wide)</a></code></pre></div>
+<pre><code>##   country_code         country_name time NY.GDP.PCAP.CD SP.DYN.LE00.IN
+## 1          ABW                Aruba 2014             NA       75.45110
+## 2          ADO              Andorra 2014             NA             NA
+## 3          AFG          Afghanistan 2014       633.9479       60.37446
+## 4          AGO               Angola 2014      5232.7623       52.26688
+## 5          ALB              Albania 2014      4568.5688       77.83046
+## 6          ARE United Arab Emirates 2014     44238.5998       77.36817
+##   SP.POP.TOTL
+## 1      103441
+## 2       72786
+## 3    31627506
+## 4    24227524
+## 5     2893654
+## 6     9086139</code></pre>
+<p>Just like that we have data in wide format. Notice how the formula works here. My id variable(s) go to the left of the tilde. In this case, I didn’t really need to specify “time” because I only have one year, but I wanted to show you how this can work with multiple id variables. I also didn’t need both “country_code” and “country_name” but by doing it this way, I will get both variables in my wide data format, which can be useful if I need to look up which country is which code. The series_code that identifies variable names for the wide dataset goes to the right of the tilde.</p>
+<p>My only problem now is that the variable names are ugly, but I can fix that up pretty easily:</p>
+<div class="sourceCode" id="cb861"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb861-1" title="1"><span class="kw">colnames</span>(worldbank_wide) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;country_code&quot;</span>,<span class="st">&quot;country_name&quot;</span>,<span class="st">&quot;year&quot;</span>,</a>
+<a class="sourceLine" id="cb861-2" title="2">                              <span class="st">&quot;gdp_cap&quot;</span>,<span class="st">&quot;life_exp&quot;</span>,<span class="st">&quot;pop&quot;</span>)</a>
+<a class="sourceLine" id="cb861-3" title="3"><span class="kw">head</span>(worldbank_wide)</a></code></pre></div>
+<pre><code>##   country_code         country_name year    gdp_cap life_exp      pop
+## 1          ABW                Aruba 2014         NA 75.45110   103441
+## 2          ADO              Andorra 2014         NA       NA    72786
+## 3          AFG          Afghanistan 2014   633.9479 60.37446 31627506
+## 4          AGO               Angola 2014  5232.7623 52.26688 24227524
+## 5          ALB              Albania 2014  4568.5688 77.83046  2893654
+## 6          ARE United Arab Emirates 2014 44238.5998 77.36817  9086139</code></pre>
+<p>Now lets take a look at the ILO data and see what needs to be done with it. Note that I needed to specify a few column types that were giving <code>readr</code> parsing problems, although we don’t really care about those variables anyway. I also recast the <code>tibble</code> to a standard <code>data.frame</code> for the <code>head</code> command so you can see all of the variables.</p>
+<div class="sourceCode" id="cb863"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb863-1" title="1">ilo &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;resources/ilostat.csv&quot;</span>,</a>
+<a class="sourceLine" id="cb863-2" title="2">                <span class="dt">col_types=</span><span class="kw">cols</span>(<span class="dt">obs_status=</span><span class="kw">col_character</span>(),</a>
+<a class="sourceLine" id="cb863-3" title="3">                               <span class="dt">obs_status.label=</span><span class="kw">col_character</span>()))</a>
+<a class="sourceLine" id="cb863-4" title="4"><span class="kw">head</span>(<span class="kw">as.data.frame</span>(ilo))</a></code></pre></div>
+<pre><code>##   collection  collection.label ref_area ref_area.label source
+## 1         YI Yearly indicators      ALB        Albania BA:480
+## 2         YI Yearly indicators      ALB        Albania BA:480
+## 3         YI Yearly indicators      ALB        Albania BA:480
+## 4         YI Yearly indicators      ALB        Albania BA:480
+## 5         YI Yearly indicators      ALB        Albania BA:480
+## 6         YI Yearly indicators      ALB        Albania BA:480
+##          source.label           indicator                      indicator.label
+## 1 Labour force survey UNE_DEAP_SEX_AGE_RT Unemployment rate by sex and age (%)
+## 2 Labour force survey UNE_DEAP_SEX_AGE_RT Unemployment rate by sex and age (%)
+## 3 Labour force survey UNE_DEAP_SEX_AGE_RT Unemployment rate by sex and age (%)
+## 4 Labour force survey UNE_DEAP_SEX_AGE_RT Unemployment rate by sex and age (%)
+## 5 Labour force survey UNE_DEAP_SEX_AGE_RT Unemployment rate by sex and age (%)
+## 6 Labour force survey UNE_DEAP_SEX_AGE_RT Unemployment rate by sex and age (%)
+##     sex   sex.label             classif1           classif1.label classif2
+## 1 SEX_T  Sex: Total  AGE_10YRBANDS_TOTAL 10-year age bands: Total       NA
+## 2 SEX_T  Sex: Total AGE_10YRBANDS_Y15-24 10-year age bands: 15-24       NA
+## 3 SEX_M   Sex: Male  AGE_10YRBANDS_TOTAL 10-year age bands: Total       NA
+## 4 SEX_M   Sex: Male AGE_10YRBANDS_Y15-24 10-year age bands: 15-24       NA
+## 5 SEX_F Sex: Female  AGE_10YRBANDS_TOTAL 10-year age bands: Total       NA
+## 6 SEX_F Sex: Female AGE_10YRBANDS_Y15-24 10-year age bands: 15-24       NA
+##   classif2.label classif3 classif3.label classif4 classif4.label classif5
+## 1             NA       NA             NA       NA             NA       NA
+## 2             NA       NA             NA       NA             NA       NA
+## 3             NA       NA             NA       NA             NA       NA
+## 4             NA       NA             NA       NA             NA       NA
+## 5             NA       NA             NA       NA             NA       NA
+## 6             NA       NA             NA       NA             NA       NA
+##   classif5.label time obs_value obs_status obs_status.label note_classif
+## 1             NA 2014     17.49       &lt;NA&gt;             &lt;NA&gt;         &lt;NA&gt;
+## 2             NA 2014     39.05       &lt;NA&gt;             &lt;NA&gt;         &lt;NA&gt;
+## 3             NA 2014     19.16       &lt;NA&gt;             &lt;NA&gt;         &lt;NA&gt;
+## 4             NA 2014     42.55       &lt;NA&gt;             &lt;NA&gt;         &lt;NA&gt;
+## 5             NA 2014     15.21       &lt;NA&gt;             &lt;NA&gt;         &lt;NA&gt;
+## 6             NA 2014     32.55       &lt;NA&gt;             &lt;NA&gt;         &lt;NA&gt;
+##   note_classif.label note_indicator note_indicator.label notes_source
+## 1               &lt;NA&gt;           &lt;NA&gt;                 &lt;NA&gt;  S3:5_T3:104
+## 2               &lt;NA&gt;           &lt;NA&gt;                 &lt;NA&gt;  S3:5_T3:104
+## 3               &lt;NA&gt;           &lt;NA&gt;                 &lt;NA&gt;  S3:5_T3:104
+## 4               &lt;NA&gt;           &lt;NA&gt;                 &lt;NA&gt;  S3:5_T3:104
+## 5               &lt;NA&gt;           &lt;NA&gt;                 &lt;NA&gt;  S3:5_T3:104
+## 6               &lt;NA&gt;           &lt;NA&gt;                 &lt;NA&gt;  S3:5_T3:104
+##                                                                           notes_source.label
+## 1 Data reference period: Annual or annual average | Age coverage - maximum age: 74 years old
+## 2 Data reference period: Annual or annual average | Age coverage - maximum age: 74 years old
+## 3 Data reference period: Annual or annual average | Age coverage - maximum age: 74 years old
+## 4 Data reference period: Annual or annual average | Age coverage - maximum age: 74 years old
+## 5 Data reference period: Annual or annual average | Age coverage - maximum age: 74 years old
+## 6 Data reference period: Annual or annual average | Age coverage - maximum age: 74 years old</code></pre>
+<p>This data is also in a long format but there is a lot going on here. ILO is breaking down unemployment rates by sex and age within each country over time, with detailed notes on data quality and sources. This is all interesting data, but I don’t need all of it, so let me use a subset command to pull out just what I need which is the total unemployment rate across both sexes and all ages in 2014.</p>
+<div class="sourceCode" id="cb865"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb865-1" title="1">ilo &lt;-<span class="st"> </span><span class="kw">subset</span>(ilo, sex<span class="op">==</span><span class="st">&quot;SEX_T&quot;</span> <span class="op">&amp;</span><span class="st"> </span>classif1<span class="op">==</span><span class="st">&quot;AGE_AGGREGATE_TOTAL&quot;</span> <span class="op">&amp;</span><span class="st"> </span>time<span class="op">==</span><span class="dv">2014</span>,</a>
+<a class="sourceLine" id="cb865-2" title="2">              <span class="dt">select=</span><span class="kw">c</span>(<span class="st">&quot;ref_area&quot;</span>, <span class="st">&quot;ref_area.label&quot;</span>,<span class="st">&quot;source&quot;</span>,<span class="st">&quot;source.label&quot;</span>,</a>
+<a class="sourceLine" id="cb865-3" title="3">                       <span class="st">&quot;time&quot;</span>,<span class="st">&quot;obs_value&quot;</span>,<span class="st">&quot;note_classif&quot;</span>,<span class="st">&quot;note_classif.label&quot;</span>,</a>
+<a class="sourceLine" id="cb865-4" title="4">                       <span class="st">&quot;notes_source&quot;</span>,<span class="st">&quot;notes_source.label&quot;</span>))</a>
+<a class="sourceLine" id="cb865-5" title="5"><span class="kw">head</span>(ilo)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 10
+##   ref_area ref_area.label source source.label  time obs_value note_classif
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;       
+## 1 ALB      Albania        BA:480 Labour forc…  2014     17.5  &lt;NA&gt;        
+## 2 ARG      Argentina      BA:153 Labour forc…  2014      7.03 &lt;NA&gt;        
+## 3 ARG      Argentina      BA:150 Labour forc…  2014      7.27 &lt;NA&gt;        
+## 4 ARM      Armenia        BA:867 Labour forc…  2014     17.6  &lt;NA&gt;        
+## 5 AUS      Australia      BA:518 Labour forc…  2014      6.07 &lt;NA&gt;        
+## 6 AUT      Austria        BA:536 Labour forc…  2014      5.62 &lt;NA&gt;        
+## # … with 3 more variables: note_classif.label &lt;chr&gt;, notes_source &lt;chr&gt;,
+## #   notes_source.label &lt;chr&gt;</code></pre>
+<p>You will notice right away that we have multiple entries for at least one country (Argentina). We can check this more formally by running a table command on <code>ref_area.label</code> or <code>ref_area</code>.</p>
+<div class="sourceCode" id="cb867"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb867-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">table</span>(ilo<span class="op">$</span>ref_area.label)</a>
+<a class="sourceLine" id="cb867-2" title="2">temp[temp<span class="op">&gt;</span><span class="dv">1</span>]</a></code></pre></div>
+<pre><code>## 
+##  Argentina    Belarus     Brazil      China Kazakhstan  Singapore 
+##          2          2          3          2          2          2</code></pre>
+<p>A few cases have more than one entry. Lets check out Brazil more closely as it has three entries:</p>
+<div class="sourceCode" id="cb869"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb869-1" title="1"><span class="kw">head</span>(<span class="kw">as.data.frame</span>(<span class="kw">subset</span>(ilo, ref_area.label<span class="op">==</span><span class="st">&quot;Brazil&quot;</span>)))</a></code></pre></div>
+<pre><code>##   ref_area ref_area.label  source        source.label time obs_value
+## 1      BRA         Brazil BA:3047 Labour force survey 2014      4.85
+## 2      BRA         Brazil  BA:356 Labour force survey 2014      6.91
+## 3      BRA         Brazil BA:6355 Labour force survey 2014      6.81
+##   note_classif                      note_classif.label notes_source
+## 1         &lt;NA&gt;                                    &lt;NA&gt; S4:33_T2:239
+## 2         &lt;NA&gt;                                    &lt;NA&gt; S3:20_T2:239
+## 3      C6:1059 Nonstandard age group: Including age 14        T2:83
+##                                                                                    notes_source.label
+## 1 Geographical coverage: Main cities or metropolitan areas | Age coverage - minimum age: 10 years old
+## 2                         Data reference period: September | Age coverage - minimum age: 10 years old
+## 3                                                            Age coverage - minimum age: 14 years old</code></pre>
+<p>It seems that there are multiple sources for each unemployment rate. The notes provide some indication of how these different numbers were developed. There is no easy programmatic way to make a decision about which source to choose. If I were doing a real research project, I would carefully study the documentation here and reach a decision about each country separately. For our purposes, it seems like the broadest scope measure is generally in the first source listed for a country, so I will just take the first row for countries with multiple rows. I can do this easily in R using the duplicated command to remove repeat country entries. The duplicated command will return a TRUE for values in a vector that duplicate earlier entries. I will also restrict this data to the variable that I actually care about, along with the country names and codes.</p>
+<div class="sourceCode" id="cb871"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb871-1" title="1">ilo &lt;-<span class="st"> </span><span class="kw">subset</span>(ilo, <span class="op">!</span><span class="kw">duplicated</span>(ref_area),</a>
+<a class="sourceLine" id="cb871-2" title="2">                  <span class="dt">select=</span><span class="kw">c</span>(<span class="st">&quot;ref_area&quot;</span>,<span class="st">&quot;ref_area.label&quot;</span>,<span class="st">&quot;obs_value&quot;</span>))</a>
+<a class="sourceLine" id="cb871-3" title="3"><span class="kw">head</span>(ilo)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   ref_area ref_area.label obs_value
+##   &lt;chr&gt;    &lt;chr&gt;              &lt;dbl&gt;
+## 1 ALB      Albania            17.5 
+## 2 ARG      Argentina           7.03
+## 3 ARM      Armenia            17.6 
+## 4 AUS      Australia           6.07
+## 5 AUT      Austria             5.62
+## 6 AZE      Azerbaijan          4.91</code></pre>
+<div class="sourceCode" id="cb873"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb873-1" title="1"><span class="kw">table</span>(ilo<span class="op">$</span>ref_area)</a></code></pre></div>
+<pre><code>## 
+## ALB ARG ARM AUS AUT AZE BEL BGR BIH BLR BMU BOL BRA BRB BTN CAN CHE CHL CHN COL 
+##   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 
+## CRI CUB CUW CYM CYP CZE DEU DNK DOM DZA ECU EGY ESP EST ETH FIN FRA GBR GEO GRC 
+##   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 
+## GTM GUM HKG HRV HUN IDN IMN IND IRL IRN ISL ISR ITA JAM JEY JOR JPN KAZ KGZ KHM 
+##   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 
+## KOR KOS LKA LTU LUX LVA MAC MAR MDA MDV MEX MKD MLT MNE MNG MOZ MUS MYS NLD NOR 
+##   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 
+## NPL NZL PAK PAN PER PHL POL PRI PRT PRY PSE QAT ROU RUS SAU SGP SMR SRB SUR SVK 
+##   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 
+## SVN SWE THA TTO TUR TWN TZA UKR URY USA VEN VNM WSM ZAF ZWE 
+##   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1</code></pre>
+<p>Now, everything looks good. This dataset is still technically in a long format, but since I only have one variable (total unemployment rate), the difference between a long and a wide format is now just in the variable names. Changing the variable names gives me the format I want:</p>
+<div class="sourceCode" id="cb875"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb875-1" title="1"><span class="kw">colnames</span>(ilo) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;country_code&quot;</span>,<span class="st">&quot;country_name&quot;</span>,<span class="st">&quot;unemployment&quot;</span>)</a>
+<a class="sourceLine" id="cb875-2" title="2"><span class="kw">head</span>(ilo)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   country_code country_name unemployment
+##   &lt;chr&gt;        &lt;chr&gt;               &lt;dbl&gt;
+## 1 ALB          Albania             17.5 
+## 2 ARG          Argentina            7.03
+## 3 ARM          Armenia             17.6 
+## 4 AUS          Australia            6.07
+## 5 AUT          Austria              5.62
+## 6 AZE          Azerbaijan           4.91</code></pre>
+<p>I now have the World Bank and ILO data in similar formats with a country code, country name, and then the variables of interest. I now just need to combine them together into a single dataset. For that I need to learn how to <em>merge</em> data.</p>
+</div>
+<div id="merging-data" class="section level3">
+<h3>Merging data</h3>
+<p>In order to merge datasets, you need some kind of id variable(s) that can be used to link observations across datasets. In my data here, both sources use a three letter capitalized code to identify countries. I am crossing my fingers that they are using the same coding system and that I can use this code to link countries across the two datasets.</p>
+<p>Generally speaking, there are two different kinds of merges one can perform. In a <strong>one-to-one</strong> merge, each observation in one dataset should be linked to one and only one observation in the other dataset. In this case, the identifier used to link the two datasets should be unique (not be repeated) within each dataset. In this example, I am performing a one-to-one merge. I can check that my identifiers are unique by running the <code>duplicated</code> command:</p>
+<div class="sourceCode" id="cb877"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb877-1" title="1"><span class="kw">sum</span>(<span class="kw">duplicated</span>(worldbank_wide<span class="op">$</span>country_code))</a></code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<div class="sourceCode" id="cb879"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb879-1" title="1"><span class="kw">sum</span>(<span class="kw">duplicated</span>(ilo<span class="op">$</span>country_code))</a></code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<p>No duplicates, so we are of to a good start.</p>
+<p>The other kind of merge that can be performed is a <strong>many to one</strong> merge. In this case, multiple observations in one dataset would all be linked to a single observation in the other dataset. This is most common for <em>multilevel</em> data in which you are linking lower-level observations to the higher level unit they are nested within. For example, I might want to link the academic records of elementary school students to information about their teachers. In this case, multiple students would be linked to the same teacher data. We will see more examples of this kind of merging next term, when we delve into multilevel models. In practice, R handles both of these merge types with the same basic syntax.</p>
+<p>The <code>merge</code> command in R will take two different data.frame objects and merge them together by matching the columns identified in the <code>by</code>,<code>by.x</code>, or <code>by.y</code> option. Notice that I renamed the country codes in my datasets to both be <code>country_code</code> in order to simplify my merging by allowing me to use the <code>by</code> option rather than separate <code>by.x</code> and <code>by.y</code> options. It is also better to match on these three letter codes than the <code>country_name</code> variable which is more likely to vary between the two datasets (one dataset may refer to “Ivory Coast” while another refers to “Cote d’Ivoire”, for example). You can also not specificy any id variable for the matching, and <code>merge</code> will then try to match on every variable with the same name in the two datasets - this is not recommended.</p>
+<p>Here is the basic <code>merge</code> command.</p>
+<div class="sourceCode" id="cb881"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb881-1" title="1">test &lt;-<span class="st"> </span><span class="kw">merge</span>(worldbank_wide, ilo, <span class="dt">by=</span><span class="st">&quot;country_code&quot;</span>, <span class="dt">all.x=</span><span class="ot">TRUE</span>, <span class="dt">all.y=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<p>Merging can be tricky and you should always check and double-check your results to make sure the merge worked properly. In this case, I have saved my merged data.frame as a new object named <code>test</code>. The <code>all.x</code> and <code>all.y</code> option indicates that the final merged object should include rows for both the first and second data.frame even if they didn’t find a match in the other data.frame.</p>
+<p>Lets begin our checks by examining the number of observations in our datasets.</p>
+<div class="sourceCode" id="cb882"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb882-1" title="1"><span class="kw">nrow</span>(worldbank_wide)</a></code></pre></div>
+<pre><code>## [1] 217</code></pre>
+<div class="sourceCode" id="cb884"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb884-1" title="1"><span class="kw">nrow</span>(ilo)</a></code></pre></div>
+<pre><code>## [1] 115</code></pre>
+<div class="sourceCode" id="cb886"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb886-1" title="1"><span class="kw">nrow</span>(test)</a></code></pre></div>
+<pre><code>## [1] 223</code></pre>
+<p>There is something odd going on here. The World Bank data included 217 countries, while the ILO data only had 115 countries. So the ILO data is presumably missing a lot of countries that are in the World Bank data. We expect this because the world bank data has more coverage than the ILO data. However when we merge the data together, we now get 223 total countries which is six more than the number of countries in the World Bank data. How did we end up with six more countries in total than the world bank data?</p>
+<p>There are three possible outomes for each observation in our merged test dataset. In some cases, a match was made and there should be valid data for that observation. In other cases, an observation from the World Bank data failed to find a match in the ILO data. As I noted above, this is not problematic because we know the ILO data has lower coverage than the World Bank data. Finally, an observation from the ILO data may fail to find a match with the World Bank data. This last case is the problematic one and the one where the extra six cases are coming from.</p>
+<p>How can we find out what these extra six cases are? R has a very nice operator called <code>%in%</code> which can be used to identify cases of overlap and non-overlap between two variables. It will return a TRUE/FALSE value which we can use in this case to identify the cases in the ILO data that were not matched to World Bank data.</p>
+<div class="sourceCode" id="cb888"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb888-1" title="1"><span class="kw">subset</span>(ilo, <span class="op">!</span>(ilo<span class="op">$</span>country_code <span class="op">%in%</span><span class="st"> </span>worldbank_wide<span class="op">$</span>country_code))</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   country_code country_name                   unemployment
+##   &lt;chr&gt;        &lt;chr&gt;                                 &lt;dbl&gt;
+## 1 IMN          Isle of Man                            1.98
+## 2 JEY          Jersey                                 4.6 
+## 3 KOS          Kosovo                                35.2 
+## 4 PSE          Occupied Palestinian Territory        27.0 
+## 5 ROU          Romania                                6.8 
+## 6 TWN          Taiwan, China                          3.96</code></pre>
+<p>Notice that by wrapping the entire <code>%in%</code> statement in a <code>!</code>, I basically turned this into “not in.” In colluquial terms, we are identifying all country codes in the ILO data that are not in the World Bank country codes.</p>
+<p>Why did these six countries fail to find a match? If I look for the corresponding countries in the World Bank data, I can see that three of these cases (Isle of Man, Kosovo, and Romania) have different codes in the two datasets. The three remaining cases don’t exist in the World Bank data (Taiwan and Palestine for political reasons).</p>
+<p>I can fix the code for Isle of Man, Kosovo, and Romania by changing these codes in the ILO dataset.</p>
+<div class="sourceCode" id="cb890"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb890-1" title="1">ilo<span class="op">$</span>country_code[ilo<span class="op">$</span>country_code<span class="op">==</span><span class="st">&quot;IMN&quot;</span>] &lt;-<span class="st"> &quot;IMY&quot;</span></a>
+<a class="sourceLine" id="cb890-2" title="2">ilo<span class="op">$</span>country_code[ilo<span class="op">$</span>country_code<span class="op">==</span><span class="st">&quot;KOS&quot;</span>] &lt;-<span class="st"> &quot;KSV&quot;</span></a>
+<a class="sourceLine" id="cb890-3" title="3">ilo<span class="op">$</span>country_code[ilo<span class="op">$</span>country_code<span class="op">==</span><span class="st">&quot;ROU&quot;</span>] &lt;-<span class="st"> &quot;ROM&quot;</span></a></code></pre></div>
+<p>Now, I should be able to re-run my merge command and pick up those three matches. Note that I am setting <code>all.y=FALSE</code> because I can’t do anything about the last three cases of Palestine, Taiwan, and Jersey, so I might as well drop them.</p>
+<div class="sourceCode" id="cb891"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb891-1" title="1">combined &lt;-<span class="st"> </span><span class="kw">merge</span>(worldbank_wide, ilo, <span class="dt">by=</span><span class="st">&quot;country_code&quot;</span>, <span class="dt">all.x=</span><span class="ot">TRUE</span>, <span class="dt">all.y=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb891-2" title="2"><span class="kw">nrow</span>(combined)</a></code></pre></div>
+<pre><code>## [1] 217</code></pre>
+<p>The total size is now what I expected. I can do a last <code>summary</code> command to check that everything looks as expected.</p>
+<div class="sourceCode" id="cb893"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb893-1" title="1"><span class="kw">summary</span>(combined)</a></code></pre></div>
+<pre><code>##  country_code       country_name.x          year         gdp_cap      
+##  Length:217         Length:217         Min.   :2014   Min.   :   286  
+##  Class :character   Class :character   1st Qu.:2014   1st Qu.:  1827  
+##  Mode  :character   Mode  :character   Median :2014   Median :  5469  
+##                                        Mean   :2014   Mean   : 15755  
+##                                        3rd Qu.:2014   3rd Qu.: 16676  
+##                                        Max.   :2014   Max.   :178713  
+##                                                       NA&#39;s   :27      
+##     life_exp          pop            country_name.y      unemployment   
+##  Min.   :48.93   Min.   :9.893e+03   Length:217         Min.   : 0.180  
+##  1st Qu.:65.90   1st Qu.:7.647e+05   Class :character   1st Qu.: 4.888  
+##  Median :73.51   Median :6.061e+06   Mode  :character   Median : 6.855  
+##  Mean   :71.43   Mean   :3.348e+07                      Mean   : 8.732  
+##  3rd Qu.:77.47   3rd Qu.:2.231e+07                      3rd Qu.:10.738  
+##  Max.   :83.98   Max.   :1.364e+09                      Max.   :35.150  
+##  NA&#39;s   :18      NA&#39;s   :1                              NA&#39;s   :105</code></pre>
+<p>Note that I now have a <code>country_name.x</code> and a <code>country_name.y</code> variable. This is because there was a <code>country_name</code> variable in both datasets. Rather than overwrite them, R has put them both in the final dataset with a subscript identifying which original dataset they came from. Sometimes this can be useful in testing out whether the merge worked correctly. To clean things up, I can remove one of these variables with a <code>subset</code> command and then rename the other one.</p>
+<div class="sourceCode" id="cb895"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb895-1" title="1">combined &lt;-<span class="st"> </span><span class="kw">subset</span>(combined,</a>
+<a class="sourceLine" id="cb895-2" title="2">                   <span class="dt">select=</span><span class="kw">c</span>(<span class="st">&quot;country_code&quot;</span>,<span class="st">&quot;country_name.x&quot;</span>,<span class="st">&quot;gdp_cap&quot;</span>,</a>
+<a class="sourceLine" id="cb895-3" title="3">                            <span class="st">&quot;life_exp&quot;</span>,<span class="st">&quot;pop&quot;</span>,<span class="st">&quot;unemployment&quot;</span>))</a>
+<a class="sourceLine" id="cb895-4" title="4"><span class="kw">colnames</span>(combined)[<span class="dv">2</span>] &lt;-<span class="st"> &quot;country_name&quot;</span></a>
+<a class="sourceLine" id="cb895-5" title="5"><span class="kw">head</span>(combined)</a></code></pre></div>
+<pre><code>##   country_code         country_name    gdp_cap life_exp      pop unemployment
+## 1          ABW                Aruba         NA 75.45110   103441           NA
+## 2          ADO              Andorra         NA       NA    72786           NA
+## 3          AFG          Afghanistan   633.9479 60.37446 31627506           NA
+## 4          AGO               Angola  5232.7623 52.26688 24227524           NA
+## 5          ALB              Albania  4568.5688 77.83046  2893654        17.49
+## 6          ARE United Arab Emirates 44238.5998 77.36817  9086139           NA</code></pre>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p>I should note that the World Bank CSV file had notes at the bottom that weren’t part of the data. I had to open up the CSV file in Excel in order to remove this junk, and then re-save it to get data that would be machine-readable by R. This is a Very Bad but Unfortunately Common Practice.<a href="reshaping-and-merging-data.html#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="cleaning-data.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="programming.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

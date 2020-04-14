@@ -1,0 +1,79 @@
+---
+title: "Example R Markdown Document"
+author: "Aaron Gullickson"
+date: "3/9/2020"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(knitr)
+library(pander)
+library(texreg)
+library(here)
+load(here("example_datasets","titanic","titanic.RData"))
+load(here("example_datasets","movies","movies.RData"))
+```
+
+Lets look at the distribution of survival by passenger class with a `prop.table`. 
+
+```{r tab-pclass}
+tab <- table(titanic$pclass, titanic$survival)
+prop.table(tab, 1)
+```
+
+Ooh, that doesn't look very good for third class. How about doing it as a figure?
+
+```{r fig-pclass, echo=FALSE, fig.cap='Distribution of Titanic survival by gender'}
+ggplot(titanic, aes(x=survival, y=..prop.., group=sex, fill=sex))+
+  geom_bar(position="dodge")+
+  scale_y_continuous(label=scales::percent)+
+  labs(y="percent surviving", x=NULL, fill="gender")+
+  theme_bw()
+```
+
+## Tables
+
+Here is a `kable` style table.
+
+```{r kable-table, echo=FALSE}
+kable(tab, caption = "Cross-tabulation of passenger class by survival on the Titanic")
+```
+
+Here is a `pandoc` style table.
+
+```{r pandoc-table, echo=FALSE, results='asis'}
+pandoc.table(tab, 
+             caption = "Cross-tabulation of passenger class by survival on the Titanic")
+```
+
+## Tables for Regression Models
+
+```{r buildregs, echo=TRUE}
+model1 <- lm(TomatoMeter~I(Runtime-90), data=movies)
+model2 <- update(model1,.~.+Rating)
+model3 <- update(model2,.~.+I(Runtime-90)*Rating)
+model4 <- update(model3,.~.+I(Year-2001)+Genre+I(BoxOffice-mean(BoxOffice)))
+```
+
+```{r tab-texreg-better, echo=TRUE, results='asis'}
+knitreg(list(model1, model2, model3, model4),
+        caption="Linear models predicting a movie's tomato meter rating",
+        custom.coef.names = c("Intercept", "Movie runtime in minutes",
+                              "PG", "PG-13","R",
+                              "Runtime*PG", "Runtime*PG-13", "Runtime*R",
+                              "Year of release",
+                              "Animation","Comedy","Drama","Family","Horror",
+                              "Musical","Mystery","Romance","Sci-Fi/Fantasy",
+                              "Thriller","Box office returns (millions USD)"),
+        digits = 3,
+        caption.above=TRUE, 
+        include.rsquared=TRUE,
+        include.adjrs=FALSE,
+        include.nobs=TRUE,
+        include.rmse=FALSE)
+```

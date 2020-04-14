@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Cleaning Data | Statistical Analysis in Sociology</title>
+  <meta name="description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Cleaning Data | Statistical Analysis in Sociology" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Cleaning Data | Statistical Analysis in Sociology" />
+  
+  <meta name="twitter:description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  
+
+<meta name="author" content="Aaron Gullickson" />
+
+
+<meta name="date" content="2020-04-14" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="reading-and-writing-data.html"/>
+<link rel="next" href="reshaping-and-merging-data.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.1/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.49.4/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.49.4/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="" data-path="understanding-data.html"><a href="understanding-data.html"><i class="fa fa-check"></i>Understanding Data</a><ul>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html"><i class="fa fa-check"></i>What Does Data Look Like?</a><ul>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html#the-observations"><i class="fa fa-check"></i>The observations</a></li>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html#the-variables"><i class="fa fa-check"></i>The variables</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html"><i class="fa fa-check"></i>What Can We Do With Data?</a><ul>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#how-is-a-variable-distributed"><i class="fa fa-check"></i>How is a variable distributed?</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#measuring-association"><i class="fa fa-check"></i>Measuring association</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#making-statistical-inferences"><i class="fa fa-check"></i>Making statistical inferences</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#building-models"><i class="fa fa-check"></i>Building Models</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#observational-data-experimental-thinking"><i class="fa fa-check"></i>Observational Data, Experimental Thinking</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-distribution-of-a-variable.html"><a href="the-distribution-of-a-variable.html"><i class="fa fa-check"></i>The Distribution of a Variable</a><ul>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html"><i class="fa fa-check"></i>Looking at Distributions</a><ul>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html#looking-at-the-distribution-of-a-categorical-variable"><i class="fa fa-check"></i>Looking at the distribution of a categorical variable</a></li>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html#looking-at-the-distribution-of-a-quantitative-variable"><i class="fa fa-check"></i>Looking at the distribution of a quantitative variable</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html"><i class="fa fa-check"></i>Measuring the Center of a Distribution</a><ul>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-mean"><i class="fa fa-check"></i>The mean</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-median"><i class="fa fa-check"></i>The median</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-mode"><i class="fa fa-check"></i>The mode</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#comparing-the-mean-and-median"><i class="fa fa-check"></i>Comparing the mean and median</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html"><i class="fa fa-check"></i>Percentiles and the Five Number Summary</a><ul>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#percentiles"><i class="fa fa-check"></i>Percentiles</a></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#the-five-number-summary"><i class="fa fa-check"></i>The five number summary</a></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#boxplots"><i class="fa fa-check"></i>Boxplots</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html"><i class="fa fa-check"></i>Measuring the Spread of a Distribution</a><ul>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html#range-and-interquartile-range"><i class="fa fa-check"></i>Range and interquartile range</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html#variance-and-standard-deviation"><i class="fa fa-check"></i>Variance and standard deviation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-association-1.html"><a href="measuring-association-1.html"><i class="fa fa-check"></i>Measuring Association</a><ul>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html"><i class="fa fa-check"></i>The Two-Way Table</a><ul>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html#conditional-distributions"><i class="fa fa-check"></i>Conditional distributions</a></li>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html#odds-ratio-advanced"><i class="fa fa-check"></i>Odds ratio (advanced)</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html"><i class="fa fa-check"></i>Mean Differences</a><ul>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html#graphically-examining-differences-in-distributions"><i class="fa fa-check"></i>Graphically examining differences in distributions</a></li>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html#comparing-differences-in-the-mean"><i class="fa fa-check"></i>Comparing differences in the mean</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html"><i class="fa fa-check"></i>Scatterplot and Correlation Coefficient</a><ul>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html#the-scatterplot"><i class="fa fa-check"></i>The scatterplot</a></li>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html#the-correlation-coefficient"><i class="fa fa-check"></i>The correlation coefficient</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="statistical-inference.html"><a href="statistical-inference.html"><i class="fa fa-check"></i>Statistical Inference</a><ul>
+<li class="chapter" data-level="" data-path="the-problem-of-statistical-inference.html"><a href="the-problem-of-statistical-inference.html"><i class="fa fa-check"></i>The Problem of Statistical Inference</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html"><i class="fa fa-check"></i>The Concept of the Sampling Distribution</a><ul>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#example-class-height"><i class="fa fa-check"></i>Example: class height</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#central-limit-theorem-and-the-normal-distribution"><i class="fa fa-check"></i>Central limit theorem and the normal distribution</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#what-can-we-do-with-the-sampling-distribution"><i class="fa fa-check"></i>What can we do with the sampling distribution?</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html"><i class="fa fa-check"></i>Confidence Intervals</a><ul>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#what-do-we-mean-by-confident"><i class="fa fa-check"></i>What do we mean by “confident?”</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#calculating-the-confidence-interval-for-the-sample-mean"><i class="fa fa-check"></i>Calculating the confidence interval for the sample mean</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#calculating-the-confidence-interval-for-other-sample-statistics"><i class="fa fa-check"></i>Calculating the confidence interval for other sample statistics</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-proportions"><i class="fa fa-check"></i>Example with proportions</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-mean-differences"><i class="fa fa-check"></i>Example with mean differences</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-proportion-differences"><i class="fa fa-check"></i>Example with proportion differences</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-correlation-coefficient"><i class="fa fa-check"></i>Example with correlation coefficient</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html"><i class="fa fa-check"></i>Hypothesis Tests</a><ul>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#example-coke-winners"><i class="fa fa-check"></i>Example: Coke winners</a></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#the-general-procedure-of-hypothesis-testing"><i class="fa fa-check"></i>The general procedure of hypothesis testing</a></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#hypothesis-tests-of-relationships"><i class="fa fa-check"></i>Hypothesis tests of relationships</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="building-models-1.html"><a href="building-models-1.html"><i class="fa fa-check"></i>Building Models</a><ul>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html"><i class="fa fa-check"></i>The OLS Regression Line</a><ul>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#the-formula-for-a-line"><i class="fa fa-check"></i>The Formula for a Line</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#calculating-the-best-fitting-line"><i class="fa fa-check"></i>Calculating the Best-Fitting Line</a></li>
+<li><a href="the-ols-regression-line.html#using-the-lm-command-to-calculate-ols-regression-lines-in-r">Using the <code>lm</code> command to calculate OLS regression lines in <em>R</em></a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#adding-an-ols-regression-line-to-a-plot"><i class="fa fa-check"></i>Adding an OLS regression line to a plot</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#the-ols-regression-line-as-a-model"><i class="fa fa-check"></i>The OLS regression line as a model</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#interpeting-slopes-and-intercepts"><i class="fa fa-check"></i>Interpeting Slopes and Intercepts</a></li>
+<li><a href="the-ols-regression-line.html#how-good-is-x-as-a-predictor-of-y">How good is <span class="math inline">\(x\)</span> as a predictor of <span class="math inline">\(y\)</span>?</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#inference-for-ols-regression-models"><i class="fa fa-check"></i>Inference for OLS Regression models</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#regression-line-cautions"><i class="fa fa-check"></i>Regression Line Cautions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html"><i class="fa fa-check"></i>The Power of Controlling for Other Variables</a><ul>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#interpreting-results-in-a-multivariate-ols-regression-models"><i class="fa fa-check"></i>Interpreting results in a multivariate OLS regression models</a></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#including-more-than-two-independent-variables"><i class="fa fa-check"></i>Including more than two independent variables</a></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#how-to-read-a-table-of-regression-results"><i class="fa fa-check"></i>How to read a table of regression results</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html"><i class="fa fa-check"></i>Including Categorical Variables as Predictors</a><ul>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#indicator-variables"><i class="fa fa-check"></i>Indicator variables</a></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#categorical-variables-with-more-than-two-categories"><i class="fa fa-check"></i>Categorical variables with more than two categories</a></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#categorical-and-quantitative-variables-combined-in-a-single-model"><i class="fa fa-check"></i>Categorical and quantitative variables combined in a single model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html"><i class="fa fa-check"></i>Interaction Terms</a><ul>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#the-nature-of-additive-models"><i class="fa fa-check"></i>The nature of additive models</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#the-interaction-term"><i class="fa fa-check"></i>The interaction term</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interpreting-interaction-terms"><i class="fa fa-check"></i>Interpreting interaction terms</a></li>
+<li><a href="interaction-terms.html#interaction-terms-in-r">Interaction terms in <em>R</em></a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interaction-terms-with-multiple-categories"><i class="fa fa-check"></i>Interaction terms with multiple categories</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interaction-terms-with-two-categorical-variables"><i class="fa fa-check"></i>Interaction terms with two categorical variables</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-complications.html"><a href="model-complications.html"><i class="fa fa-check"></i>Model Complications</a><ul>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html"><i class="fa fa-check"></i>The Linear Model, Revisited</a><ul>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#reformulating-the-linear-model"><i class="fa fa-check"></i>Reformulating the linear model</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#marginal-effects"><i class="fa fa-check"></i>Marginal effects</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#linear-model-assumptions"><i class="fa fa-check"></i>Linear model assumptions</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#estimating-a-linear-model"><i class="fa fa-check"></i>Estimating a linear model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html"><i class="fa fa-check"></i>Modeling Non-Linearity</a><ul>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#smoothing"><i class="fa fa-check"></i>Smoothing</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#residual-plots"><i class="fa fa-check"></i>Residual Plots</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#transformations"><i class="fa fa-check"></i>Transformations</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#polynomial-models"><i class="fa fa-check"></i>Polynomial Models</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#splines"><i class="fa fa-check"></i>Splines</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html"><i class="fa fa-check"></i>The IID Violation and Robust Standard Errors</a><ul>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#violations-of-independence"><i class="fa fa-check"></i>Violations of independence</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#heteroscedasticity"><i class="fa fa-check"></i>Heteroscedasticity</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#fixing-iid-violations"><i class="fa fa-check"></i>Fixing IID violations</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#weighted-least-squares"><i class="fa fa-check"></i>Weighted least squares</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#robust-standard-errors"><i class="fa fa-check"></i>Robust standard errors</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html"><i class="fa fa-check"></i>Sample Design and Weighting</a><ul>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#clustermultistage-sampling"><i class="fa fa-check"></i>Cluster/multistage sampling</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#stratification"><i class="fa fa-check"></i>Stratification</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#weights"><i class="fa fa-check"></i>Weights</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#correcting-for-sample-design-in-models"><i class="fa fa-check"></i>Correcting for sample design in models</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i>Missing Values</a><ul>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#identifying-valid-skips"><i class="fa fa-check"></i>Identifying Valid Skips</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#kinds-of-missingness"><i class="fa fa-check"></i>Kinds of Missingness</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#removing-cases"><i class="fa fa-check"></i>Removing Cases</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#imputation"><i class="fa fa-check"></i>Imputation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html"><i class="fa fa-check"></i>Multicollinearity and Scale Creation</a><ul>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#avoid-the-singularity"><i class="fa fa-check"></i>Avoid the Singularity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#detecting-data-based-multicollinearity"><i class="fa fa-check"></i>Detecting Data-Based Multicollinearity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#addressing-multicollinearity"><i class="fa fa-check"></i>Addressing Multicollinearity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#creating-scales"><i class="fa fa-check"></i>Creating Scales</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#factor-analysis"><i class="fa fa-check"></i>Factor Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html"><i class="fa fa-check"></i>Model Selection</a><ul>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#there-is-no-right-model"><i class="fa fa-check"></i>There is no “right” model</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#the-accuracy-vs.-parsimony-tradeoff"><i class="fa fa-check"></i>The accuracy vs. parsimony tradeoff</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#null-vs.-saturated-model"><i class="fa fa-check"></i>Null vs. saturated model</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#a-not-very-useful-tool-the-f-test"><i class="fa fa-check"></i>A not-very-useful tool: the F-test</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#tools-with-a-parsimony-penalty"><i class="fa fa-check"></i>Tools with a parsimony penalty</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#model-averaging"><i class="fa fa-check"></i>Model Averaging</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="modeling-categorical-outcomes.html"><a href="modeling-categorical-outcomes.html"><i class="fa fa-check"></i>Modeling Categorical Outcomes</a><ul>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html"><i class="fa fa-check"></i>Dichotomous Outcomes and The Binomial Distribution</a></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html"><i class="fa fa-check"></i>Linear Probability Model</a></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
+<li class="chapter" data-level="" data-path="maximum-likelihood-estimation.html"><a href="maximum-likelihood-estimation.html"><i class="fa fa-check"></i>Maximum Likelihood Estimation</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression-model.html"><a href="logistic-regression-model.html"><i class="fa fa-check"></i>Logistic Regression Model</a></li>
+<li class="chapter" data-level="" data-path="models-for-nominal-polytomous-outcomes.html"><a href="models-for-nominal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Nominal Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="models-for-ordinal-polytomous-outcomes.html"><a href="models-for-ordinal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Ordinal Polytomous Outcomes</a></li>
+</ul></li>
+<li class="appendix"><span><b>Appendices</b></span></li>
+<li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html"><i class="fa fa-check"></i>Example Datasets</a><ul>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#crimes"><i class="fa fa-check"></i>Crimes</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#movies"><i class="fa fa-check"></i>Movies</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#politics"><i class="fa fa-check"></i>Politics</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#popularity"><i class="fa fa-check"></i>Popularity</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#sex"><i class="fa fa-check"></i>Sex</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#titanic"><i class="fa fa-check"></i>Titanic</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#wages"><i class="fa fa-check"></i>Wages</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html"><i class="fa fa-check"></i>Common R Commands</a><ul>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#univariate-statistics"><i class="fa fa-check"></i>Univariate Statistics</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#bivariate-statistics"><i class="fa fa-check"></i>Bivariate Statistics</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#statistical-inference-1"><i class="fa fa-check"></i>Statistical Inference</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#ols-regression-models"><i class="fa fa-check"></i>OLS Regression Models</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#utility-functions"><i class="fa fa-check"></i>Utility functions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html"><i class="fa fa-check"></i>Plotting Cookbook</a><ul>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#barplots"><i class="fa fa-check"></i>Barplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#histograms"><i class="fa fa-check"></i>Histograms</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#boxplots-1"><i class="fa fa-check"></i>Boxplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#comparative-barplots"><i class="fa fa-check"></i>Comparative Barplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#comparative-boxplots"><i class="fa fa-check"></i>Comparative Boxplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#scatterplots"><i class="fa fa-check"></i>Scatterplots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="r-stat-lab.html"><a href="r-stat-lab.html"><i class="fa fa-check"></i>R Stat Lab</a><ul>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html"><i class="fa fa-check"></i>Using Scripts</a><ul>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#getting-started-with-scripts"><i class="fa fa-check"></i>Getting Started with Scripts</a></li>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#not-everything-goes-into-your-script"><i class="fa fa-check"></i>Not Everything Goes Into Your Script</a></li>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#commenting-for-sanity"><i class="fa fa-check"></i>Commenting for Sanity</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html"><i class="fa fa-check"></i>Object Types</a><ul>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#atomic-modes"><i class="fa fa-check"></i>Atomic Modes</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#vectors-and-matrices"><i class="fa fa-check"></i>Vectors and Matrices</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#factors"><i class="fa fa-check"></i>Factors</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#logical-values-and-boolean-statements"><i class="fa fa-check"></i>Logical Values and Boolean Statements</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#missing-values-1"><i class="fa fa-check"></i>Missing Values</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#lists"><i class="fa fa-check"></i>Lists</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#data-frames"><i class="fa fa-check"></i>Data Frames</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html"><i class="fa fa-check"></i>Pretty Pictures</a><ul>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html#base-plot"><i class="fa fa-check"></i>Base Plot</a></li>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html#ggplot"><i class="fa fa-check"></i>ggplot</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html"><i class="fa fa-check"></i>Using Git</a><ul>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html#plain-text-is-better"><i class="fa fa-check"></i>Plain Text is Better</a></li>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html#git"><i class="fa fa-check"></i>Git</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html"><i class="fa fa-check"></i>Reading and Writing Data</a><ul>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#data-formats"><i class="fa fa-check"></i>Data Formats</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#plain-text-files"><i class="fa fa-check"></i>Plain text files</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#data-in-binary-format"><i class="fa fa-check"></i>Data in binary format</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#saving-data"><i class="fa fa-check"></i>Saving data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i>Cleaning Data</a><ul>
+<li><a href="cleaning-data.html#the-most-important-rule-check-yourself-before-you-wreck-yourself">The Most Important Rule: <span>Check yourself before you wreck yourself</span></a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#assigning-missing-values"><i class="fa fa-check"></i>Assigning missing values</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#recoding"><i class="fa fa-check"></i>Recoding</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#collapsing-categorical-variables"><i class="fa fa-check"></i>Collapsing Categorical Variables</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#transforming-quantitative-variables"><i class="fa fa-check"></i>Transforming Quantitative Variables</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#after-cleaning-you-still-need-to-tidy"><i class="fa fa-check"></i>After Cleaning You Still Need to Tidy</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#aggregating-data"><i class="fa fa-check"></i>Aggregating Data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html"><i class="fa fa-check"></i>Reshaping and Merging Data</a><ul>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html#reshaping"><i class="fa fa-check"></i>Reshaping</a></li>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html#merging-data"><i class="fa fa-check"></i>Merging data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html"><i class="fa fa-check"></i>Programming</a><ul>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#an-example-theils-h"><i class="fa fa-check"></i>An Example: Theil’s H</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#our-data"><i class="fa fa-check"></i>Our Data</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#calculating-theils-h-for-a-single-state"><i class="fa fa-check"></i>Calculating Theil’s H for a single state</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#creating-functions"><i class="fa fa-check"></i>Creating Functions</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#iteration"><i class="fa fa-check"></i>Iteration</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#putting-it-all-together"><i class="fa fa-check"></i>Putting It All Together</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html"><i class="fa fa-check"></i>Using R Markdown</a><ul>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#plain-text-science"><i class="fa fa-check"></i>Plain Text Science</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#markdown-syntax"><i class="fa fa-check"></i>Markdown Syntax</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#r-markdown"><i class="fa fa-check"></i>R Markdown</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#figures-in-r-markdown"><i class="fa fa-check"></i>Figures in R Markdown</a></li>
+</ul></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Analysis in Sociology</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="cleaning-data" class="section level2">
+<h2>Cleaning Data</h2>
+<p>Cleaning data is a major component of any quantitative project. Rarely will data come to you in exactly the form that you want for your research question. In this section, we will focus on three of the most important components of data cleaning: (1) assigning and handling missing values, (2) recoding variables, and (3) aggregating data.</p>
+<p>For this analysis, we will use the same data extract from the <a href="https://www.census.gov/programs-surveys/acs">American Community Survey</a> that we used for the reading and writing data lab. I downloaded this extract from <a href="https://usa.ipums.org/usa/">IPUMS</a>. You can download the file <a href="/stat_book/resources/usa_00084.data.gz">here</a>. You can also <a href="/stat_book/resources/usa_00084.cbk.txt">view the codebook</a> that IPUMS provides</p>
+<p>The data is a sample of individuals in the US. In the <code>read_fwf</code> command below, I am only going to read in a few variables that we will use for our data cleaning examples.</p>
+<div class="sourceCode" id="cb819"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb819-1" title="1">acs &lt;-<span class="st"> </span><span class="kw">read_fwf</span>(<span class="st">&quot;resources/usa_00084.dat.gz&quot;</span>, </a>
+<a class="sourceLine" id="cb819-2" title="2">                <span class="dt">col_positions =</span> <span class="kw">fwf_positions</span>(<span class="dt">start =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">55</span>,<span class="dv">84</span>,<span class="dv">85</span>,<span class="dv">88</span>,<span class="dv">94</span>),</a>
+<a class="sourceLine" id="cb819-3" title="3">                                              <span class="dt">end   =</span> <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">56</span>,<span class="dv">84</span>,<span class="dv">87</span>,<span class="dv">91</span>,<span class="dv">96</span>),</a>
+<a class="sourceLine" id="cb819-4" title="4">                                              <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;year&quot;</span>,<span class="st">&quot;statefip&quot;</span>,<span class="st">&quot;sex&quot;</span>,</a>
+<a class="sourceLine" id="cb819-5" title="5">                                                            <span class="st">&quot;age&quot;</span>,<span class="st">&quot;yrmarr&quot;</span>,<span class="st">&quot;educd&quot;</span>)),</a>
+<a class="sourceLine" id="cb819-6" title="6">                <span class="dt">col_types =</span> <span class="kw">cols</span>(<span class="dt">.default =</span> <span class="st">&quot;i&quot;</span>), </a>
+<a class="sourceLine" id="cb819-7" title="7">                <span class="dt">progress =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb819-8" title="8">acs</a></code></pre></div>
+<pre><code>## # A tibble: 3,214,539 x 6
+##     year statefip   sex   age yrmarr educd
+##    &lt;int&gt;    &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;int&gt;
+##  1  2018        1     2    19      0    65
+##  2  2018        1     2    18      0    65
+##  3  2018        1     1    53      0    64
+##  4  2018        1     1    28      0    71
+##  5  2018        1     2    25      0    30
+##  6  2018        1     2    30      0    63
+##  7  2018        1     2    66   1992    71
+##  8  2018        1     1    38      0    30
+##  9  2018        1     1    41      0    63
+## 10  2018        1     2    18      0    65
+## # … with 3,214,529 more rows</code></pre>
+<p>All of the variables shown here use integer values to record data, even in cases where the variable is categorical in nature. This is a common approach with many datasets, because it makes datasets smaller and more portable. Part of the cleaning process will be to use information in the codebook to convert from integer values to proper categorical variables.</p>
+<div id="the-most-important-rule-check-yourself-before-you-wreck-yourself" class="section level3">
+<h3>The Most Important Rule: <a href="https://www.youtube.com/watch?v=5aAbOgdbTbM">Check yourself before you wreck yourself</a></h3>
+<p>The number one rule of cleaning and processing data is to always check your code to make sure it is producing what you think it should be producing. In the examples below, I run several diagnostic checks to ensure that what I am producing looks correct. There are a variety of ways you can check your code, but its important to take your time here and be extra scrupulous. If you don’t properly clean your data, then everything you produce in the later analysis will be questionable at best. You don’t want <a href="http://journals.sagepub.com/doi/abs/10.1177/0003122417714422">this</a> to happen to you.</p>
+</div>
+<div id="assigning-missing-values" class="section level3">
+<h3>Assigning missing values</h3>
+<p>One of the first things you should check in your data is how missing values are coded. In many cases, missing values will be coded with a numeric value rather than a proper missing value. If you don’t correct this, then all of your statistics will be incorrect. Codebooks that are provided with the data will normally identify the codes used for missing values. Usually, missing values are coded with numeric values that are impossible or well outside the range of the data, so that they can easily be identified. For example, the missing value for the year of marriage variable <code>yrmarr</code> in our dataset is zero. Since <code>yrmarr</code> is the calendar year of marriage, zero is a non-sensical value. However, 1,332,999 individuals have a value of zero. These are all individuals who should be <code>NA</code> on <code>yrmarr</code> because they have never been married. If you leave the zeros in, then you will drastically change any calculation you make with this variable.</p>
+<div id="bracket-and-boolean-approach" class="section level4">
+<h4>Bracket and Boolean Approach</h4>
+<p>In R, we can easily code in missing values by identifying a subset of the variable with a boolean statement and then assigning the special <code>NA</code> value to that subset. I refer to this approach to replacing values in a variabl as the <strong>bracket-and-boolean</strong> approach.</p>
+<div class="sourceCode" id="cb821"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb821-1" title="1"><span class="kw">summary</span>(acs<span class="op">$</span>yrmarr)</a></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##       0       0    1971    1166    1997    2018</code></pre>
+<div class="sourceCode" id="cb823"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb823-1" title="1">acs<span class="op">$</span>yrmarr[acs<span class="op">$</span>yrmarr<span class="op">==</span><span class="dv">0</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb823-2" title="2"><span class="kw">summary</span>(acs<span class="op">$</span>yrmarr)</a></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##    1937    1979    1993    1992    2006    2018 1332999</code></pre>
+<p>The mean and median change dramatically once I code in all of the missing values because I had a lot of never-married individuals without a proper value for <code>yrmarr</code> who were being reported as zero.</p>
+</div>
+<div id="ifelse-approach" class="section level4">
+<h4>Ifelse approach</h4>
+<p>The bracket-and-boolean approach is one of the standard ways to re-code certain values for a variable in R, but another approach that I prefer for its greater flexibility is the <code>ifelse</code> command. An <code>ifelse</code> command takes three arguments. The first argument is a boolean statement. The second argument is what value should be returned if the first argument evaluates to TRUE and the third argument is what value should be returned if the first argument evaluates to FALSE. Here is how I can use the <code>ifelse</code> command in this example:</p>
+<div class="sourceCode" id="cb825"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb825-1" title="1">acs<span class="op">$</span>yrmarr &lt;-<span class="st"> </span><span class="kw">ifelse</span>(acs<span class="op">$</span>yrmarr<span class="op">==</span><span class="dv">0</span>, <span class="ot">NA</span>, acs<span class="op">$</span>yrmarr)</a></code></pre></div>
+<p>When <code>acs$yrmarr==0</code> is TRUE, the <code>ifelse</code> command returns <code>NA</code> and when <code>acs$yrmarr==0</code> is false, the <code>ifelse</code> command returns the original value of <code>yrmarr</code>. This command accomplishes the same thing as the bracket-and-boolean approach above. Where the <code>ifelse</code> command really shines is when you can string together multiple “cascading” <code>ifelse</code> commands as I will demonstrate below.</p>
+</div>
+</div>
+<div id="recoding" class="section level3">
+<h3>Recoding</h3>
+<p>Recoding variables is an integral part of preparing your data for analysis. Rarely will all the variables come in exactly the form that you want for the reserch question at hand. In many cases, you will want to <em>collapse</em> and/or <em>combine</em> categorical variables and <em>transform</em> quantitative variables. It will also frequently be useful to use <strong>sensitivity analysis</strong> to try out muliple approaches to coding your variables to see how sensitive your results are to coding decisions. When you recode variables, it is usually a good idea to generate a new version of the variable with a different name. This allows you to check the new variable against the old variable to ensure that your code is working correctly.</p>
+<div id="coding-values-for-categorical-variables" class="section level4">
+<h4>Coding Values for Categorical Variables</h4>
+<p>As I noted above, all of the data from IPUMS come to us in numeric form. For example, lets run a table command on the <code>sex</code> variable.</p>
+<div class="sourceCode" id="cb826"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb826-1" title="1"><span class="kw">table</span>(acs<span class="op">$</span>sex)</a></code></pre></div>
+<pre><code>## 
+##       1       2 
+## 1574618 1639921</code></pre>
+<p>I have two unique values here: 1 and 2. How do these values compare to the categories that I expected? We can look at the codebook to see how the numeric values map onto the categories we want. Here is the relevant excerpt from the codebook:</p>
+<pre><code>SEX     Sex
+1       Male
+2       Female</code></pre>
+<p>I can accomplish this re-code using either the <strong>bracket-and-boolean</strong> approach or the <strong>ifelse</strong> approach. I am going to show the ifelse approach here first, because I can demonstrate the use of cascading <code>ifelse</code> statements. In both cases, I will assign my results to a new variable called <code>gender</code>.</p>
+<div class="sourceCode" id="cb829"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb829-1" title="1">acs<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="kw">ifelse</span>(acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">1</span>, <span class="st">&quot;Male&quot;</span>, </a>
+<a class="sourceLine" id="cb829-2" title="2">                     <span class="kw">ifelse</span>(acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">2</span>, <span class="st">&quot;Female&quot;</span>, <span class="ot">NA</span>))</a></code></pre></div>
+<p>What exactly is going on here? I have a second <code>ifelse</code> statement embedded inside the first statement for the final argument of that statement. What this approach does is create a cascade of <code>ifelse</code> statements that should pick up all of the possible cases. Anytime the boolean evaluates to TRUE, then I will assign the given value and pop out. Otherwise, I will continue on to the next statement. In simple terms, here is what the process looks like:</p>
+<ol style="list-style-type: decimal">
+<li>Is the value a 1? If yes, then assign a value of “Male” to the <code>gender</code> variable. If no, then continue to (2).</li>
+<li>Is the value a 2? If so then assign a value of “Female” to the <code>gender</code> variable. If no, then move to (3).</li>
+<li>We have exhausted all possible logical cases. If you are still here, then assign a missing value.</li>
+</ol>
+<p>Note that since I don’t actually have any cases other than a 1 or a 2, I could have done this with a single <code>ifelse</code> statement. However, by always making the final category an <code>NA</code> I ensure that pick up any missing values for cases that I don’t explicitly assign. This is good practice and helps us to avoid mistakes.</p>
+<p>Since <code>gender</code> is a categorical variable, I really should make it a factor variable, but the command above did not turn it into a factor variable, but rather a character string variable. To “factor it up” I need to run the factor command and specify my categories:</p>
+<div class="sourceCode" id="cb830"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb830-1" title="1">acs<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="kw">factor</span>(acs<span class="op">$</span>gender,</a>
+<a class="sourceLine" id="cb830-2" title="2">                     <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>,<span class="st">&quot;Female&quot;</span>))</a></code></pre></div>
+<p>If I really want to be efficient, I could have wrapped my cascading <code>ifelse</code> statements in a <code>factor</code> command and done it all at once.</p>
+<div class="sourceCode" id="cb831"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb831-1" title="1">acs<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">ifelse</span>(acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">1</span>, <span class="st">&quot;Male&quot;</span>, </a>
+<a class="sourceLine" id="cb831-2" title="2">                            <span class="kw">ifelse</span>(acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">2</span>, <span class="st">&quot;Female&quot;</span>, <span class="ot">NA</span>)),</a>
+<a class="sourceLine" id="cb831-3" title="3">                     <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>,<span class="st">&quot;Female&quot;</span>))</a></code></pre></div>
+<p>Now we need to <strong>check ourselves before we wreck ourselves</strong>. The most straightforward way to do this is to run a <code>table</code> command on the original and new variable to make sure all of the observations are being coded correctly. When I run this table command, I want to include the argument <code>exclude=NULL</code> so that missing value codes show up in the table.</p>
+<div class="sourceCode" id="cb832"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb832-1" title="1"><span class="kw">table</span>(acs<span class="op">$</span>sex, acs<span class="op">$</span>gender, <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
+<pre><code>##    
+##        Male  Female
+##   1 1574618       0
+##   2       0 1639921</code></pre>
+<p>Everything looks good. All the 1s are “Male” and all the 2s are “Female.”</p>
+<p>What if I wanted to do this the bracket-and-boolean way? Well, typically the first step is to set up a new variable that is all missing values and then plug in the values one by one. Here is what it would look like:</p>
+<div class="sourceCode" id="cb834"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb834-1" title="1">acs<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb834-2" title="2">acs<span class="op">$</span>gender[acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">1</span>] &lt;-<span class="st"> &quot;Male&quot;</span></a>
+<a class="sourceLine" id="cb834-3" title="3">acs<span class="op">$</span>gender[acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">2</span>] &lt;-<span class="st"> &quot;Female&quot;</span></a>
+<a class="sourceLine" id="cb834-4" title="4">acs<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="kw">factor</span>(acs<span class="op">$</span>gender,</a>
+<a class="sourceLine" id="cb834-5" title="5">                     <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>,<span class="st">&quot;Female&quot;</span>))</a>
+<a class="sourceLine" id="cb834-6" title="6"><span class="kw">table</span>(acs<span class="op">$</span>sex, acs<span class="op">$</span>gender, <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
+<pre><code>##    
+##        Male  Female
+##   1 1574618       0
+##   2       0 1639921</code></pre>
+</div>
+</div>
+<div id="collapsing-categorical-variables" class="section level3">
+<h3>Collapsing Categorical Variables</h3>
+<p>Collapsing categorical variables means reducing the number of categories to a smaller set of categories, by lumping some categories together. As an example, take a look at the full set of categories for the detailed educational attainment category <code>educd</code>:</p>
+<pre><code>000     N/A or no schooling
+001     N/A
+002     No schooling completed
+010     Nursery school to grade 4
+011     Nursery school, preschool
+012     Kindergarten
+013     Grade 1, 2, 3, or 4
+014     Grade 1
+015     Grade 2
+016     Grade 3
+017     Grade 4
+020     Grade 5, 6, 7, or 8
+021     Grade 5 or 6
+022     Grade 5
+023     Grade 6
+024     Grade 7 or 8
+025     Grade 7
+026     Grade 8
+030     Grade 9
+040     Grade 10
+050     Grade 11
+060     Grade 12
+061     12th grade, no diploma
+062     High school graduate or GED
+063     Regular high school diploma
+064     GED or alternative credential
+065     Some college, but less than 1 year
+070     1 year of college
+071     1 or more years of college credit, no degree
+080     2 years of college
+081     Associate&#39;s degree, type not specified
+082     Associate&#39;s degree, occupational program
+083     Associate&#39;s degree, academic program
+090     3 years of college
+100     4 years of college
+101     Bachelor&#39;s degree
+110     5+ years of college
+111     6 years of college (6+ in 1960-1970)
+112     7 years of college
+113     8+ years of college
+114     Master&#39;s degree
+115     Professional degree beyond a bachelor&#39;s degree
+116     Doctoral degree
+999     Missing</code></pre>
+<p>There are a a lot of categories here. Its unlikely that this fine level of detail will be helpful in any analyses that we will perform. Lets also take a look at the case counts for these categories:</p>
+<div class="sourceCode" id="cb837"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb837-1" title="1"><span class="kw">table</span>(acs<span class="op">$</span>educd)</a></code></pre></div>
+<pre><code>## 
+##      1      2     11     12     14     15     16     17     22     23     25 
+##  95147  97571  45463  37691  35302  38104  41690  41318  44435  56815  45653 
+##     26     30     40     50     61     63     64     65     71     81    101 
+##  66566  69213  76684  85612  52431 602113 103161 190344 381192 213684 486531 
+##    114    115    116 
+## 217891  53833  36095</code></pre>
+<p>A lot of categories are not even showing up in our data. The <a href="https://usa.ipums.org/usa-action/variables/EDUC#comparability_section">reason for these zero categories</a> is that the set of categories was created to capture all of the ways that educational attainment was recorded across censuses since 1850, but many of the codes are not used in the particular 2018 data that we have.</p>
+<p>Many scholars use a parsimonious four-category coding of educational attainment: less than high school diploma, high school diploma, some college including associate’s degree, four-year college degree or more. We can collapse our full set of categories into this four-category system fairly easily using cascading <code>ifelse</code> statements:</p>
+<div class="sourceCode" id="cb839"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb839-1" title="1">acs<span class="op">$</span>edattain &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">ifelse</span>(acs<span class="op">$</span>educd<span class="op">&gt;=</span><span class="dv">2</span> <span class="op">&amp;</span><span class="st"> </span>acs<span class="op">$</span>educd<span class="op">&lt;=</span><span class="dv">61</span>, <span class="st">&quot;Less than HS&quot;</span>,</a>
+<a class="sourceLine" id="cb839-2" title="2">                              <span class="kw">ifelse</span>(acs<span class="op">$</span>educd<span class="op">&gt;=</span><span class="dv">62</span> <span class="op">&amp;</span><span class="st"> </span>acs<span class="op">$</span>educd<span class="op">&lt;=</span><span class="dv">64</span>, <span class="st">&quot;HS Diploma&quot;</span>,</a>
+<a class="sourceLine" id="cb839-3" title="3">                                     <span class="kw">ifelse</span>(acs<span class="op">$</span>educd<span class="op">&gt;=</span><span class="dv">65</span> <span class="op">&amp;</span><span class="st"> </span>acs<span class="op">$</span>educd<span class="op">&lt;=</span><span class="dv">100</span>, <span class="st">&quot;Some College&quot;</span>,</a>
+<a class="sourceLine" id="cb839-4" title="4">                                            <span class="kw">ifelse</span>(acs<span class="op">$</span>educd<span class="op">&gt;=</span><span class="dv">101</span> <span class="op">&amp;</span><span class="st"> </span>acs<span class="op">$</span>educd<span class="op">&lt;=</span><span class="dv">116</span>, <span class="st">&quot;College&quot;</span>,</a>
+<a class="sourceLine" id="cb839-5" title="5">                                                   <span class="ot">NA</span>)))),</a>
+<a class="sourceLine" id="cb839-6" title="6">                       <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;Less than HS&quot;</span>,<span class="st">&quot;HS Diploma&quot;</span>,<span class="st">&quot;Some College&quot;</span>,<span class="st">&quot;College&quot;</span>))</a>
+<a class="sourceLine" id="cb839-7" title="7"><span class="kw">table</span>(acs<span class="op">$</span>educd, acs<span class="op">$</span>edattain, <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
+<pre><code>##      
+##       Less than HS HS Diploma Some College College   &lt;NA&gt;
+##   1              0          0            0       0  95147
+##   2          97571          0            0       0      0
+##   11         45463          0            0       0      0
+##   12         37691          0            0       0      0
+##   14         35302          0            0       0      0
+##   15         38104          0            0       0      0
+##   16         41690          0            0       0      0
+##   17         41318          0            0       0      0
+##   22         44435          0            0       0      0
+##   23         56815          0            0       0      0
+##   25         45653          0            0       0      0
+##   26         66566          0            0       0      0
+##   30         69213          0            0       0      0
+##   40         76684          0            0       0      0
+##   50         85612          0            0       0      0
+##   61         52431          0            0       0      0
+##   63             0     602113            0       0      0
+##   64             0     103161            0       0      0
+##   65             0          0       190344       0      0
+##   71             0          0       381192       0      0
+##   81             0          0       213684       0      0
+##   101            0          0            0  486531      0
+##   114            0          0            0  217891      0
+##   115            0          0            0   53833      0
+##   116            0          0            0   36095      0</code></pre>
+<p>Notice how I am pairing a <code>&gt;=</code> with a <code>&lt;=</code> in an AND boolean statement in order to define a range of values. The statement <code>x&gt;=A &amp; x&lt;=B</code> will return true for all values of x between A and B.</p>
+<p>Looking at the table, its clear that all of the numeric values are showing up in the right category and all the missing values coded at 1 (these are primarily youths) are coded as missing values correctly.</p>
+<p>In some cases, recoding may involve incorporating information on multiple variables in the construction of one new variable. The process is no different from the cases discussed above except for requiring possibly more complex boolean statements.</p>
+</div>
+<div id="transforming-quantitative-variables" class="section level3">
+<h3>Transforming Quantitative Variables</h3>
+<p>Quantitative variables can also be recoded in R and this is typically much easier as you just need to apply the right mathematical equation to it. Lets say for example that I want to create a new variable from <code>yrmarr</code> that is the age of the respondent for the current marriage for all currently married respondents. I can get this information simply by subtracting the <code>yrmarr</code> variable from the <code>year</code> variable to get the duration of marriage and then subtracting this value from the respondent’s dage..</p>
+<div class="sourceCode" id="cb841"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb841-1" title="1">acs<span class="op">$</span>age_marr &lt;-<span class="st"> </span>acs<span class="op">$</span>age <span class="op">-</span><span class="st"> </span>(acs<span class="op">$</span>year<span class="op">-</span>acs<span class="op">$</span>yrmarr)</a>
+<a class="sourceLine" id="cb841-2" title="2"><span class="kw">summary</span>(acs<span class="op">$</span>age_marr)</a></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##    14.0    22.0    26.0    29.5    34.0    95.0 1332999</code></pre>
+<p>Notice that this coding only works correctly because I already assigned missing values to the <code>yrmarr</code> variable above.</p>
+<div id="creating-interval-categories-from-a-quantitative-variable" class="section level4">
+<h4>Creating Interval Categories From a Quantitative Variable</h4>
+<p>In some cases, I may want to turn a quantitative variable into a categorical variable that measures intervals of data. For example, I might want to turn age into ten-year age groups (e.g. 20-29, 30-39). I can do this sort of coding using the same bracket-and-boolean or cascading ifelse appoaches outlined above. However, R also provides a built-in function called <code>cut</code> that makes this pretty easy to do:</p>
+<div class="sourceCode" id="cb843"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb843-1" title="1">acs<span class="op">$</span>age_group &lt;-<span class="st"> </span><span class="kw">cut</span>(acs<span class="op">$</span>age, </a>
+<a class="sourceLine" id="cb843-2" title="2">                     <span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dt">from=</span><span class="dv">0</span>, <span class="dt">to=</span><span class="dv">100</span>, <span class="dt">by=</span><span class="dv">10</span>),</a>
+<a class="sourceLine" id="cb843-3" title="3">                     <span class="dt">right=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb843-4" title="4"><span class="kw">summary</span>(acs<span class="op">$</span>age_group)</a></code></pre></div>
+<pre><code>##   [0,10)  [10,20)  [20,30)  [30,40)  [40,50)  [50,60)  [60,70)  [70,80) 
+##   338958   403401   378691   388612   380621   450316   443250   279682 
+##  [80,90) [90,100) 
+##   120200    30808</code></pre>
+<p>The most important argument to the <code>cut</code> function is the breakpoints for each interval. Here I have used the <code>seq</code> function to define a sequence of numbers from 0 to 100 at intervals of 10. I also specify <code>right=FALSE</code> so that the intervals are inclusive of the lower value and exclusive of the upper value. The <code>age_group</code> variable is now a proper factor variable and can be used like any other factor variable.</p>
+</div>
+</div>
+<div id="after-cleaning-you-still-need-to-tidy" class="section level3">
+<h3>After Cleaning You Still Need to Tidy</h3>
+<p>Because you are adding new variables as you recode, the size of your dataset will often grow as you clean, organize, and re-code. This can quickly lead to a lot of clutter and this clutter can have consequences. When you have multiple variables with similar names, it is easy to mistakenly use the wrong one. To avoid confusion, it is always best to limit your final analytical dataset to just the variables that you want. The easiest way to do this in R is to put a <code>subset</code> command at the bottom of your organizational script and use the select argument to add variables you want to keep to it as you clean them. So, for example my command here might look like:</p>
+<div class="sourceCode" id="cb845"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb845-1" title="1">acs &lt;-<span class="st"> </span><span class="kw">subset</span>(acs, </a>
+<a class="sourceLine" id="cb845-2" title="2">              <span class="dt">select=</span><span class="kw">c</span>(<span class="st">&quot;statefip&quot;</span>,<span class="st">&quot;gender&quot;</span>,<span class="st">&quot;edattain&quot;</span>,<span class="st">&quot;age_marr&quot;</span>,<span class="st">&quot;age&quot;</span>))</a>
+<a class="sourceLine" id="cb845-3" title="3">acs</a></code></pre></div>
+<pre><code>## # A tibble: 3,214,539 x 5
+##    statefip gender edattain     age_marr   age
+##       &lt;int&gt; &lt;fct&gt;  &lt;fct&gt;           &lt;int&gt; &lt;int&gt;
+##  1        1 Female Some College       NA    19
+##  2        1 Female Some College       NA    18
+##  3        1 Male   HS Diploma         NA    53
+##  4        1 Male   Some College       NA    28
+##  5        1 Female Less than HS       NA    25
+##  6        1 Female HS Diploma         NA    30
+##  7        1 Female Some College       40    66
+##  8        1 Male   Less than HS       NA    38
+##  9        1 Male   HS Diploma         NA    41
+## 10        1 Female Some College       NA    18
+## # … with 3,214,529 more rows</code></pre>
+<p>People often keep a bunch of cluttered variables in their data frame out of a misguided fear that they will lose them if they are dropped from the current dataset. But that is the wrong way to think about your data. If you discover that you actually want a variable you dropped, just add it to the subset command and re-source your cleaning data script. In most cases this will take minutes to process at most. Thats a reasonable price to pay for the clarity of a small analytical dataset.</p>
+</div>
+<div id="aggregating-data" class="section level3">
+<h3>Aggregating Data</h3>
+<p>It is not uncommon to want to aggregate data at one unit of analysis up to a higher unit of analysis. For example, the individual-level ACS data that we have contains a variable that identifies the state of residence for each respondent (<code>statefip</code>). What if I wanted to aggregate my individual level data up to the state-level? As a simple example, lets say that I wanted to calculate the mean age of marriage of married individuals for each state.</p>
+<p>The <code>aggregate</code> command is the easiest way to perform such tasks and it has the flexibility to do aggregations on multiple variables or multiple indices at the same time. There are two different syntax forms for <code>aggregate</code> but we will focus on the formula syntax. This syntax works like <code>agg_var~by_var1+by_var2</code> where the <code>agg_var</code> is the variable that you want to aggregate on and <code>by_var1</code> and <code>by_var2</code> are the variables that you want to aggregate by. Here is a simple example of getting the mean for marriage duration by state.</p>
+<div class="sourceCode" id="cb847"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb847-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">aggregate</span>(age_marr<span class="op">~</span>statefip, <span class="dt">data=</span>acs, mean, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb847-2" title="2"><span class="kw">head</span>(temp)</a></code></pre></div>
+<pre><code>##   statefip age_marr
+## 1        1 29.27548
+## 2        2 29.92585
+## 3        4 30.36038
+## 4        5 29.39313
+## 5        6 30.02206
+## 6        8 29.72513</code></pre>
+<p>The results here are output as a <code>data.frame</code> aggregated to the level of states. The dataset contains an id for the state and the mean of <code>age_marr</code> for that state.</p>
+<p>The example above only aggregated one variable, but we can also get the mean of multiple variables at once by using the <code>cbind</code> command within the formula:</p>
+<div class="sourceCode" id="cb849"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb849-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">aggregate</span>(<span class="kw">cbind</span>(age_marr,age)<span class="op">~</span>statefip, <span class="dt">data=</span>acs, mean, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb849-2" title="2"><span class="kw">head</span>(temp)</a></code></pre></div>
+<pre><code>##   statefip age_marr      age
+## 1        1 29.27548 56.28057
+## 2        2 29.92585 53.06636
+## 3        4 30.36038 56.75826
+## 4        5 29.39313 55.65785
+## 5        6 30.02206 55.22376
+## 6        8 29.72513 54.17558</code></pre>
+<p>Now I get two variables for each state, mean age of marriage and mean age.</p>
+<p>We can also aggregate across multiple dimensions at the same time. Lets get mean age of marriage again, but this time by state and educational category.</p>
+<div class="sourceCode" id="cb851"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb851-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">aggregate</span>(age_marr<span class="op">~</span>edattain<span class="op">+</span>statefip, <span class="dt">data=</span>acs, mean, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb851-2" title="2"><span class="kw">head</span>(temp)</a></code></pre></div>
+<pre><code>##       edattain statefip age_marr
+## 1 Less than HS        1 29.63777
+## 2   HS Diploma        1 29.20512
+## 3 Some College        1 29.28409
+## 4      College        1 29.18011
+## 5 Less than HS        2 28.22311
+## 6   HS Diploma        2 28.90491</code></pre>
+<p>Now I get four means for each state, one for each educational attainment category. Its worth thinking a little about the structure of the output here. This data structure is a little different than what we are used to. I don’t have a single line for each observation (state) giving me the age of marriage as four separate variables. Instead I have four separate lines for each state. This data format is called the <strong>long</strong> format and we are not used to working with it. We will learn more in our next lab about how we can manipulate this format to get what we want.</p>
+<p>What if we want to aggregate the proportion of respondents in each category of a categorical variable by state? The syntax here is a little messier, but we can do this by creating booleans for each category and then calculating means:</p>
+<div class="sourceCode" id="cb853"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb853-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">aggregate</span>(<span class="kw">cbind</span>(<span class="dt">prop_lhs=</span>edattain<span class="op">==</span><span class="st">&quot;Less than HS&quot;</span>, </a>
+<a class="sourceLine" id="cb853-2" title="2">                        <span class="dt">prop_hs_grad=</span>edattain<span class="op">==</span><span class="st">&quot;HS Diploma&quot;</span>,</a>
+<a class="sourceLine" id="cb853-3" title="3">                        <span class="dt">prop_scollege=</span>edattain<span class="op">==</span><span class="st">&quot;Some College&quot;</span>,</a>
+<a class="sourceLine" id="cb853-4" title="4">                        <span class="dt">prop_college_grad=</span>edattain<span class="op">==</span><span class="st">&quot;College&quot;</span>)<span class="op">~</span>statefip, </a>
+<a class="sourceLine" id="cb853-5" title="5">                  <span class="dt">data=</span>acs, mean, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb853-6" title="6"><span class="kw">head</span>(temp)</a></code></pre></div>
+<pre><code>##   statefip  prop_lhs prop_hs_grad prop_scollege prop_college_grad
+## 1        1 0.2784240    0.2580242     0.2653052         0.1982465
+## 2        2 0.2907537    0.2587413     0.2665113         0.1839938
+## 3        4 0.2812910    0.2038612     0.2814826         0.2333653
+## 4        5 0.2969432    0.2821164     0.2503300         0.1706103
+## 5        6 0.2980686    0.1712014     0.2549658         0.2757642
+## 6        8 0.2389480    0.1763708     0.2509729         0.3337083</code></pre>
+<p>Its also important to note that I have been calculating the mean in all of these examples, but I could also easily substitute a different function. For example, I could use <code>sum</code> on the above codes to get counts of individuals by education:</p>
+<div class="sourceCode" id="cb855"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb855-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">aggregate</span>(<span class="kw">cbind</span>(<span class="dt">n_lhs=</span>edattain<span class="op">==</span><span class="st">&quot;Less than HS&quot;</span>, </a>
+<a class="sourceLine" id="cb855-2" title="2">                        <span class="dt">n_hs_grad=</span>edattain<span class="op">==</span><span class="st">&quot;HS Diploma&quot;</span>,</a>
+<a class="sourceLine" id="cb855-3" title="3">                        <span class="dt">n_scollege=</span>edattain<span class="op">==</span><span class="st">&quot;Some College&quot;</span>,</a>
+<a class="sourceLine" id="cb855-4" title="4">                        <span class="dt">n_college_grad=</span>edattain<span class="op">==</span><span class="st">&quot;College&quot;</span>)<span class="op">~</span>statefip, </a>
+<a class="sourceLine" id="cb855-5" title="5">                  <span class="dt">data=</span>acs, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb855-6" title="6"><span class="kw">head</span>(temp)</a></code></pre></div>
+<pre><code>##   statefip  n_lhs n_hs_grad n_scollege n_college_grad
+## 1        1  12925     11978      12316           9203
+## 2        2   1871      1665       1715           1184
+## 3        4  19087     13833      19100          15835
+## 4        5   8772      8334       7395           5040
+## 5        6 109649     62979      93793         101444
+## 6        8  12956      9563      13608          18094</code></pre>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="reading-and-writing-data.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="reshaping-and-merging-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

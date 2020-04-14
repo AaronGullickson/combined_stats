@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Model Selection | Statistical Analysis in Sociology</title>
+  <meta name="description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Model Selection | Statistical Analysis in Sociology" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Model Selection | Statistical Analysis in Sociology" />
+  
+  <meta name="twitter:description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  
+
+<meta name="author" content="Aaron Gullickson" />
+
+
+<meta name="date" content="2020-04-14" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="multicollinearity-and-scale-creation.html"/>
+<link rel="next" href="modeling-categorical-outcomes.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.1/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.49.4/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.49.4/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="" data-path="understanding-data.html"><a href="understanding-data.html"><i class="fa fa-check"></i>Understanding Data</a><ul>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html"><i class="fa fa-check"></i>What Does Data Look Like?</a><ul>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html#the-observations"><i class="fa fa-check"></i>The observations</a></li>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html#the-variables"><i class="fa fa-check"></i>The variables</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html"><i class="fa fa-check"></i>What Can We Do With Data?</a><ul>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#how-is-a-variable-distributed"><i class="fa fa-check"></i>How is a variable distributed?</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#measuring-association"><i class="fa fa-check"></i>Measuring association</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#making-statistical-inferences"><i class="fa fa-check"></i>Making statistical inferences</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#building-models"><i class="fa fa-check"></i>Building Models</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#observational-data-experimental-thinking"><i class="fa fa-check"></i>Observational Data, Experimental Thinking</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-distribution-of-a-variable.html"><a href="the-distribution-of-a-variable.html"><i class="fa fa-check"></i>The Distribution of a Variable</a><ul>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html"><i class="fa fa-check"></i>Looking at Distributions</a><ul>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html#looking-at-the-distribution-of-a-categorical-variable"><i class="fa fa-check"></i>Looking at the distribution of a categorical variable</a></li>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html#looking-at-the-distribution-of-a-quantitative-variable"><i class="fa fa-check"></i>Looking at the distribution of a quantitative variable</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html"><i class="fa fa-check"></i>Measuring the Center of a Distribution</a><ul>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-mean"><i class="fa fa-check"></i>The mean</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-median"><i class="fa fa-check"></i>The median</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-mode"><i class="fa fa-check"></i>The mode</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#comparing-the-mean-and-median"><i class="fa fa-check"></i>Comparing the mean and median</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html"><i class="fa fa-check"></i>Percentiles and the Five Number Summary</a><ul>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#percentiles"><i class="fa fa-check"></i>Percentiles</a></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#the-five-number-summary"><i class="fa fa-check"></i>The five number summary</a></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#boxplots"><i class="fa fa-check"></i>Boxplots</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html"><i class="fa fa-check"></i>Measuring the Spread of a Distribution</a><ul>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html#range-and-interquartile-range"><i class="fa fa-check"></i>Range and interquartile range</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html#variance-and-standard-deviation"><i class="fa fa-check"></i>Variance and standard deviation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-association-1.html"><a href="measuring-association-1.html"><i class="fa fa-check"></i>Measuring Association</a><ul>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html"><i class="fa fa-check"></i>The Two-Way Table</a><ul>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html#conditional-distributions"><i class="fa fa-check"></i>Conditional distributions</a></li>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html#odds-ratio-advanced"><i class="fa fa-check"></i>Odds ratio (advanced)</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html"><i class="fa fa-check"></i>Mean Differences</a><ul>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html#graphically-examining-differences-in-distributions"><i class="fa fa-check"></i>Graphically examining differences in distributions</a></li>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html#comparing-differences-in-the-mean"><i class="fa fa-check"></i>Comparing differences in the mean</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html"><i class="fa fa-check"></i>Scatterplot and Correlation Coefficient</a><ul>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html#the-scatterplot"><i class="fa fa-check"></i>The scatterplot</a></li>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html#the-correlation-coefficient"><i class="fa fa-check"></i>The correlation coefficient</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="statistical-inference.html"><a href="statistical-inference.html"><i class="fa fa-check"></i>Statistical Inference</a><ul>
+<li class="chapter" data-level="" data-path="the-problem-of-statistical-inference.html"><a href="the-problem-of-statistical-inference.html"><i class="fa fa-check"></i>The Problem of Statistical Inference</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html"><i class="fa fa-check"></i>The Concept of the Sampling Distribution</a><ul>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#example-class-height"><i class="fa fa-check"></i>Example: class height</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#central-limit-theorem-and-the-normal-distribution"><i class="fa fa-check"></i>Central limit theorem and the normal distribution</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#what-can-we-do-with-the-sampling-distribution"><i class="fa fa-check"></i>What can we do with the sampling distribution?</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html"><i class="fa fa-check"></i>Confidence Intervals</a><ul>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#what-do-we-mean-by-confident"><i class="fa fa-check"></i>What do we mean by “confident?”</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#calculating-the-confidence-interval-for-the-sample-mean"><i class="fa fa-check"></i>Calculating the confidence interval for the sample mean</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#calculating-the-confidence-interval-for-other-sample-statistics"><i class="fa fa-check"></i>Calculating the confidence interval for other sample statistics</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-proportions"><i class="fa fa-check"></i>Example with proportions</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-mean-differences"><i class="fa fa-check"></i>Example with mean differences</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-proportion-differences"><i class="fa fa-check"></i>Example with proportion differences</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-correlation-coefficient"><i class="fa fa-check"></i>Example with correlation coefficient</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html"><i class="fa fa-check"></i>Hypothesis Tests</a><ul>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#example-coke-winners"><i class="fa fa-check"></i>Example: Coke winners</a></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#the-general-procedure-of-hypothesis-testing"><i class="fa fa-check"></i>The general procedure of hypothesis testing</a></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#hypothesis-tests-of-relationships"><i class="fa fa-check"></i>Hypothesis tests of relationships</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="building-models-1.html"><a href="building-models-1.html"><i class="fa fa-check"></i>Building Models</a><ul>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html"><i class="fa fa-check"></i>The OLS Regression Line</a><ul>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#the-formula-for-a-line"><i class="fa fa-check"></i>The Formula for a Line</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#calculating-the-best-fitting-line"><i class="fa fa-check"></i>Calculating the Best-Fitting Line</a></li>
+<li><a href="the-ols-regression-line.html#using-the-lm-command-to-calculate-ols-regression-lines-in-r">Using the <code>lm</code> command to calculate OLS regression lines in <em>R</em></a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#adding-an-ols-regression-line-to-a-plot"><i class="fa fa-check"></i>Adding an OLS regression line to a plot</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#the-ols-regression-line-as-a-model"><i class="fa fa-check"></i>The OLS regression line as a model</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#interpeting-slopes-and-intercepts"><i class="fa fa-check"></i>Interpeting Slopes and Intercepts</a></li>
+<li><a href="the-ols-regression-line.html#how-good-is-x-as-a-predictor-of-y">How good is <span class="math inline">\(x\)</span> as a predictor of <span class="math inline">\(y\)</span>?</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#inference-for-ols-regression-models"><i class="fa fa-check"></i>Inference for OLS Regression models</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#regression-line-cautions"><i class="fa fa-check"></i>Regression Line Cautions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html"><i class="fa fa-check"></i>The Power of Controlling for Other Variables</a><ul>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#interpreting-results-in-a-multivariate-ols-regression-models"><i class="fa fa-check"></i>Interpreting results in a multivariate OLS regression models</a></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#including-more-than-two-independent-variables"><i class="fa fa-check"></i>Including more than two independent variables</a></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#how-to-read-a-table-of-regression-results"><i class="fa fa-check"></i>How to read a table of regression results</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html"><i class="fa fa-check"></i>Including Categorical Variables as Predictors</a><ul>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#indicator-variables"><i class="fa fa-check"></i>Indicator variables</a></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#categorical-variables-with-more-than-two-categories"><i class="fa fa-check"></i>Categorical variables with more than two categories</a></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#categorical-and-quantitative-variables-combined-in-a-single-model"><i class="fa fa-check"></i>Categorical and quantitative variables combined in a single model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html"><i class="fa fa-check"></i>Interaction Terms</a><ul>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#the-nature-of-additive-models"><i class="fa fa-check"></i>The nature of additive models</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#the-interaction-term"><i class="fa fa-check"></i>The interaction term</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interpreting-interaction-terms"><i class="fa fa-check"></i>Interpreting interaction terms</a></li>
+<li><a href="interaction-terms.html#interaction-terms-in-r">Interaction terms in <em>R</em></a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interaction-terms-with-multiple-categories"><i class="fa fa-check"></i>Interaction terms with multiple categories</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interaction-terms-with-two-categorical-variables"><i class="fa fa-check"></i>Interaction terms with two categorical variables</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-complications.html"><a href="model-complications.html"><i class="fa fa-check"></i>Model Complications</a><ul>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html"><i class="fa fa-check"></i>The Linear Model, Revisited</a><ul>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#reformulating-the-linear-model"><i class="fa fa-check"></i>Reformulating the linear model</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#marginal-effects"><i class="fa fa-check"></i>Marginal effects</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#linear-model-assumptions"><i class="fa fa-check"></i>Linear model assumptions</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#estimating-a-linear-model"><i class="fa fa-check"></i>Estimating a linear model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html"><i class="fa fa-check"></i>Modeling Non-Linearity</a><ul>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#smoothing"><i class="fa fa-check"></i>Smoothing</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#residual-plots"><i class="fa fa-check"></i>Residual Plots</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#transformations"><i class="fa fa-check"></i>Transformations</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#polynomial-models"><i class="fa fa-check"></i>Polynomial Models</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#splines"><i class="fa fa-check"></i>Splines</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html"><i class="fa fa-check"></i>The IID Violation and Robust Standard Errors</a><ul>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#violations-of-independence"><i class="fa fa-check"></i>Violations of independence</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#heteroscedasticity"><i class="fa fa-check"></i>Heteroscedasticity</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#fixing-iid-violations"><i class="fa fa-check"></i>Fixing IID violations</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#weighted-least-squares"><i class="fa fa-check"></i>Weighted least squares</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#robust-standard-errors"><i class="fa fa-check"></i>Robust standard errors</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html"><i class="fa fa-check"></i>Sample Design and Weighting</a><ul>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#clustermultistage-sampling"><i class="fa fa-check"></i>Cluster/multistage sampling</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#stratification"><i class="fa fa-check"></i>Stratification</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#weights"><i class="fa fa-check"></i>Weights</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#correcting-for-sample-design-in-models"><i class="fa fa-check"></i>Correcting for sample design in models</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i>Missing Values</a><ul>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#identifying-valid-skips"><i class="fa fa-check"></i>Identifying Valid Skips</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#kinds-of-missingness"><i class="fa fa-check"></i>Kinds of Missingness</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#removing-cases"><i class="fa fa-check"></i>Removing Cases</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#imputation"><i class="fa fa-check"></i>Imputation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html"><i class="fa fa-check"></i>Multicollinearity and Scale Creation</a><ul>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#avoid-the-singularity"><i class="fa fa-check"></i>Avoid the Singularity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#detecting-data-based-multicollinearity"><i class="fa fa-check"></i>Detecting Data-Based Multicollinearity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#addressing-multicollinearity"><i class="fa fa-check"></i>Addressing Multicollinearity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#creating-scales"><i class="fa fa-check"></i>Creating Scales</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#factor-analysis"><i class="fa fa-check"></i>Factor Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html"><i class="fa fa-check"></i>Model Selection</a><ul>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#there-is-no-right-model"><i class="fa fa-check"></i>There is no “right” model</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#the-accuracy-vs.-parsimony-tradeoff"><i class="fa fa-check"></i>The accuracy vs. parsimony tradeoff</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#null-vs.-saturated-model"><i class="fa fa-check"></i>Null vs. saturated model</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#a-not-very-useful-tool-the-f-test"><i class="fa fa-check"></i>A not-very-useful tool: the F-test</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#tools-with-a-parsimony-penalty"><i class="fa fa-check"></i>Tools with a parsimony penalty</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#model-averaging"><i class="fa fa-check"></i>Model Averaging</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="modeling-categorical-outcomes.html"><a href="modeling-categorical-outcomes.html"><i class="fa fa-check"></i>Modeling Categorical Outcomes</a><ul>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html"><i class="fa fa-check"></i>Dichotomous Outcomes and The Binomial Distribution</a></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html"><i class="fa fa-check"></i>Linear Probability Model</a></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
+<li class="chapter" data-level="" data-path="maximum-likelihood-estimation.html"><a href="maximum-likelihood-estimation.html"><i class="fa fa-check"></i>Maximum Likelihood Estimation</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression-model.html"><a href="logistic-regression-model.html"><i class="fa fa-check"></i>Logistic Regression Model</a></li>
+<li class="chapter" data-level="" data-path="models-for-nominal-polytomous-outcomes.html"><a href="models-for-nominal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Nominal Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="models-for-ordinal-polytomous-outcomes.html"><a href="models-for-ordinal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Ordinal Polytomous Outcomes</a></li>
+</ul></li>
+<li class="appendix"><span><b>Appendices</b></span></li>
+<li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html"><i class="fa fa-check"></i>Example Datasets</a><ul>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#crimes"><i class="fa fa-check"></i>Crimes</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#movies"><i class="fa fa-check"></i>Movies</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#politics"><i class="fa fa-check"></i>Politics</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#popularity"><i class="fa fa-check"></i>Popularity</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#sex"><i class="fa fa-check"></i>Sex</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#titanic"><i class="fa fa-check"></i>Titanic</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#wages"><i class="fa fa-check"></i>Wages</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html"><i class="fa fa-check"></i>Common R Commands</a><ul>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#univariate-statistics"><i class="fa fa-check"></i>Univariate Statistics</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#bivariate-statistics"><i class="fa fa-check"></i>Bivariate Statistics</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#statistical-inference-1"><i class="fa fa-check"></i>Statistical Inference</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#ols-regression-models"><i class="fa fa-check"></i>OLS Regression Models</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#utility-functions"><i class="fa fa-check"></i>Utility functions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html"><i class="fa fa-check"></i>Plotting Cookbook</a><ul>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#barplots"><i class="fa fa-check"></i>Barplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#histograms"><i class="fa fa-check"></i>Histograms</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#boxplots-1"><i class="fa fa-check"></i>Boxplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#comparative-barplots"><i class="fa fa-check"></i>Comparative Barplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#comparative-boxplots"><i class="fa fa-check"></i>Comparative Boxplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#scatterplots"><i class="fa fa-check"></i>Scatterplots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="r-stat-lab.html"><a href="r-stat-lab.html"><i class="fa fa-check"></i>R Stat Lab</a><ul>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html"><i class="fa fa-check"></i>Using Scripts</a><ul>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#getting-started-with-scripts"><i class="fa fa-check"></i>Getting Started with Scripts</a></li>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#not-everything-goes-into-your-script"><i class="fa fa-check"></i>Not Everything Goes Into Your Script</a></li>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#commenting-for-sanity"><i class="fa fa-check"></i>Commenting for Sanity</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html"><i class="fa fa-check"></i>Object Types</a><ul>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#atomic-modes"><i class="fa fa-check"></i>Atomic Modes</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#vectors-and-matrices"><i class="fa fa-check"></i>Vectors and Matrices</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#factors"><i class="fa fa-check"></i>Factors</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#logical-values-and-boolean-statements"><i class="fa fa-check"></i>Logical Values and Boolean Statements</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#missing-values-1"><i class="fa fa-check"></i>Missing Values</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#lists"><i class="fa fa-check"></i>Lists</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#data-frames"><i class="fa fa-check"></i>Data Frames</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html"><i class="fa fa-check"></i>Pretty Pictures</a><ul>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html#base-plot"><i class="fa fa-check"></i>Base Plot</a></li>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html#ggplot"><i class="fa fa-check"></i>ggplot</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html"><i class="fa fa-check"></i>Using Git</a><ul>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html#plain-text-is-better"><i class="fa fa-check"></i>Plain Text is Better</a></li>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html#git"><i class="fa fa-check"></i>Git</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html"><i class="fa fa-check"></i>Reading and Writing Data</a><ul>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#data-formats"><i class="fa fa-check"></i>Data Formats</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#plain-text-files"><i class="fa fa-check"></i>Plain text files</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#data-in-binary-format"><i class="fa fa-check"></i>Data in binary format</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#saving-data"><i class="fa fa-check"></i>Saving data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i>Cleaning Data</a><ul>
+<li><a href="cleaning-data.html#the-most-important-rule-check-yourself-before-you-wreck-yourself">The Most Important Rule: <span>Check yourself before you wreck yourself</span></a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#assigning-missing-values"><i class="fa fa-check"></i>Assigning missing values</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#recoding"><i class="fa fa-check"></i>Recoding</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#collapsing-categorical-variables"><i class="fa fa-check"></i>Collapsing Categorical Variables</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#transforming-quantitative-variables"><i class="fa fa-check"></i>Transforming Quantitative Variables</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#after-cleaning-you-still-need-to-tidy"><i class="fa fa-check"></i>After Cleaning You Still Need to Tidy</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#aggregating-data"><i class="fa fa-check"></i>Aggregating Data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html"><i class="fa fa-check"></i>Reshaping and Merging Data</a><ul>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html#reshaping"><i class="fa fa-check"></i>Reshaping</a></li>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html#merging-data"><i class="fa fa-check"></i>Merging data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html"><i class="fa fa-check"></i>Programming</a><ul>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#an-example-theils-h"><i class="fa fa-check"></i>An Example: Theil’s H</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#our-data"><i class="fa fa-check"></i>Our Data</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#calculating-theils-h-for-a-single-state"><i class="fa fa-check"></i>Calculating Theil’s H for a single state</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#creating-functions"><i class="fa fa-check"></i>Creating Functions</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#iteration"><i class="fa fa-check"></i>Iteration</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#putting-it-all-together"><i class="fa fa-check"></i>Putting It All Together</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html"><i class="fa fa-check"></i>Using R Markdown</a><ul>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#plain-text-science"><i class="fa fa-check"></i>Plain Text Science</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#markdown-syntax"><i class="fa fa-check"></i>Markdown Syntax</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#r-markdown"><i class="fa fa-check"></i>R Markdown</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#figures-in-r-markdown"><i class="fa fa-check"></i>Figures in R Markdown</a></li>
+</ul></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Analysis in Sociology</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="model-selection" class="section level2">
+<h2>Model Selection</h2>
+<p>In practice, researchers often have to decide between a variety of possible models. The different models available to a researcher can derive from a number of factors, but most often arise because the researcher has a wide set of possible control variables that could be added to the model. In addition, these models could be added as simple additive effects, or the researcher could add additional interaction terms, squared terms, splines, etc. In practice, the number of possible models one could construct from a set of variables is quite large. How does one go about choosing the “right” model?</p>
+<p>For example, Table <a href="model-selection.html#tab:modelcompare">24</a> shows a variety of models that could be used to predict violent crime rates across US states. Note that the model estimates for some variables such as percent male differ substantially across models. How can we possibly decide which of these models is the best model?</p>
+<table cellspacing="0" align="center" style="border: none;">
+<caption align="top" style="margin-bottom:0.3em;">
+<span id="tab:modelcompare">Table 24: </span> Models predicting violent crime rate
+</caption>
+<tr>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b></b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 1</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 2</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 3</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 4</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 5</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 6</b>
+</th>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Intercept
+</td>
+<td style="padding-right: 12px; border: none;">
+7534.81<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+619.07
+</td>
+<td style="padding-right: 12px; border: none;">
+604.71
+</td>
+<td style="padding-right: 12px; border: none;">
+128.07
+</td>
+<td style="padding-right: 12px; border: none;">
+-6.09
+</td>
+<td style="padding-right: 12px; border: none;">
+-638.35
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(1724.03)
+</td>
+<td style="padding-right: 12px; border: none;">
+(2995.68)
+</td>
+<td style="padding-right: 12px; border: none;">
+(3031.21)
+</td>
+<td style="padding-right: 12px; border: none;">
+(2972.28)
+</td>
+<td style="padding-right: 12px; border: none;">
+(113.33)
+</td>
+<td style="padding-right: 12px; border: none;">
+(599.66)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Median Age
+</td>
+<td style="padding-right: 12px; border: none;">
+-38.56<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+-27.84<sup style="vertical-align: 0px;">*</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+-28.06<sup style="vertical-align: 0px;">*</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+-27.84<sup style="vertical-align: 0px;">*</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+-24.90<sup style="vertical-align: 0px;">*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(10.89)
+</td>
+<td style="padding-right: 12px; border: none;">
+(10.94)
+</td>
+<td style="padding-right: 12px; border: none;">
+(11.28)
+</td>
+<td style="padding-right: 12px; border: none;">
+(11.02)
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(9.40)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Percent Male
+</td>
+<td style="padding-right: 12px; border: none;">
+-115.67<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+-23.28
+</td>
+<td style="padding-right: 12px; border: none;">
+-23.21
+</td>
+<td style="padding-right: 12px; border: none;">
+-12.29
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(31.39)
+</td>
+<td style="padding-right: 12px; border: none;">
+(44.75)
+</td>
+<td style="padding-right: 12px; border: none;">
+(45.23)
+</td>
+<td style="padding-right: 12px; border: none;">
+(44.59)
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Gini
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+43.01<sup style="vertical-align: 0px;">**</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+43.71<sup style="vertical-align: 0px;">*</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+39.04<sup style="vertical-align: 0px;">*</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+38.68<sup style="vertical-align: 0px;">**</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(15.68)
+</td>
+<td style="padding-right: 12px; border: none;">
+(17.36)
+</td>
+<td style="padding-right: 12px; border: none;">
+(17.15)
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(11.67)
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Poverty Rate
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.88
+</td>
+<td style="padding-right: 12px; border: none;">
+-6.09
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(8.91)
+</td>
+<td style="padding-right: 12px; border: none;">
+(9.17)
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Unemployment Rate
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+25.47
+</td>
+<td style="padding-right: 12px; border: none;">
+45.89<sup style="vertical-align: 0px;">***</sup>
+</td>
+<td style="padding-right: 12px; border: none;">
+23.02
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+(14.18)
+</td>
+<td style="padding-right: 12px; border: none;">
+(12.99)
+</td>
+<td style="padding-right: 12px; border: none;">
+(13.14)
+</td>
+</tr>
+<tr>
+<td style="border-top: 1px solid black;">
+R<sup style="vertical-align: 0px;">2</sup>
+</td>
+<td style="border-top: 1px solid black;">
+0.29
+</td>
+<td style="border-top: 1px solid black;">
+0.39
+</td>
+<td style="border-top: 1px solid black;">
+0.39
+</td>
+<td style="border-top: 1px solid black;">
+0.43
+</td>
+<td style="border-top: 1px solid black;">
+0.20
+</td>
+<td style="border-top: 1px solid black;">
+0.42
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+Num. obs.
+</td>
+<td style="border-bottom: 2px solid black;">
+51
+</td>
+<td style="border-bottom: 2px solid black;">
+51
+</td>
+<td style="border-bottom: 2px solid black;">
+51
+</td>
+<td style="border-bottom: 2px solid black;">
+51
+</td>
+<td style="border-bottom: 2px solid black;">
+51
+</td>
+<td style="border-bottom: 2px solid black;">
+51
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;" colspan="8">
+<span style="font-size:0.8em"><sup style="vertical-align: 0px;"><em><strong></sup>p &lt; 0.001; <sup style="vertical-align: 0px;"></strong></sup>p &lt; 0.01; <sup style="vertical-align: 0px;"></em></sup>p &lt; 0.05</span>
+</td>
+</tr>
+</table>
+<div id="there-is-no-right-model" class="section level3">
+<h3>There is no “right” model</h3>
+<p>By definition, models are not a 100% accurate representation of reality. Therefore, its silly to think that a single model can be the “right” one. In this chapter, we will learn some tools that can help with making decisions about model selection, but the decision about model selection is one that must be driven first and foremost by the research question at hand. For example, if my goal is to understand the relationship between percent male and violent crimes, then only models 1-4 from Table <a href="model-selection.html#tab:modelcompare">24</a> are relevant, because only these models include the percent male variable as a predictor. Within that set, it probably makes more sense to think about how robust my results are to several different model specifications than to focus on a single model. Generally, so long as issues of multicollinearity do not arise it might be better to control for more variables rather than less in this context.</p>
+<p>A different research question might focus on two different competing explanations for an outcome. In this case, I might need to directly compare the results of two different models to address my research question. In this case, some of the model selection tools we develop below will be more crucial in making this decision, but I still might need to consider how robust my results are to the inclusion of different control variables.</p>
+<p>Ultimately, model selection can never be simplified into an automated process that protects the researcher from having to make decisions. There is no one way to make such decisions and must be considering such things as the research question, theoretical arguments about the process, the results of prior research, and the sensitivity of results to alternative specifications.</p>
+</div>
+<div id="the-accuracy-vs.-parsimony-tradeoff" class="section level3">
+<h3>The accuracy vs. parsimony tradeoff</h3>
+<p>If we have an additional variable avaliable to us, why not throw it into the model? More control variables allow us to eliminate potential sources of confounding in the relationships we care about, so isn’t more always better than less? There are two reasons, why we don’t always want to use this kitchen sink approach.</p>
+<p>First, as discussed in the previous section, adding in additional variables can lead to problems of <strong>multicollinearity</strong>. Collinearity between your independent varibles can increase standard errors on your estimates and lead you to a situation in wich in spite of strong point estimates of association, none of your results are statistically significant. For this reason, you should never just look at statistically significance when you observe that the addition of another variable made the relationship between <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> go away. If might have become non-significant because of an inflation in standard errors rather than a reducation in the correlation.</p>
+<p>Second, we generally value the concept of <strong>parsimony</strong> as well as <strong>accuracy</strong>. Accuracy is measured by goodness-of-fit statistics like <span class="math inline">\(R^2\)</span>. Your model is more accurate if it can account for more variation in the outcome variable <span class="math inline">\(y\)</span>. However, an additional independent variable can never make <span class="math inline">\(R^2\)</span> decrease and will almost always make it increase by some amount. Therefore, if we only prioritize accuracy we will continue to add variables into our models indefinitely.</p>
+<p>We also prize <strong>parsimony</strong>. We want a model that gets the most “bang for our buck” so to speak. We prefer simpler explanations and models to more complex ones if those simpler models can be almost as accurate as the more complex model.</p>
+<p>One important feature of parsimony and the very idea of scientific “models” in general is that we are not simply trying to reproduce reality. If we wanted to do that, we could simply create a dummy variable for each observation and produce a model with an <span class="math inline">\(R^2=1\)</span>. Yet, such a model would tell us nothing about the underlying process that produces variation in our outcome - we would just reproduce the world as it is. In principle, the very idea of scientific modeling is to reduce the complexity of the actual data in order to hopefully understand better the process. Including more and more variables into a model is rarely theoretically interesting and may in fact be misleading or confusing as to the underlying causal processes we hope to uncover.</p>
+<p>In practice, we must balance these two features of models. Gains in parsimony will be offset by reductions in accuracy, and vice versa. There is no precise way to say where the threshold for that tradeoff should be, but as a practical researcher, you should always understand that this is the tradeoff you are making when you choose between models.</p>
+</div>
+<div id="null-vs.-saturated-model" class="section level3">
+<h3>Null vs. saturated model</h3>
+<p>Two conceptual models illustrate the extreme ends of the accuracy vs. parsimony spectrum. The most parsimonious model that we can ever have is one without any independent variables. In this case, our predicted value for the outcome variable would always equal the mean of the outcome variable. Formally, we would have:</p>
+<p><span class="math display">\[\hat{y}_i=\bar{y}\]</span></p>
+<p>This <strong>null model</strong> has zero accuracy. It doesn’t even pretend to be accurate. We can estimate this model easily enough in R:</p>
+<div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb460-1" title="1">model_null &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span><span class="dv">1</span>, <span class="dt">data=</span>crimes)</a>
+<a class="sourceLine" id="cb460-2" title="2"><span class="kw">coef</span>(model_null)</a></code></pre></div>
+<pre><code>## (Intercept) 
+##    384.5039</code></pre>
+<div class="sourceCode" id="cb462"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb462-1" title="1"><span class="kw">summary</span>(model_null)<span class="op">$</span>r.squared</a></code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<p>At the other end of the spectrum, we have the <strong>saturated model</strong>. In the saturated model, we have a number of variables equal to the number of observations minus one. The saturated model is not something we typically observe in practice because these independent variables must be uncorrelated enough that we don’t observe perfect collinearity. A simple example would be to simply include a dummy variable for each observation. Since we have the state as a variable in the crimes dataset, we can actually calculate the saturated model here:</p>
+<div class="sourceCode" id="cb464"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb464-1" title="1">model_saturated &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>State, <span class="dt">data=</span>crimes)</a>
+<a class="sourceLine" id="cb464-2" title="2"><span class="kw">summary</span>(model_saturated)<span class="op">$</span>r.squared</a></code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<p>In practice, all real models fall somewhere between these two extremes. Most of the model selection tools that we discuss below will make use of these two conceptual models theoretically.</p>
+</div>
+<div id="a-not-very-useful-tool-the-f-test" class="section level3">
+<h3>A not-very-useful tool: the F-test</h3>
+<p>The F-test is not terribly useful in practice, but we will build some important principles from it for later tools in this module and the next module. The F-test is a classic tool that uses the framework of hypothesis testing to adjudicate between models.</p>
+<p>The F-test can compare any two <strong>nested</strong> models. For one model to be nested within another, it must contain all of the original variables in the other model plus additional variables. When models are built by starting with a few variables and then adding in additional variables in a sort of reverse stairstep, then we have nested models. Models 1-4 from Table <a href="model-selection.html#tab:modelcompare">24</a> above are nested models, while models 5-6 are not nested within models 1-4.</p>
+<p>If we take any two nested models, the null hypothesis of the F-test is that none of the additional variables in the more complex model are correlated with the outcome (e.g. the <span class="math inline">\(\beta\)</span> slope is zero on all additional variables). To test this, we calculate the <em>F-statistic</em>:</p>
+<p><span class="math display">\[F=\frac{(SSR_1-SSR_2)/g}{SSR_2/(n-g-k-1)}\]</span></p>
+<p>Where <span class="math inline">\(SSR\)</span> is the sum of squared residuals for the given model, <span class="math inline">\(g\)</span> is the number of additional variables in model 2 and <span class="math inline">\(k\)</span> is the number of variables in model 1. Basically we are taking the reduction in SSR per variable added in model 2 divided by the SSR left in model 2 per remaining degree of freedom. If the null hypothesis is correct, we expect this number to be one. The larger the F-statistic gets, the more suspicious we are of the null hypothesis. We can formalize this by calculating the p-value from the right tail of an <em>F-distribution</em> for a given F-statistic. This F-distribution will
+As an example, lets calculat the F-statistic between the null model predicting violent crimes and a model that predicts violent crimes by the median age and percent male in a state.</p>
+<div class="sourceCode" id="cb466"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb466-1" title="1">model_null &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span><span class="dv">1</span>, <span class="dt">data=</span>crimes)</a>
+<a class="sourceLine" id="cb466-2" title="2">model_demog &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>MedianAge<span class="op">+</span>PctMale, <span class="dt">data=</span>crimes)</a>
+<a class="sourceLine" id="cb466-3" title="3">SSR1 &lt;-<span class="st"> </span><span class="kw">sum</span>(model_null<span class="op">$</span>residuals<span class="op">^</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb466-4" title="4">SSR2 &lt;-<span class="st"> </span><span class="kw">sum</span>(model_demog<span class="op">$</span>residuals<span class="op">^</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb466-5" title="5">g &lt;-<span class="st"> </span><span class="kw">length</span>(model_demog<span class="op">$</span>coef)<span class="op">-</span><span class="kw">length</span>(model_null<span class="op">$</span>coef)</a>
+<a class="sourceLine" id="cb466-6" title="6">k &lt;-<span class="st"> </span><span class="kw">length</span>(model_null<span class="op">$</span>coef)<span class="op">-</span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb466-7" title="7">n &lt;-<span class="st"> </span><span class="kw">length</span>(model_null<span class="op">$</span>residuals)</a>
+<a class="sourceLine" id="cb466-8" title="8">Fstat &lt;-<span class="st"> </span>((SSR1<span class="op">-</span>SSR2)<span class="op">/</span>g)<span class="op">/</span>(SSR2<span class="op">/</span>(n<span class="op">-</span>g<span class="op">-</span>k<span class="dv">-1</span>))</a>
+<a class="sourceLine" id="cb466-9" title="9">Fstat</a></code></pre></div>
+<pre><code>## [1] 9.869375</code></pre>
+<p>That seems quite a bit bigger than one. We can find out the probability of getting an F-statistic this large or larger if median age and percent male were really uncorrelated with violent crime rates in the population by getting the area of the right tail for a corresponding F-distribution:</p>
+<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb468-1" title="1"><span class="dv">1</span><span class="op">-</span><span class="kw">pf</span>(Fstat, g, n<span class="op">-</span>g<span class="op">-</span>k<span class="dv">-1</span>)</a></code></pre></div>
+<pre><code>## [1] 0.0002568606</code></pre>
+<p>There is a very small probability that we would have gotten an F-statistic this large or larger if the null hypothesis was true. Therefore we reject the null hypothesis and prefer the model with median age and percent male to the null model.</p>
+<p>Rather than doing this by hand, we could have used the <code>anova</code> command in R to make the comparison:</p>
+<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb470-1" title="1"><span class="kw">anova</span>(model_null, model_demog)</a></code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: Violent ~ 1
+## Model 2: Violent ~ MedianAge + PctMale
+##   Res.Df     RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1     50 1907432                                  
+## 2     48 1351616  2    555817 9.8694 0.0002569 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>ANOVA stands for Analysis of Variance and can be used to conduct F-tests between models. We can also use it to compare more than two models at the same time, so long as they are all nested:</p>
+<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb472-1" title="1">model_gini &lt;-<span class="st"> </span><span class="kw">update</span>(model_demog, .<span class="op">~</span>.<span class="op">+</span>Gini)</a>
+<a class="sourceLine" id="cb472-2" title="2">model_complex &lt;-<span class="st"> </span><span class="kw">update</span>(model_gini, .<span class="op">~</span>.<span class="op">+</span>Poverty<span class="op">+</span>Unemployment)</a>
+<a class="sourceLine" id="cb472-3" title="3"><span class="kw">anova</span>(model_null, model_demog, model_gini, model_complex)</a></code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: Violent ~ 1
+## Model 2: Violent ~ MedianAge + PctMale
+## Model 3: Violent ~ MedianAge + PctMale + Gini
+## Model 4: Violent ~ MedianAge + PctMale + Gini + Poverty + Unemployment
+##   Res.Df     RSS Df Sum of Sq       F    Pr(&gt;F)    
+## 1     50 1907432                                   
+## 2     48 1351616  2    555817 11.5056 9.209e-05 ***
+## 3     47 1165120  1    186496  7.7211  0.007935 ** 
+## 4     45 1086941  2     78179  1.6183  0.209554    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The F-test prefers model 2 to model 1 and model 3 to model 2, but does not prefer model 4 to 3. The additional reduction in SSR from model 3 to 4 (78179) is not enough higher than what could be expected by chance if these two additional parameters were not correlated with violent crime rates.</p>
+<p>However, you need to be careful about making model selections here because the order in which things are entered can affect the results. Lets say for example that we included unemployment with the gini coefficient and then added poverty rates separately in model 4.</p>
+<div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb474-1" title="1">model_giniplus &lt;-<span class="st"> </span><span class="kw">update</span>(model_demog, .<span class="op">~</span>.<span class="op">+</span>Gini<span class="op">+</span>Unemployment)</a>
+<a class="sourceLine" id="cb474-2" title="2">model_complex &lt;-<span class="st"> </span><span class="kw">update</span>(model_gini, .<span class="op">~</span>.<span class="op">+</span>Poverty)</a>
+<a class="sourceLine" id="cb474-3" title="3"><span class="kw">anova</span>(model_null, model_demog, model_giniplus, model_complex)</a></code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: Violent ~ 1
+## Model 2: Violent ~ MedianAge + PctMale
+## Model 3: Violent ~ MedianAge + PctMale + Gini + Unemployment
+## Model 4: Violent ~ MedianAge + PctMale + Gini + Poverty
+##   Res.Df     RSS Df Sum of Sq       F   Pr(&gt;F)    
+## 1     50 1907432                                  
+## 2     48 1351616  2    555817 11.6471 8.08e-05 ***
+## 3     46 1097590  2    254026  5.3231 0.008327 ** 
+## 4     46 1164871  0    -67281                     
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Now we prefer to have unemployment in the model. However, it gets even worse than this. Lets take a look at the actual results of the third model:</p>
+<div class="sourceCode" id="cb476"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb476-1" title="1"><span class="kw">summary</span>(model_giniplus)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = Violent ~ MedianAge + PctMale + Gini + Unemployment, 
+##     data = crimes)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -288.18 -107.61   -5.40   56.58  508.18 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)    272.90    2946.20   0.093   0.9266  
+## MedianAge      -26.50      10.76  -2.462   0.0176 *
+## PctMale        -13.98      44.25  -0.316   0.7534  
+## Gini            35.23      16.06   2.193   0.0334 *
+## Unemployment    22.50      13.37   1.682   0.0993 .
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 154.5 on 46 degrees of freedom
+## Multiple R-squared:  0.4246, Adjusted R-squared:  0.3745 
+## F-statistic: 8.485 on 4 and 46 DF,  p-value: 3.249e-05</code></pre>
+<p>Percent male is not statistically significant and has a small substantive effect, because its large negative effect was driven by an indirect association with the gini coefficient. Unemployment has a marginally significnat but also small effect. But we never tested a model with just median age and the gini coefficient. What happens if we try that?</p>
+<div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb478-1" title="1">model_another &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>MedianAge<span class="op">+</span>Gini, <span class="dt">data=</span>crimes)</a>
+<a class="sourceLine" id="cb478-2" title="2"><span class="kw">anova</span>(model_another, model_giniplus)</a></code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: Violent ~ MedianAge + Gini
+## Model 2: Violent ~ MedianAge + PctMale + Gini + Unemployment
+##   Res.Df     RSS Df Sum of Sq      F Pr(&gt;F)
+## 1     48 1171830                           
+## 2     46 1097590  2     74240 1.5557 0.2219</code></pre>
+<p>Now we prefer another model that was nested within our more complex model but not nested within the original model structure. F-tests can easily lead you into situations like this.</p>
+<p>If you add in variables one at a time, the F-test will also produce the exact same result as a t-test on the additional variable:</p>
+<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb480-1" title="1">model_one &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>MedianAge, <span class="dt">data=</span>crimes)</a>
+<a class="sourceLine" id="cb480-2" title="2">model_two &lt;-<span class="st"> </span><span class="kw">update</span>(model_one, .<span class="op">~</span>.<span class="op">+</span>Poverty)</a>
+<a class="sourceLine" id="cb480-3" title="3"><span class="kw">anova</span>(model_one, model_two)</a></code></pre></div>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: Violent ~ MedianAge
+## Model 2: Violent ~ MedianAge + Poverty
+##   Res.Df     RSS Df Sum of Sq      F  Pr(&gt;F)  
+## 1     49 1734016                              
+## 2     48 1574243  1    159773 4.8716 0.03212 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb482-1" title="1"><span class="kw">summary</span>(model_two)<span class="op">$</span>coef</a></code></pre></div>
+<pre><code>##              Estimate Std. Error   t value   Pr(&gt;|t|)
+## (Intercept) 891.15575 465.632320  1.913861 0.06161074
+## MedianAge   -20.64100  11.346820 -1.819100 0.07513705
+## Poverty      18.64995   8.449701  2.207173 0.03211668</code></pre>
+<p>Notice that the p-value for the poverty variable in model 2 is identical to the p-value for the F-test between models 1 and 2. Thus the F-test does not really do much for us that we couldn’t already do with a t-test one variable at a time.</p>
+<p>Aside from the issues highlighted above, the primary problem with the F-test is that its decisions are driven by the logic of hypothesis testing and the search for “statistically significant” results. Putting aside that this logic makes no sense for the crime data because they are not a sample, this is not a good practice in general. If we decide what to prioritize by statistical significance, then in smaller datasets we will prefer different, more parsimonious, models than in larger datasets. It would be better to choose models based on theoretical principles that are consistent across sample size than to mechanistically determine them in this way.</p>
+</div>
+<div id="tools-with-a-parsimony-penalty" class="section level3">
+<h3>Tools with a parsimony penalty</h3>
+<p>Two model selection tools allow us to more formally consider the parsimony vs. accuracy tradeoff. We can think of the <span class="math inline">\(R^2\)</span> value as a measure of accuracy. These two tools then apply a “parsimony penalty” to this measure of accuracy to get a single score that measures the quality of the model. In both cases, lack of parsimony is reflected by <span class="math inline">\(p\)</span>, the number of independent variables in the model.</p>
+<div id="adjusted-r2" class="section level4">
+<h4>Adjusted <span class="math inline">\(R^2\)</span></h4>
+<p>The adjusted <span class="math inline">\(R^2\)</span> subtracts a certain value from <span class="math inline">\(R^2\)</span> based on the number of independent variables in the model. Formally:</p>
+<p><span class="math display">\[R^2_{adj}=R^2-(\frac{p}{n-p-1})(1-R^2)\]</span></p>
+<p>The parsimony penalty is based on a scaling of the lack of goodness of fit <span class="math inline">\((1-R^2)\)</span> and the number of variables proportionate to the size of the sample.</p>
+<p>Adjusted <span class="math inline">\(R^2\)</span> is provided by default in the summary of an <code>lm</code> object:</p>
+<div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb484-1" title="1"><span class="kw">summary</span>(model_demog)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = Violent ~ MedianAge + PctMale, data = crimes)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -379.94  -93.06  -32.30   68.80  572.02 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  7534.81    1724.03   4.370 6.62e-05 ***
+## MedianAge     -38.56      10.89  -3.540 0.000901 ***
+## PctMale      -115.67      31.39  -3.685 0.000581 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 167.8 on 48 degrees of freedom
+## Multiple R-squared:  0.2914, Adjusted R-squared:  0.2619 
+## F-statistic: 9.869 on 2 and 48 DF,  p-value: 0.0002569</code></pre>
+<div class="sourceCode" id="cb486"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb486-1" title="1"><span class="kw">summary</span>(model_demog)<span class="op">$</span>adj.r.squared</a></code></pre></div>
+<pre><code>## [1] 0.26187</code></pre>
+<p>The parsimony penalty in the adjusted <span class="math inline">\(R^2\)</span> will be smaller as <span class="math inline">\(n\)</span> increases. Therefore this tool will tend to prefer more complex models in larger samples. This feature distinguishes its approach from the Bayesian Information Criterion (BIC) below.</p>
+</div>
+<div id="bayesian-information-criterion" class="section level4">
+<h4>Bayesian Information Criterion</h4>
+<p>The Bayesian Information Criterion, or BIC for short, is based implicitly on a Bayesian logic to statistical inference that we are going to gloss over for now. In practice, there are two forms of the BIC:</p>
+<ul>
+<li>BIC, which is implicitly compared to the <strong>saturated model</strong>. The R command <code>BIC</code> will give you this version.</li>
+<li>BIC’, which is implicitly compared to the <strong>null model</strong>. There is no R command for BIC’ but we will create our own function below.</li>
+</ul>
+<p>I find that the BIC’ formulation is more pleasing and so we will focus on that version here. However, you can compare any two non-null models directly using either criterion and the differences between them will be the same.</p>
+<p>The formula for <span class="math inline">\(BIC&#39;\)</span> is:</p>
+<p><span class="math display">\[BIC&#39;=n\log(1-R^2)+p\log(n)\]</span></p>
+<p>The first term includes <span class="math inline">\(R^2\)</span> and is our measure of accuracy. Because we are actually loggin something less than one, we will get a negative value here. For the BIC, lower scores are better and negative scores are the best. bove, I said that each BIC type was implicitly being compared to either the saturated or the null model. If the respective BIC score is below zero then this model is preferred to the null or saturated model, respectively.</p>
+<p>The second term <span class="math inline">\(p\log(n)\)</span> is the parsimony penalty. In this case, we actually weight the parsimony penalty <strong>higher</strong> in larger samples. As a result, BIC will tend to prefer the same model more consistently in different sample sizes.</p>
+<p>Since, <em>R</em> does not give us a BIC’ calculations, lets go ahead and create our own with a function:</p>
+<div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb488-1" title="1">bic_null &lt;-<span class="st"> </span><span class="cf">function</span>(model) {</a>
+<a class="sourceLine" id="cb488-2" title="2">  rsq &lt;-<span class="st"> </span><span class="kw">summary</span>(model)<span class="op">$</span>r.squared</a>
+<a class="sourceLine" id="cb488-3" title="3">  n &lt;-<span class="st"> </span><span class="kw">length</span>(model<span class="op">$</span>resid)</a>
+<a class="sourceLine" id="cb488-4" title="4">  p &lt;-<span class="st"> </span><span class="kw">length</span>(model<span class="op">$</span>coef)<span class="op">-</span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb488-5" title="5">  <span class="kw">return</span>(n<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">-</span>rsq)<span class="op">+</span>p<span class="op">*</span><span class="kw">log</span>(n))</a>
+<a class="sourceLine" id="cb488-6" title="6">}</a>
+<a class="sourceLine" id="cb488-7" title="7"><span class="kw">bic_null</span>(model_demog)</a></code></pre></div>
+<pre><code>## [1] -9.703675</code></pre>
+<p>The negative value for BIC’ tells us that we prefer the model with median age and percent male as predictors to the null model.</p>
+<p>We can also compare two non-null models directly by comparing their BIC or BIC’ scores. Whichever is lower is the preferred model. These models do not have to be nested.</p>
+<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb490-1" title="1"><span class="kw">bic_null</span>(model_demog)</a></code></pre></div>
+<pre><code>## [1] -9.703675</code></pre>
+<div class="sourceCode" id="cb492"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb492-1" title="1">model_econ &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>Poverty<span class="op">+</span>Unemployment<span class="op">+</span>Gini, <span class="dt">data=</span>crimes)</a>
+<a class="sourceLine" id="cb492-2" title="2"><span class="kw">bic_null</span>(model_econ)</a></code></pre></div>
+<pre><code>## [1] -9.184312</code></pre>
+<div class="sourceCode" id="cb494"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb494-1" title="1"><span class="kw">BIC</span>(model_demog)</a></code></pre></div>
+<pre><code>## [1] 679.8933</code></pre>
+<div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb496-1" title="1"><span class="kw">BIC</span>(model_econ)</a></code></pre></div>
+<pre><code>## [1] 680.4127</code></pre>
+<p>In this situation, we slightly prefer the demographic explanation to the economic one. Note that although <code>bic_null</code> and <code>BIC</code> give us different values, the differences between them in different models are the same:</p>
+<div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb498-1" title="1"><span class="kw">bic_null</span>(model_demog)<span class="op">-</span><span class="kw">bic_null</span>(model_econ)</a></code></pre></div>
+<pre><code>## [1] -0.5193631</code></pre>
+<div class="sourceCode" id="cb500"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb500-1" title="1"><span class="kw">BIC</span>(model_demog)<span class="op">-</span><span class="kw">BIC</span>(model_econ)</a></code></pre></div>
+<pre><code>## [1] -0.5193631</code></pre>
+<p>You can use the general rule of thumb to evaluate differences in BIC:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Difference in BIC</th>
+<th>Strength of Preference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0-2</td>
+<td>Weak</td>
+</tr>
+<tr class="even">
+<td>2-6</td>
+<td>Moderate</td>
+</tr>
+<tr class="odd">
+<td>6-10</td>
+<td>Strong</td>
+</tr>
+<tr class="even">
+<td>greater than 10</td>
+<td>Very Strong</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="model-averaging" class="section level3">
+<h3>Model Averaging</h3>
+<p>None of the tools mentioned above can fully address the complexity of model selection. One of the key difficulties is that given a set of potential variables, it includes not only what gets included but the order of inclusion. As we have seen above, percent male seems to have a large negative effect on violent crime rates until we consider a model that includes Gini coefficients. Where and how we include these variables in sequential models might affect our ultimate model selection.</p>
+<p>One way of addressing this is to use a technique of <strong>model averaging</strong>. In the model averaging approach, we use a computer to iteratively fit all of the possible models from a set of candidate variables. We then use some procedure to average results across these models to account more formally for model uncertainty in our final conclusion. There are a variety of ways in which such model averaging can be done. The <code>BMA</code> package in R will use a Bayesian model averaging approach that implicitly uses a Bayesian logic and the BIC to adjudicate between models. Lets try that with our crime data:</p>
+<div class="sourceCode" id="cb502"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb502-1" title="1"><span class="kw">library</span>(BMA)</a>
+<a class="sourceLine" id="cb502-2" title="2">model.bma &lt;-<span class="st"> </span><span class="kw">bic.glm</span>(crimes[,<span class="kw">c</span>(<span class="st">&quot;MedianAge&quot;</span>,<span class="st">&quot;PctMale&quot;</span>,<span class="st">&quot;PctLessHS&quot;</span>,</a>
+<a class="sourceLine" id="cb502-3" title="3">                               <span class="st">&quot;MedianIncomeHH&quot;</span>,<span class="st">&quot;Unemployment&quot;</span>,</a>
+<a class="sourceLine" id="cb502-4" title="4">                               <span class="st">&quot;Poverty&quot;</span>, <span class="st">&quot;Gini&quot;</span>)], </a>
+<a class="sourceLine" id="cb502-5" title="5">                     crimes<span class="op">$</span>Violent, <span class="dt">glm.family=</span>gaussian)</a>
+<a class="sourceLine" id="cb502-6" title="6"><span class="kw">summary</span>(model.bma)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## bic.glm.data.frame(x = crimes[, c(&quot;MedianAge&quot;, &quot;PctMale&quot;, &quot;PctLessHS&quot;,     &quot;MedianIncomeHH&quot;, &quot;Unemployment&quot;, &quot;Poverty&quot;, &quot;Gini&quot;)], y = crimes$Violent,     glm.family = gaussian)
+## 
+## 
+##   11  models were selected
+##  Best  5  models (cumulative posterior probability =  0.8 ): 
+## 
+##                 p!=0   EV        SD       model 1    model 2    model 3  
+## Intercept       100   -1592.518  735.881  -1699.048  -1848.696  -1913.727
+## MedianAge       12.4     -1.683    6.761      .          .          .    
+## PctMale          9.6     -1.676   10.509      .          .          .    
+## PctLessHS       20.2     -2.728    7.327      .        -12.841      .    
+## MedianIncomeHH  94.3     19.518    6.419     20.804     22.719     18.595
+## Unemployment    12.4      1.501    6.671      .          .          .    
+## Poverty         94.3     65.115   21.788     67.908     82.593     59.191
+## Gini            16.2      3.730   12.147      .          .         10.052
+##                                                                          
+## nVar                                            2          3          3  
+## BIC                                        -141.527   -138.995   -138.020
+## post prob                                     0.448      0.126      0.078
+##                 model 4    model 5  
+## Intercept       -1629.940   -849.020
+## MedianAge           .          .    
+## PctMale             .        -15.701
+## PctLessHS           .          .    
+## MedianIncomeHH     19.585     20.130
+## Unemployment        8.553      .    
+## Poverty            62.549     65.134
+## Gini                .          .    
+##                                     
+## nVar                  3          3  
+## BIC              -137.950   -137.883
+## post prob           0.075      0.072</code></pre>
+<p>The BMA approahc has given us what it considers the five most likely models. The first column (<code>p!=0</code>) gives us the probaility that the parameter is actually not zero across models. Two variables, the poverty rate and median household income have high probabilities here. The second term, (<code>EV</code>) gives us the expected value of that slope across the most likely models. This is basically the average across models. The BMA results also show us the five most likely models. Note that they are ordered by BIC’ which is the primary technique this procedure uses to evaluate models.</p>
+<p>Note that none of these models are even close to what we were estimating before. We were not seeing high effects of poverty in the models and didn’t consider median household income. This model averaging approach suggests that we might want to reconsider our approach.</p>
+<p>Remember the advice from the beginning of this section. The model averaging approach is seductive because it seems to do the hard work for us, but it should only be used as a tool for the researcher to ultimately make that decision.</p>
+
+</div>
+</div>
+<!-- </div> -->
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="multicollinearity-and-scale-creation.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="modeling-categorical-outcomes.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

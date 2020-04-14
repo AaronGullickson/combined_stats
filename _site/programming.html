@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Programming | Statistical Analysis in Sociology</title>
+  <meta name="description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Programming | Statistical Analysis in Sociology" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Programming | Statistical Analysis in Sociology" />
+  
+  <meta name="twitter:description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  
+
+<meta name="author" content="Aaron Gullickson" />
+
+
+<meta name="date" content="2020-04-14" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="reshaping-and-merging-data.html"/>
+<link rel="next" href="using-r-markdown.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.1/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.49.4/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.49.4/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="" data-path="understanding-data.html"><a href="understanding-data.html"><i class="fa fa-check"></i>Understanding Data</a><ul>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html"><i class="fa fa-check"></i>What Does Data Look Like?</a><ul>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html#the-observations"><i class="fa fa-check"></i>The observations</a></li>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html#the-variables"><i class="fa fa-check"></i>The variables</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html"><i class="fa fa-check"></i>What Can We Do With Data?</a><ul>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#how-is-a-variable-distributed"><i class="fa fa-check"></i>How is a variable distributed?</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#measuring-association"><i class="fa fa-check"></i>Measuring association</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#making-statistical-inferences"><i class="fa fa-check"></i>Making statistical inferences</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#building-models"><i class="fa fa-check"></i>Building Models</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#observational-data-experimental-thinking"><i class="fa fa-check"></i>Observational Data, Experimental Thinking</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-distribution-of-a-variable.html"><a href="the-distribution-of-a-variable.html"><i class="fa fa-check"></i>The Distribution of a Variable</a><ul>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html"><i class="fa fa-check"></i>Looking at Distributions</a><ul>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html#looking-at-the-distribution-of-a-categorical-variable"><i class="fa fa-check"></i>Looking at the distribution of a categorical variable</a></li>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html#looking-at-the-distribution-of-a-quantitative-variable"><i class="fa fa-check"></i>Looking at the distribution of a quantitative variable</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html"><i class="fa fa-check"></i>Measuring the Center of a Distribution</a><ul>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-mean"><i class="fa fa-check"></i>The mean</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-median"><i class="fa fa-check"></i>The median</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-mode"><i class="fa fa-check"></i>The mode</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#comparing-the-mean-and-median"><i class="fa fa-check"></i>Comparing the mean and median</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html"><i class="fa fa-check"></i>Percentiles and the Five Number Summary</a><ul>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#percentiles"><i class="fa fa-check"></i>Percentiles</a></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#the-five-number-summary"><i class="fa fa-check"></i>The five number summary</a></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#boxplots"><i class="fa fa-check"></i>Boxplots</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html"><i class="fa fa-check"></i>Measuring the Spread of a Distribution</a><ul>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html#range-and-interquartile-range"><i class="fa fa-check"></i>Range and interquartile range</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html#variance-and-standard-deviation"><i class="fa fa-check"></i>Variance and standard deviation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-association-1.html"><a href="measuring-association-1.html"><i class="fa fa-check"></i>Measuring Association</a><ul>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html"><i class="fa fa-check"></i>The Two-Way Table</a><ul>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html#conditional-distributions"><i class="fa fa-check"></i>Conditional distributions</a></li>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html#odds-ratio-advanced"><i class="fa fa-check"></i>Odds ratio (advanced)</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html"><i class="fa fa-check"></i>Mean Differences</a><ul>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html#graphically-examining-differences-in-distributions"><i class="fa fa-check"></i>Graphically examining differences in distributions</a></li>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html#comparing-differences-in-the-mean"><i class="fa fa-check"></i>Comparing differences in the mean</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html"><i class="fa fa-check"></i>Scatterplot and Correlation Coefficient</a><ul>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html#the-scatterplot"><i class="fa fa-check"></i>The scatterplot</a></li>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html#the-correlation-coefficient"><i class="fa fa-check"></i>The correlation coefficient</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="statistical-inference.html"><a href="statistical-inference.html"><i class="fa fa-check"></i>Statistical Inference</a><ul>
+<li class="chapter" data-level="" data-path="the-problem-of-statistical-inference.html"><a href="the-problem-of-statistical-inference.html"><i class="fa fa-check"></i>The Problem of Statistical Inference</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html"><i class="fa fa-check"></i>The Concept of the Sampling Distribution</a><ul>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#example-class-height"><i class="fa fa-check"></i>Example: class height</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#central-limit-theorem-and-the-normal-distribution"><i class="fa fa-check"></i>Central limit theorem and the normal distribution</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#what-can-we-do-with-the-sampling-distribution"><i class="fa fa-check"></i>What can we do with the sampling distribution?</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html"><i class="fa fa-check"></i>Confidence Intervals</a><ul>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#what-do-we-mean-by-confident"><i class="fa fa-check"></i>What do we mean by “confident?”</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#calculating-the-confidence-interval-for-the-sample-mean"><i class="fa fa-check"></i>Calculating the confidence interval for the sample mean</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#calculating-the-confidence-interval-for-other-sample-statistics"><i class="fa fa-check"></i>Calculating the confidence interval for other sample statistics</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-proportions"><i class="fa fa-check"></i>Example with proportions</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-mean-differences"><i class="fa fa-check"></i>Example with mean differences</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-proportion-differences"><i class="fa fa-check"></i>Example with proportion differences</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-correlation-coefficient"><i class="fa fa-check"></i>Example with correlation coefficient</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html"><i class="fa fa-check"></i>Hypothesis Tests</a><ul>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#example-coke-winners"><i class="fa fa-check"></i>Example: Coke winners</a></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#the-general-procedure-of-hypothesis-testing"><i class="fa fa-check"></i>The general procedure of hypothesis testing</a></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#hypothesis-tests-of-relationships"><i class="fa fa-check"></i>Hypothesis tests of relationships</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="building-models-1.html"><a href="building-models-1.html"><i class="fa fa-check"></i>Building Models</a><ul>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html"><i class="fa fa-check"></i>The OLS Regression Line</a><ul>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#the-formula-for-a-line"><i class="fa fa-check"></i>The Formula for a Line</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#calculating-the-best-fitting-line"><i class="fa fa-check"></i>Calculating the Best-Fitting Line</a></li>
+<li><a href="the-ols-regression-line.html#using-the-lm-command-to-calculate-ols-regression-lines-in-r">Using the <code>lm</code> command to calculate OLS regression lines in <em>R</em></a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#adding-an-ols-regression-line-to-a-plot"><i class="fa fa-check"></i>Adding an OLS regression line to a plot</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#the-ols-regression-line-as-a-model"><i class="fa fa-check"></i>The OLS regression line as a model</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#interpeting-slopes-and-intercepts"><i class="fa fa-check"></i>Interpeting Slopes and Intercepts</a></li>
+<li><a href="the-ols-regression-line.html#how-good-is-x-as-a-predictor-of-y">How good is <span class="math inline">\(x\)</span> as a predictor of <span class="math inline">\(y\)</span>?</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#inference-for-ols-regression-models"><i class="fa fa-check"></i>Inference for OLS Regression models</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#regression-line-cautions"><i class="fa fa-check"></i>Regression Line Cautions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html"><i class="fa fa-check"></i>The Power of Controlling for Other Variables</a><ul>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#interpreting-results-in-a-multivariate-ols-regression-models"><i class="fa fa-check"></i>Interpreting results in a multivariate OLS regression models</a></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#including-more-than-two-independent-variables"><i class="fa fa-check"></i>Including more than two independent variables</a></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#how-to-read-a-table-of-regression-results"><i class="fa fa-check"></i>How to read a table of regression results</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html"><i class="fa fa-check"></i>Including Categorical Variables as Predictors</a><ul>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#indicator-variables"><i class="fa fa-check"></i>Indicator variables</a></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#categorical-variables-with-more-than-two-categories"><i class="fa fa-check"></i>Categorical variables with more than two categories</a></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#categorical-and-quantitative-variables-combined-in-a-single-model"><i class="fa fa-check"></i>Categorical and quantitative variables combined in a single model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html"><i class="fa fa-check"></i>Interaction Terms</a><ul>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#the-nature-of-additive-models"><i class="fa fa-check"></i>The nature of additive models</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#the-interaction-term"><i class="fa fa-check"></i>The interaction term</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interpreting-interaction-terms"><i class="fa fa-check"></i>Interpreting interaction terms</a></li>
+<li><a href="interaction-terms.html#interaction-terms-in-r">Interaction terms in <em>R</em></a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interaction-terms-with-multiple-categories"><i class="fa fa-check"></i>Interaction terms with multiple categories</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interaction-terms-with-two-categorical-variables"><i class="fa fa-check"></i>Interaction terms with two categorical variables</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-complications.html"><a href="model-complications.html"><i class="fa fa-check"></i>Model Complications</a><ul>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html"><i class="fa fa-check"></i>The Linear Model, Revisited</a><ul>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#reformulating-the-linear-model"><i class="fa fa-check"></i>Reformulating the linear model</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#marginal-effects"><i class="fa fa-check"></i>Marginal effects</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#linear-model-assumptions"><i class="fa fa-check"></i>Linear model assumptions</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#estimating-a-linear-model"><i class="fa fa-check"></i>Estimating a linear model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html"><i class="fa fa-check"></i>Modeling Non-Linearity</a><ul>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#smoothing"><i class="fa fa-check"></i>Smoothing</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#residual-plots"><i class="fa fa-check"></i>Residual Plots</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#transformations"><i class="fa fa-check"></i>Transformations</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#polynomial-models"><i class="fa fa-check"></i>Polynomial Models</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#splines"><i class="fa fa-check"></i>Splines</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html"><i class="fa fa-check"></i>The IID Violation and Robust Standard Errors</a><ul>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#violations-of-independence"><i class="fa fa-check"></i>Violations of independence</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#heteroscedasticity"><i class="fa fa-check"></i>Heteroscedasticity</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#fixing-iid-violations"><i class="fa fa-check"></i>Fixing IID violations</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#weighted-least-squares"><i class="fa fa-check"></i>Weighted least squares</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#robust-standard-errors"><i class="fa fa-check"></i>Robust standard errors</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html"><i class="fa fa-check"></i>Sample Design and Weighting</a><ul>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#clustermultistage-sampling"><i class="fa fa-check"></i>Cluster/multistage sampling</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#stratification"><i class="fa fa-check"></i>Stratification</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#weights"><i class="fa fa-check"></i>Weights</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#correcting-for-sample-design-in-models"><i class="fa fa-check"></i>Correcting for sample design in models</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i>Missing Values</a><ul>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#identifying-valid-skips"><i class="fa fa-check"></i>Identifying Valid Skips</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#kinds-of-missingness"><i class="fa fa-check"></i>Kinds of Missingness</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#removing-cases"><i class="fa fa-check"></i>Removing Cases</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#imputation"><i class="fa fa-check"></i>Imputation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html"><i class="fa fa-check"></i>Multicollinearity and Scale Creation</a><ul>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#avoid-the-singularity"><i class="fa fa-check"></i>Avoid the Singularity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#detecting-data-based-multicollinearity"><i class="fa fa-check"></i>Detecting Data-Based Multicollinearity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#addressing-multicollinearity"><i class="fa fa-check"></i>Addressing Multicollinearity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#creating-scales"><i class="fa fa-check"></i>Creating Scales</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#factor-analysis"><i class="fa fa-check"></i>Factor Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html"><i class="fa fa-check"></i>Model Selection</a><ul>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#there-is-no-right-model"><i class="fa fa-check"></i>There is no “right” model</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#the-accuracy-vs.-parsimony-tradeoff"><i class="fa fa-check"></i>The accuracy vs. parsimony tradeoff</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#null-vs.-saturated-model"><i class="fa fa-check"></i>Null vs. saturated model</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#a-not-very-useful-tool-the-f-test"><i class="fa fa-check"></i>A not-very-useful tool: the F-test</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#tools-with-a-parsimony-penalty"><i class="fa fa-check"></i>Tools with a parsimony penalty</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#model-averaging"><i class="fa fa-check"></i>Model Averaging</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="modeling-categorical-outcomes.html"><a href="modeling-categorical-outcomes.html"><i class="fa fa-check"></i>Modeling Categorical Outcomes</a><ul>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html"><i class="fa fa-check"></i>Dichotomous Outcomes and The Binomial Distribution</a></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html"><i class="fa fa-check"></i>Linear Probability Model</a></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
+<li class="chapter" data-level="" data-path="maximum-likelihood-estimation.html"><a href="maximum-likelihood-estimation.html"><i class="fa fa-check"></i>Maximum Likelihood Estimation</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression-model.html"><a href="logistic-regression-model.html"><i class="fa fa-check"></i>Logistic Regression Model</a></li>
+<li class="chapter" data-level="" data-path="models-for-nominal-polytomous-outcomes.html"><a href="models-for-nominal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Nominal Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="models-for-ordinal-polytomous-outcomes.html"><a href="models-for-ordinal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Ordinal Polytomous Outcomes</a></li>
+</ul></li>
+<li class="appendix"><span><b>Appendices</b></span></li>
+<li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html"><i class="fa fa-check"></i>Example Datasets</a><ul>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#crimes"><i class="fa fa-check"></i>Crimes</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#movies"><i class="fa fa-check"></i>Movies</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#politics"><i class="fa fa-check"></i>Politics</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#popularity"><i class="fa fa-check"></i>Popularity</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#sex"><i class="fa fa-check"></i>Sex</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#titanic"><i class="fa fa-check"></i>Titanic</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#wages"><i class="fa fa-check"></i>Wages</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html"><i class="fa fa-check"></i>Common R Commands</a><ul>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#univariate-statistics"><i class="fa fa-check"></i>Univariate Statistics</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#bivariate-statistics"><i class="fa fa-check"></i>Bivariate Statistics</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#statistical-inference-1"><i class="fa fa-check"></i>Statistical Inference</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#ols-regression-models"><i class="fa fa-check"></i>OLS Regression Models</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#utility-functions"><i class="fa fa-check"></i>Utility functions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html"><i class="fa fa-check"></i>Plotting Cookbook</a><ul>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#barplots"><i class="fa fa-check"></i>Barplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#histograms"><i class="fa fa-check"></i>Histograms</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#boxplots-1"><i class="fa fa-check"></i>Boxplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#comparative-barplots"><i class="fa fa-check"></i>Comparative Barplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#comparative-boxplots"><i class="fa fa-check"></i>Comparative Boxplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#scatterplots"><i class="fa fa-check"></i>Scatterplots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="r-stat-lab.html"><a href="r-stat-lab.html"><i class="fa fa-check"></i>R Stat Lab</a><ul>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html"><i class="fa fa-check"></i>Using Scripts</a><ul>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#getting-started-with-scripts"><i class="fa fa-check"></i>Getting Started with Scripts</a></li>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#not-everything-goes-into-your-script"><i class="fa fa-check"></i>Not Everything Goes Into Your Script</a></li>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#commenting-for-sanity"><i class="fa fa-check"></i>Commenting for Sanity</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html"><i class="fa fa-check"></i>Object Types</a><ul>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#atomic-modes"><i class="fa fa-check"></i>Atomic Modes</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#vectors-and-matrices"><i class="fa fa-check"></i>Vectors and Matrices</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#factors"><i class="fa fa-check"></i>Factors</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#logical-values-and-boolean-statements"><i class="fa fa-check"></i>Logical Values and Boolean Statements</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#missing-values-1"><i class="fa fa-check"></i>Missing Values</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#lists"><i class="fa fa-check"></i>Lists</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#data-frames"><i class="fa fa-check"></i>Data Frames</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html"><i class="fa fa-check"></i>Pretty Pictures</a><ul>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html#base-plot"><i class="fa fa-check"></i>Base Plot</a></li>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html#ggplot"><i class="fa fa-check"></i>ggplot</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html"><i class="fa fa-check"></i>Using Git</a><ul>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html#plain-text-is-better"><i class="fa fa-check"></i>Plain Text is Better</a></li>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html#git"><i class="fa fa-check"></i>Git</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html"><i class="fa fa-check"></i>Reading and Writing Data</a><ul>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#data-formats"><i class="fa fa-check"></i>Data Formats</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#plain-text-files"><i class="fa fa-check"></i>Plain text files</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#data-in-binary-format"><i class="fa fa-check"></i>Data in binary format</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#saving-data"><i class="fa fa-check"></i>Saving data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i>Cleaning Data</a><ul>
+<li><a href="cleaning-data.html#the-most-important-rule-check-yourself-before-you-wreck-yourself">The Most Important Rule: <span>Check yourself before you wreck yourself</span></a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#assigning-missing-values"><i class="fa fa-check"></i>Assigning missing values</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#recoding"><i class="fa fa-check"></i>Recoding</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#collapsing-categorical-variables"><i class="fa fa-check"></i>Collapsing Categorical Variables</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#transforming-quantitative-variables"><i class="fa fa-check"></i>Transforming Quantitative Variables</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#after-cleaning-you-still-need-to-tidy"><i class="fa fa-check"></i>After Cleaning You Still Need to Tidy</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#aggregating-data"><i class="fa fa-check"></i>Aggregating Data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html"><i class="fa fa-check"></i>Reshaping and Merging Data</a><ul>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html#reshaping"><i class="fa fa-check"></i>Reshaping</a></li>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html#merging-data"><i class="fa fa-check"></i>Merging data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html"><i class="fa fa-check"></i>Programming</a><ul>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#an-example-theils-h"><i class="fa fa-check"></i>An Example: Theil’s H</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#our-data"><i class="fa fa-check"></i>Our Data</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#calculating-theils-h-for-a-single-state"><i class="fa fa-check"></i>Calculating Theil’s H for a single state</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#creating-functions"><i class="fa fa-check"></i>Creating Functions</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#iteration"><i class="fa fa-check"></i>Iteration</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#putting-it-all-together"><i class="fa fa-check"></i>Putting It All Together</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html"><i class="fa fa-check"></i>Using R Markdown</a><ul>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#plain-text-science"><i class="fa fa-check"></i>Plain Text Science</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#markdown-syntax"><i class="fa fa-check"></i>Markdown Syntax</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#r-markdown"><i class="fa fa-check"></i>R Markdown</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#figures-in-r-markdown"><i class="fa fa-check"></i>Figures in R Markdown</a></li>
+</ul></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Analysis in Sociology</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="programming" class="section level2">
+<h2>Programming</h2>
+<p>R is the free and open-source version of an older program called Splus. Splus is so named because its syntax was designed to be very similar to C++, one of the most powerful programming languages used in real software development. R carries forward all of this programming capability. Because it was built as a programming language from the ground up, you can do almost anything you want with R if you know enough. We are only going to scratch the surface of the programming capabilities of R in this lab. I want to show you two important programming features in R:</p>
+<ol style="list-style-type: decimal">
+<li>The ability to create your own custom functions</li>
+<li>The ability to repeat the same piece of code on new data iteratively.</li>
+</ol>
+<div id="an-example-theils-h" class="section level3">
+<h3>An Example: Theil’s H</h3>
+<p>As an example, we are going to calculate a measure of segregation called the <em>Information Theory Index</em> or sometimes just <em>Theil’s H</em>, after its creator. Theil’s H provides a measure of the diversity in areas within a region (e.g. tracts within a city, counties within a state), relative to the overall diversity of the region. When Theil’s H equals one, there is no diversity in the subregions of a region, and when Theil’s H equals zero, the diversity in each subregion is equal to the overall diversity of the region.</p>
+<p>In order to measure Theil’s H, one has to first calculate a measure of diversity for each sub-region and the total region. This measure of diversity is called <em>entropy</em> and is based on the proportions of different groups within the area. If <span class="math inline">\(p_j\)</span> is the proportion of group <span class="math inline">\(j\)</span> in the region and there are <span class="math inline">\(J\)</span> total groups, then the formula for entropy (<span class="math inline">\(E\)</span>) is given by:</p>
+<p><span class="math display">\[E=\sum_{j=1}^J p_j\log(1/p_j)\]</span>
+Entropy will be at its maximum value when the proportion <span class="math inline">\(p_j\)</span> is the same for each group, and entropy will be at its minimum value of zero when the area is made up entirely of one group. Lets take a simple example where we have three groups and the first group is 60% of the population of an area and the remaining two groups are 20% each. Entropy would be:</p>
+<p><span class="math display">\[E=(0.6)*\log(1/0.6)+0.2*\log(1/0.2)+0.2*log(1/0.2)=0.95\]</span>
+With the natural log used here for three groups, the maximum value of entropy is <span class="math inline">\(\log(3)=1.0986123\)</span>, so this area would be considered fairly diverse.</p>
+<p>In order to calculate Theil’s H, one has to first calculate entropy for each sub-region <span class="math inline">\(i\)</span> (<span class="math inline">\(E_i\)</span>) as well as the overall entropy for the whole region (<span class="math inline">\(E\)</span>). One also needs the population totals for each sub-region (<span class="math inline">\(t_i\)</span>) as well as the total population of the region (<span class="math inline">\(T\)</span>). Theil’s H is then given by:</p>
+<p><span class="math display">\[H=1-\sum_{i=1}^n \frac{t_i*E_i}{T*E}\]</span></p>
+<p>Theil’s H is a weighted average of of how much the diversity of each sub-region varies from the total region. Higher values of H indicate more segregation in the sense that the diversity of the sub-regions is low relatively to the overall diversity of the region.</p>
+</div>
+<div id="our-data" class="section level3">
+<h3>Our Data</h3>
+<p>For this example, I have <a href="/stat_book/resources/tracts_state.csv">data</a> on the number of racial groups (white, black, Latino, Asian, indigenous, and other) in 2010 for each census tract in all 50 states (no Washington DC). Here is a glimpse of the data.</p>
+<div class="sourceCode" id="cb897"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb897-1" title="1"><span class="kw">library</span>(readr)</a>
+<a class="sourceLine" id="cb897-2" title="2">tracts &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;resources/tracts_state.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb897-3" title="3"><span class="kw">head</span>(tracts)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 8
+##   statename tractid white latino black asian indigenous other
+##   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;
+## 1 Alabama     20100  1601     44   217    14         13    23
+## 2 Alabama     20200   844     75  1214     5          5    27
+## 3 Alabama     20300  2538     87   647    17         14    70
+## 4 Alabama     20400  4030     85   191    18         14    48
+## 5 Alabama     20500  8438    355  1418   295         50   210
+## 6 Alabama     20600  2672    176   738     6         10    66</code></pre>
+<p>Each observation here is a census tract and we have census tracts identified by state. To see the number of census tracts within each state:</p>
+<div class="sourceCode" id="cb899"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb899-1" title="1"><span class="kw">table</span>(tracts<span class="op">$</span>statename)</a></code></pre></div>
+<pre><code>## 
+##        Alabama         Alaska        Arizona       Arkansas     California 
+##           1178            167           1520            686           8024 
+##       Colorado    Connecticut       Delaware        Florida        Georgia 
+##           1242            828            214           4182           1957 
+##         Hawaii          Idaho       Illinois        Indiana           Iowa 
+##            321            298           3115           1507            823 
+##         Kansas       Kentucky      Louisiana          Maine       Maryland 
+##            766           1110           1129            351           1390 
+##  Massachusetts       Michigan      Minnesota    Mississippi       Missouri 
+##           1467           2756           1334            659           1391 
+##        Montana       Nebraska         Nevada  New Hampshire     New Jersey 
+##            271            532            680            292           2002 
+##     New Mexico       New York North Carolina   North Dakota           Ohio 
+##            498           4870           2175            205           2943 
+##       Oklahoma         Oregon   Pennsylvania   Rhode Island South Carolina 
+##           1046            826           3210            241           1091 
+##   South Dakota      Tennessee          Texas           Utah        Vermont 
+##            222           1489           5238            585            183 
+##       Virginia     Washington  West Virginia      Wisconsin        Wyoming 
+##           1886           1445            484           1392            131</code></pre>
+<p>In order to calculate Theil’s H for each state, we will need to:</p>
+<ol style="list-style-type: decimal">
+<li>Create code that calculates Theil’s H for the tract data from a single state.</li>
+<li>Iteratively run that code for each state.</li>
+</ol>
+</div>
+<div id="calculating-theils-h-for-a-single-state" class="section level3">
+<h3>Calculating Theil’s H for a single state</h3>
+<p>Clearly we need to do some work here that is going to be <em>iterative</em>. We want to calculate Theil’s H for each state, so however we do that calculation we will need to repeat it for all fifty states. Below, we will learn easy ways to make our work iterative, but the first step here is to make sure we understand how to do this calculation for a single case. Once we are satisfied with how we handled that case, we can learn how to generalize our code and make it iterative.</p>
+<p>To get started, I am going to use Alabama as an example. Let me first pull out these census tracts and save them to a different object.</p>
+<div class="sourceCode" id="cb901"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb901-1" title="1">alabama_tracts &lt;-<span class="st"> </span><span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;Alabama&quot;</span>)</a>
+<a class="sourceLine" id="cb901-2" title="2"><span class="kw">head</span>(alabama_tracts)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 8
+##   statename tractid white latino black asian indigenous other
+##   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;
+## 1 Alabama     20100  1601     44   217    14         13    23
+## 2 Alabama     20200   844     75  1214     5          5    27
+## 3 Alabama     20300  2538     87   647    17         14    70
+## 4 Alabama     20400  4030     85   191    18         14    48
+## 5 Alabama     20500  8438    355  1418   295         50   210
+## 6 Alabama     20600  2672    176   738     6         10    66</code></pre>
+<p>The first step is to calculate the proportion of each racial group within each census tract. There are number of ways to do this, but the most straightforward approach would be to just use a <code>prop.table</code> on a subset of the data that just includes the counts, being sure to specify that I want proportions within rows. There is one caveat to this approach. The <code>prop.table</code> command expects a matrix or an array object not a data.frame so I need to recast my subset into a matrix with the <code>as.matrix</code> command.</p>
+<div class="sourceCode" id="cb903"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb903-1" title="1">props &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">as.matrix</span>(alabama_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)]), <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb903-2" title="2"><span class="kw">head</span>(props)</a></code></pre></div>
+<pre><code>##          white     latino      black       asian  indigenous      other
+## [1,] 0.8373431 0.02301255 0.11349372 0.007322176 0.006799163 0.01202929
+## [2,] 0.3889401 0.03456221 0.55944700 0.002304147 0.002304147 0.01244240
+## [3,] 0.7524459 0.02579306 0.19181737 0.005040024 0.004150608 0.02075304
+## [4,] 0.9188326 0.01937984 0.04354765 0.004103967 0.003191974 0.01094391
+## [5,] 0.7837637 0.03297418 0.13171094 0.027401077 0.004644250 0.01950585
+## [6,] 0.7284624 0.04798255 0.20119956 0.001635769 0.002726281 0.01799346</code></pre>
+<p>Lets make sure that the proportions add up to one in each row:</p>
+<div class="sourceCode" id="cb905"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb905-1" title="1"><span class="kw">summary</span>(<span class="kw">apply</span>(props, <span class="dv">1</span>, sum))</a></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##       1       1       1       1       1       1</code></pre>
+<p>The next step is to use these proportions to calculate entropy for each tract. The only hard part about this part is summing up across groups within the same tract. I can do this again with the <code>apply</code> command:</p>
+<div class="sourceCode" id="cb907"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb907-1" title="1">alabama_tracts<span class="op">$</span>entropy &lt;-<span class="st"> </span><span class="kw">apply</span>(props<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props), <span class="dv">1</span>, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb907-2" title="2"><span class="kw">head</span>(alabama_tracts)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 9
+##   statename tractid white latino black asian indigenous other entropy
+##   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+## 1 Alabama     20100  1601     44   217    14         13    23   0.606
+## 2 Alabama     20200   844     75  1214     5          5    27   0.891
+## 3 Alabama     20300  2538     87   647    17         14    70   0.755
+## 4 Alabama     20400  4030     85   191    18         14    48   0.381
+## 5 Alabama     20500  8438    355  1418   295         50   210   0.771
+## 6 Alabama     20600  2672    176   738     6         10    66   0.798</code></pre>
+<div class="sourceCode" id="cb909"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb909-1" title="1"><span class="kw">summary</span>(alabama_tracts<span class="op">$</span>entropy)</a></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.0000  0.4405  0.6734  0.6376  0.8293  1.3033</code></pre>
+<p>The <code>na.rm=TRUE</code> is important here because groups with a proportion of zero need to be ignored since the log of zero is not defined.</p>
+<p>In order to calculate Theil’s H, I also need a couple of other pieces of information. First, I need <span class="math inline">\(t_i\)</span> which is the total population of each tract. I can get this with the <code>apply</code> command.</p>
+<div class="sourceCode" id="cb911"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb911-1" title="1">alabama_tracts<span class="op">$</span>total &lt;-<span class="st"> </span><span class="kw">apply</span>(alabama_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
+<a class="sourceLine" id="cb911-2" title="2">                            <span class="dv">1</span>, sum)</a>
+<a class="sourceLine" id="cb911-3" title="3"><span class="kw">head</span>(alabama_tracts)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 10
+##   statename tractid white latino black asian indigenous other entropy total
+##   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+## 1 Alabama     20100  1601     44   217    14         13    23   0.606  1912
+## 2 Alabama     20200   844     75  1214     5          5    27   0.891  2170
+## 3 Alabama     20300  2538     87   647    17         14    70   0.755  3373
+## 4 Alabama     20400  4030     85   191    18         14    48   0.381  4386
+## 5 Alabama     20500  8438    355  1418   295         50   210   0.771 10766
+## 6 Alabama     20600  2672    176   738     6         10    66   0.798  3668</code></pre>
+<p>Now I just need to calculate entropy for the whole state of Alabama. I can do this by using <code>apply</code> again to sum up tract populations by race and then using <code>prop.table</code> again.</p>
+<div class="sourceCode" id="cb913"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb913-1" title="1">props_alabama &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">apply</span>(alabama_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb913-2" title="2">                                                    <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
+<a class="sourceLine" id="cb913-3" title="3">                                  <span class="dv">2</span>, sum))</a>
+<a class="sourceLine" id="cb913-4" title="4"><span class="kw">sum</span>(props_alabama)</a></code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<div class="sourceCode" id="cb915"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb915-1" title="1">alabama_entropy &lt;-<span class="st"> </span><span class="kw">sum</span>(props_alabama<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props_alabama))</a>
+<a class="sourceLine" id="cb915-2" title="2">alabama_entropy</a></code></pre></div>
+<pre><code>## [1] 0.8825423</code></pre>
+<p>Ok, now I have all the pieces that I need to calculate Theil’s H for alabama:</p>
+<div class="sourceCode" id="cb917"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb917-1" title="1"><span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(alabama_tracts<span class="op">$</span>total <span class="op">*</span><span class="st"> </span>alabama_tracts<span class="op">$</span>entropy)<span class="op">/</span></a>
+<a class="sourceLine" id="cb917-2" title="2"><span class="st">  </span>(<span class="kw">sum</span>(alabama_tracts<span class="op">$</span>total)<span class="op">*</span>alabama_entropy)</a></code></pre></div>
+<pre><code>## [1] 0.2675507</code></pre>
+<p>So, to re-capitulate, here is the code altogether that will calculate entropy for Alabama:</p>
+<div class="sourceCode" id="cb919"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb919-1" title="1">state_tracts &lt;-<span class="st"> </span><span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;Alabama&quot;</span>)</a>
+<a class="sourceLine" id="cb919-2" title="2">props &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">as.matrix</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb919-3" title="3">                                              <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)]), <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb919-4" title="4">state_tracts<span class="op">$</span>entropy &lt;-<span class="st"> </span><span class="kw">apply</span>(props<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props), <span class="dv">1</span>, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb919-5" title="5">state_tracts<span class="op">$</span>total &lt;-<span class="st"> </span><span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,</a>
+<a class="sourceLine" id="cb919-6" title="6">                                            <span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], <span class="dv">1</span>, sum)</a>
+<a class="sourceLine" id="cb919-7" title="7">props_state &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb919-8" title="8">                                                <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], <span class="dv">2</span>, sum))</a>
+<a class="sourceLine" id="cb919-9" title="9">entropy_state &lt;-<span class="st"> </span><span class="kw">sum</span>(props_state<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props_state))</a>
+<a class="sourceLine" id="cb919-10" title="10">theil_h &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(state_tracts<span class="op">$</span>total <span class="op">*</span><span class="st"> </span>state_tracts<span class="op">$</span>entropy)<span class="op">/</span></a>
+<a class="sourceLine" id="cb919-11" title="11"><span class="st">  </span>(<span class="kw">sum</span>(state_tracts<span class="op">$</span>total)<span class="op">*</span>entropy_state)</a>
+<a class="sourceLine" id="cb919-12" title="12">theil_h</a></code></pre></div>
+<pre><code>## [1] 0.2675507</code></pre>
+<p>Notice that I have changed all of the names of objects I create here that contain “alabama” to a more general “state” name. The only place where “Alabama” is referenced is in the first line of the code. This makes the code very <em>re-usable</em>. I can just change the state name that is called in the first <code>subset</code> command and the code will produce a Theil’s H for that state. Lets try that with Oregon:</p>
+<div class="sourceCode" id="cb921"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb921-1" title="1">state_tracts &lt;-<span class="st"> </span><span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;Oregon&quot;</span>)</a>
+<a class="sourceLine" id="cb921-2" title="2">props &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">as.matrix</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb921-3" title="3">                                              <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)]), <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb921-4" title="4">state_tracts<span class="op">$</span>entropy &lt;-<span class="st"> </span><span class="kw">apply</span>(props<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props), <span class="dv">1</span>, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb921-5" title="5">state_tracts<span class="op">$</span>total &lt;-<span class="st"> </span><span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,</a>
+<a class="sourceLine" id="cb921-6" title="6">                                            <span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], <span class="dv">1</span>, sum)</a>
+<a class="sourceLine" id="cb921-7" title="7">props_state &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb921-8" title="8">                                                <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], <span class="dv">2</span>, sum))</a>
+<a class="sourceLine" id="cb921-9" title="9">entropy_state &lt;-<span class="st"> </span><span class="kw">sum</span>(props_state<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props_state))</a>
+<a class="sourceLine" id="cb921-10" title="10">theil_h &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(state_tracts<span class="op">$</span>total <span class="op">*</span><span class="st"> </span>state_tracts<span class="op">$</span>entropy)<span class="op">/</span></a>
+<a class="sourceLine" id="cb921-11" title="11"><span class="st">  </span>(<span class="kw">sum</span>(state_tracts<span class="op">$</span>total)<span class="op">*</span>entropy_state)</a>
+<a class="sourceLine" id="cb921-12" title="12">theil_h</a></code></pre></div>
+<pre><code>## [1] 0.1135007</code></pre>
+</div>
+<div id="creating-functions" class="section level3">
+<h3>Creating Functions</h3>
+<p>In cases like this where you will end up re-using the same code on different but identically structured objects, I strongly recommend that you create your own custom function. By creating a custom function, you will only have to write the code you need in one place. Also, if you realize there are bugs in the code later, you only need to fix it in one place.</p>
+<p>Custom functions can be created with the following syntax:</p>
+<div class="sourceCode" id="cb923"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb923-1" title="1">myfunctionname &lt;-<span class="st"> </span><span class="cf">function</span>(argument1, argument2, ...) {</a>
+<a class="sourceLine" id="cb923-2" title="2">  <span class="co">#a bunch of code to run on the objects argument1 and argument2</span></a>
+<a class="sourceLine" id="cb923-3" title="3">  <span class="kw">return</span>(value)</a>
+<a class="sourceLine" id="cb923-4" title="4">}</a></code></pre></div>
+<p>In the call to <code>function</code> you can define how many arguments you wish to feed into the function. Then within the curly brackets you can declare code to run on the objects as you named them. Any object referenced within the curly brackets must be an object identified in the initial function call. The last call within the curly brackets is usually the <code>return</code> command which will return whatever value or object you want the function to produce. Here is my code to create a function named <code>calculateTheilH</code>.</p>
+<div class="sourceCode" id="cb924"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb924-1" title="1">calculateTheilH &lt;-<span class="st"> </span><span class="cf">function</span>(state_tracts) {</a>
+<a class="sourceLine" id="cb924-2" title="2">  props &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">as.matrix</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb924-3" title="3">                                                <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)]), </a>
+<a class="sourceLine" id="cb924-4" title="4">                      <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb924-5" title="5">  state_tracts<span class="op">$</span>entropy &lt;-<span class="st"> </span><span class="kw">apply</span>(props<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props), <span class="dv">1</span>, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb924-6" title="6">  state_tracts<span class="op">$</span>total &lt;-<span class="st"> </span><span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,</a>
+<a class="sourceLine" id="cb924-7" title="7">                                              <span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
+<a class="sourceLine" id="cb924-8" title="8">                              <span class="dv">1</span>, sum)</a>
+<a class="sourceLine" id="cb924-9" title="9">  props_state &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb924-10" title="10">                                                  <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
+<a class="sourceLine" id="cb924-11" title="11">                                  <span class="dv">2</span>, sum))</a>
+<a class="sourceLine" id="cb924-12" title="12">  entropy_state &lt;-<span class="st"> </span><span class="kw">sum</span>(props_state<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props_state))</a>
+<a class="sourceLine" id="cb924-13" title="13">  theil_h &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(state_tracts<span class="op">$</span>total <span class="op">*</span><span class="st"> </span>state_tracts<span class="op">$</span>entropy)<span class="op">/</span>(<span class="kw">sum</span>(state_tracts<span class="op">$</span>total)<span class="op">*</span>entropy_state)</a>
+<a class="sourceLine" id="cb924-14" title="14">  <span class="kw">return</span>(theil_h)</a>
+<a class="sourceLine" id="cb924-15" title="15">}</a></code></pre></div>
+<p>The function feeds in an object called <code>state_tracts</code> which should be the data.frame of tracts for a given state. The function then runs the same lines of code that I created above. Lets try it out on a couple of states.</p>
+<div class="sourceCode" id="cb925"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb925-1" title="1"><span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;Alabama&quot;</span>))</a></code></pre></div>
+<pre><code>## [1] 0.2675507</code></pre>
+<div class="sourceCode" id="cb927"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb927-1" title="1"><span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;Oregon&quot;</span>))</a></code></pre></div>
+<pre><code>## [1] 0.1135007</code></pre>
+<div class="sourceCode" id="cb929"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb929-1" title="1"><span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;California&quot;</span>))</a></code></pre></div>
+<pre><code>## [1] 0.2356094</code></pre>
+<div class="sourceCode" id="cb931"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb931-1" title="1"><span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;New York&quot;</span>))</a></code></pre></div>
+<pre><code>## [1] 0.3633379</code></pre>
+<p>I have now simplified my code considerably. Without the function I would have had to copy and paste the code for calculating entropy fifty different times. If I then changed or corrected something later in that code, it would have been a nightmare to fix it for all fifty versions. Now I can keep all that code in one place and I just need to type one line for each state to calculate Theil’s H. But I can improve this even more by iteration.</p>
+</div>
+<div id="iteration" class="section level3">
+<h3>Iteration</h3>
+<p>Basically, I want to iterate over states and calculate Theil’s H for each state. Computers are great at this kind of iterative process. Iterative methods are very common in real programming languages because they can handle problems where a lot of repitition is necessary and computers can typically execute them quickly. The way this is handled in most programming languages is by <em>looping</em>. In R, we can solve our iteration problem with a for-loop.</p>
+<div class="sourceCode" id="cb933"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb933-1" title="1"><span class="cf">for</span>(i <span class="cf">in</span> some_vector) {</a>
+<a class="sourceLine" id="cb933-2" title="2">  <span class="co">#some code to run that will usually call i</span></a>
+<a class="sourceLine" id="cb933-3" title="3">}</a></code></pre></div>
+<p>A for-loop will sequentially move through all of the values in a vector and run the code within the curly brackets each time. Usually, this code will reference the particular value of the vector.</p>
+<p>Here is a very simple example of a for-loop that iterates through all the unique names of states and prints them out.</p>
+<div class="sourceCode" id="cb934"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb934-1" title="1"><span class="cf">for</span>(state <span class="cf">in</span> <span class="kw">unique</span>(tracts<span class="op">$</span>statename)) {</a>
+<a class="sourceLine" id="cb934-2" title="2">  <span class="kw">print</span>(state)</a>
+<a class="sourceLine" id="cb934-3" title="3">}</a></code></pre></div>
+<pre><code>## [1] &quot;Alabama&quot;
+## [1] &quot;Alaska&quot;
+## [1] &quot;Arizona&quot;
+## [1] &quot;Arkansas&quot;
+## [1] &quot;California&quot;
+## [1] &quot;Colorado&quot;
+## [1] &quot;Connecticut&quot;
+## [1] &quot;Delaware&quot;
+## [1] &quot;Florida&quot;
+## [1] &quot;Georgia&quot;
+## [1] &quot;Hawaii&quot;
+## [1] &quot;Idaho&quot;
+## [1] &quot;Illinois&quot;
+## [1] &quot;Indiana&quot;
+## [1] &quot;Iowa&quot;
+## [1] &quot;Kansas&quot;
+## [1] &quot;Kentucky&quot;
+## [1] &quot;Louisiana&quot;
+## [1] &quot;Maine&quot;
+## [1] &quot;Maryland&quot;
+## [1] &quot;Massachusetts&quot;
+## [1] &quot;Michigan&quot;
+## [1] &quot;Minnesota&quot;
+## [1] &quot;Mississippi&quot;
+## [1] &quot;Missouri&quot;
+## [1] &quot;Montana&quot;
+## [1] &quot;Nebraska&quot;
+## [1] &quot;Nevada&quot;
+## [1] &quot;New Hampshire&quot;
+## [1] &quot;New Jersey&quot;
+## [1] &quot;New Mexico&quot;
+## [1] &quot;New York&quot;
+## [1] &quot;North Carolina&quot;
+## [1] &quot;North Dakota&quot;
+## [1] &quot;Ohio&quot;
+## [1] &quot;Oklahoma&quot;
+## [1] &quot;Oregon&quot;
+## [1] &quot;Pennsylvania&quot;
+## [1] &quot;Rhode Island&quot;
+## [1] &quot;South Carolina&quot;
+## [1] &quot;South Dakota&quot;
+## [1] &quot;Tennessee&quot;
+## [1] &quot;Texas&quot;
+## [1] &quot;Utah&quot;
+## [1] &quot;Vermont&quot;
+## [1] &quot;Virginia&quot;
+## [1] &quot;Washington&quot;
+## [1] &quot;West Virginia&quot;
+## [1] &quot;Wisconsin&quot;
+## [1] &quot;Wyoming&quot;</code></pre>
+<p>This is not very useful, but it does give us a hint of a for-loop that would be more useful. We could iterate through unique state names and then use each state name to define a subset of tracts from that state and apply our calculateTheilH function:</p>
+<div class="sourceCode" id="cb936"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb936-1" title="1"><span class="cf">for</span>(state <span class="cf">in</span> <span class="kw">unique</span>(tracts<span class="op">$</span>statename)) {</a>
+<a class="sourceLine" id="cb936-2" title="2">  <span class="kw">print</span>(<span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span>state)))</a>
+<a class="sourceLine" id="cb936-3" title="3">}</a></code></pre></div>
+<pre><code>## [1] 0.2675507
+## [1] 0.1682601
+## [1] 0.2372527
+## [1] 0.2664347
+## [1] 0.2356094
+## [1] 0.1620947
+## [1] 0.2333971
+## [1] 0.1489769
+## [1] 0.2653847
+## [1] 0.2448094
+## [1] 0.1145708
+## [1] 0.104742
+## [1] 0.3701819
+## [1] 0.2661208
+## [1] 0.1608354
+## [1] 0.1873829
+## [1] 0.2045492
+## [1] 0.2501826
+## [1] 0.08692125
+## [1] 0.2872802
+## [1] 0.2363536
+## [1] 0.3383812
+## [1] 0.185217
+## [1] 0.2272864
+## [1] 0.291448
+## [1] 0.2111407
+## [1] 0.2229126
+## [1] 0.1324474
+## [1] 0.08889904
+## [1] 0.2874875
+## [1] 0.2334191
+## [1] 0.3633379
+## [1] 0.2035033
+## [1] 0.2375026
+## [1] 0.2930075
+## [1] 0.1489998
+## [1] 0.1135007
+## [1] 0.3331475
+## [1] 0.2328076
+## [1] 0.1739929
+## [1] 0.2732335
+## [1] 0.3013521
+## [1] 0.2681015
+## [1] 0.1120612
+## [1] 0.0518904
+## [1] 0.2046499
+## [1] 0.1501689
+## [1] 0.1359242
+## [1] 0.3002023
+## [1] 0.1187653</code></pre>
+<p>That worked! We just have one problem. These results are just being printed to the console. We want to save them to a new vector. We can do this by initializing a <code>NULL</code> vector and then adding each calculated value to this vector with the concatenate command:</p>
+<div class="sourceCode" id="cb938"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb938-1" title="1">theil_h &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb938-2" title="2"><span class="cf">for</span>(state <span class="cf">in</span> <span class="kw">unique</span>(tracts<span class="op">$</span>statename)) {</a>
+<a class="sourceLine" id="cb938-3" title="3">  theil_h &lt;-<span class="st"> </span><span class="kw">c</span>(theil_h, <span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span>state)))</a>
+<a class="sourceLine" id="cb938-4" title="4">}</a>
+<a class="sourceLine" id="cb938-5" title="5"><span class="kw">length</span>(theil_h)</a></code></pre></div>
+<pre><code>## [1] 50</code></pre>
+<div class="sourceCode" id="cb940"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb940-1" title="1"><span class="kw">summary</span>(theil_h)</a></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+## 0.05189 0.15284 0.23005 0.21467 0.26727 0.37018</code></pre>
+<p>Ok, so now we have a vector of length 50 that gives the Theil’s H for each state. As a final touch-up step, we can go ahead and put this back into a data frame with a state id.</p>
+<div class="sourceCode" id="cb942"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb942-1" title="1">state_data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">statename=</span><span class="kw">unique</span>(tracts<span class="op">$</span>statename), theil_h)</a>
+<a class="sourceLine" id="cb942-2" title="2"><span class="kw">head</span>(state_data)</a></code></pre></div>
+<pre><code>##    statename   theil_h
+## 1    Alabama 0.2675507
+## 2     Alaska 0.1682601
+## 3    Arizona 0.2372527
+## 4   Arkansas 0.2664347
+## 5 California 0.2356094
+## 6   Colorado 0.1620947</code></pre>
+<div id="the-lapply-command" class="section level4">
+<h4>The <code>lapply</code> command</h4>
+<p>It turns out that <a href="http://stackoverflow.com/questions/7142767/why-are-loops-slow-in-r">R is not very efficient with iterative loops</a>. So, while iterative looping can help solve problems, its better to look for a different solution before you start using iteration in R. That different solution is usually the <code>lapply</code> command or its closely related cousin <code>sapply</code>.</p>
+<p>The <code>lapply</code> command will apply a given function to every object in a list. If we were to put all of our state-specific tract datasets into a list, we could run an <code>lapply</code> command calling <code>calculateTheilH</code> on the entire list at once. Generally, this will be much faster than a for-loop. The code would look something like:</p>
+<div class="sourceCode" id="cb944"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb944-1" title="1">theil_h &lt;-<span class="st"> </span><span class="kw">lapply</span>(state_list, calculateTheilH)</a></code></pre></div>
+<p>The only trick is figuring out how to create a list of state tract data where each object in the list is a data frame of tract data for a specific state. It turns out that the <code>split</code> command is just what we need. It will split an object into a list of the same objects by some factor variable. In our case:</p>
+<div class="sourceCode" id="cb945"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb945-1" title="1">state_list &lt;-<span class="st"> </span><span class="kw">split</span>(tracts, tracts<span class="op">$</span>statename)</a>
+<a class="sourceLine" id="cb945-2" title="2"><span class="kw">length</span>(state_list)</a></code></pre></div>
+<pre><code>## [1] 50</code></pre>
+<div class="sourceCode" id="cb947"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb947-1" title="1"><span class="kw">head</span>(state_list<span class="op">$</span>Alabama)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 8
+##   statename tractid white latino black asian indigenous other
+##   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;
+## 1 Alabama     20100  1601     44   217    14         13    23
+## 2 Alabama     20200   844     75  1214     5          5    27
+## 3 Alabama     20300  2538     87   647    17         14    70
+## 4 Alabama     20400  4030     85   191    18         14    48
+## 5 Alabama     20500  8438    355  1418   295         50   210
+## 6 Alabama     20600  2672    176   738     6         10    66</code></pre>
+<p>The <code>state_list</code> object is a list where each object is the tract data.frame for a given state. Now we can run our <code>lapply</code> command from above:</p>
+<div class="sourceCode" id="cb949"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb949-1" title="1">theil_h &lt;-<span class="st"> </span><span class="kw">lapply</span>(state_list, calculateTheilH)</a>
+<a class="sourceLine" id="cb949-2" title="2"><span class="kw">class</span>(theil_h)</a></code></pre></div>
+<pre><code>## [1] &quot;list&quot;</code></pre>
+<div class="sourceCode" id="cb951"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb951-1" title="1">theil_h<span class="op">$</span>Alabama</a></code></pre></div>
+<pre><code>## [1] 0.2675507</code></pre>
+<p>The only downside to the <code>lapply</code> function is that it outputs the results as a list as well. In this case, where the output of our function is a just a simple number, we would like the output to just be a simple vector. It turns out the <code>sapply</code> function can do this. The <code>sapply</code> function is just a wrapper to <code>lapply</code> that converts the output when possible to a simple vector or matrix format.</p>
+<div class="sourceCode" id="cb953"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb953-1" title="1">theil_h &lt;-<span class="st"> </span><span class="kw">sapply</span>(state_list, calculateTheilH)</a>
+<a class="sourceLine" id="cb953-2" title="2"><span class="kw">class</span>(theil_h)</a></code></pre></div>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+<div class="sourceCode" id="cb955"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb955-1" title="1"><span class="kw">head</span>(theil_h)</a></code></pre></div>
+<pre><code>##    Alabama     Alaska    Arizona   Arkansas California   Colorado 
+##  0.2675507  0.1682601  0.2372527  0.2664347  0.2356094  0.1620947</code></pre>
+</div>
+</div>
+<div id="putting-it-all-together" class="section level3">
+<h3>Putting It All Together</h3>
+<p>Without the use of functions and iterative methods, calculating this measure would have been a nightmare. We would have had to copy and paste code fifty different times for each state. Instead, we have been able to reduce the entire process to just a few lines of code, most of which is just code for the function:</p>
+<div class="sourceCode" id="cb957"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb957-1" title="1">calculateTheilH &lt;-<span class="st"> </span><span class="cf">function</span>(state_tracts) {</a>
+<a class="sourceLine" id="cb957-2" title="2">  props &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">as.matrix</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb957-3" title="3">                                                <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)]), </a>
+<a class="sourceLine" id="cb957-4" title="4">                      <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb957-5" title="5">  state_tracts<span class="op">$</span>entropy &lt;-<span class="st"> </span><span class="kw">apply</span>(props<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props), <span class="dv">1</span>, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb957-6" title="6">  state_tracts<span class="op">$</span>total &lt;-<span class="st"> </span><span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,</a>
+<a class="sourceLine" id="cb957-7" title="7">                                              <span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
+<a class="sourceLine" id="cb957-8" title="8">                              <span class="dv">1</span>, sum)</a>
+<a class="sourceLine" id="cb957-9" title="9">  props_state &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb957-10" title="10">                                                  <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
+<a class="sourceLine" id="cb957-11" title="11">                                  <span class="dv">2</span>, sum))</a>
+<a class="sourceLine" id="cb957-12" title="12">  entropy_state &lt;-<span class="st"> </span><span class="kw">sum</span>(props_state<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props_state))</a>
+<a class="sourceLine" id="cb957-13" title="13">  theil_h &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(state_tracts<span class="op">$</span>total <span class="op">*</span><span class="st"> </span>state_tracts<span class="op">$</span>entropy)<span class="op">/</span></a>
+<a class="sourceLine" id="cb957-14" title="14"><span class="st">    </span>(<span class="kw">sum</span>(state_tracts<span class="op">$</span>total)<span class="op">*</span>entropy_state)</a>
+<a class="sourceLine" id="cb957-15" title="15">  <span class="kw">return</span>(theil_h)</a>
+<a class="sourceLine" id="cb957-16" title="16">}</a>
+<a class="sourceLine" id="cb957-17" title="17">tracts &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;resources/tracts_state.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb957-18" title="18">theil_h &lt;-<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">split</span>(tracts, tracts<span class="op">$</span>statename), calculateTheilH)</a>
+<a class="sourceLine" id="cb957-19" title="19">theil_h &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">statename=</span><span class="kw">names</span>(theil_h), theil_h)</a>
+<a class="sourceLine" id="cb957-20" title="20"><span class="kw">rownames</span>(theil_h) &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb957-21" title="21"><span class="kw">head</span>(theil_h)</a></code></pre></div>
+<pre><code>##    statename   theil_h
+## 1    Alabama 0.2675507
+## 2     Alaska 0.1682601
+## 3    Arizona 0.2372527
+## 4   Arkansas 0.2664347
+## 5 California 0.2356094
+## 6   Colorado 0.1620947</code></pre>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="reshaping-and-merging-data.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="using-r-markdown.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

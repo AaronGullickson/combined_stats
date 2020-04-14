@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Statistical Inference</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Aaron Gullickson" />
+    <meta name="date" content="2020-04-14" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/uo.css" rel="stylesheet" />
+    <link href="libs/remark-css/uol-fonts.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="lecture_slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Statistical Inference
+## Sociology 312
+### Aaron Gullickson
+### University of Oregon
+### 2020-04-14
+
+---
+
+
+
+
+
+
+
+
+
+class: inverse, center, middle
+
+background-image: url(images/tim-bennett-EoC_IuYmtug-unsplash.jpg)
+background-size: cover
+
+# The Problem of Statistical Inference
+
+---
+
+## What percent of Americans favor ending birthright citizenship?
+
+--
+
+We can look at the results from our politics dataset: 
+
+
+```r
+100*round(prop.table(table(politics$brcitizen)),3)
+```
+
+```
+## 
+##  Oppose Neither   Favor 
+##    39.6    28.6    31.7
+```
+
+About 31.7% of respondents to the American National Election Study (ANES) favored ending birthright citizenship.
+
+--
+
+* Is the percent of *all* Americans also 31.7%? 
+
+--
+
+* The ANES is a **sample** of the US voting age **population**. How confident can we be that the sample percent is close to the true population percent?
+
+---
+
+## Drawing a statistical inference
+
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-3-1.png" width="720" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Drawing a statistical inference
+
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-4-1.png" width="720" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Drawing a statistical inference
+
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-5-1.png" width="720" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Parameters and statistics
+
+.pull-left[
+### Parameters
+
+* Parameters represent unknown measures in the population, such as the population mean or proportion
+* Parameters are represented by Greek letters (e.g. the population mean is `\(\mu\)`)
+
+### Statistics
+
+* Statistics represent known measurements from the sample that estimate the unknown population parameters.
+* Statistics are represented by roman letters (e.g. the sample mean `\(\bar{x}\)`)
+
+]
+
+.pull-right[
+
+| Measure             | Parameter | Statistic |
+|:-------------------:|:---------:|:---------:|
+| mean                | `\(\mu\)`     | `\(\bar{x}\)` |
+| proportion          | `\(\rho\)`    | `\(\hat{p}\)` |
+| standard deviation  | `\(\sigma\)`  | `\(s\)`       | 
+
+]
+
+---
+
+## When samples go bad 👿
+
+--
+
+.pull-left[
+### Systematic Bias
+
+.center[![systematic darts](images/systematic_darts.png)]
+
+Something about our data collection procedure biases our results systematically.
+
+* We made a mistake in our research design. 
+* Statistical inference cannot fix this mistake.
+
+]
+
+--
+
+.pull-right[
+### Random Bias
+
+.center[![random darts](images/random_darts.png)]
+
+Just by random chance we happened to draw a sample that is very different from the population on the parameter we care about.
+
+* We didn't do anything wrong! We just had bad luck.
+* Statistical inference addresses this form of bias.
+]
+
+???
+
+* Even though we know random bias *might* have caused our sample statistic to be different from the population mean, we can't know for sure if this happened or not because we don't know the true population parameter!
+* This is what statistical inference is all about. Even though we can never say for certain that our results are close or far away from the true value, we can quantify our uncertainty about how different the sample statistic could potentially be from the population parameter.
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/kai-pilger-qHfJPxOnXi4-unsplash.jpg)
+background-size: cover
+
+# The Sampling Distribution
+
+---
+
+## Three kinds of distributions
+
+You draw a simple random sample of 100 people from the US population and calculate their mean years of education. There are three kinds of distributions involved in this process:
+
+--
+
+.pull-left[
+### Population Distribution
+
+* The distribution of years of education for the whole US population. 
+* Its mean is given by `\(\mu\)`. 
+* The population mean and distribution are unknown. 
+]
+
+--
+
+.pull-right[
+### Sample Distribution
+
+* The distribution of years of education in your sample. 
+* The mean is given by `\(\bar{x}\)`. 
+* The mean and distribution are known and hopefully approximate the population distribution. 
+]
+
+--
+
+### Sampling Distribution
+
+* The distribution of the sample mean `\(\bar{x}\)` in all possible samples of size 100. 
+* We can't know this distribution exactly, but it turns out that we know its general shape. 
+
+---
+
+## Example: Height in our class
+
+.pull-left[
+* Lets treat our class of 42 students as the population. I want to estimate the average height of the class. 
+* In this case, I am omnipotent - I know the population distribution because I collected data for the whole class on Canvas.
+]
+
+.pull-right[
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## How many samples of size 2 are possible?
+
+Lets say I wanted to sample two students to estimate class height. In a class of 42 students, how many unique samples of size 2 exist?
+
+--
+
+* On the first draw, I have 42 possibilities.
+
+--
+
+* On the second draw, I have 41 possibilities because I am not putting my first draw back.
+
+--
+
+* I therefore have `\(42*41=1722\)` possible samples. 
+
+--
+
+* However, half of these samples are just duplicates of the other half, but sampled in the other order. In one sample, I samples John and Then Kate and in another I sampled Kate and then John.
+
+--
+
+* Therefore the true number of unique samples is: `$$42*41/2=861$$`
+
+--
+
+* What if I calculated the sample mean in all 861 samples and looked at the distribution of these sample means?
+
+---
+
+## The sampling distribution
+
+&lt;img src="module4_slides_statistical_inference_files/figure-html/hist-samplingd-size2-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Sampling distributions for different `\(n\)`
+
+&lt;img src="module4_slides_statistical_inference_files/figure-html/compare-density-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+---
+
+## What is the mean of the sampling distributions?
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Distribution &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Mean &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Standard Deviation &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Population Distribution &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 66.52 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.87 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sampling Distibution (n=2) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 66.52 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.36 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sampling Distribution (n=3) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 66.52 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.71 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sampling Distribution (n=4) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 66.52 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.32 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sampling Distribution (n=5) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 66.52 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.04 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+## Its the Central Limit Theorem!
+
+.pull-left[
+As the sample size increases, the sampling distribution of a sample mean becomes a **normal** distribution.
+
+* The normal distribution is a bell-shaped curve with two characteristics: center and spread. 
+* Centered on `\(\mu\)`, which is the true value in the population.
+* With a spread (standard deviation) of `\(\sigma/\sqrt{n}\)`, where `\(\sigma\)` is the standard deviation in the population. 
+* The center of the sampling distribution is the true value of the parameter and the spread of the sampling distribution shrinks as the sample grows larger. 
+]
+
+.pull-right[
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-8-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## The Standard Error
+
+There are three different kinds of standard deviations involved here, one that corresponds to each of the types of distributions. 
+
+| Distribution   | Notation | Description | 
+|----------------|----------|-------------|
+| Population     | `\(\sigma\)` | Unknown population standard deviation |
+| Sample         | `\(s\)` | Known sample standard deviation that hopefully approximates `\(\sigma\)` |
+| Sampling       | `\(\sigma/\sqrt{n}\)` | **Standard error**: Standard deviation of the sampling distribution |
+
+The standard error gives us an estimate of the strength of potential random bias in our sample. 
+
+---
+
+## Sampling distributions are the 🔑 concept 
+
+.pull-left[
+* When we draw a sample and calculate the sample mean we are effectively drawing a value from the sampling distribution for the sample mean. 
+* If we know what that distribution looks like then we can know the probability of drawing a sample close to or far from the true population parameter. 
+]
+
+.pull-right[
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-9-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## But there is a catch!
+
+* The shape of the sampling distribution is determined by:
+
+  * the population mean, `\(\mu\)`
+  * the population standard deviation, `\(\sigma\)`
+
+--
+
+* But these values are unknown! 😮 
+
+--
+
+.pull-left[
+### First Fix
+
+* We can substitute the sample standard deviation `\(s\)` from our sample for the population standard deviation `\(\sigma\)`. 
+* This has consequences. Because we are using a sample value which can also be subject to random bias, this substitution creates greater uncertainty in our estimate which we will address later. 
+]
+  
+--
+
+.pull-right[
+### Second Fix
+
+* **Confidence Intervals**: Provide a range of values within which you feel confident that the true population mean resides. 
+* **Hypothesis tests**: Play a game of make believe. If the true population mean was a given value, what is the probability that I would get the sample mean value that I actually did? 
+]  
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/yogi-purnama-en7G3hTSjBQ-unsplash.jpg)
+background-size: cover
+
+# Confidence Intervals
+
+---
+
+## Consider this statement
+
+.pull-left[
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-10-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+### Reverse the Logic
+
+If I construct the following interval:
+
+`$$\bar{x}\pm1.96*\sigma/\sqrt{n}$$`
+95% of *all possible samples* that I could have drawn will contain the true population mean `\(\mu\)` within this interval. 
+
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-11-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Confidence?
+
+We call the interval of `\(\bar{x}\pm1.96*\sigma/\sqrt{n}\)` the **confidence interval**. What does it mean?
+
+--
+
+.pull-left[
+### Not a probability
+* It is tempting to claim that there is a 95% probability that the true population mean is in this interval, but according to classic views of probability this is INCORRECT. 
+* The true population mean does not vary. It just is what it is, even if it is unknown. Either your interval contains it or the interval does not contain it. There is no probability.
+* The correct interpretation is that "95% of all possible confidence intervals will contain the true population mean."
+]
+
+--
+
+.pull-right[
+![super confused](images/super_confused.jpg)
+]
+
+---
+
+## Calculating the confidence interval
+
+The confidence interval is given by `\(\bar{x}\pm1.96*\sigma/\sqrt{n}\)`.
+
+But we don't know `\(\sigma\)` because this is the population standard deviation. What can we do?
+
+--
+
+### Substitute the sample standard deviation
+
+We *can* calculate `\(\bar{x}\pm1.96*s/\sqrt{n}\)`.
+
+However, this equation is no longer correct because we need to adjust for the added uncertainty of using a sample statistic where we should use a population parameter.
+
+--
+
+### Use the t-statistic as a fudge factor
+
+The actual formula we want is:
+
+`$$\bar{x} \pm t*s/\sqrt{n}$$`
+
+where `\(t\)` is the **t-statistic** and will be a number somewhat larger than 1.96.
+
+
+---
+
+## <i class="fas  fa-calculator "></i> Calculating the t-statistic
+
+The t-statistic you get depends on two characteristics:
+
+--
+
+* What level of confidence you want. We will always use 95% confidence intervals for this class.
+
+--
+
+- The number of **degrees of freedom** for the statistic. This is largely a function of sample size. For the sample mean, the degrees of freedom are given by `\(n-1\)`. 
+
+--
+
+In *R*, you can calculate the t-statistic with the `qt` command. Lets say we wanted the t-statistic for our crime data with 51 observations:
+
+
+```r
+qt(.975, 51-1)
+```
+
+```
+## [1] 2.008559
+```
+
+* Although we want the 95% confidence interval but we need to put in 0.975, because we are getting the upper tail of the distribution which has only 2.5% of the area above. 
+* The second argument is the degrees of freedom. 
+
+---
+
+## Example: Property crime rates
+
+.pull-left[
+First we need to calculate all the statistics we need:
+
+```r
+mean(crimes$Property)
+```
+
+```
+## [1] 2894.004
+```
+
+```r
+sd(crimes$Property)
+```
+
+```
+## [1] 641.5065
+```
+
+```r
+nrow(crimes)
+```
+
+```
+## [1] 51
+```
+
+Now we can calculate the t-statistic and standard error:
+
+```r
+tstat &lt;- qt(.975, 51-1)
+se &lt;- 641.5/sqrt(51)
+```
+]
+
+--
+
+.pull-right[
+The upper limit is given by:
+
+```r
+2894+tstat*se
+```
+
+```
+## [1] 3074.425
+```
+
+The lower limit is given by: 
+
+```r
+2894-tstat*se
+```
+
+```
+## [1] 2713.575
+```
+
+We are 95% confident that the true mean property crime rate across states is between 2731.6 and 3074.4 crimes per 100,000. 
+]
+
+---
+
+## 🤔 Wait, Does that even make sense?
+
+&gt; We are 95% confident that the true mean property crime rate across states is between 2731.6 and 3074.4 crimes per 100,000. 
+
+We did the math right, but this statement is still nonsense. Why?
+
+--
+
+* The crime data are **not a sample**.  
+* We have all fifty states plus the District of Columbia. So we have the entire population.
+* There is nothing to infer. The mean crime rate across states of 2824 per 100,000 is already the population mean. 
+
+--
+
+### Statistical inference only makes sense for samples
+
+.pull-left[
+#### Proper sample
+* Popularity data (Add Health)
+* Politics data (ANES)
+* Sexual frequency data (GSS)
+* Earnings data (CPS)
+
+]
+
+.pull-right[
+#### Not a sample
+* Titanic
+* Crimes
+* Movies
+]
+
+---
+
+## Example: Sexual frequency
+
+.pull-left[
+Calculate numbers that we need for later:
+
+```r
+xbar &lt;- mean(sex$sexf)
+s &lt;- sd(sex$sexf)
+n &lt;- nrow(sex)
+se &lt;- s/sqrt(n)
+t &lt;- qt(.975, n-1)
+```
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; results &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; sample mean &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50.127 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; sample standard deviation &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 53.597 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; sample size (n) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2103.000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; standard error &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.169 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; t-statistic &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.961 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+--
+
+.pull-right[
+Now calculate the interval:
+
+```r
+xbar+t*se
+```
+
+```
+## [1] 52.41873
+```
+
+```r
+xbar-t*se
+```
+
+```
+## [1] 47.83472
+```
+
+I am 95% confident that the mean sexual frequency in the US is between 47.8 and 52.4 times per year.
+]
+
+---
+
+## General form of the confidence interval
+
+We can construct confidence intervals for any statistic whose sampling distribution is a normal distribution. This includes:
+
+* means
+* mean differences
+* proportions
+* differences in proportions
+* correlation coefficient
+
+The general form of the confidence interval is given by:
+
+`$$\texttt{(sample statistic)} \pm t*(\texttt{standard error})$$` 
+
+The only trick is knowing how to calculate the standard error and degrees of freedom for the t-statistic for each particular statistic.
+
+---
+
+## Cheat sheet for SE and df
+
+| Type                    | SE                                                                               | df for `\(t\)`              |
+| :---------------------- | :------------------------------------------------------------------------------- | :---------------------- |
+| Mean                    | `\(s/\sqrt{n}\)`                                                                     | `\(n-1\)`                   |
+| Proportion              | `\(\sqrt\frac{\hat{p}*(1-\hat{p})}{n}\)`                                             | `\(n-1\)`                   |
+| Mean Difference         | `\(\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}\)`                                     | min( `\(n_1-1\)`, `\(n_2-1\)` ) |
+| Proportion Difference   | `\(\sqrt{\frac{\hat{p}_1*(1-\hat{p}_1)}{n_1}+\frac{\hat{p}_2*(1-\hat{p}_2)}{n_2}}\)` | min( `\(n_1-1\)`, `\(n_2-1\)` ) |
+| Correlation Coefficient | `\(\sqrt{\frac{1-r^2}{n-2}}\)`                                                       | `\(n-2\)`                   |
+
+.center[### 😱 So many equations!?!
+Don't panic; we will go through examples.]
+ 
+---
+
+## Proportion example
+
+What proportion of voters support removing birthright citizenship?
+
+.pull-left[
+Use `prop.table` to get the sample proportion:
+
+```r
+prop.table(table(politics$brcitizen))
+```
+
+```
+## 
+##    Oppose   Neither     Favor 
+## 0.3964134 0.2864559 0.3171307
+```
+
+```r
+p &lt;- 0.3171307
+```
+
+Calculate values:
+
+```r
+n &lt;- nrow(politics)
+se &lt;- sqrt(p*(1-p)/n)
+t &lt;- qt(0.975, n-1)
+```
+]
+
+.pull-right[
+Get confidence intervals:
+
+```r
+p+t*se
+```
+
+```
+## [1] 0.3311453
+```
+
+```r
+p-t*se
+```
+
+```
+## [1] 0.3031161
+```
+
+I am 95% confident that the true proportion of American adults who support removing birthright citizenship is between 30.3% and 33.1%.
+]
+
+---
+ 
+## Mean difference example
+
+What is the difference in sexual frequency between married and never married individuals?
+
+Use `tapply` to get means by groups and then calculate the difference you want:
+
+```r
+tapply(sex$sexf, sex$marital, mean)
+```
+
+```
+##       Married       Widowed      Divorced     Separated Never married 
+##     56.094106      9.222628     41.388720     55.652778     53.617704
+```
+
+```r
+diff &lt;- 56.094106-53.617704
+```
+
+Use `tapply` again to calculate standard deviations by group for the SE calculation:
+
+```r
+#use tapply again to get sd by group
+tapply(sex$sexf, sex$marital, sd)
+```
+
+```
+##       Married       Widowed      Divorced     Separated Never married 
+##      49.95361      26.61206      55.40738      58.21485      58.81459
+```
+
+```r
+sd1 &lt;- 49.95361
+sd2 &lt;- 58.81459
+```
+
+---
+
+## Mean difference example, continued
+
+Use `table` to get sample size by group:
+
+```r
+table(sex$marital)
+```
+
+```
+## 
+##       Married       Widowed      Divorced     Separated Never married 
+##          1052           137           328            72           514
+```
+
+```r
+n1 &lt;- 1052
+n2 &lt;- 514
+```
+
+.pull-left[
+
+```r
+se &lt;- sqrt(sd1^2/n1+sd2^2/n2)
+t &lt;- qt(0.975,n2-1)
+diff+t*se
+```
+
+```
+## [1] 8.403469
+```
+
+```r
+diff-t*se
+```
+
+```
+## [1] -3.450665
+```
+]
+
+.pull-right[
+I am 95% confident that, among American adults, married individuals have sex between 8.4 more times per year or 3.45 less times per year than never married individuals, on average. 
+]
+
+---
+
+## Proportion difference example
+
+What is the difference in support for removing birthright citizenship between those who have served in the military and those who have not? 
+
+.pull-left[
+Use `prop.table` to calculate proportions for each group:
+
+```r
+prop.table(table(politics$brcitizen, 
+                 politics$military), 2)
+```
+
+```
+##          
+##                  No       Yes
+##   Oppose  0.4069860 0.3093682
+##   Neither 0.2900238 0.2570806
+*##   Favor   0.3029902 0.4335512
+```
+
+```r
+p1 &lt;- 0.3029902
+p2 &lt;- 0.4335512
+diff &lt;- p2-p1
+```
+]
+
+.pull-right[
+Use `table` to get sample sizes by group:
+
+
+```r
+table(politics$military)
+```
+
+```
+## 
+##   No  Yes 
+## 3779  459
+```
+
+```r
+n1 &lt;- 3779
+n2 &lt;- 459
+```
+]
+
+---
+
+## Proportion difference example, continued
+
+
+Calculate standard error and t-statistic:
+
+```r
+se &lt;- sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
+t &lt;- qt(0.975, n2-1)
+```
+
+Confidence intervals:
+
+```r
+diff-t*se
+```
+
+```
+## [1] 0.08279002
+```
+
+```r
+diff+t*se
+```
+
+```
+## [1] 0.178332
+```
+
+I am 95% confident that the percent in support for removing birthright citizenship is between 8.3% and 17.8% higher among who have served in the military than those who have not. 
+
+---
+
+## Correlation coefficent example
+
+What is the correlation between age and wages among US workers? 
+
+.pull-left[
+Use `cor` command to get the sample correlation coefficient:
+
+```r
+r &lt;- cor(earnings$age, earnings$wages)
+```
+
+Use `nrow` to get sample size and then calculate standard error and t-statistic.
+
+```r
+n &lt;- nrow(earnings)
+se &lt;- sqrt((1-r^2)/(n-2))
+t &lt;- qt(0.975, n-2)
+```
+]
+
+.pull-right[
+Calculate confidence intervals:
+
+```r
+r - t*se
+```
+
+```
+## [1] 0.2135195
+```
+
+```r
+r + t*se
+```
+
+```
+## [1] 0.2235427
+```
+
+I am 95% confident that the true correlation coefficient between age and wages among US workers is between 0.214 and 0.224. 
+]
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/chuttersnap-UmncJq4KPcA-unsplash.jpg)
+background-size: cover
+
+# Hypothesis Tests
+
+---
+
+## Game of make believe
+
+.pull-left[
+We know what the sampling distribution should look like, but we don't know its center (the true population parameter). 
+
+So we set up a game of make-believe:
+
+* Assume that the true parameter is some value.
+* If assumption is correct, what is the probability that I would have gotten the sample statistic that I got?
+* If this probability is really low, then I reject my assumption. 
+]
+
+
+.pull-right[
+![Winnie the Pooh and Christopher Robin](images/winnie_pooh.jpg)
+]
+
+---
+
+## An almost true story
+
+.pull-left[
+![Coke bottle](images/coke.png)
+]
+
+.pull-right[
+Coca-Cola used to do promotionals where it claimed that 1 in 12 bottle caps (8.3%) on a Coca-Cola bottle would earn a free Coke.
+
+When I was a busy assistant professor trying to get tenure, I bought 100 bottles of Coke from the downstairs vending machine and only got 5 winners (5%). (The number is not true, but it is nice and round)
+
+Does the difference between my winning percentage and that claimed by Coca-Cola show that they were lying?
+]
+
+---
+
+## Lets set up a null hypothesis
+
+--
+
+.pull-left[
+### In English
+* The **null hypothesis** ( `\(H_0\)` ) is your assumption about the true parameter value. It is your prior assumption unless the data can prove you wrong. 
+
+* I assume that Coca-Cola is telling the truth, until I can prove them wrong, so my null hypothesis is that the true percentage of winning bottlecaps is 8.3%. 
+]
+
+--
+
+.pull-right[
+### Mathematical symbols
+
+`$$H_0: \rho=0.083$$`
+
+I use the Greek `\(\rho\)` to indicate the population proportion of winners. I will use `\(\hat{p}\)` later to represent the proportion observed in my sample. 
+]
+
+---
+
+## Assuming the null hypothesis is true, what is the sampling distribution of my sample proportion?
+
+.pull-right[
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-34-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Assuming the null hypothesis is true, what is the sampling distribution of my sample proportion?
+
+.pull-left[
+
+* With a sample size of 100, it should be normally distributed.
+]
+
+.pull-right[
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-35-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Assuming the null hypothesis is true, what is the sampling distribution of my sample proportion?
+
+.pull-left[
+
+* With a sample size of 100, it should be normally distributed.
+
+* The center of the distribution is the true population parameter assuming `\(H_0\)` is true. In this case, that is 0.083.
+]
+
+.pull-right[
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-36-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Assuming the null hypothesis is true, what is the sampling distribution of my sample proportion?
+
+.pull-left[
+
+* With a sample size of 100, it should be normally distributed.
+
+* The center of the distribution is the true population parameter assuming `\(H_0\)` is true. In this case, that is 0.083.
+
+* As we learned in the previous section, the standard error is given by: `$$\sqrt\frac{0.083*(1-0.083)}{100}=0.0276$$`
+]
+
+.pull-right[
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-37-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Is the actual sample proportion unusual?
+
+.pull-left[
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-38-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+#### How far is our sample proportion from where the center would be if the null hypothesis was true?
+
+* If our sample proportion is far way and unlikely to be drawn, then we **reject the null hypothesis**.
+* If our sample proportion is not far away and reasonably likely to be drawn, then we **fail to reject the null hypothesis**.
+]
+
+---
+
+## How far is far enough?
+
+.pull-left[
+* We determine how far our sample proportion is from the center in terms of the number of standard errors. `$$\frac{\hat{p}-\rho}{SE}=\frac{0.05-0.083}{0.028}=-1.18$$`
+]
+
+.pull-right[
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-39-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+## How far is far enough?
+
+.pull-left[
+* We determine how far our sample proportion is from the center in terms of the number of standard errors. `$$\frac{\hat{p}-\rho}{SE}=\frac{0.05-0.083}{0.028}=-1.18$$`
+* What proportion of sample proportions are this low or lower?
+]
+
+.pull-right[
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-40-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## How far is far enough?
+
+.pull-left[
+* We determine how far our sample proportion is from the center in terms of the number of standard errors. `$$\frac{\hat{p}-\rho}{SE}=\frac{0.05-0.083}{0.028}=-1.18$$`
+* What proportion of sample proportions are this low or lower?
+* We also need to take account of sample proportions this far away in the opposite direction. This is called a **two-tailed test**.
+]
+
+.pull-right[
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-41-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## How far is far enough?
+
+.pull-left[
+* We determine how far our sample proportion is from the center in terms of the number of standard errors. `$$\frac{\hat{p}-\rho}{SE}=\frac{0.05-0.083}{0.028}=-1.18$$`
+* What proportion of sample proportions are this low or lower?
+* We also need to take account of sample proportions this far away in the opposite direction. This is called a **two-tailed test**.
+* The area in the tails is called the **p-value**.
+]
+
+.pull-right[
+&lt;img src="module4_slides_statistical_inference_files/figure-html/unnamed-chunk-42-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## The p-value is the endgame
+
+.pull-left[
+### Interpretation
+The p-value tells you the probability of getting a statistic this far away or farther from the the assumed true population parameter, assuming the null hypothesis is true.
+
+In my case:
+&gt; Assuming the null hypothesis is true, there is a 24% probability that I would have gotten a sample proportion (0.05) this far or farther from the true poplation paramter (0.083).
+
+]
+
+--
+
+.pull-right[
+### <i class="fas  fa-calculator "></i> Calculation
+
+We use the `pt` command to get the area in the lower tail and multiply by two to get both tails:
+
+
+```r
+2*pt(-1.18,99)
+```
+
+```
+## [1] 0.2408278
+```
+
+* The first argument is always the **negative version** of the number of standard errors.
+* The second argument is the degrees of freedom to adjust for the fact that we use sample standard deviations to get standard errors. 
+]
+
+---
+
+## The critical value
+
+
+.left-column[
+![strongman game](images/strongman-game.png)
+]
+
+.right-column[
+* We will reject the null hypothesis if our p-value is low enough. 
+* The **critical value** is the benchmark for how low our p-value has to be to reject. 
+  * We will reject the null hypothesis if the p-value is lower than or equal to the critical value.
+  * We will fail to reject the null hypothesis if the p-value is higher than the critical value.
+* The standard but entirely arbitrary critical value used across the sciences is 0.05 (5%).
+* For the Coca-Cola bottlecap case, the p-value is 0.24, so we fail to reject the null hypothesis that Coca-Cola's claim was truthful.
+]
+
+
+---
+
+## The general procedure of hypothesis testing
+
+--
+
+1. State a **null hypothesis**.
+
+--
+
+2. Calculate a **test statistic** that tells you how different your sample is from what you would expect under the null hypothesis. For our purposes, this test statistic is always the number of standard errors above or below the center of the sampling distribution. 
+
+--
+
+3. Calculate the **p-value** for the given test statistic.
+
+--
+
+4. Based on the p-value, either **reject** or **fail to reject** the null hypothesis.
+
+---
+
+## Hypothesis tests of relationships
+
+The hypothesis test we are most interested in is whether the association we observe between two variables in our sample holds in the population. 
+
+--
+
+* Mean/proportion differences: Are the means/proportions between two groups in the population different? In other words, is the mean/proportion difference non-zero?
+
+--
+
+* Correlation coefficient: is the correlation coefficient in the population non-zero? 
+
+--
+
+### Statistical Significance
+
+.left-column[
+![stat sig other](images/statsigother.png)
+]
+
+.right-column[
+If you reject the null hypothesis of "no association," then the association you observe in the sample is said to be **statistically significant**.
+
+
+* Don't confuse statistical and substantive significance. In a large sample, even very small substantive associations can be found to be statistically significant. On the flip side, in small samples, very large substantive associations can fail to be statistically significant.
+]
+
+---
+
+## Example: Mean differences
+
+Is there a difference in sexual frequency between married and never married individuals? Formally, my null hypothesis is:
+
+`$$H_0: \mu_M-\mu_N=0$$`
+
+Where `\(\mu_M\)` is the population mean sexual frequency of married individuals and `\(\mu_N\)` is the population mean sexual frequency of never-married individuals.
+
+--
+
+
+```r
+tapply(sex$sexf, sex$marital, mean)
+```
+
+```
+##       Married       Widowed      Divorced     Separated Never married 
+##     56.094106      9.222628     41.388720     55.652778     53.617704
+```
+
+```r
+diff &lt;- 56.094106-53.617704
+diff
+```
+
+```
+## [1] 2.476402
+```
+
+In my sample, married individuals have sex about 2.5 more times per year than never-married individuals, on average. Is this difference far enough from zero to reject the null hypothesis? 
+
+---
+
+## Example: Mean differences, continued
+
+I calculate the standard error of the sample mean difference, as per the formula in the previous section, which requires the sample SD's and sample size of both groups.
+
+
+```r
+tapply(sex$sexf, sex$marital, sd)
+```
+
+```
+##       Married       Widowed      Divorced     Separated Never married 
+##      49.95361      26.61206      55.40738      58.21485      58.81459
+```
+
+```r
+sd1 &lt;- 49.95361
+sd2 &lt;- 58.81459
+table(sex$marital)
+```
+
+```
+## 
+##       Married       Widowed      Divorced     Separated Never married 
+##          1052           137           328            72           514
+```
+
+```r
+n1 &lt;- 1052
+n2 &lt;- 514
+se &lt;- sqrt(sd1^2/n1+sd2^2/n2)
+```
+
+---
+
+## Example: Mean differences, continued
+
+I can now calculate how many standard errors my sample mean difference is from zero
+
+
+```r
+diff/se
+```
+
+```
+## [1] 0.8208339
+```
+
+I then feed the negative version of this number into the `pt` formula and multiply by two to get my p-value:
+
+
+```r
+2*pt(-0.8208,n2-1)
+```
+
+```
+## [1] 0.4121414
+```
+
+Assuming that the true sexual frequency difference between married and never-married individuals is zero in the population, there is a 41.2% chance of observing a sample sexual frequency difference of 2.5 years or larger in a sample of this size. Thus, I **fail to reject** the null hypothesis there there is no difference in the average sexual frequency between married and never-married individuals in the US. 
+
+---
+
+## Example: Proportion differences
+
+Is there a difference in support for removing birthright citizenship between those who have served in the military and those who have not? 
+
+--
+
+.pull-left[
+
+```r
+prop.table(table(politics$brcitizen, 
+                 politics$military), 2)
+```
+
+```
+##          
+##                  No       Yes
+##   Oppose  0.4069860 0.3093682
+##   Neither 0.2900238 0.2570806
+*##   Favor   0.3029902 0.4335512
+```
+
+```r
+p1 &lt;- 0.303
+p2 &lt;- 0.434
+```
+
+
+```r
+diff &lt;- p2-p1
+diff
+```
+
+```
+## [1] 0.131
+```
+]
+
+--
+
+.pull-right[
+
+```r
+table(politics$military)
+```
+
+```
+## 
+##   No  Yes 
+## 3779  459
+```
+
+```r
+n1 &lt;- 3778
+n2 &lt;- 460
+se &lt;- sqrt(p1*(1-p1)/n1+p2*(1-p2)/n2)
+diff/se
+```
+
+```
+## [1] 5.393601
+```
+
+```r
+pt(-5.391824, n2-1)
+```
+
+```
+## [1] 5.591127e-08
+```
+]
+
+---
+
+## 🤔 A p-value of 5.591127e-08?
+
+* What does the value of 5.591127e-08 mean? 
+
+--
+
+* The number is so small that R is reporting it using scientific notation: `$$5.591127 x 10^{-8}$$`
+
+--
+
+* That means we need to move the decimal place over 8 spaces to the left. So the number is really 0.00000005591127. So I would interpret my result as: 
+
+--
+
+&gt; Assuming that there is no difference in the US population between those who have served in the military and those who have not in support for removing birthright citizenship, there is less than a 0.000006% chance of observing a sample difference in proportion of 13.1% or greater by random chance in a sample of this size. Thus, I **reject** the null hypothesis there there is no difference in support for removing birthright citizenship between those who have served in the military and those who have not. 
+
+---
+
+## Example: Correlation coefficient
+
+Is there a relationship between a person's age and their wages in the US? 
+
+--
+
+.pull-left[
+
+```r
+r &lt;- cor(earnings$age, earnings$wages)
+r
+```
+
+```
+## [1] 0.2185311
+```
+
+```r
+n &lt;- nrow(earnings)
+se &lt;- sqrt((1-r^2)/(n-2))
+r/se
+```
+
+```
+## [1] 85.46473
+```
+
+```r
+pt(-85.46473, n-2)
+```
+
+```
+## [1] 0
+```
+]
+
+--
+
+.pull-right[
+Assuming no association between a person's age and their wage in the US, there is almost 0% chance of observing a correlation coefficient between age and wages of 0.219 or larger in absolute magnitude in a sample of this size. Therefore, I **reject** the null hypothesis that there is no relationship between a person's age and their wages in the US population.
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "",
+"ratio": "16:10"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  /* Replace <script> tags in slides area to make them executable
+   *
+   * Runs after post-processing of markdown source into slides and replaces only
+   * <script>s on the last slide of continued slides using the .has-continuation
+   * class added by xaringan. Finally, any <script>s in the slides area that
+   * aren't executed are commented out.
+   */
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container:not(.has-continuation) script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+  var scriptsNotExecuted = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container.has-continuation script'
+  );
+  if (!scriptsNotExecuted.length) return;
+  for (var i = 0; i < scriptsNotExecuted.length; i++) {
+    var comment = document.createComment(scriptsNotExecuted[i].outerHTML)
+    scriptsNotExecuted[i].parentElement.replaceChild(comment, scriptsNotExecuted[i])
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

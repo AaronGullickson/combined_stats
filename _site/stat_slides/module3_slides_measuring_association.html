@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Measuring Association</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Aaron Gullickson" />
+    <meta name="date" content="2020-04-14" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/uo.css" rel="stylesheet" />
+    <link href="libs/remark-css/uol-fonts.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="lecture_slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Measuring Association
+## Sociology 312
+### Aaron Gullickson
+### University of Oregon
+### 2020-04-14
+
+---
+
+
+
+
+
+
+
+
+
+## Thinking about association
+
+The primary goal of most social science statistical analysis is to establish whether there is an association between variables and to describe the strength and direction of this association.
+
+--
+
+- Is income inequality in a country related to life expectancy?
+
+--
+
+- Do stronger networks predict better success at finding jobs for job seekers?
+
+--
+
+- Does population size and growth predict environmental degradation? 
+
+--
+
+- How does class affect party affiliation and voting?
+
+---
+
+## Association vs. causation
+
+We often think about the relationships we observe in data as being causally determined, but the simple measurement of association is insufficient to establish a necessary causal connection between the variables.
+
+--
+
+.pull-left[
+### Spuriousness
+The association between two variables could be generated because they are both related to a third variable that is actually the cause. 
+
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+### Reverse causality
+We may think that one variable causes the other, but it is equally possible that the causal relationship is the other way. 
+
+
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Different methods for measuring association
+
+--
+
+### Two categorical variables
+
+The **two-way table** and **comparative barplots**
+
+--
+
+### Categorical and quantitative variable
+
+**Mean differences** and **comparative boxplots**
+
+--
+
+### Two quantitative variables
+
+The **correlation coefficient** and **scatterplots**
+
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/jan-jakub-nanista-UHyrjKPsshk-unsplash.jpg)
+background-size: cover
+
+# The Two-Way Table
+
+---
+
+## The two-way table
+
+The **two-way table** (or **cross-tabulation**) gives the **joint distribution** of two categorical variables. 
+
+--
+
+We can create a two-way table in *R* using the `table` command but this time we feed in two different variables. Here is an example using sex and survival on the titanic:
+
+
+```r
+tab &lt;- table(titanic$sex, titanic$survival)
+tab
+```
+
+```
+##         
+##          Survived Died
+##   Female      339  127
+##   Male        161  682
+```
+
+There were 339 female survivors, 127 female deaths, and so on.
+
+---
+
+## Raw numbers are never enough
+
+
+```
+##         
+##          Survived Died
+##   Female      339  127
+##   Male        161  682
+```
+
+* It might seem like the much higher number of male deaths is enough to claim that there is a relationship between gender and survival, but this comparison would be flawed. Why?
+
+--
+
+* There were a lot more male passengers on the Titanic than female passengers. So even if they had the same probability of survival, we would expect to see more male deaths. 
+
+--
+
+* We need to compare the **proportion** of deaths among men to the **proportion** of deaths among women to make a proper comparison.
+
+--
+
+* Never, ever compare raw numbers directly. Instead, we need to first calculate a **conditional distribution** using proportions. In this case, I want the distribution of survival **conditional** on gender. 
+
+---
+
+## Calculate maginal distributions
+
+A first step in establishing the relationship is to calculate the **marginal distributions** of the row and column variables. The marginal distributions are simply the distributions of each categorical variable separately. We can calculate these from the `tab` object I created using the `margin.table` command in *R*:
+
+```r
+margin.table(tab,1)
+```
+
+```
+## 
+## Female   Male 
+##    466    843
+```
+
+```r
+margin.table(tab,2)
+```
+
+```
+## 
+## Survived     Died 
+##      500      809
+```
+Note that the the option `1` here gives me the row marginal and the option `2` gives me the column marginal.
+
+---
+
+## Distribution of survival conditional on sex
+
+.pull-left[
+| Sex   | Survived| Died|  Total  |
+|:------|--------:|----:|--------:|
+|Female | 339     | 127 |   466   |
+|Male   | 161     | 682 |   843   |
+|Total  | 500     | 809 |   1309  |
+
+To get distribution of survival by gender, divide each row by row totals: 
+
+| Sex   | Survived| Died|  Total  |
+|:------|--------:|----:|--------:|
+|Female | 339/466     | 127/466 |   466   |
+|Male   | 161/843     | 682/843 |   843   |
+]
+
+--
+
+.pull-right[
+| Sex   | Survived| Died|  Total  |
+|:------|--------:|----:|--------:|
+|Female | 0.727     | 0.273 |   1.0   |
+|Male   | 0.191     | 0.809 |   1.0   |
+
+* Read the distribution within the rows:
+  * 72.7% of women survived and 27.3% of women died.
+  * 19.1% of men survived and 80.9% of men died. 
+* Men were much more likely to die on the Titanic than women.
+]
+
+---
+
+## Calculating conditional distributions in *R*
+
+You can use `prop.table` to calculate conditional distributions in *R*.
+
+
+```r
+tab &lt;- table(titanic$sex, titanic$survival)
+*prop.table(tab,1)
+```
+
+```
+##         
+##           Survived      Died
+##   Female 0.7274678 0.2725322
+##   Male   0.1909846 0.8090154
+```
+
+-- 
+
+* Take note of the `1` as the second argument in `prop.table`. You **must** include this to get the distribution of the column variable conditional on the row. 
+
+--
+
+* Make sure that the proportions sum up to one within the rows to check yourself. 
+
+---
+
+## The other conditional distribution
+
+
+```r
+prop.table(tab, 2)
+```
+
+```
+##         
+##           Survived      Died
+##   Female 0.6780000 0.1569839
+##   Male   0.3220000 0.8430161
+```
+
+What changed? 
+
+--
+
+* Notice that the rows do not sum to one anymore. However, the columns do sum to one. 
+
+--
+ 
+* Because of the `2` in the `prop.table` command, we are now looking at the distribution of gender conditional on survival.
+
+---
+
+## Comparative barplot by faceting
+
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-9-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Code and output for comparative barplot
+
+.pull-left[
+
+```r
+ggplot(titanic, aes(x=survival, y=..prop..,
+                    group=1))+
+  geom_bar()+
+  scale_y_continuous(label=scales::percent)+
+  labs(y="percent surviving", x=NULL,
+       title="Distribution of Titanic survival by gender")+
+* facet_wrap(~sex)+
+  theme_bw()
+```
+
+The code here is identical to that for a single barplot except for the addition of `facet_wrap`. The `facet_wrap` command allows us to make separate panels of the same graph across the categories of some other variable. 
+]
+
+.pull-right[
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-10-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Comparative barplot by fill aesthetic
+
+.pull-left[
+
+```r
+ggplot(titanic, aes(x=survival, y=..prop..,
+*                   group=sex, fill=sex))+
+* geom_bar(position="dodge")+
+  scale_y_continuous(label=scales::percent)+
+  labs(y="percent surviving", x=NULL,
+       title="Distribution of Titanic survival by gender",
+*      fill="gender")+
+  theme_bw()
+```
+
+* We `group` by sex and also add a `fill` aesthetic that will apply different colors by sex.
+* We add `position="dodge"` to `geom_bar` so that bars are drawn side-by-side rather than stacked.
+* We add `fill="gender"` to `labs` so that our legend has a nice title.
+ 
+]
+
+.pull-right[
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-11-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## <i class="fas  fa-user-ninja "></i> Presidential choice by education
+
+
+.pull-left[
+
+```r
+# first command drops non-voters
+temp &lt;- droplevels(subset(politics, 
+                          president!="No Vote")) 
+tab &lt;- table(temp$educ, temp$president)
+# round and multiply prop.table by 100
+# to get percents
+props &lt;- round(prop.table(tab, 1),3)*100
+props
+```
+
+```
+##                      
+##                       Clinton Trump Other
+##   Less than HS           56.8  36.0   7.2
+##   High school diploma    42.7  51.7   5.5
+##   Some college           42.2  50.1   7.7
+##   Bachelors degree       46.4  44.1   9.5
+##   Graduate degree        65.0  30.5   4.5
+```
+]
+
+.pull-right[
+
+```r
+ggplot(subset(politics, president!="No Vote"), 
+       aes(x=president, y=..prop.., 
+           group=educ, fill=educ))+
+  geom_bar(position = "dodge")+
+  labs(title="presidential choice by education",
+       x=NULL,
+       y="percent of education group",
+       fill="education")+
+  scale_y_continuous(label=scales::percent)+
+* scale_fill_brewer(palette="YlGn")
+```
+
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-13-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## <i class="fas  fa-user-ninja "></i> Super fancy three-way table
+
+.pull-left[
+
+```r
+ggplot(subset(politics, president!="No Vote" &amp;
+                gender!="Other"), 
+       aes(x=president, y=..prop.., 
+           group=educ, fill=educ))+
+  geom_bar(position = "dodge")+
+  labs(title="presidential choice by education",
+       x=NULL,
+       y="percent of education group",
+       fill="education")+
+  scale_y_continuous(label=scales::percent)+
+  scale_fill_brewer(palette="YlGn")+
+* facet_wrap(~gender)
+```
+Just add a `facet_wrap` to see how education affected presidential voting differently for men and women.
+]
+
+.pull-right[
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-14-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## How to compare differences in probabilities?
+
+
+```r
+round(prop.table(table(titanic$sex, titanic$survival), 1)*100,2)
+```
+
+```
+##         
+##          Survived  Died
+##   Female    72.75 27.25
+##   Male      19.10 80.90
+```
+
+We could look at the difference (72.75-19.1=53.65), but this can be misleading because as the overall probability approaches either 0% or 100%, the difference must get smaller.
+
+--
+
+.pull-left[
+### Titanic
+![Titanic sinking](images/titanic.jpg)
+
+38% of passengers survived
+]
+
+.pull-right[
+### Costa Concordia
+![Costa Concordia](images/costa_concordia.jpg)
+
+Roughly 99.2% of passengers survived
+]
+
+---
+
+## Calculate the odds
+
+The **odds** is the ratio of "successes" to "failures." Convert probabilities to odds by taking `$$\texttt{Odds}=\texttt{probability}/(1-\texttt{probability})$$`
+
+--
+
+If 72.75% of women survived, then the odds of survival for women are `$$0.7275/(1-0.7272)=2.67$$`
+
+About 2.67 women survived for every woman that died.
+
+--
+
+If 19.1% of men survived, then the odds of survival for men are `$$0.191/(1-0.191)=0.236$$`
+
+About 0.236 men survived for every man that died. Alternatively, 0.236 is close to 0.25, so about one man survived for every four that died. 
+
+---
+
+## Calculate the odds ratio
+
+.pull-left[
+### Odds ratio
+To determine the difference in our odds we take the **odds ratio** by dividing one of the odds by the other.
+
+`$$\texttt{Odds ratio}=\frac{O_1}{O_2}=\frac{2.67}{0.236}=11.31$$`
+
+The odds of surviving the Titanic were 11.31 times higher for women than for men.
+]
+
+--
+
+.pull-right[
+### Cross-product method
+| Sex   | Survived| Died|
+|:------|--------:|----:|
+|Female | **339**     | *127* |
+|Male   | *161*     | **682** |
+
+Multiply the **diagonal** bolded values together and divide by the product of the **reverse-diagonal** italicized values to get the same odds ratio.
+
+`$$\frac{339*682}{161*127}=11.31$$`
+
+Its always the odds ratio of the first row category (women) by the first column category (surviving) relative to the second row category (men). 
+]
+
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/charles-cMvDruWjv0Y-unsplash.jpg)
+background-size: cover
+
+# Mean Differences
+
+---
+
+## Comparative boxplots
+
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-16-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Code and output for comparative boxplot
+
+.pull-left[
+
+```r
+ggplot(earnings, 
+*      aes(x=reorder(race, wages, median),
+           y=wages))+
+  geom_boxplot(fill="grey", outlier.color="red")+
+  scale_y_continuous(label=scales::dollar)+
+  labs(x=NULL, y="hourly wages",
+       title="Comparative boxplots of wages by race",
+       caption="Source: CPS 2018")+
+  theme_bw()
+```
+
+* We just need to add an `x` aesthetic (in this case race) to the plot to get a comparative boxplot.
+* In this case, I have also used the `reorder` command to reorder my categories so they go from smallest to largest median wage by race. This is not necessary but will add more information to the boxplot. 
+]
+
+.pull-right[
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-17-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Income and presidential choice
+
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-18-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Calculating mean differences
+
+Use the `tapply` command to get the mean income of respondents separately by who they voted for: 
+
+
+```r
+tapply(politics$income, politics$president, mean)
+```
+
+```
+##  Clinton    Trump    Other  No Vote 
+## 80.23021 77.33414 80.32673 60.94324
+```
+
+* The first argument is the quantitative variable
+* The second argument is the categorical variable
+* The third argument is the function you want to run on the subsets of the quantitative variable
+
+--
+
+The mean difference is given by: `$$80.23-77.33=2.9$$` Clinton voters had a household income $2900 higher than Trump voters, on average. 
+
+---
+
+## What about median differences?
+
+
+```r
+tapply(politics$income, politics$president, median)
+```
+
+```
+## Clinton   Trump   Other No Vote 
+##    62.0    64.0    66.5    44.0
+```
+
+Clinton voters had median household incomes $2000 **lower** than Trump voters. Why are the results different between the mean and median? 
+--
+
+.pull-left[
+The income distribution of Clinton supporters is more right-skewed than Trump supporters so it has a higher mean but lower median. However, the differences are relatively small regardless. 
+]
+
+.pull-right[
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-21-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/mel-poole-ToI01Apo4Pk-unsplash.jpg)
+background-size: cover
+
+# Scatterplot and Correlation Coefficient
+
+---
+
+## Constructing a scatterplot
+
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-22-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Constructing a scatterplot
+
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-23-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Constructing a scatterplot
+
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-24-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Code and output for scatterplot
+
+.pull-left[
+
+```r
+*ggplot(crimes, aes(x=Unemployment, y=Property))+
+* geom_point()+
+  labs(x="unemployment rate",
+       y="property crimes per 100,000 population",
+       title="Property crime rates by unemployment")
+```
+* define `x` and `y` variables in aesthetics
+* `geom_point` draws the points
+]
+
+.pull-right[
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-25-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## What are we looking for?
+
+.pull-left[
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-26-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+### Direction
+Is it positive (y is high when x is high) or negative (y is low when x is high)?
+### Linearity
+Does the relationship look linear or does it "curve?"
+### Strength
+Cloud vs a tight line 
+### Outliers
+We are particularly concerned about outliers that are contrary to the general trend.
+]
+
+---
+
+## Overplotting with discrete variables
+
+.pull-left[
+
+```r
+ggplot(popularity, aes(x=pseudoGPA, y=indegree))+
+  geom_point()+
+  labs(x="student GPA",
+       y="number of friend nominations")
+```
+]
+
+.pull-right[
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-27-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Overplotting corrections
+
+.pull-left[
+
+```r
+ggplot(popularity, aes(x=pseudoGPA, y=indegree))+
+* geom_jitter(alpha=0.2, width=0.2, height=0.3)+
+  labs(x="student GPA",
+       y="number of friend nominations")
+```
+* the `alpha` argument will create semi-transparent points (scale 0-1)
+* `geom_jitter` instead of `geom_point` will add some randomness to x and y values so that points are not plotted on top of each other. The `width` and `height` arguments can be adjusted for more or less randomness (scale 0-1). 
+]
+
+.pull-right[
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-28-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## <i class="fas  fa-user-ninja "></i> Adding a third variable by color
+
+.pull-left[
+
+```r
+ggplot(popularity, aes(x=nsports, y=indegree,
+*                      color=sex))+
+* geom_jitter(alpha=0.4, width=0.5, height=0.3)+
+  scale_color_brewer(palette="Dark2")+
+  labs(x="number of sports played",
+       y="number of friend nominations",
+       color="gender")
+```
+]
+
+.pull-right[
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-29-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## The correlation coefficient
+
+The correlation coefficient ($r$) measures the association between two quantitative variables. The formula is:
+
+`$$r=\frac{1}{n-1}\sum^n_{i=1} (\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})$$`
+
+--
+
+### <i class="fas  fa-compact-disc "></i> Let's break it down
+
+--
+
+`\((x_i-\bar{x})\)` and `\((y_i-\bar{y})\)`: Subtract the mean from each value of x and y to get distance above and below mean.
+
+--
+
+`\((x_i-\bar{x})/s_x\)` and `\((y_i-\bar{y})/s_y\)`: Divide the difference by the standard deviation of `\(x\)` and `\(y\)`. We now have the number of standard deviations above or below the mean.
+
+---
+
+## Move the origin and re-scale
+
+.pull-left[
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-30-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+
+.pull-right[
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-31-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Evidence of positive or negative relationship
+
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-32-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+---
+
+## The correlation coefficient
+
+`$$r=\frac{1}{n-1}\sum^n_{i=1} (\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})$$`
+
+--
+
+`\((\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})\)`: Multiply x and y values together. The results provides evidence of negative or positive relationship.
+
+--
+
+`\(\sum^n_{i=1} (\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})\)`: Sum up all the evidence, positive and negative.
+
+--
+
+`\(\frac{1}{n-1}\sum^n_{i=1} (\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})\)`: Divide result by sample size to get final correlation coefficient.
+
+--
+
+
+```r
+sdx &lt;- (crimes$Unemployment-mean(crimes$Unemployment))/sd(crimes$Unemployment)
+sdy &lt;- (crimes$Property-mean(crimes$Property))/sd(crimes$Property)
+sum(sdx*sdy)/(nrow(crimes)-1)
+```
+
+```
+## [1] 0.4443288
+```
+
+--
+
+Alternatively, use the `cor` command: 😎
+
+
+```r
+cor(crimes$Unemployment, crimes$Property)
+```
+
+```
+## [1] 0.4443288
+```
+
+---
+
+## What does the correlation coefficient mean? 
+
+
+```r
+cor(crimes$Unemployment, crimes$Property)
+```
+
+```
+## [1] 0.4443288
+```
+
+--
+
+.pull-left[
+### <i class="fas  fa-directions "></i> Direction
+The sign of `\(r\)` indicates the direction of the relationship. Positive values indicate a positive relationship and negative values indicate a negative relationship. Zero indicates no relationship.
+]
+
+--
+
+.pull-right[
+### 💪 Strength
+The **absolute value** of `\(r\)` indicates the strength of the relationship. The maximum value of `\(r\)` is 1 and the minimum value is -1. You only reach these values if the points fall exactly on a straight line.
+]
+
+--
+
+.center[
+### ⚠️ Limitations
+`\(r\)` is only applicable for linear relationships
+
+`\(r\)` can be severely affected by outliers
+]
+
+---
+
+##  Simulated examples of correlation strength
+
+&lt;img src="module3_slides_measuring_association_files/figure-html/unnamed-chunk-36-1.png" width="864" style="display: block; margin: auto;" /&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "",
+"ratio": "16:10"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  /* Replace <script> tags in slides area to make them executable
+   *
+   * Runs after post-processing of markdown source into slides and replaces only
+   * <script>s on the last slide of continued slides using the .has-continuation
+   * class added by xaringan. Finally, any <script>s in the slides area that
+   * aren't executed are commented out.
+   */
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container:not(.has-continuation) script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+  var scriptsNotExecuted = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container.has-continuation script'
+  );
+  if (!scriptsNotExecuted.length) return;
+  for (var i = 0; i < scriptsNotExecuted.length; i++) {
+    var comment = document.createComment(scriptsNotExecuted[i].outerHTML)
+    scriptsNotExecuted[i].parentElement.replaceChild(comment, scriptsNotExecuted[i])
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

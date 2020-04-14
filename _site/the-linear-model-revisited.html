@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>The Linear Model, Revisited | Statistical Analysis in Sociology</title>
+  <meta name="description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="The Linear Model, Revisited | Statistical Analysis in Sociology" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="The Linear Model, Revisited | Statistical Analysis in Sociology" />
+  
+  <meta name="twitter:description" content="Textbook for Statistical Analysis for University of Oregon Sociology" />
+  
+
+<meta name="author" content="Aaron Gullickson" />
+
+
+<meta name="date" content="2020-04-14" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="model-complications.html"/>
+<link rel="next" href="modeling-non-linearity.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.1/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.49.4/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.49.4/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="" data-path="understanding-data.html"><a href="understanding-data.html"><i class="fa fa-check"></i>Understanding Data</a><ul>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html"><i class="fa fa-check"></i>What Does Data Look Like?</a><ul>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html#the-observations"><i class="fa fa-check"></i>The observations</a></li>
+<li class="chapter" data-level="" data-path="what-does-data-look-like.html"><a href="what-does-data-look-like.html#the-variables"><i class="fa fa-check"></i>The variables</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html"><i class="fa fa-check"></i>What Can We Do With Data?</a><ul>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#how-is-a-variable-distributed"><i class="fa fa-check"></i>How is a variable distributed?</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#measuring-association"><i class="fa fa-check"></i>Measuring association</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#making-statistical-inferences"><i class="fa fa-check"></i>Making statistical inferences</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#building-models"><i class="fa fa-check"></i>Building Models</a></li>
+<li class="chapter" data-level="" data-path="what-can-we-do-with-data.html"><a href="what-can-we-do-with-data.html#observational-data-experimental-thinking"><i class="fa fa-check"></i>Observational Data, Experimental Thinking</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-distribution-of-a-variable.html"><a href="the-distribution-of-a-variable.html"><i class="fa fa-check"></i>The Distribution of a Variable</a><ul>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html"><i class="fa fa-check"></i>Looking at Distributions</a><ul>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html#looking-at-the-distribution-of-a-categorical-variable"><i class="fa fa-check"></i>Looking at the distribution of a categorical variable</a></li>
+<li class="chapter" data-level="" data-path="looking-at-distributions.html"><a href="looking-at-distributions.html#looking-at-the-distribution-of-a-quantitative-variable"><i class="fa fa-check"></i>Looking at the distribution of a quantitative variable</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html"><i class="fa fa-check"></i>Measuring the Center of a Distribution</a><ul>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-mean"><i class="fa fa-check"></i>The mean</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-median"><i class="fa fa-check"></i>The median</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#the-mode"><i class="fa fa-check"></i>The mode</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-center-of-a-distribution.html"><a href="measuring-the-center-of-a-distribution.html#comparing-the-mean-and-median"><i class="fa fa-check"></i>Comparing the mean and median</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html"><i class="fa fa-check"></i>Percentiles and the Five Number Summary</a><ul>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#percentiles"><i class="fa fa-check"></i>Percentiles</a></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#the-five-number-summary"><i class="fa fa-check"></i>The five number summary</a></li>
+<li class="chapter" data-level="" data-path="percentiles-and-the-five-number-summary.html"><a href="percentiles-and-the-five-number-summary.html#boxplots"><i class="fa fa-check"></i>Boxplots</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html"><i class="fa fa-check"></i>Measuring the Spread of a Distribution</a><ul>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html#range-and-interquartile-range"><i class="fa fa-check"></i>Range and interquartile range</a></li>
+<li class="chapter" data-level="" data-path="measuring-the-spread-of-a-distribution.html"><a href="measuring-the-spread-of-a-distribution.html#variance-and-standard-deviation"><i class="fa fa-check"></i>Variance and standard deviation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="measuring-association-1.html"><a href="measuring-association-1.html"><i class="fa fa-check"></i>Measuring Association</a><ul>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html"><i class="fa fa-check"></i>The Two-Way Table</a><ul>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html#conditional-distributions"><i class="fa fa-check"></i>Conditional distributions</a></li>
+<li class="chapter" data-level="" data-path="the-two-way-table.html"><a href="the-two-way-table.html#odds-ratio-advanced"><i class="fa fa-check"></i>Odds ratio (advanced)</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html"><i class="fa fa-check"></i>Mean Differences</a><ul>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html#graphically-examining-differences-in-distributions"><i class="fa fa-check"></i>Graphically examining differences in distributions</a></li>
+<li class="chapter" data-level="" data-path="mean-differences.html"><a href="mean-differences.html#comparing-differences-in-the-mean"><i class="fa fa-check"></i>Comparing differences in the mean</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html"><i class="fa fa-check"></i>Scatterplot and Correlation Coefficient</a><ul>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html#the-scatterplot"><i class="fa fa-check"></i>The scatterplot</a></li>
+<li class="chapter" data-level="" data-path="scatterplot-and-correlation-coefficient.html"><a href="scatterplot-and-correlation-coefficient.html#the-correlation-coefficient"><i class="fa fa-check"></i>The correlation coefficient</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="statistical-inference.html"><a href="statistical-inference.html"><i class="fa fa-check"></i>Statistical Inference</a><ul>
+<li class="chapter" data-level="" data-path="the-problem-of-statistical-inference.html"><a href="the-problem-of-statistical-inference.html"><i class="fa fa-check"></i>The Problem of Statistical Inference</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html"><i class="fa fa-check"></i>The Concept of the Sampling Distribution</a><ul>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#example-class-height"><i class="fa fa-check"></i>Example: class height</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#central-limit-theorem-and-the-normal-distribution"><i class="fa fa-check"></i>Central limit theorem and the normal distribution</a></li>
+<li class="chapter" data-level="" data-path="the-concept-of-the-sampling-distribution.html"><a href="the-concept-of-the-sampling-distribution.html#what-can-we-do-with-the-sampling-distribution"><i class="fa fa-check"></i>What can we do with the sampling distribution?</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html"><i class="fa fa-check"></i>Confidence Intervals</a><ul>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#what-do-we-mean-by-confident"><i class="fa fa-check"></i>What do we mean by “confident?”</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#calculating-the-confidence-interval-for-the-sample-mean"><i class="fa fa-check"></i>Calculating the confidence interval for the sample mean</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#calculating-the-confidence-interval-for-other-sample-statistics"><i class="fa fa-check"></i>Calculating the confidence interval for other sample statistics</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-proportions"><i class="fa fa-check"></i>Example with proportions</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-mean-differences"><i class="fa fa-check"></i>Example with mean differences</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-proportion-differences"><i class="fa fa-check"></i>Example with proportion differences</a></li>
+<li class="chapter" data-level="" data-path="confidence-intervals.html"><a href="confidence-intervals.html#example-with-correlation-coefficient"><i class="fa fa-check"></i>Example with correlation coefficient</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html"><i class="fa fa-check"></i>Hypothesis Tests</a><ul>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#example-coke-winners"><i class="fa fa-check"></i>Example: Coke winners</a></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#the-general-procedure-of-hypothesis-testing"><i class="fa fa-check"></i>The general procedure of hypothesis testing</a></li>
+<li class="chapter" data-level="" data-path="hypothesis-tests.html"><a href="hypothesis-tests.html#hypothesis-tests-of-relationships"><i class="fa fa-check"></i>Hypothesis tests of relationships</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="building-models-1.html"><a href="building-models-1.html"><i class="fa fa-check"></i>Building Models</a><ul>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html"><i class="fa fa-check"></i>The OLS Regression Line</a><ul>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#the-formula-for-a-line"><i class="fa fa-check"></i>The Formula for a Line</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#calculating-the-best-fitting-line"><i class="fa fa-check"></i>Calculating the Best-Fitting Line</a></li>
+<li><a href="the-ols-regression-line.html#using-the-lm-command-to-calculate-ols-regression-lines-in-r">Using the <code>lm</code> command to calculate OLS regression lines in <em>R</em></a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#adding-an-ols-regression-line-to-a-plot"><i class="fa fa-check"></i>Adding an OLS regression line to a plot</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#the-ols-regression-line-as-a-model"><i class="fa fa-check"></i>The OLS regression line as a model</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#interpeting-slopes-and-intercepts"><i class="fa fa-check"></i>Interpeting Slopes and Intercepts</a></li>
+<li><a href="the-ols-regression-line.html#how-good-is-x-as-a-predictor-of-y">How good is <span class="math inline">\(x\)</span> as a predictor of <span class="math inline">\(y\)</span>?</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#inference-for-ols-regression-models"><i class="fa fa-check"></i>Inference for OLS Regression models</a></li>
+<li class="chapter" data-level="" data-path="the-ols-regression-line.html"><a href="the-ols-regression-line.html#regression-line-cautions"><i class="fa fa-check"></i>Regression Line Cautions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html"><i class="fa fa-check"></i>The Power of Controlling for Other Variables</a><ul>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#interpreting-results-in-a-multivariate-ols-regression-models"><i class="fa fa-check"></i>Interpreting results in a multivariate OLS regression models</a></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#including-more-than-two-independent-variables"><i class="fa fa-check"></i>Including more than two independent variables</a></li>
+<li class="chapter" data-level="" data-path="the-power-of-controlling-for-other-variables.html"><a href="the-power-of-controlling-for-other-variables.html#how-to-read-a-table-of-regression-results"><i class="fa fa-check"></i>How to read a table of regression results</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html"><i class="fa fa-check"></i>Including Categorical Variables as Predictors</a><ul>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#indicator-variables"><i class="fa fa-check"></i>Indicator variables</a></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#categorical-variables-with-more-than-two-categories"><i class="fa fa-check"></i>Categorical variables with more than two categories</a></li>
+<li class="chapter" data-level="" data-path="including-categorical-variables-as-predictors.html"><a href="including-categorical-variables-as-predictors.html#categorical-and-quantitative-variables-combined-in-a-single-model"><i class="fa fa-check"></i>Categorical and quantitative variables combined in a single model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html"><i class="fa fa-check"></i>Interaction Terms</a><ul>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#the-nature-of-additive-models"><i class="fa fa-check"></i>The nature of additive models</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#the-interaction-term"><i class="fa fa-check"></i>The interaction term</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interpreting-interaction-terms"><i class="fa fa-check"></i>Interpreting interaction terms</a></li>
+<li><a href="interaction-terms.html#interaction-terms-in-r">Interaction terms in <em>R</em></a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interaction-terms-with-multiple-categories"><i class="fa fa-check"></i>Interaction terms with multiple categories</a></li>
+<li class="chapter" data-level="" data-path="interaction-terms.html"><a href="interaction-terms.html#interaction-terms-with-two-categorical-variables"><i class="fa fa-check"></i>Interaction terms with two categorical variables</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-complications.html"><a href="model-complications.html"><i class="fa fa-check"></i>Model Complications</a><ul>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html"><i class="fa fa-check"></i>The Linear Model, Revisited</a><ul>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#reformulating-the-linear-model"><i class="fa fa-check"></i>Reformulating the linear model</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#marginal-effects"><i class="fa fa-check"></i>Marginal effects</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#linear-model-assumptions"><i class="fa fa-check"></i>Linear model assumptions</a></li>
+<li class="chapter" data-level="" data-path="the-linear-model-revisited.html"><a href="the-linear-model-revisited.html#estimating-a-linear-model"><i class="fa fa-check"></i>Estimating a linear model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html"><i class="fa fa-check"></i>Modeling Non-Linearity</a><ul>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#smoothing"><i class="fa fa-check"></i>Smoothing</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#residual-plots"><i class="fa fa-check"></i>Residual Plots</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#transformations"><i class="fa fa-check"></i>Transformations</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#polynomial-models"><i class="fa fa-check"></i>Polynomial Models</a></li>
+<li class="chapter" data-level="" data-path="modeling-non-linearity.html"><a href="modeling-non-linearity.html#splines"><i class="fa fa-check"></i>Splines</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html"><i class="fa fa-check"></i>The IID Violation and Robust Standard Errors</a><ul>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#violations-of-independence"><i class="fa fa-check"></i>Violations of independence</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#heteroscedasticity"><i class="fa fa-check"></i>Heteroscedasticity</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#fixing-iid-violations"><i class="fa fa-check"></i>Fixing IID violations</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#weighted-least-squares"><i class="fa fa-check"></i>Weighted least squares</a></li>
+<li class="chapter" data-level="" data-path="the-iid-violation-and-robust-standard-errors.html"><a href="the-iid-violation-and-robust-standard-errors.html#robust-standard-errors"><i class="fa fa-check"></i>Robust standard errors</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html"><i class="fa fa-check"></i>Sample Design and Weighting</a><ul>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#clustermultistage-sampling"><i class="fa fa-check"></i>Cluster/multistage sampling</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#stratification"><i class="fa fa-check"></i>Stratification</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#weights"><i class="fa fa-check"></i>Weights</a></li>
+<li class="chapter" data-level="" data-path="sample-design-and-weighting.html"><a href="sample-design-and-weighting.html#correcting-for-sample-design-in-models"><i class="fa fa-check"></i>Correcting for sample design in models</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i>Missing Values</a><ul>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#identifying-valid-skips"><i class="fa fa-check"></i>Identifying Valid Skips</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#kinds-of-missingness"><i class="fa fa-check"></i>Kinds of Missingness</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#removing-cases"><i class="fa fa-check"></i>Removing Cases</a></li>
+<li class="chapter" data-level="" data-path="missing-values.html"><a href="missing-values.html#imputation"><i class="fa fa-check"></i>Imputation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html"><i class="fa fa-check"></i>Multicollinearity and Scale Creation</a><ul>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#avoid-the-singularity"><i class="fa fa-check"></i>Avoid the Singularity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#detecting-data-based-multicollinearity"><i class="fa fa-check"></i>Detecting Data-Based Multicollinearity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#addressing-multicollinearity"><i class="fa fa-check"></i>Addressing Multicollinearity</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#creating-scales"><i class="fa fa-check"></i>Creating Scales</a></li>
+<li class="chapter" data-level="" data-path="multicollinearity-and-scale-creation.html"><a href="multicollinearity-and-scale-creation.html#factor-analysis"><i class="fa fa-check"></i>Factor Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html"><i class="fa fa-check"></i>Model Selection</a><ul>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#there-is-no-right-model"><i class="fa fa-check"></i>There is no “right” model</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#the-accuracy-vs.-parsimony-tradeoff"><i class="fa fa-check"></i>The accuracy vs. parsimony tradeoff</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#null-vs.-saturated-model"><i class="fa fa-check"></i>Null vs. saturated model</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#a-not-very-useful-tool-the-f-test"><i class="fa fa-check"></i>A not-very-useful tool: the F-test</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#tools-with-a-parsimony-penalty"><i class="fa fa-check"></i>Tools with a parsimony penalty</a></li>
+<li class="chapter" data-level="" data-path="model-selection.html"><a href="model-selection.html#model-averaging"><i class="fa fa-check"></i>Model Averaging</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="modeling-categorical-outcomes.html"><a href="modeling-categorical-outcomes.html"><i class="fa fa-check"></i>Modeling Categorical Outcomes</a><ul>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html"><i class="fa fa-check"></i>Dichotomous Outcomes and The Binomial Distribution</a></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html"><i class="fa fa-check"></i>Linear Probability Model</a></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
+<li class="chapter" data-level="" data-path="maximum-likelihood-estimation.html"><a href="maximum-likelihood-estimation.html"><i class="fa fa-check"></i>Maximum Likelihood Estimation</a></li>
+<li class="chapter" data-level="" data-path="logistic-regression-model.html"><a href="logistic-regression-model.html"><i class="fa fa-check"></i>Logistic Regression Model</a></li>
+<li class="chapter" data-level="" data-path="models-for-nominal-polytomous-outcomes.html"><a href="models-for-nominal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Nominal Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="models-for-ordinal-polytomous-outcomes.html"><a href="models-for-ordinal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Ordinal Polytomous Outcomes</a></li>
+</ul></li>
+<li class="appendix"><span><b>Appendices</b></span></li>
+<li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html"><i class="fa fa-check"></i>Example Datasets</a><ul>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#crimes"><i class="fa fa-check"></i>Crimes</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#movies"><i class="fa fa-check"></i>Movies</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#politics"><i class="fa fa-check"></i>Politics</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#popularity"><i class="fa fa-check"></i>Popularity</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#sex"><i class="fa fa-check"></i>Sex</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#titanic"><i class="fa fa-check"></i>Titanic</a></li>
+<li class="chapter" data-level="" data-path="example-datasets.html"><a href="example-datasets.html#wages"><i class="fa fa-check"></i>Wages</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html"><i class="fa fa-check"></i>Common R Commands</a><ul>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#univariate-statistics"><i class="fa fa-check"></i>Univariate Statistics</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#bivariate-statistics"><i class="fa fa-check"></i>Bivariate Statistics</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#statistical-inference-1"><i class="fa fa-check"></i>Statistical Inference</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#ols-regression-models"><i class="fa fa-check"></i>OLS Regression Models</a></li>
+<li class="chapter" data-level="" data-path="common-r-commands.html"><a href="common-r-commands.html#utility-functions"><i class="fa fa-check"></i>Utility functions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html"><i class="fa fa-check"></i>Plotting Cookbook</a><ul>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#barplots"><i class="fa fa-check"></i>Barplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#histograms"><i class="fa fa-check"></i>Histograms</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#boxplots-1"><i class="fa fa-check"></i>Boxplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#comparative-barplots"><i class="fa fa-check"></i>Comparative Barplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#comparative-boxplots"><i class="fa fa-check"></i>Comparative Boxplots</a></li>
+<li class="chapter" data-level="" data-path="plotting-cookbook.html"><a href="plotting-cookbook.html#scatterplots"><i class="fa fa-check"></i>Scatterplots</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="r-stat-lab.html"><a href="r-stat-lab.html"><i class="fa fa-check"></i>R Stat Lab</a><ul>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html"><i class="fa fa-check"></i>Using Scripts</a><ul>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#getting-started-with-scripts"><i class="fa fa-check"></i>Getting Started with Scripts</a></li>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#not-everything-goes-into-your-script"><i class="fa fa-check"></i>Not Everything Goes Into Your Script</a></li>
+<li class="chapter" data-level="" data-path="using-scripts.html"><a href="using-scripts.html#commenting-for-sanity"><i class="fa fa-check"></i>Commenting for Sanity</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html"><i class="fa fa-check"></i>Object Types</a><ul>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#atomic-modes"><i class="fa fa-check"></i>Atomic Modes</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#vectors-and-matrices"><i class="fa fa-check"></i>Vectors and Matrices</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#factors"><i class="fa fa-check"></i>Factors</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#logical-values-and-boolean-statements"><i class="fa fa-check"></i>Logical Values and Boolean Statements</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#missing-values-1"><i class="fa fa-check"></i>Missing Values</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#lists"><i class="fa fa-check"></i>Lists</a></li>
+<li class="chapter" data-level="" data-path="object-types.html"><a href="object-types.html#data-frames"><i class="fa fa-check"></i>Data Frames</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html"><i class="fa fa-check"></i>Pretty Pictures</a><ul>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html#base-plot"><i class="fa fa-check"></i>Base Plot</a></li>
+<li class="chapter" data-level="" data-path="pretty-pictures.html"><a href="pretty-pictures.html#ggplot"><i class="fa fa-check"></i>ggplot</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html"><i class="fa fa-check"></i>Using Git</a><ul>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html#plain-text-is-better"><i class="fa fa-check"></i>Plain Text is Better</a></li>
+<li class="chapter" data-level="" data-path="using-git.html"><a href="using-git.html#git"><i class="fa fa-check"></i>Git</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html"><i class="fa fa-check"></i>Reading and Writing Data</a><ul>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#data-formats"><i class="fa fa-check"></i>Data Formats</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#plain-text-files"><i class="fa fa-check"></i>Plain text files</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#data-in-binary-format"><i class="fa fa-check"></i>Data in binary format</a></li>
+<li class="chapter" data-level="" data-path="reading-and-writing-data.html"><a href="reading-and-writing-data.html#saving-data"><i class="fa fa-check"></i>Saving data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i>Cleaning Data</a><ul>
+<li><a href="cleaning-data.html#the-most-important-rule-check-yourself-before-you-wreck-yourself">The Most Important Rule: <span>Check yourself before you wreck yourself</span></a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#assigning-missing-values"><i class="fa fa-check"></i>Assigning missing values</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#recoding"><i class="fa fa-check"></i>Recoding</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#collapsing-categorical-variables"><i class="fa fa-check"></i>Collapsing Categorical Variables</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#transforming-quantitative-variables"><i class="fa fa-check"></i>Transforming Quantitative Variables</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#after-cleaning-you-still-need-to-tidy"><i class="fa fa-check"></i>After Cleaning You Still Need to Tidy</a></li>
+<li class="chapter" data-level="" data-path="cleaning-data.html"><a href="cleaning-data.html#aggregating-data"><i class="fa fa-check"></i>Aggregating Data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html"><i class="fa fa-check"></i>Reshaping and Merging Data</a><ul>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html#reshaping"><i class="fa fa-check"></i>Reshaping</a></li>
+<li class="chapter" data-level="" data-path="reshaping-and-merging-data.html"><a href="reshaping-and-merging-data.html#merging-data"><i class="fa fa-check"></i>Merging data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html"><i class="fa fa-check"></i>Programming</a><ul>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#an-example-theils-h"><i class="fa fa-check"></i>An Example: Theil’s H</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#our-data"><i class="fa fa-check"></i>Our Data</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#calculating-theils-h-for-a-single-state"><i class="fa fa-check"></i>Calculating Theil’s H for a single state</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#creating-functions"><i class="fa fa-check"></i>Creating Functions</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#iteration"><i class="fa fa-check"></i>Iteration</a></li>
+<li class="chapter" data-level="" data-path="programming.html"><a href="programming.html#putting-it-all-together"><i class="fa fa-check"></i>Putting It All Together</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html"><i class="fa fa-check"></i>Using R Markdown</a><ul>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#plain-text-science"><i class="fa fa-check"></i>Plain Text Science</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#markdown-syntax"><i class="fa fa-check"></i>Markdown Syntax</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#r-markdown"><i class="fa fa-check"></i>R Markdown</a></li>
+<li class="chapter" data-level="" data-path="using-r-markdown.html"><a href="using-r-markdown.html#figures-in-r-markdown"><i class="fa fa-check"></i>Figures in R Markdown</a></li>
+</ul></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Analysis in Sociology</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="the-linear-model-revisited" class="section level2">
+<h2>The Linear Model, Revisited</h2>
+<div id="reformulating-the-linear-model" class="section level3">
+<h3>Reformulating the linear model</h3>
+<p>Up until now, we have used the following equation to describe the linear model mathematically:</p>
+<p><span class="math display">\[\hat{y}_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}\]</span>
+In this formulation, <span class="math inline">\(\hat{y}_i\)</span> is the predicted value of the dependent variable for the <span class="math inline">\(i\)</span>th observation and <span class="math inline">\(x_{i1}\)</span>, <span class="math inline">\(x_{i2}\)</span>. through <span class="math inline">\(x_{ip}\)</span> are the values of <span class="math inline">\(p\)</span> independent variables that predict <span class="math inline">\(\hat{y}_i\)</span> by a linear function. <span class="math inline">\(\beta_0\)</span> is the y-intercept which is the predicted value of dependent variable when all the independent variables are zero. <span class="math inline">\(\beta_1\)</span> through <span class="math inline">\(\beta_p\)</span> are the slopes giving the predicted change in the dependent variable for a one unit increase in a given independent variable holding all of the other variables constant.</p>
+<p>This formulation is useful, but we can now expand and re-formulate it in a way that will help us understand some of the more advanced topics we will discuss in this and later chapters. The formula is above is only the “structural” part of the full linear model. The full linear model is given by:</p>
+<p><span class="math display">\[y_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}+\epsilon_i\]</span></p>
+<p>I have changed two things in this new formula. On the left-hand side, we have the actual value of the dependent variable for the <span class="math inline">\(i\)</span>th observation. In order to make things balance on the right-hand side of the equation, I have added <span class="math inline">\(\epsilon_i\)</span> which is simply the residual or error term for the <span class="math inline">\(i\)</span>th observation. We now have a full model that predicts the actual values of <span class="math inline">\(y\)</span> from the actual values of <span class="math inline">\(x\)</span>.</p>
+<p>If we compare this to the first formula, it should become clear that every term except the residual term can be substituted for by <span class="math inline">\(\hat{y}_i\)</span>. So, we can restate our linear model using two separate formulas as follows:</p>
+<p><span class="math display">\[\hat{y}_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}\]</span></p>
+<p><span class="math display">\[y_i=\hat{y}_i+\epsilon_i\]</span></p>
+<p>By dividing up the formula into two separate components, we can begin to think of our linear model as containing a structural component and a random (or stochastic) component. The structural component is the linear equation predicting <span class="math inline">\(\hat{y}_i\)</span>. This is the formal relationship we are trying to fit between the dependent and independent variables. The stochastic component on the other hand is given by the <span class="math inline">\(\epsilon_i\)</span> term in the second formula. In order to get back to the actual values of the dependent variable, we have to add in the residual component that is not accounted for by the linear model.</p>
+<p>From this perspective, we can rethink our entire linear model as a partition of the total variation in the dependent variable into the structural component that can be accounted for by our linear model and the residual component that is unaccounted for by the model. This is exactly as we envisioned things when we learned to calculate <span class="math inline">\(R^2\)</span> in previous chapters.</p>
+</div>
+<div id="marginal-effects" class="section level3">
+<h3>Marginal effects</h3>
+<p>The <strong>marginal effect</strong> of <span class="math inline">\(x\)</span> on <span class="math inline">\(y\)</span> gives the expected change in <span class="math inline">\(y\)</span> for a one unit increase in <span class="math inline">\(x\)</span> at a given value of <span class="math inline">\(x\)</span>. If that sounds familiar, its because this is very similar to the interpretation we give of the slope in a linear model. In a basic linear model with no interaction terms, the marginal effect of a given independent variable is in fact given by the slope.</p>
+<p>The difference in interpretation is the little part about “at a given value of x.” In a basic linear model this addendum is irrelevant because the expected increase in <span class="math inline">\(y\)</span> for a one unit increase in <span class="math inline">\(x\)</span> is the same regardless of the current value of <span class="math inline">\(x\)</span> – thats what it means for an effect to be linear. However, when we start delving into more complex model structures, such as interaction terms and some of the models we will discuss in this module, things get more complicated. The marginal effect can help us make sense of complicated models.</p>
+<p>The marginal effect is calculated using calculus. I won’t delve too deeply into the details here, but the marginal effect is equal to the partial derivative of y with respect to x. This partial derivative gives us what is called the <em>tangent line</em> of a curve at any point of <span class="math inline">\(x\)</span> which measures the instantenous rate of change in some mathematical function.</p>
+<p>Lets take the case of a simple linear model with two predictor variables:</p>
+<p><span class="math display">\[y_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\epsilon_i\]</span></p>
+<p>We can calculate the marginal effect of <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> by taking their partial derivatives. If you don’t know how to do that, its fine. But if you do know a little calculus, this is a simple calculation:</p>
+<p><span class="math display">\[\frac{\partial y}{\partial x_1}=\beta_1\]</span>
+<span class="math display">\[\frac{\partial y}{\partial x_2}=\beta_2\]</span></p>
+<p>As stated above, the marginal effects are just given by the slope for each variable, respectively.</p>
+<p>Marginal effects really become useful when we have more complex models. Lets now try a model similar to the one above but with an interaction term:</p>
+<p><span class="math display">\[y_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\beta_3x_{i1}x_{i2}+\epsilon_i\]</span></p>
+<p>The partial derivatives of this model turn out to be:</p>
+<p><span class="math display">\[\frac{\partial y}{\partial x_1}=\beta_1+\beta_3x_{i2}\]</span>
+<span class="math display">\[\frac{\partial y}{\partial x_2}=\beta_2+\beta_3x_{i1}\]</span></p>
+<p>The marginal effect of each independent variable on <span class="math inline">\(y\)</span> now depends on the value of the other independent variable. Thats how interaction terms work, but now we can see that effect much more clearly in a mathematical sense. The slope of each independent variable is itself determined by a linear function rather than being a single constant value.</p>
+<div id="marginal-effect-interaction-example" class="section level4">
+<h4>Marginal effect interaction example</h4>
+<p>Lets try this with a concrete example. For this case, I will look at the effect on wages of the interaction between number of children in the household and gender:</p>
+<div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb242-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span>nchild<span class="op">*</span>gender, <span class="dt">data=</span>earnings)</a>
+<a class="sourceLine" id="cb242-2" title="2"><span class="kw">round</span>(<span class="kw">coef</span>(model), <span class="dv">3</span>)</a></code></pre></div>
+<pre><code>##         (Intercept)              nchild        genderFemale nchild:genderFemale 
+##              24.720               1.779              -2.839              -1.335</code></pre>
+<p>So, my full model is given by:</p>
+<p><span class="math display">\[\hat{\text{wages}}_i=24.720+1.779(\text{nchildren}_i)-2.839(\text{female}_i)-1.335(\text{nchildren}_i)(\text{female}_i)\]</span></p>
+<p>Following the formulas above, the marginal effect of number of children is given by:</p>
+<p><span class="math display">\[1.779-1.335(\text{female}_i)\]</span></p>
+<p>Note that this only takes two values because female is an indicator variable. When we have a man, the <span class="math inline">\(\text{female}\)</span> variable will be zero and therefore the effect of an additional child will be 1.779. When we have a woman, <span class="math inline">\(\text{female}\)</span> variable will be one, and the effect of an additional child will be <span class="math inline">\(1.779-1.335=0.444\)</span>.</p>
+<p>The marginal effect for the gender gap will be given by:</p>
+<p><span class="math display">\[-2.839-1.335(\text{nchildren}_i)\]</span></p>
+<p>So the gender gap starts at 2.839 with no children in the household and grows by 1.335 for each additional child.</p>
+<p>We can also plot up a <strong>marginal effects graph</strong> that shows us how the gender gap changes by number of children in the household.</p>
+<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb244-1" title="1">nchild &lt;-<span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">6</span></a>
+<a class="sourceLine" id="cb244-2" title="2">gender_gap &lt;-<span class="st"> </span><span class="fl">-2.839-1.335</span><span class="op">*</span>nchild</a>
+<a class="sourceLine" id="cb244-3" title="3">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(nchild, gender_gap)</a>
+<a class="sourceLine" id="cb244-4" title="4"><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">x=</span>nchild, <span class="dt">y=</span>gender_gap))<span class="op">+</span></a>
+<a class="sourceLine" id="cb244-5" title="5"><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">linetype=</span><span class="dv">2</span>, <span class="dt">color=</span><span class="st">&quot;grey&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb244-6" title="6"><span class="st">  </span><span class="kw">geom_point</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb244-7" title="7"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;number of children in household&quot;</span>,</a>
+<a class="sourceLine" id="cb244-8" title="8">       <span class="dt">y=</span><span class="st">&quot;predicted gender gap in hourly wages&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb244-9" title="9"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> scales<span class="op">::</span>dollar)<span class="op">+</span></a>
+<a class="sourceLine" id="cb244-10" title="10"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:marginal-fx-graph"></span>
+<img src="stat_book_files/figure-html/marginal-fx-graph-1.png" alt="Marginal effect of number of children on the gender gap in wages" width="672" />
+<p class="caption">
+Figure 56: Marginal effect of number of children on the gender gap in wages
+</p>
+</div>
+</div>
+</div>
+<div id="linear-model-assumptions" class="section level3">
+<h3>Linear model assumptions</h3>
+<p>Two important assumptions underlie the linear model. The first assumption is the assumption of <strong>linearity</strong>. In short, we assume that the the relationship between the dependent and independent variables is best described by a linear function. In prior chapters, we have seen examples where this assumption of linearity was clearly violated. When we choose the wrong model for the given relationship, we have made a <em>specification error</em>. Fitting a linear model to a non-linear relationship is one of the most common forms of specification error. However, this assumption is not as deadly as it sounds. Provided that we correctly diagnose the problem, there are a variety of tools that we can use to fit a non-linear relationship within the linear model framework. We will cover this techniques in the next section.</p>
+<p>The second assumption of linear models is that the residual or error terms <span class="math inline">\(\epsilon_i\)</span> are <strong>independent</strong> of one another and <strong>identically distributed</strong>. This is often called the <strong>i.i.d. assumption</strong>, for short. This assumption is a little more subtle. In order to understand, we need to return to this equation from earlier:</p>
+<p><span class="math display">\[y_i=\hat{y}_i+\epsilon_i\]</span></p>
+<p>One way to think about what is going on here is that in order to get an actual value of <span class="math inline">\(y_i\)</span> you feed in all of the independent variables into your linear model equation to get <span class="math inline">\(\hat{y}_i\)</span> and then you reach into some distribution of numbers (or a bag of numbers if you need something more concrete to visualize) to pull out a random value of <span class="math inline">\(\epsilon_i\)</span> which you add to the end of your predicted value to get the actual value. When we think about the equation this way, we are thinking about it as a <strong>data generating process</strong> in which we get <span class="math inline">\(y_i\)</span> values from completing the equation on the right.</p>
+<p>The i.i.d. assumption comes into play when we reach into that distribution (or bag) to draw out our random values. <strong>Independence</strong> assumes that what we drew previously won’t affect what we draw in the future. The most common violation of this assumption is in time series data in which peaks and valleys in the time series tend to come clustered in time, so that when you have a high (or low) error in one year, you are likely to have a similar error in the next year. <strong>Identically distributed</strong> means that you are drawn from the same distribution (or bag) each time you make a draw. One of the most common violation of this assumption is when error terms tend to get larger in absolute size as the predicted value grows in size.</p>
+<p>In later sections of this chapter, we will cover the i.i.d. assumption in more detail including the consequences of violating it, diagnostics for detecting it, and some corrections for when it does occur.</p>
+</div>
+<div id="estimating-a-linear-model" class="section level3">
+<h3>Estimating a linear model</h3>
+<p>Up until now, we have not discussed how R actually calculates all of the slopes and intercept for a linear model with multiple independent variables. We only know the equations for a linear model with one independent variable.</p>
+<p>Even though we don’t know the math yet behind how linear model parameters are estimated, we do know the rationale for why they are selected. We choose the parameters that minimized the sum of squared residuals given by:</p>
+<p><span class="math display">\[\sum_{i=1}^n (y_i-\hat{y}_i)^2\]</span>
+In this section, we will learn the formal math that underlies how this estimation occurs, but first a warning: there is a lot of math ahead. In normal everyday practice, you don’t have to do any of this math, because R will do it for you. However, it is useful to know how linear model estimating works “under the hood” and it will help with some of the techniques we will learn later in the book.</p>
+<div id="matrix-algebra-crash-course" class="section level4">
+<h4>Matrix algebra crash course</h4>
+<p>In order to learn how to estimate linear model parameters, we will need to learn a little bit of matrix algebra. In matrix algebra we can collect numbers into <strong>vectors</strong> which are single dimension arrays of numbers and <strong>matrices</strong> which are two-dimensional arrays of numbers. We can use matrix algebra to represent our linear regression model equation using one-dimensional <strong>vectors</strong> and two-dimensional <strong>matrices</strong>. We can imagine <span class="math inline">\(y\)</span> below as a vector of dimension 3x1 and <span class="math inline">\(\mathbf{X}\)</span> as a matrix of dimension 3x3.</p>
+<p><span class="math display">\[
+\mathbf{y}=\begin{pmatrix}
+4\\
+5\\
+3\\
+\end{pmatrix}
+\mathbf{X}=
+\begin{pmatrix}
+1 &amp; 7 &amp; 4\\
+1 &amp; 3 &amp; 2\\
+1 &amp; 1 &amp; 6\\
+\end{pmatrix}
+\]</span></p>
+<p>We can multiply vectors and matrices together by taking each element in the row of a matrix by the corresponding element in the vector and summing them up:</p>
+<p><span class="math display">\[\begin{pmatrix}
+1 &amp; 7 &amp; 4\\
+1 &amp; 3 &amp; 2\\
+1 &amp; 1 &amp; 6\\
+\end{pmatrix}
+\begin{pmatrix}
+4\\
+5\\
+3\\
+\end{pmatrix}=
+\begin{pmatrix}
+1*4+7*5+3*4\\
+1*4+3*5+2*3\\
+1*4+1*5+6*3\\
+\end{pmatrix}=
+\begin{pmatrix}
+51\\
+25\\
+27\\
+\end{pmatrix}\]</span></p>
+<p>You can also transpose a vector or matrix by flipping its rows and columns. My transposed version of <span class="math inline">\(\mathbf{X}\)</span> is <span class="math inline">\(\mathbf{X}&#39;\)</span> which is:</p>
+<p><span class="math display">\[\mathbf{X}=
+\begin{pmatrix}
+1 &amp; 1 &amp; 1\\
+7 &amp; 3 &amp; 1\\
+4 &amp; 2 &amp; 6\\
+\end{pmatrix}\]</span></p>
+<p>You can also multiple matrices by each other using the same pattern as for multiplying vectors and matrices but now you start a new column each time you move down a row of the first matrix. So to “square” my  matrix:</p>
+<p><span class="math display">\[
+\begin{eqnarray*}
+\mathbf{X}&#39;\mathbf{X}&amp;=&amp;
+\begin{pmatrix}
+1 &amp; 1 &amp; 1\\
+7 &amp; 3 &amp; 1\\
+4 &amp; 2 &amp; 6\\
+\end{pmatrix}
+\begin{pmatrix}
+1 &amp; 7 &amp; 4\\
+1 &amp; 3 &amp; 2\\
+1 &amp; 1 &amp; 6\\
+\end{pmatrix}&amp;\\
+&amp; =&amp; \begin{pmatrix}
+1*1+1*1+1*1 &amp; 1*7+1*3+1*1 &amp; 1*4+1*2+1*6\\
+7*1+3*1+1*1 &amp; 7*7+3*3+1*1 &amp; 7*4+3*2+1*6\\
+4*1+2*1+6*1 &amp; 4*7+2*3+6*1 &amp; 4*4+2*2+6*6\\
+\end{pmatrix}\\
+&amp; =&amp;  \begin{pmatrix}
+3 &amp; 11 &amp; 12\\
+11 &amp; 59 &amp; 40\\
+12 &amp; 40 &amp; 56\\
+\end{pmatrix}
+\end{eqnarray*}
+\]</span></p>
+<p>R can help us with these calculations. the <code>t</code> command will transpose a matrix or vector and the <code>%*%</code> operator will to matrix algebra multiplication.</p>
+<div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb245-1" title="1">y &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb245-2" title="2">X &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">7</span>,<span class="dv">4</span>),<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">2</span>),<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">6</span>))</a>
+<a class="sourceLine" id="cb245-3" title="3">X</a></code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    1    7    4
+## [2,]    1    3    2
+## [3,]    1    1    6</code></pre>
+<div class="sourceCode" id="cb247"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb247-1" title="1"><span class="kw">t</span>(X)</a></code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    1    1    1
+## [2,]    7    3    1
+## [3,]    4    2    6</code></pre>
+<div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb249-1" title="1">X<span class="op">%*%</span>y</a></code></pre></div>
+<pre><code>##      [,1]
+## [1,]   51
+## [2,]   25
+## [3,]   27</code></pre>
+<div class="sourceCode" id="cb251"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb251-1" title="1"><span class="kw">t</span>(X)<span class="op">%*%</span>X</a></code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    3   11   12
+## [2,]   11   59   40
+## [3,]   12   40   56</code></pre>
+<div class="sourceCode" id="cb253"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb253-1" title="1"><span class="co">#a shortcut for squaring a matrix</span></a>
+<a class="sourceLine" id="cb253-2" title="2"><span class="kw">crossprod</span>(X)</a></code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    3   11   12
+## [2,]   11   59   40
+## [3,]   12   40   56</code></pre>
+<p>We can also calculate the <strong>inverse</strong> of a matrix. The inverse of a matrix (<span class="math inline">\(\mathbf{X}^{-1}\)</span>) is the matrix that when multiplied by the original matrix produces the <strong>identity</strong> matrix which is just a matrix of ones along the diagonal cells and zeroes elsewhere. Anything multiplied by the identity matrix is just itself, so the identity matrix is like 1 at the matrix algebra level. Calculating an inverse is a difficult calculation that I won’t go through here, but R can do it for us easily with the <code>solve</code> command:</p>
+<div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb255-1" title="1">inverse.X &lt;-<span class="st"> </span><span class="kw">solve</span>(X)</a>
+<a class="sourceLine" id="cb255-2" title="2">inverse.X</a></code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,] -0.8  1.9 -0.1
+## [2,]  0.2 -0.1 -0.1
+## [3,]  0.1 -0.3  0.2</code></pre>
+<div class="sourceCode" id="cb257"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb257-1" title="1"><span class="kw">round</span>(inverse.X <span class="op">%*%</span><span class="st"> </span>X,<span class="dv">0</span>)</a></code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    1    0    0
+## [2,]    0    1    0
+## [3,]    0    0    1</code></pre>
+</div>
+<div id="linear-model-in-matrix-form" class="section level4">
+<h4>Linear model in matrix form</h4>
+<p>We now have enough matrix algebra under our belt that we can re-specify the linear model equation in matrix algebra format:</p>
+<p><span class="math display">\[\mathbf{y}=\mathbf{X\beta+\epsilon}\]</span></p>
+<p><span class="math inline">\(\begin{gather*} \mathbf{y}=\begin{pmatrix} y_{1}\\ y_{2}\\ \vdots\\ y_{n}\\ \end{pmatrix} \end{gather*}\)</span>,
+<span class="math inline">\(\begin{gather*} \mathbf{X}= \begin{pmatrix} 1 &amp; x_{11} &amp; x_{12} &amp; \ldots &amp; x_{1p}\\ 1 &amp; x_{21} &amp; x_{22} &amp; \ldots &amp; x_{2p}\\ \vdots &amp; \vdots &amp; \ldots &amp; \vdots\\ 1 &amp; x_{n1} &amp; x_{n2} &amp; \ldots &amp; x_{np}\\ \end{pmatrix} \end{gather*}\)</span>,
+<span class="math inline">\(\begin{gather*} \mathbf{\epsilon}=\begin{pmatrix} \epsilon_{1}\\ \epsilon_{2}\\ \vdots\\ \epsilon_{n}\\ \end{pmatrix} \end{gather*}\)</span>,
+<span class="math inline">\(\begin{gather*} \mathbf{\beta}=\begin{pmatrix} \beta_{1}\\ \beta_{2}\\ \vdots\\ \beta_{p}\\ \end{pmatrix} \end{gather*}\)</span></p>
+<p>Where:</p>
+<ul>
+<li><span class="math inline">\(\mathbf{y}\)</span> is a vector of known values of the independent variable of length <span class="math inline">\(n\)</span>.</li>
+<li><span class="math inline">\(\mathbf{X}\)</span> is a matrix of known values of the independent variables of dimensions <span class="math inline">\(n\)</span> by <span class="math inline">\(p+1\)</span>. This matrix is sometimes referred to as the <strong>design matrix</strong>.</li>
+<li><span class="math inline">\(\mathbf{\beta}\)</span> is a vector of to-be-estimated values of intercepts and slopes of length <span class="math inline">\(p+1\)</span>.</li>
+<li><span class="math inline">\(\mathbf{\epsilon}\)</span> is a vector of residuals of length <span class="math inline">\(n\)</span> that will be equal to <span class="math inline">\(\mathbf{y-X\beta}\)</span>.</li>
+</ul>
+<p>Note that we only know <span class="math inline">\(\mathbf{y}\)</span> and <span class="math inline">\(\mathbf{X}\)</span>. We need to estimate a <span class="math inline">\(\mathbf{\beta}\)</span> vector from these known quantities. Once we know the <span class="math inline">\(\mathbf{\beta}\)</span> vector, we can calculate <span class="math inline">\(\mathbf{\epsilon}\)</span> by just taking <span class="math inline">\(\mathbf{y-X\beta}\)</span>.</p>
+<p>We want to estimate <span class="math inline">\(\mathbf{\beta}\)</span> in order to minimize the sum of squared residuals. We can represent this sum of squared residuals in matrix algebra format as a function of <span class="math inline">\(\mathbf{\beta}\)</span>:</p>
+<p><span class="math display">\[\begin{eqnarray*}
+SSR(\beta)&amp;=&amp;(\mathbf{y}-\mathbf{X\beta})&#39;(\mathbf{y}-\mathbf{X\beta})\\
+&amp;=&amp;\mathbf{y}&#39;\mathbf{y}-2\mathbf{y}&#39;\mathbf{X\beta}+\mathbf{\beta}&#39;\mathbf{X&#39;X\beta}
+\end{eqnarray*}\]</span></p>
+<p>If you remember the old FOIL technique from high school algebra (first, outside, inside, last) that is exactly what we are doing here, in matrix algebra form.</p>
+<p>We now have a function that defines our sum of squared residuals. We want to choose the values of <span class="math inline">\(\mathbf{\beta}\)</span> that minimize the value of this function. In order to do that, I need to introduce a teensy bit of calculus. To find the minimum (or maximum) value of a function, you calculate the derivative of the function with respect to the variable you care about and then solve for zero. Technically, you also need to calculate second derivatives in order to determine if its a minimum or maximum, but since this function has no maximum value, we know that the result has to be a minimum. I don’t expect you to learn calculus for this course, so I will just mathemagically tell you that the derivative of <span class="math inline">\(SSR(\beta)\)</span> with respect to <span class="math inline">\(\mathbf{\beta}\)</span> is given by:</p>
+<p><span class="math display">\[-2\mathbf{X&#39;y}+2\mathbf{X&#39;X\beta}\]</span></p>
+<p>We can now set this to zero and solve for <span class="math inline">\(\mathbf{\beta}\)</span>:</p>
+<p><span class="math display">\[\begin{eqnarray*}
+0&amp;=&amp;-2\mathbf{X&#39;y}+2\mathbf{X&#39;X\beta}\\
+-2\mathbf{X&#39;X\beta}&amp;=&amp;-2\mathbf{X&#39;y}\\
+(\mathbf{X&#39;X})^{-1}\mathbf{X&#39;X\beta}&amp;=&amp;(\mathbf{X&#39;X})^{-1}\mathbf{X&#39;y}\\
+\mathbf{\beta}&amp;=&amp;(\mathbf{X&#39;X})^{-1}\mathbf{X&#39;y}\\
+\end{eqnarray*}\]</span></p>
+<p>Ta-dah! We have arrived at the matrix algebra solution for the best fitting parameters for a linear model with any number of independent variables. Lets try this formula out in R:</p>
+<div class="sourceCode" id="cb259"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb259-1" title="1">X &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">cbind</span>(<span class="kw">rep</span>(<span class="dv">1</span>, <span class="kw">nrow</span>(movies)), movies[,<span class="kw">c</span>(<span class="st">&quot;Runtime&quot;</span>,<span class="st">&quot;BoxOffice&quot;</span>)]))</a>
+<a class="sourceLine" id="cb259-2" title="2"><span class="kw">head</span>(X)</a></code></pre></div>
+<pre><code>##     rep(1, nrow(movies)) Runtime BoxOffice
+## 164                    1     118      47.1
+## 165                    1     104       3.9
+## 166                    1     122      30.7
+## 167                    1     111      11.4
+## 168                    1     123      39.9
+## 169                    1     116      32.4</code></pre>
+<div class="sourceCode" id="cb261"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb261-1" title="1">y &lt;-<span class="st"> </span>movies<span class="op">$</span>TomatoMeter </a>
+<a class="sourceLine" id="cb261-2" title="2">beta &lt;-<span class="st"> </span><span class="kw">solve</span>(<span class="kw">crossprod</span>(X))<span class="op">%*%</span><span class="kw">crossprod</span>(X,y) </a>
+<a class="sourceLine" id="cb261-3" title="3">beta</a></code></pre></div>
+<pre><code>##                             [,1]
+## rep(1, nrow(movies)) 11.09207358
+## Runtime               0.32320152
+## BoxOffice             0.05923506</code></pre>
+<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb263-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(TomatoMeter<span class="op">~</span>Runtime<span class="op">+</span>BoxOffice, <span class="dt">data=</span>movies)</a>
+<a class="sourceLine" id="cb263-2" title="2"><span class="kw">coef</span>(model)</a></code></pre></div>
+<pre><code>## (Intercept)     Runtime   BoxOffice 
+## 11.09207358  0.32320152  0.05923506</code></pre>
+<p>It works!</p>
+<p>We can also estimate standard errors using this matrix algebra format. To get the standard errors, we first need to calculate the <strong>covariance matrix</strong>.</p>
+<p><span class="math display">\[\sigma^{2}(\mathbf{X&#39;X})^{-1}\]</span></p>
+<p>The <span class="math inline">\(\sigma^2\)</span> here is the variance of our residuals. Technically, this is the variance of the residuals in the population but since we usually only have a sample we actually calculate:</p>
+<p><span class="math display">\[s^2=\frac{\sum(y_i-\hat{y}_i)^2}{n-p-1}\]</span></p>
+<p>based on the fitted values of <span class="math inline">\(\hat{y}_i\)</span> from our linear model. <span class="math inline">\(p\)</span> is the number of independent variables in our model.</p>
+<p>The covariance matrix actually provides us with some interesting information about the correlation of our independent variables. For our purposes we just want the square root of the diagonal elements, which gives us the standard error for our model. Continuing with the example estimating tomato meter ratings by run time and box office returns in our movies dataset, lets calculate all the numbers we need for an inference test:</p>
+<div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb265-1" title="1"><span class="co">#get the predicted values of y</span></a>
+<a class="sourceLine" id="cb265-2" title="2">y.hat &lt;-<span class="st"> </span>X<span class="op">%*%</span>beta </a>
+<a class="sourceLine" id="cb265-3" title="3">df &lt;-<span class="st"> </span><span class="kw">length</span>(y)<span class="op">-</span><span class="kw">ncol</span>(X) </a>
+<a class="sourceLine" id="cb265-4" title="4"><span class="co">#calculate our sample variance of the residual terms</span></a>
+<a class="sourceLine" id="cb265-5" title="5">s.sq &lt;-<span class="st"> </span><span class="kw">sum</span>((y<span class="op">-</span>y.hat)<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>df </a>
+<a class="sourceLine" id="cb265-6" title="6"><span class="co">#calculate the covariance matrix</span></a>
+<a class="sourceLine" id="cb265-7" title="7">covar.matrix &lt;-<span class="st"> </span>s.sq<span class="op">*</span><span class="kw">solve</span>(<span class="kw">crossprod</span>(X)) </a>
+<a class="sourceLine" id="cb265-8" title="8"><span class="co">#extract SEs from the square root of the diagonal</span></a>
+<a class="sourceLine" id="cb265-9" title="9">se &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">diag</span>(covar.matrix)) </a>
+<a class="sourceLine" id="cb265-10" title="10"><span class="co">## calculate t-stats from our betas and SEs</span></a>
+<a class="sourceLine" id="cb265-11" title="11">t.stat &lt;-<span class="st"> </span>beta<span class="op">/</span>se </a>
+<a class="sourceLine" id="cb265-12" title="12"><span class="co">#calculate p-values from the t-stat</span></a>
+<a class="sourceLine" id="cb265-13" title="13">p.value &lt;-<span class="st"> </span><span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="op">-</span><span class="dv">1</span><span class="op">*</span><span class="kw">abs</span>(t.stat), df) </a>
+<a class="sourceLine" id="cb265-14" title="14"><span class="kw">data.frame</span>(beta,se,t.stat,p.value)</a></code></pre></div>
+<pre><code>##                             beta          se    t.stat      p.value
+## rep(1, nrow(movies)) 11.09207358 3.269128357  3.392976 7.019316e-04
+## Runtime               0.32320152 0.031734307 10.184609 6.617535e-24
+## BoxOffice             0.05923506 0.007978845  7.424014 1.540215e-13</code></pre>
+<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb267-1" title="1"><span class="co">#compare to the lm command</span></a>
+<a class="sourceLine" id="cb267-2" title="2"><span class="kw">summary</span>(model)<span class="op">$</span>coef</a></code></pre></div>
+<pre><code>##                Estimate  Std. Error   t value     Pr(&gt;|t|)
+## (Intercept) 11.09207358 3.269128357  3.392976 7.019316e-04
+## Runtime      0.32320152 0.031734307 10.184609 6.617535e-24
+## BoxOffice    0.05923506 0.007978845  7.424014 1.540215e-13</code></pre>
+<p>And it all works. As I said at the beginning, this is a lot of math and not something you need to think about every day. I am not expecting all of this will stick the first time around, but I want it to be here for you as a handy reference for the future.</p>
+<hr />
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="model-complications.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="modeling-non-linearity.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

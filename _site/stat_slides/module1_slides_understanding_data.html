@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Understanding Data</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Aaron Gullickson" />
+    <meta name="date" content="2020-04-14" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/uo.css" rel="stylesheet" />
+    <link href="libs/remark-css/uol-fonts.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="lecture_slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Understanding Data
+## Sociology 312
+### Aaron Gullickson
+### University of Oregon
+### 2020-04-14
+
+---
+
+
+
+
+
+
+
+
+
+
+class: inverse, center, middle
+
+background-image: url(images/markus-spiske-666905-unsplash.jpg)
+background-size: cover
+
+# What Does Data Look Like?
+
+---
+
+## Most data looks like a spreadsheet
+
+&lt;table&gt;
+&lt;caption&gt;Four passengers on the Titanic&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; survival &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; sex &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; age &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; agegroup &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; pclass &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; fare &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; family &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Survived &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Female &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 24.0000 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Adult &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; First &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 69.3000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Died &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 24.0000 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Adult &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Third &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.7958 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Survived &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9167 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Child &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; First &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 151.5500 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Died &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 60.0000 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Adult &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; First &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 26.5500 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+
+- **Observations** are on the rows. Observations are the units from which you are taking measurements.
+
+--
+
+- **Variables** are on the columns. Variables measure specific attributes of your observations.
+
+---
+
+## The unit of analysis identifies the kind of observation
+
+The **unit of analysis** simply tells you what your observations actually are. We can collect data on many different types of units.
+
+.center[Some examples, but the possibilities are endless]
+
+|  Individual People | Countries | Corporations | Universities |
+| --- | ----------- | ------ | 
+| ![crowd](images/crowd.jpg) | ![countries](images/countries.jpg) | ![logos](images/logos.jpg) | ![pac12](images/pac12.png)|
+
+
+---
+
+## What is the unit of analysis in each case?
+
+1. Titanic data on passengers?
+2. Cross-national data on CO2 emissions?
+
+--
+
+.pull-left[
+### Titanic data
+
+
+
+.center[
+**Individual Passengers** 
+
+![titanic passengers](images/titanic-passengers.jpg)]
+] 
+
+
+
+--
+
+.pull-right[
+### Cross-national data
+
+.center[
+**Countries**
+
+![countries-co2](images/country-co2.png)]
+]
+
+---
+
+## Quantitative variables measure quantities
+
+A quantitative variable measures quantities of something. A quantitative variable is always represented as a number. There are two types of quantitative variables.
+
+--
+
+.pull-left[
+### Discrete
+
+.center[![scale](images/counter.jpg)] 
+
+A **discrete** variable can only take certain values within a range. 
+
+- Number of children ever had
+- Number of violent crimes committed
+- Number of siblings
+- Number of Youtube views
+]
+
+--
+
+.pull-right[
+### Continous 
+
+.center[![scale](images/scale.jpg)] 
+
+A **continuous** variable can take any value within a given range. 
+
+- Age
+- Height
+- GDP per capita
+- CO2 emissions
+
+
+]
+
+???
+
+- The most common case of a discrete variable is a  count of things and thus can only be represented by positive whole numbers. 
+
+- In practice, we often only measure these variables to a certain decimal level (half inches for height, whole numbers for age), but we could theoretically measure them more precisely with better instruments. 
+
+
+---
+
+## Categorical variables specify a category
+
+Categorical variables indicate which category an observation belongs to from a mutually exclusive set of categories. There are also two types of categorical variables:
+
+--
+
+.pull-left[
+### Ordinal
+
+.center[![scale](images/pepper-scale.jpg)] 
+
+An **ordinal** variable is a categorical variables whose values have a clear ordering. 
+
+- Highest degree earned
+- passenger class on the Titanic
+- level of support with an opinion statement
+]
+
+--
+
+
+.pull-right[
+### Nominal
+
+.center[![scale](images/gender-nominal.png)] 
+
+A **nominal** variable is a categorical variable whose values are unordered. 
+
+- Gender
+- Race
+- Political party
+
+]
+
+---
+
+## What type of variables do we have here?
+
+&lt;table&gt;
+&lt;caption&gt;four passengers on the Titanic&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; survival &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; sex &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; age &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; agegroup &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; pclass &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; fare &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; family &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Survived &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Female &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 24.0000 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Adult &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; First &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 69.3000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Died &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 24.0000 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Adult &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Third &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7.7958 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Survived &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9167 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Child &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; First &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 151.5500 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Died &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 60.0000 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Adult &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; First &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 26.5500 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+- **survival:** survival is a nominal variable.
+
+--
+- **sex:** sex is a nominal variable.
+
+--
+- **age:** age is a continuous variable.
+
+--
+- **agegroup:** age group is an ordinal variable.
+
+--
+- **pclass:** Passenger class is an ordinal variable.
+
+--
+- **fare:** fare paid is a continuous variable (sort of). 
+
+--
+- **family:** number of family members is a discrete variable.
+
+---
+
+class: inverse, middle
+
+.left-column[## <i class="fas  fa-pen-square "></i> Your Turn]
+.right-column[
+
+### Think of a dataset measuring something you might care about.
+
+- What are the units of analysis?
+- What might a continuous variable in this dataset be?
+- What might a discrete variable in this dataset be?
+- What might a nominal variable in this dataset be?
+- What might an ordinal variable in this dataset be?
+]
+
+---
+
+class: center, middle
+
+&lt;iframe src="https://aarongullickson.shinyapps.io/datasets/"&gt;
+
+&lt;/iframe&gt;
+
+---
+
+layout: false
+class: middle, center, inverse
+background-image: url(images/isaac-smith-1182057-unsplash.jpg)
+background-size: cover
+
+# What Can We Do With Data?
+
+---
+
+## We can look at the distribution of a variable
+
+--
+
+.pull-left[
+&lt;img src="module1_slides_understanding_data_files/figure-html/dist-variable1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+&lt;img src="module1_slides_understanding_data_files/figure-html/dist-variable2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+
+???
+
+In some cases, I might simply be interested in the **distribution** of a variable. We refer to these kinds of measures as **univariate statistics** where "univariate" is a fancy way to say "one variable."
+
+- How much variability is there in the amount of money that movies make?
+- What percent of passengers survived the Titanic disaster?
+- What is the average age of voters in the United States?
+
+---
+
+## We can look at association between variables
+
+--
+
+.pull-left[
+&lt;img src="module1_slides_understanding_data_files/figure-html/measure-assoc1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+&lt;img src="module1_slides_understanding_data_files/figure-html/measure-assoc2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+We are generally most interested in questions about the relationship or association between two or more variables than in a single variable itself. There are multiple ways to measure this association, depending on the type of variables involved. 
+
+- Did the probability of surviving the Titanic depend on passenger class?
+- Do the earnings of movies vary by genre?
+- Is income inequality in a state related to its crime rate?
+
+---
+
+## We can make statistical inferences
+
+--
+
+.pull-left[
+&lt;img src="module1_slides_understanding_data_files/figure-html/stat-infer1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+&lt;img src="module1_slides_understanding_data_files/figure-html/stat-infer2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+- If I told you that in a sample of twenty people, brown-eyed individuals made $5 more an hour than people with other eye color, would you believe that I had found an important source of inequality? 
+- Probably not, because with a sample that small, its possible to get unusual results like this just because of the sample you happened to draw. 
+- Statistical inference is the technique of quantifying how uncertain we are about our statistical results. It allows us not only to summarize our data, but give a sense of how well we think that data might represent the larger population from which we drew our sample. 
+
+---
+
+## We can build models
+
+--
+
+.center[
+
+&lt;img src="module1_slides_understanding_data_files/figure-html/build-models-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+]
+
+???
+
+In the last module of the course we will expand on what we have learned previously to build **statistical models** that can help us better understand relationships we observe in the data. 
+
+Statistical models allow us to examine relationships between multiple variables using more complex mathematical specifications. We use these models to address two types of questions: 
+
+- Do I observe a relationship between two variables, even after controlling for potential 
+confounders? 
+- Does the relationship between two variables differ depending on the context of a third variable? 
+
+---
+
+## Models can get more complex
+
+--
+
+.pull-left[
+&lt;img src="module1_slides_understanding_data_files/figure-html/confounders-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+&lt;img src="module1_slides_understanding_data_files/figure-html/interactions-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+???
+
+Confounders are variables that might account for the relationship between two other variables and thus produce a **spurious** non-causal relationship. Some real questions we might ask:
+
+- Does the gender advantage in surviving the Titanic hold even after accounting for differences in gender and survival by passenger class? 
+- Do racial differences in the probability of being shot by the police hold even after accounting for situational factors such as the type of violation, time of day, place of interaction? 
+- Are differences in sexual frequency by marital status a product of age differences by marital status?
+
+We can also go beyond simple statements about the association between two variables and begin to ask how the association between two variables might differ depending on the level or value of a third variable. Some real questions we might ask:
+
+- Does the female advantage in survival on the Titanic get smaller or larger by the class of the passenger?
+- Does the relationship between age and support for gay marriage differ by political party affiliation? 
+- Does the effect of movie runtime on box office returns vary by the genre of the movie? 
+
+---
+
+## Two views on using observational data
+
+Most of the data we use in the social sciences is **observational** rather than **experimental**. We observe what actually happens rather than manipulate "treatments" in order to observe a response. 
+
+There are two different views of exactly what the use of statistics contributes to observational data analysis:
+
+--
+
+.pull-left[
+### <i class="fas  fa-flask "></i> Pseudo-Experimental
+
+- We use statistical modeling to try to mimic the stronger causal claims of experimental research. 
+- This can be as simple as "controlling" for other variables to mimic random assignment of a treatment, to the use of "natural" experiments.
+]
+
+--
+
+.pull-right[
+### <i class="fas  fa-binoculars "></i> Formal Description
+
+- We use statistical modeling to describe what we observe in the data in a formal, systematic, and replicable way. 
+- We show how the data are either consistent or inconsistent with certain views of a social process as derived from theory. 
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "",
+"ratio": "16:10"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  /* Replace <script> tags in slides area to make them executable
+   *
+   * Runs after post-processing of markdown source into slides and replaces only
+   * <script>s on the last slide of continued slides using the .has-continuation
+   * class added by xaringan. Finally, any <script>s in the slides area that
+   * aren't executed are commented out.
+   */
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container:not(.has-continuation) script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+  var scriptsNotExecuted = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container.has-continuation script'
+  );
+  if (!scriptsNotExecuted.length) return;
+  for (var i = 0; i < scriptsNotExecuted.length; i++) {
+    var comment = document.createComment(scriptsNotExecuted[i].outerHTML)
+    scriptsNotExecuted[i].parentElement.replaceChild(comment, scriptsNotExecuted[i])
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
