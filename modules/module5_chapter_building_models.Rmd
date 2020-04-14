@@ -6,7 +6,7 @@ We will begin with the simplest kind of model: we just try to fit a straight lin
 
 Throughout this module, we will focus primarily on issues of interpretation. We are now starting to learn the techniques that you will see presented in real world social science research. Being able to interpret and understand this work is a key objective of this course. 
 
-Slides for this module can be found [here](https://aarongullickson.github.io/stat_slides/module5_slides_building_models.html).
+Slides for this module can be found [here](stat_slides/module5_slides_building_models.html).
 
 
 ------

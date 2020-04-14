@@ -14,7 +14,7 @@ In this module, we will learn about how to visualize and measure association bet
 
 Each of these cases requires that we learn and master different techniques. In the three sections that follow, we will learn how to measure association for all three cases. 
 
-Slides for this module can be found [here](https://aarongullickson.github.io/stat_slides/module3_slides_measuring_association.html).
+Slides for this module can be found [here](stat_slides/module3_slides_measuring_association.html).
 
 ------
 

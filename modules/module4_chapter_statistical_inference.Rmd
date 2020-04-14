@@ -5,7 +5,7 @@ Now that we have the basics of examining data down, we turn to another issue tha
 In many introductory statistics courses, statistical inference would take up the majority of the course and you would learn a variety of cookbook formulas for conducting "tests." We won't do much of that here. Instead I will focus on the logic of the two most common procedures in statistical inference: the **confidence interval** and the **hypothesis test**. Once you understand the logic behind these procedures, it turns out that all of the various "tests" are just iterations on the same basic theme. Nonetheless, we will have to use some formulas in this module with associated number crunching. This is the most math heavy module of the course, so be prepared. 
 
 
-Slides for this module can be found [here](https://aarongullickson.github.io/stat_slides/module4_slides_statistical_inference.html).
+Slides for this module can be found [here](stat_slides/module4_slides_statistical_inference.html).
 
 ------
 

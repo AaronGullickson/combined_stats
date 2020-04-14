@@ -3,7 +3,7 @@
 
 In this chapter, we will expand our understanding of the linear model to address many issues that the practical researcher must face. We begin with a review and reformulation of the linear model. We then move on to discuss how to address violations of assumptions such as non-linearity and heteroskedasticity (yes, this is a real word), sample design and weighting, missing values, multicollinearity, and model selection. By the end of this chapter, you will be well-supplied with the tools for conducting a real-world analysis using the linear model framework. 
 
-Slides for this module can be found [here](https://aarongullickson.github.io/stat_slides/module6_slides_model_complications.html).
+Slides for this module can be found [here](stat_slides/module6_slides_model_complications.html).
 
 ---
 
@@ -1112,6 +1112,10 @@ The robust standard error (0.026) is no longer larger than the regular standard 
 
 ## Sample Design and Weighting
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/kpPyoyKO-hQ")
+```
+
 Thus far, we have acted as if all of the data we have analyzed comes from a **simple random sample** , or an SRS for short. For a sample to be a simple random sample, it must exhibit the following property:
 
 > In a simple random random sample (SRS) of size $n$, every possible combination of observations from the population must have an equally likely chance of being drawn.
@@ -1279,6 +1283,10 @@ In some cases where oversamples are drawn for particular cases and population nu
 Regardless of how sample weights are constructed, they also have an effect on the variance in sampling. The use of sampling weights will increase the standard error of estimates above and beyond what we would expect in simple random sampling and this must be accounted for in statistical inference techniques. The greater the variation in sample weights, the bigger the design effect will be on standard errors.
 
 ### Correcting for sample design in models
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/s8go6MsxaJY")
+```
 
 Clustering, stratification and weighting can all effect the representativeness and sampling variability of our sample. In samples that are not simple random samples, we need to take account of these **design effects** in our models. 
 
