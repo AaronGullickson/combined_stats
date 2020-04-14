@@ -523,7 +523,7 @@ Where $W$ is the squared mean standard error across all $m$ datasets, and $B$ is
 To get multiple complete datasets with `mice` we just need to specify the number of distinct complete datasets to create in the second argument:
 
 ```{r miceimputations}
-imputations <- mice(popularity, 5, printFlag=FALSE)
+imputations <- mice(addhealth, 5, printFlag=FALSE)
 ```
 
 --
