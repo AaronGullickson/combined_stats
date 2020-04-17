@@ -96,7 +96,7 @@ coef(lm(indegree~nsports+I(parentinc-45)+sex, data=popularity))
 
 ## The residual term
 
-`$$\epsilon_i=\hat{y}_i-y_i$$`
+`$$\epsilon_i=y_i-\hat{y}_i$$`
 
 The residual/error term `\(\epsilon_i\)` gives us the difference between the actual value of the outcome variable for a given observation and the value predicted by the model.
 
@@ -300,8 +300,8 @@ y_{n}\\
 
 .pull-right[
 `$$\mathbf{\beta}=\begin{pmatrix}
+\beta_{0}\\
 \beta_{1}\\
-\beta_{2}\\
 \vdots\\
 \beta_{p}\\
 \end{pmatrix}$$`
@@ -328,8 +328,8 @@ y_{n}\\
 \vdots &amp; \vdots &amp; \ldots &amp; \vdots\\
 1 &amp; x_{n1} &amp; x_{n2} &amp; \ldots &amp; x_{np}\\
 \end{pmatrix}\begin{pmatrix}
+\beta_{0}\\
 \beta_{1}\\
-\beta_{2}\\
 \vdots\\
 \beta_{p}\\
 \end{pmatrix}+\begin{pmatrix}
@@ -1263,7 +1263,7 @@ With polynomial terms, the marginal effect of `\(x\)` is more complicated becaus
 
 By calculus, we can mathemagically get the marginal effect for this model as:
 
-`$$\frac{\partial y}{\partial x}=\beta_1+\beta_2x$$`
+`$$\frac{\partial y}{\partial x}=\beta_1+2*\beta_2x$$`
 
 --
 
@@ -1918,11 +1918,11 @@ sneetch.sample
 ```
 
 ```
-##            type income      prob weight
-## 1  Star-bellied      3 0.6666667    1.5
-## 2  Star-bellied      7 0.6666667    1.5
-## 9       Regular      2 0.2857143    3.5
-## 10      Regular      1 0.2857143    3.5
+##           type income      prob weight
+## 2 Star-bellied      7 0.6666667    1.5
+## 3 Star-bellied      6 0.6666667    1.5
+## 4      Regular      2 0.2857143    3.5
+## 8      Regular      0 0.2857143    3.5
 ```
 
 ```r
@@ -1934,7 +1934,7 @@ x
 
 ```
 ##        population sample.unweighted   sample.weighted 
-##              3.10              3.25              2.55
+##              3.10              3.75              2.65
 ```
 
 ---
@@ -2633,7 +2633,7 @@ addhealth$parentinc.randi[is.na(addhealth$parentinc)] &lt;- sample(na.omit(addhe
 |:--------------------|--------------------------:|-------------------:|
 | Valid cases         |  0.1320575 | 33.6984995|
 | Valid cases +mean imputed |  0.1167858 | 29.5006936|
-| Valid cases +random imputed |  0.1127228 | 33.391982|
+| Valid cases +random imputed |  0.107344 | 33.8978828|
 
 - Both techniques will systematically underestimate correlation.
 - Mean imputation will underestimate the variance of the imputed variable. 
@@ -2740,7 +2740,7 @@ sd(addhealth$parentinc.rregi, na.rm=TRUE)
 ```
 
 ```
-## [1] 33.59697
+## [1] 33.07334
 ```
 
 
@@ -2826,10 +2826,10 @@ I can then use this new dataset `addhealth.ce` to run my models.
 &lt;td style="padding-right: 12px; border: none;"&gt;3.391&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;3.360&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;3.399&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;3.433&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;3.467&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;3.350&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;3.415&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;3.364&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;3.427&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;3.393&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
@@ -2838,18 +2838,18 @@ I can then use this new dataset `addhealth.ce` to run my models.
 &lt;td style="padding-right: 12px; border: none;"&gt;(0.115)&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;(0.104)&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;(0.107)&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;(0.104)&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;(0.102)&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;(0.105)&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;(0.103)&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;Parental income (1000s)&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;0.012&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;0.012&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;0.012&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;0.010&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.009&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;0.013&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.010&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;0.011&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;0.012&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
@@ -2866,10 +2866,10 @@ I can then use this new dataset `addhealth.ce` to run my models.
 &lt;td style="padding-right: 12px; border: none;"&gt;0.383&lt;sup style="vertical-align: 0px;"&gt;*&lt;/sup&gt;&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;0.201&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;0.203&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;0.190&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.195&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;0.187&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;0.183&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;0.197&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.187&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.213&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
@@ -2879,17 +2879,17 @@ I can then use this new dataset `addhealth.ce` to run my models.
 &lt;td style="padding-right: 12px; border: none;"&gt;(0.161)&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;(0.162)&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;(0.162)&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;(0.159)&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;(0.160)&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;Drinker&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;0.663&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;0.666&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;0.668&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;0.667&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.679&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;0.665&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;0.670&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;0.641&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.679&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.643&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
@@ -2906,10 +2906,10 @@ I can then use this new dataset `addhealth.ce` to run my models.
 &lt;td style="padding-right: 12px; border: none;"&gt;0.454&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;0.476&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;0.474&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;0.479&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.482&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;0.462&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;0.472&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
-&lt;td style="padding-right: 12px; border: none;"&gt;0.465&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.474&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.468&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
@@ -2946,10 +2946,10 @@ I can then use this new dataset `addhealth.ce` to run my models.
 &lt;td style="border-top: 1px solid black;"&gt;0.048&lt;/td&gt;
 &lt;td style="border-top: 1px solid black;"&gt;0.046&lt;/td&gt;
 &lt;td style="border-top: 1px solid black;"&gt;0.046&lt;/td&gt;
-&lt;td style="border-top: 1px solid black;"&gt;0.045&lt;/td&gt;
+&lt;td style="border-top: 1px solid black;"&gt;0.044&lt;/td&gt;
 &lt;td style="border-top: 1px solid black;"&gt;0.048&lt;/td&gt;
+&lt;td style="border-top: 1px solid black;"&gt;0.046&lt;/td&gt;
 &lt;td style="border-top: 1px solid black;"&gt;0.047&lt;/td&gt;
-&lt;td style="border-top: 1px solid black;"&gt;0.048&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td style="border-bottom: 2px solid black;"&gt;Num. obs.&lt;/td&gt;
@@ -3044,11 +3044,11 @@ summary(model.mi)
 
 ```
 ##                     estimate   std.error statistic       df      p.value
-## (Intercept)       3.37471350 0.118601938 28.454118 3361.837 0.000000e+00
-## parentinc         0.01194001 0.001879952  6.351235 3362.637 2.422540e-10
-## smokerSmoker      0.38319893 0.186980137  2.049410 3299.392 4.050096e-02
-## alcoholuseDrinker 0.65509478 0.179854447  3.642361 3194.644 2.744403e-04
-## nsports           0.45604351 0.048925684  9.321147 3362.596 0.000000e+00
+## (Intercept)       3.37631088 0.118646182 28.456970 3362.637 0.000000e+00
+## parentinc         0.01194594 0.001880011  6.354186 3362.637 2.377045e-10
+## smokerSmoker      0.36785984 0.186599414  1.971388 3317.531 4.876249e-02
+## alcoholuseDrinker 0.65676380 0.179617104  3.656466 3291.794 2.597159e-04
+## nsports           0.45582725 0.048934735  9.315004 3362.407 0.000000e+00
 ```
 
 ---
@@ -3070,12 +3070,12 @@ b
 ```
 
 ```
-##                         [,1]       [,2]       [,3]       [,4]       [,5]
-## (Intercept)       3.37531953 3.37438789 3.37732273 3.37418796 3.37234940
-## parentinc         0.01194843 0.01195327 0.01193122 0.01195286 0.01191429
-## smokerSmoker      0.38868170 0.38862887 0.36350630 0.38944588 0.38573192
-## alcoholuseDrinker 0.63843527 0.64616131 0.66438651 0.65287791 0.67361291
-## nsports           0.45668600 0.45611127 0.45540298 0.45585031 0.45616697
+##                        [,1]       [,2]       [,3]       [,4]       [,5]
+## (Intercept)       3.3758476 3.37644090 3.37656491 3.37705791 3.37564312
+## parentinc         0.0119495 0.01194878 0.01193331 0.01194369 0.01195443
+## smokerSmoker      0.3804510 0.37141146 0.35680572 0.35830994 0.37232112
+## alcoholuseDrinker 0.6477409 0.65395650 0.67072867 0.66565702 0.64573591
+## nsports           0.4561494 0.45584369 0.45513409 0.45545671 0.45655234
 ```
 
 The `b` and `se` objects are matrices that contain the coefficients and standard errors, respectively, for each model on the column.
@@ -3099,11 +3099,11 @@ data.frame(b.pool, se.pool, t.pool, pvalue.pool)
 
 ```
 ##                       b.pool     se.pool    t.pool  pvalue.pool
-## (Intercept)       3.37471350 0.118601938 28.454118 0.000000e+00
-## parentinc         0.01194001 0.001879952  6.351235 2.135927e-10
-## smokerSmoker      0.38319893 0.186980137  2.049410 4.042206e-02
-## alcoholuseDrinker 0.65509478 0.179854447  3.642361 2.701491e-04
-## nsports           0.45604351 0.048925684  9.321147 0.000000e+00
+## (Intercept)       3.37631088 0.118646182 28.456970 0.000000e+00
+## parentinc         0.01194594 0.001880011  6.354186 2.095337e-10
+## smokerSmoker      0.36785984 0.186599414  1.971388 4.867951e-02
+## alcoholuseDrinker 0.65676380 0.179617104  3.656466 2.557165e-04
+## nsports           0.45582725 0.048934735  9.315004 0.000000e+00
 ```
 
 ---

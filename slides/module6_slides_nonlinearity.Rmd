@@ -776,7 +776,7 @@ $$y_i=\beta_0+\beta_1x_i+\beta_2x_i^2+\epsilon_i$$
 
 By calculus, we can mathemagically get the marginal effect for this model as:
 
-$$\frac{\partial y}{\partial x}=\beta_1+\beta_2x$$
+$$\frac{\partial y}{\partial x}=\beta_1+2*\beta_2x$$
 
 --
 

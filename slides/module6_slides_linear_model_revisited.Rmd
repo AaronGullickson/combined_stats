@@ -39,7 +39,7 @@ coef(lm(indegree~nsports+I(parentinc-45)+sex, data=popularity))
 
 ## The residual term
 
-$$\epsilon_i=\hat{y}_i-y_i$$
+$$\epsilon_i=y_i-\hat{y}_i$$
 
 The residual/error term $\epsilon_i$ gives us the difference between the actual value of the outcome variable for a given observation and the value predicted by the model.
 
@@ -249,8 +249,8 @@ $$\mathbf{X}=\begin{pmatrix}
 
 .pull-right[
 $$\mathbf{\beta}=\begin{pmatrix}
+\beta_{0}\\
 \beta_{1}\\
-\beta_{2}\\
 \vdots\\
 \beta_{p}\\
 \end{pmatrix}$$
@@ -277,8 +277,8 @@ y_{n}\\
 \vdots & \vdots & \ldots & \vdots\\
 1 & x_{n1} & x_{n2} & \ldots & x_{np}\\
 \end{pmatrix}\begin{pmatrix}
+\beta_{0}\\
 \beta_{1}\\
-\beta_{2}\\
 \vdots\\
 \beta_{p}\\
 \end{pmatrix}+\begin{pmatrix}
