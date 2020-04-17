@@ -1369,6 +1369,10 @@ Table \@ref(tab:addhealthweight-compare) shows all of the models estimated above
 
 ## Missing Values
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/aK3fk6PMxgg")
+```
+
 Up until this point, we have analyzed data that had no missing values. In actuality, the data did have missing values, but I used an imputation technique to remove the missing values to simplify our analyses. However, we now need to think more clearly about the consequences of missing values in datasets, because the reality is that most datasets that you want to use will have some missing data. Howe you handle this missing data can have important implications for your results. 
 
 ### Identifying Valid Skips
@@ -1449,6 +1453,10 @@ pander(as.data.frame(temp))
 For most variables, we only have a very small number of missing values, typically less than 1% of cases. however, for parental income we are missing values for nearly a quarter of respondents. 
 
 ### Removing Cases
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/rPbB1AD0ndc")
+```
 
 The simplest approach to dealing with missing values is to just drop observations (cases) that have missing values. In R, this is what will either happen by default or if you give a function the argument `na.rm=TRUE`. For example, lets calculate the mean income in the Add Health data:
 
@@ -1547,6 +1555,10 @@ It is now apparent that the change in the effect of smoking on popularity above 
 When only a small number of cases are missing, then complete-case analysis is a reasonable option that is practical and not labor intensive. For example, I wouldn't worry too much about the 54 cases lost due to the inclusion of smoking and drinking behavior in the models above. However, when you are missing substantial numbers of cases, either from a single variable or from the cumulative effects of dropping a moderate number of observations for lots of variables, then both case removal techniques are suspect. In those cases, it is almost certainly better to move to an imputation strategy. 
 
 ### Imputation
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/pyFgUcPb3h4")
+```
 
 Imputing a "fake" value for a missing value may seem worse than just removing it, but in many cases imputation is a better alternative than removing cases. First, imputation allows us to preserve the original sample size as well as all of the non-missing data that would be thrown way for cases with some missing values. Second, depending on methodology, imputation may move from a MCAR assumption to a MAR assumption. 
 

@@ -307,11 +307,15 @@ BIC(model.unemp)-BIC(model.demog)
 
 --
 
-We slightly prefer the more complex model with unemployment, poverty, and gini in addition to the demographic characteristics. 
+Because the difference is positive, we slightly prefer the less complex demographic model to the model that adds unemployment, poverty, and the gini coefficient.
 
 --
 
-A general rule of thumb is that BIC differences less than two give weak preferences, while BIC differences greater than six give strong preferences, and BIC differences greater than ten give very strong preferences. 
+A general rule of thumb is that
+
+* BIC differences less than two give weak preferences
+* BIC differences greater than six give strong preferences
+* BIC differences greater than ten give very strong preferences. 
 
 ---
 
@@ -379,20 +383,20 @@ summary(model.bma)
 ```
 
 ```
-  29  models were selected
- Best  5  models (cumulative posterior probability =  0.5217 ): 
+  11  models were selected
+ Best  5  models (cumulative posterior probability =  0.8 ): 
 
-                p!=0   EV       SD       model 1   model 2   model 3   model 4   model 5 
-Intercept       100   -54.3247  858.601    58.711     9.610   565.958   112.820   432.648
-MedianAge       25.8   -3.2599    6.918      .         .      -13.550      .      -11.076
-PctMale         13.2    3.4006   14.069      .         .         .         .         .   
-PctLessHS       49.2    8.0313   10.039      .       11.676      .       19.896     9.677
-MedianIncomeHH  15.7    0.5853    2.228      .         .         .         .         .   
-Unemployment    80.2   25.2981   16.451    36.220    24.508    36.452      .       26.702
-Poverty         14.1    0.7423    7.776      .         .         .         .         .   
-Gini             9.3    0.3648    4.671      .         .         .         .         .   
-                                                                                         
-nVar                                          1         2         2         1         3  
-BIC                                      -139.138  -138.340  -138.186  -137.665  -136.314
-post prob                                   0.173     0.116     0.108     0.083     0.042
+                p!=0   EV        SD       model 1    model 2    model 3    model 4    model 5  
+Intercept       100   -1592.518  735.881  -1699.048  -1848.696  -1913.727  -1629.940   -849.020
+MedianAge       12.4     -1.683    6.761      .          .          .          .          .    
+PctMale          9.6     -1.676   10.509      .          .          .          .        -15.701
+PctLessHS       20.2     -2.728    7.327      .        -12.841      .          .          .    
+MedianIncomeHH  94.3     19.518    6.419     20.804     22.719     18.595     19.585     20.130
+Unemployment    12.4      1.501    6.671      .          .          .          8.553      .    
+Poverty         94.3     65.115   21.788     67.908     82.593     59.191     62.549     65.134
+Gini            16.2      3.730   12.147      .          .         10.052      .          .    
+                                                                                               
+nVar                                            2          3          3          3          3  
+BIC                                        -141.527   -138.995   -138.020   -137.950   -137.883
+post prob                                     0.448      0.126      0.078      0.075      0.072
 ```
