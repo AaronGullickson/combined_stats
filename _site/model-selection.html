@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-04-14" />
+<meta name="date" content="2020-04-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -398,6 +398,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="model-selection" class="section level2">
 <h2>Model Selection</h2>
+<iframe src="https://www.youtube.com/embed/LYBMr95z1ww" width="672" height="400px">
+</iframe>
 <p>In practice, researchers often have to decide between a variety of possible models. The different models available to a researcher can derive from a number of factors, but most often arise because the researcher has a wide set of possible control variables that could be added to the model. In addition, these models could be added as simple additive effects, or the researcher could add additional interaction terms, squared terms, splines, etc. In practice, the number of possible models one could construct from a set of variables is quite large. How does one go about choosing the “right” model?</p>
 <p>For example, Table <a href="model-selection.html#tab:modelcompare">24</a> shows a variety of models that could be used to predict violent crime rates across US states. Note that the model estimates for some variables such as percent male differ substantially across models. How can we possibly decide which of these models is the best model?</p>
 <table cellspacing="0" align="center" style="border: none;">
@@ -759,6 +761,8 @@ Num. obs.
 </div>
 <div id="a-not-very-useful-tool-the-f-test" class="section level3">
 <h3>A not-very-useful tool: the F-test</h3>
+<iframe src="https://www.youtube.com/embed/-phP4QxEwHw" width="672" height="400px">
+</iframe>
 <p>The F-test is not terribly useful in practice, but we will build some important principles from it for later tools in this module and the next module. The F-test is a classic tool that uses the framework of hypothesis testing to adjudicate between models.</p>
 <p>The F-test can compare any two <strong>nested</strong> models. For one model to be nested within another, it must contain all of the original variables in the other model plus additional variables. When models are built by starting with a few variables and then adding in additional variables in a sort of reverse stairstep, then we have nested models. Models 1-4 from Table <a href="model-selection.html#tab:modelcompare">24</a> above are nested models, while models 5-6 are not nested within models 1-4.</p>
 <p>If we take any two nested models, the null hypothesis of the F-test is that none of the additional variables in the more complex model are correlated with the outcome (e.g. the <span class="math inline">\(\beta\)</span> slope is zero on all additional variables). To test this, we calculate the <em>F-statistic</em>:</p>
@@ -883,6 +887,8 @@ As an example, lets calculat the F-statistic between the null model predicting v
 </div>
 <div id="tools-with-a-parsimony-penalty" class="section level3">
 <h3>Tools with a parsimony penalty</h3>
+<iframe src="https://www.youtube.com/embed/mOGXGpGlCiw" width="672" height="400px">
+</iframe>
 <p>Two model selection tools allow us to more formally consider the parsimony vs. accuracy tradeoff. We can think of the <span class="math inline">\(R^2\)</span> value as a measure of accuracy. These two tools then apply a “parsimony penalty” to this measure of accuracy to get a single score that measures the quality of the model. In both cases, lack of parsimony is reflected by <span class="math inline">\(p\)</span>, the number of independent variables in the model.</p>
 <div id="adjusted-r2" class="section level4">
 <h4>Adjusted <span class="math inline">\(R^2\)</span></h4>
@@ -982,6 +988,8 @@ As an example, lets calculat the F-statistic between the null model predicting v
 </div>
 <div id="model-averaging" class="section level3">
 <h3>Model Averaging</h3>
+<iframe src="https://www.youtube.com/embed/QQ80OrAHXJY" width="672" height="400px">
+</iframe>
 <p>None of the tools mentioned above can fully address the complexity of model selection. One of the key difficulties is that given a set of potential variables, it includes not only what gets included but the order of inclusion. As we have seen above, percent male seems to have a large negative effect on violent crime rates until we consider a model that includes Gini coefficients. Where and how we include these variables in sequential models might affect our ultimate model selection.</p>
 <p>One way of addressing this is to use a technique of <strong>model averaging</strong>. In the model averaging approach, we use a computer to iteratively fit all of the possible models from a set of candidate variables. We then use some procedure to average results across these models to account more formally for model uncertainty in our final conclusion. There are a variety of ways in which such model averaging can be done. The <code>BMA</code> package in R will use a Bayesian model averaging approach that implicitly uses a Bayesian logic and the BIC to adjudicate between models. Lets try that with our crime data:</p>
 <div class="sourceCode" id="cb502"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb502-1" title="1"><span class="kw">library</span>(BMA)</a>

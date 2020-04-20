@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-04-14" />
+<meta name="date" content="2020-04-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -398,6 +398,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="missing-values" class="section level2">
 <h2>Missing Values</h2>
+<iframe src="https://www.youtube.com/embed/aK3fk6PMxgg" width="672" height="400px">
+</iframe>
 <p>Up until this point, we have analyzed data that had no missing values. In actuality, the data did have missing values, but I used an imputation technique to remove the missing values to simplify our analyses. However, we now need to think more clearly about the consequences of missing values in datasets, because the reality is that most datasets that you want to use will have some missing data. Howe you handle this missing data can have important implications for your results.</p>
 <div id="identifying-valid-skips" class="section level3">
 <h3>Identifying Valid Skips</h3>
@@ -569,6 +571,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="removing-cases" class="section level3">
 <h3>Removing Cases</h3>
+<iframe src="https://www.youtube.com/embed/rPbB1AD0ndc" width="672" height="400px">
+</iframe>
 <p>The simplest approach to dealing with missing values is to just drop observations (cases) that have missing values. In R, this is what will either happen by default or if you give a function the argument <code>na.rm=TRUE</code>. For example, lets calculate the mean income in the Add Health data:</p>
 <div class="sourceCode" id="cb391"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb391-1" title="1"><span class="kw">mean</span>(addhealth<span class="op">$</span>parentinc)</a></code></pre></div>
 <pre><code>## [1] NA</code></pre>
@@ -990,6 +994,8 @@ Num. obs.
 </div>
 <div id="imputation" class="section level3">
 <h3>Imputation</h3>
+<iframe src="https://www.youtube.com/embed/pyFgUcPb3h4" width="672" height="400px">
+</iframe>
 <p>Imputing a “fake” value for a missing value may seem worse than just removing it, but in many cases imputation is a better alternative than removing cases. First, imputation allows us to preserve the original sample size as well as all of the non-missing data that would be thrown way for cases with some missing values. Second, depending on methodology, imputation may move from a MCAR assumption to a MAR assumption.</p>
 <p>There are a variety of imputation procedures, but they can generally be divided up along two dimensions. First, <strong>predictive</strong> imputations use information about other variables in the dataset to impute missing values, while <strong>non-predictive</strong> imputations do not. In most cases, predictive imputation uses some form of model structure to predict missing values. Predictive imputation moves the assumption on missingness from MCAR to MAR, but is more complex (and thus prone to its own problems of model mis-specification) and more labor-intensive.</p>
 <p>Second, <strong>random</strong> imputations include some randomness in the imputation procedure, while <strong>deterministic</strong> imputations do not include randomness. Including randomness is necessary in order to preserve the actual variance in the variable that is being imputed. Deterministic imputations will always decrease this variance and thus lead to under-estimation of inferential statistics. However, random imputation identify an additional issue because random imputations will produce slightly different results each time the imputation procedure is conducted. To be accurate, the researcher must account for this additional <strong>imputation variabilty</strong> in their results.</p>

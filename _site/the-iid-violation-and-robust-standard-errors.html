@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-04-14" />
+<meta name="date" content="2020-04-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -398,6 +398,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="the-iid-violation-and-robust-standard-errors" class="section level2">
 <h2>The IID Violation and Robust Standard Errors</h2>
+<iframe src="https://www.youtube.com/embed/v-6KaLOYvPM" width="672" height="400px">
+</iframe>
 <p>Lets return to the idea of the idea of the linear model as a <strong>data-generating process</strong>:</p>
 <p><span class="math display">\[y_i=\underbrace{\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}}_{\hat{y}_i}+\epsilon_i\]</span></p>
 <p>To get a given value of <span class="math inline">\(y_i\)</span> for some observation <span class="math inline">\(i\)</span> you feed in all of the independent variables for that obseravation into your linear model equation to get a predicted value, <span class="math inline">\(\hat{y}_i\)</span>. However, you still need to take account of the stochastic element that is not predicted by your linear function. To do this, imagine reaching into a bag full of numbers and pulling out one value. Thats your <span class="math inline">\(\epsilon_i\)</span> which you add on to your predicted value to get the actual value of <span class="math inline">\(y\)</span>.</p>
@@ -471,6 +473,8 @@ Figure 78: Residual plot of model predicting box office returns by movie runtime
 </div>
 <div id="fixing-iid-violations" class="section level3">
 <h3>Fixing IID violations</h3>
+<iframe src="https://www.youtube.com/embed/1d5I63bliT0" width="672" height="400px">
+</iframe>
 <p>Given that you have identified an IID violation in your model, what can you do about it? The best solution is to <strong>get a better model</strong>. IID violations are often implicitly telling you that the model you have selected is not the best approach to the actual data-generating process that you have.</p>
 <p>Lets take the case of heteroscedasticity. If you observe a cone shape to the residuals, it suggests that the absolute size of the residuals is growing with the size of the predicted value of your dependent variable. In relative terms (i.e. as a percentage of the predicted value), the size of those residuals may be more constant. A simple solution would be to log our dependent variable because this would move us from a model of absolute change in the dependent variable to one of relative change.</p>
 <div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb334-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(BoxOffice)<span class="op">~</span>Runtime, <span class="dt">data=</span>movies)</a>

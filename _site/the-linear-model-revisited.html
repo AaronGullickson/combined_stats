@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-04-14" />
+<meta name="date" content="2020-04-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -400,6 +400,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2>The Linear Model, Revisited</h2>
 <div id="reformulating-the-linear-model" class="section level3">
 <h3>Reformulating the linear model</h3>
+<iframe src="https://www.youtube.com/embed/3ZowC4tIR9Q" width="672" height="400px">
+</iframe>
 <p>Up until now, we have used the following equation to describe the linear model mathematically:</p>
 <p><span class="math display">\[\hat{y}_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}\]</span>
 In this formulation, <span class="math inline">\(\hat{y}_i\)</span> is the predicted value of the dependent variable for the <span class="math inline">\(i\)</span>th observation and <span class="math inline">\(x_{i1}\)</span>, <span class="math inline">\(x_{i2}\)</span>. through <span class="math inline">\(x_{ip}\)</span> are the values of <span class="math inline">\(p\)</span> independent variables that predict <span class="math inline">\(\hat{y}_i\)</span> by a linear function. <span class="math inline">\(\beta_0\)</span> is the y-intercept which is the predicted value of dependent variable when all the independent variables are zero. <span class="math inline">\(\beta_1\)</span> through <span class="math inline">\(\beta_p\)</span> are the slopes giving the predicted change in the dependent variable for a one unit increase in a given independent variable holding all of the other variables constant.</p>
@@ -414,6 +416,8 @@ In this formulation, <span class="math inline">\(\hat{y}_i\)</span> is the predi
 </div>
 <div id="marginal-effects" class="section level3">
 <h3>Marginal effects</h3>
+<iframe src="https://www.youtube.com/embed/NlJc5EprYw4" width="672" height="400px">
+</iframe>
 <p>The <strong>marginal effect</strong> of <span class="math inline">\(x\)</span> on <span class="math inline">\(y\)</span> gives the expected change in <span class="math inline">\(y\)</span> for a one unit increase in <span class="math inline">\(x\)</span> at a given value of <span class="math inline">\(x\)</span>. If that sounds familiar, its because this is very similar to the interpretation we give of the slope in a linear model. In a basic linear model with no interaction terms, the marginal effect of a given independent variable is in fact given by the slope.</p>
 <p>The difference in interpretation is the little part about “at a given value of x.” In a basic linear model this addendum is irrelevant because the expected increase in <span class="math inline">\(y\)</span> for a one unit increase in <span class="math inline">\(x\)</span> is the same regardless of the current value of <span class="math inline">\(x\)</span> – thats what it means for an effect to be linear. However, when we start delving into more complex model structures, such as interaction terms and some of the models we will discuss in this module, things get more complicated. The marginal effect can help us make sense of complicated models.</p>
 <p>The marginal effect is calculated using calculus. I won’t delve too deeply into the details here, but the marginal effect is equal to the partial derivative of y with respect to x. This partial derivative gives us what is called the <em>tangent line</em> of a curve at any point of <span class="math inline">\(x\)</span> which measures the instantenous rate of change in some mathematical function.</p>
@@ -474,6 +478,8 @@ Figure 56: Marginal effect of number of children on the gender gap in wages
 </div>
 <div id="estimating-a-linear-model" class="section level3">
 <h3>Estimating a linear model</h3>
+<iframe src="https://www.youtube.com/embed/XpWXmvnRTMg" width="672" height="400px">
+</iframe>
 <p>Up until now, we have not discussed how R actually calculates all of the slopes and intercept for a linear model with multiple independent variables. We only know the equations for a linear model with one independent variable.</p>
 <p>Even though we don’t know the math yet behind how linear model parameters are estimated, we do know the rationale for why they are selected. We choose the parameters that minimized the sum of squared residuals given by:</p>
 <p><span class="math display">\[\sum_{i=1}^n (y_i-\hat{y}_i)^2\]</span>

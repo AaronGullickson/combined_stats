@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-04-14" />
+<meta name="date" content="2020-04-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -398,6 +398,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="modeling-non-linearity" class="section level2">
 <h2>Modeling Non-Linearity</h2>
+<iframe src="https://www.youtube.com/embed/i3dJEHsKzB0" width="672" height="400px">
+</iframe>
 <p>By definition, a linear model is only appropriate if the underlying relationship being modeled can accurately be described as linear. To begin, lets revisit a very clear example of non-linearity introduced in an earlier chapter. The example is the relationship between GDP per capita in a country and that country’s life expectancy. We use data from Gapminder to show this relationship with 2007 data.</p>
 <div class="sourceCode" id="cb269"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb269-1" title="1"><span class="kw">library</span>(gapminder)</a>
 <a class="sourceLine" id="cb269-2" title="2"><span class="kw">library</span>(ggrepel)</a>
@@ -562,6 +564,8 @@ Figure 63: A GAM smoother (shown in blue) applied to the relationship between ag
 </div>
 <div id="residual-plots" class="section level3">
 <h3>Residual Plots</h3>
+<iframe src="https://www.youtube.com/embed/Puti-vMt_Yw" width="672" height="400px">
+</iframe>
 <p>Another technique for detecting non-linearity is the to plot the fitted values of a model by the residuals. To demonstrate how this works, lets first calculate a model predicting life expectancy by GDP per capita from the gapminder data earlier.</p>
 <div class="sourceCode" id="cb280"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb280-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(lifeExp<span class="op">~</span>gdpPercap, <span class="dt">data=</span><span class="kw">subset</span>(gapminder, year<span class="op">==</span><span class="dv">2007</span>))</a></code></pre></div>
 <p>If you type <code>plot(model)</code>, you will get a series of model diagnostic plots in base R. The first of these plots is the residual vs. fitted values plot. We are going to make the same plot, but in <code>ggplot</code>. In order to do that, I need to introduce a new package called <code>broom</code> that has some nice features for summarizing results from your model. It is part of the Tidyverse set of packages. To install it type <code>install.packages("broom")</code>. You can then load it with <code>library(broom)</code>. The broom package has only three commands:</p>
@@ -619,6 +623,8 @@ Figure 66: A residual vs. fitted values plot for a model predicting movie box o
 </div>
 <div id="transformations" class="section level3">
 <h3>Transformations</h3>
+<iframe src="https://www.youtube.com/embed/YDwEZh3H67g" width="672" height="400px">
+</iframe>
 <p>You <strong>transform</strong> your data when you apply a mathematical function to a variable to transform its values into different values. There are a variety of different transformations that are commonly used in statistics, but we will focus on the one transformation that is most common in the social sciences: the log transformation.</p>
 <p>Transformations can directly address issues of non-linearity. By definition if you transform the independent variable, the dependent variable, or both variables in your model, then the linear relationship assumed by the model between the transformed variables. On the original scale of the variables, the relationship is non-linear.</p>
 <p>Transformations can also have additional side benefits besides fitting non-linear relationships. The log transformation, for example, will pull in extreme values and skewness in a distribution, reducing the potential for outliers to exert a strong influence on results. Take Figure <a href="modeling-non-linearity.html#fig:wages-skew">67</a> for example. This figure shows the distribution of hourly wages in the earnings data. This distribution is heavily right-skewed, despite the fact that wages have been top-coded at $100. Any model of wages is likely to be influenced considerably by the relatively small but still numerically substantial number of respondents with high wages.</p>
@@ -857,6 +863,8 @@ Figure 73: Scatterplot of tomato meter by box office returns, using a square roo
 </div>
 <div id="polynomial-models" class="section level3">
 <h3>Polynomial Models</h3>
+<iframe src="https://www.youtube.com/embed/y64jR77xFDs" width="672" height="400px">
+</iframe>
 <p>Another method that can be used to fit non-linear relationships is to fit <em>polynomial</em> terms. You may recall the the following formula from basic algebra:</p>
 <p><span class="math display">\[y=a+bx+cx^2\]</span></p>
 <p>This formula defines a parabola which fits not a straight line but a curve with one point of inflection. We can fit this curve in a linear model by simply including the square of a given independent variable as an additional variable in the model. Before we do this it is usually a good idea to re-center the original variable somewhere around the mean because this will reduce the correlation between the original term and its square.</p>
@@ -908,6 +916,8 @@ Figure 75: A model predicting life expectancy from GDP per capita with squared a
 </div>
 <div id="splines" class="section level3">
 <h3>Splines</h3>
+<iframe src="https://www.youtube.com/embed/c-2xo3_ENjE" width="672" height="400px">
+</iframe>
 <p>Another approach to fitting non-linearity is to fit a <strong>spline</strong>. Splines can become quite complex, but I will focus here on a very simple spline. In a basic spline model, you allow the slope of a variable to have a different linear effect at different cutpoints or “hinge” values of <span class="math inline">\(x\)</span>. Within each segment defined by the cutpoints, we simply estimate a linear model (although more complex spline models allow for non-linear effects within segments).</p>
 <p>Looking at the diminishing returns to wages from age in the earnings data, it might be reasonable to fit this effect with a spline model. It looks like age 35 might be a reasonable value for the hinge.</p>
 <p>In order to fit the spline model, we need to add a spline term. This spline term will be equal to zero for all values where age is equal to or below 35 and will be equal to age minus 35 for all values where age is greater than 35. We then add this variable to the model. I fit this model below.</p>

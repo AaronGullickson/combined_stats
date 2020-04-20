@@ -11,6 +11,10 @@ Slides for this module can be found [here](stat_slides/module6_slides_model_comp
 
 ### Reformulating the linear model
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/3ZowC4tIR9Q")
+```
+
 Up until now, we have used the following equation to describe the linear model mathematically:
 
 $$\hat{y}_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$
@@ -33,6 +37,10 @@ By dividing up the formula into two separate components, we can begin to think o
 From this perspective, we can rethink our entire linear model as a partition of the total variation in the dependent variable into the structural component that can be accounted for by our linear model and the residual component that is unaccounted for by the model. This is exactly as we envisioned things when we learned to calculate $R^2$ in previous chapters. 
 
 ### Marginal effects
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/NlJc5EprYw4")
+```
 
 The **marginal effect** of $x$ on $y$ gives the expected change in $y$ for a one unit increase in $x$ at a given value of $x$. If that sounds familiar, its because this is very similar to the interpretation we give of the slope in a linear model. In a basic linear model with no interaction terms, the marginal effect of a given independent variable is in fact given by the slope.
 
@@ -117,6 +125,10 @@ The i.i.d. assumption comes into play when we reach into that distribution (or b
 In later sections of this chapter, we will cover the i.i.d. assumption in more detail including the consequences of violating it, diagnostics for detecting it, and some corrections for when it does occur. 
 
 ### Estimating a linear model
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/XpWXmvnRTMg")
+```
 
 Up until now, we have not discussed how R actually calculates all of the slopes and intercept for a linear model with multiple independent variables. We only know the equations for a linear model with one independent variable. 
 
@@ -345,6 +357,10 @@ And it all works. As I said at the beginning, this is a lot of math and not some
 ---
 
 ## Modeling Non-Linearity
+ 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/i3dJEHsKzB0")
+```
 
 By definition, a linear model is only appropriate if the underlying relationship being modeled can accurately be described as linear. To begin, lets revisit a very clear example of non-linearity introduced in an earlier chapter. The example is the relationship between GDP per capita in a country and that country's life expectancy. We use data from Gapminder to show this relationship with 2007 data.
 
@@ -476,6 +492,10 @@ ggplot(earnings, aes(x=age, y=wages))+
 
 ### Residual Plots
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/Puti-vMt_Yw")
+```
+
 Another technique for detecting non-linearity is the to plot the fitted values of a model by the residuals. To demonstrate how this works, lets first calculate a model predicting life expectancy by GDP per capita from the gapminder data earlier.
 
 ```{r model-le-gdp}
@@ -535,6 +555,10 @@ Both of these figures also reveal an additional problem unrelated to non-lineari
 Now that we have diagnosed the problem of non-linearity, what can we do about it? There are several ways that we can make adjustments to our models to allow for non-linearity. The most common technique is to use **transformations** to change the relationship between independent and dependent variables. Another approach is to include **polynomial terms** into the model that can simulate a parabola. A third, less common, option is to create a *spline* term that allows for non-linearity at specific points. I cover each of these techniques below. 
 
 ### Transformations
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/YDwEZh3H67g")
+```
 
 You **transform** your data when you apply a mathematical function to a variable to transform its values into different values. There are a variety of different transformations that are commonly used in statistics, but we will focus on the one transformation that is most common in the social sciences: the log transformation.
 
@@ -838,6 +862,10 @@ There is one big downside to this transformation. Unlike log transformations, th
 
 ### Polynomial Models
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/y64jR77xFDs")
+```
+
 Another method that can be used to fit non-linear relationships is to fit *polynomial* terms. You may recall the the following formula from basic algebra:
 
 $$y=a+bx+cx^2$$
@@ -904,6 +932,10 @@ ggplot(subset(gapminder, year==2007), aes(x=gdpPercap, y=lifeExp))+
 
 ### Splines
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/c-2xo3_ENjE")
+```
+
 Another approach to fitting non-linearity is to fit a **spline**. Splines can become quite complex, but I will focus here on a very simple spline. In a basic spline model, you allow the slope of a variable to have a different linear effect at different cutpoints or "hinge" values of $x$. Within each segment defined by the cutpoints, we simply estimate a linear model (although more complex spline models allow for non-linear effects within segments). 
 
 Looking at the diminishing returns to wages from age in the earnings data, it might be reasonable to fit this effect with a spline model. It looks like age 35 might be a reasonable value for the hinge. 
@@ -937,6 +969,10 @@ ggplot(earnings, aes(x=age, y=wages))+
 ---
 
 ## The IID Violation and Robust Standard Errors
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/v-6KaLOYvPM")
+```
 
 Lets return to the idea of the idea of the linear model as a **data-generating process**:
 
@@ -1030,6 +1066,10 @@ ggplot(augment(model), aes(x=.fitted, y=.resid))+
 Such patterns are common with right-skewed variables that have a lower threshold (often zero). In Figure \@ref(fig:heteroscedasticity-cone), the residuals can never produce an actual value below zero, leading to the very clear linear pattern on the low end. The high end residuals are more scattered but also seem to show a cone pattern. Its not terribly surprising that as our predicted values grow in absolute terms, the residuals from this predicted value also grow in absolute value. In relative terms, the size of the residuals may be more constant. 
 
 ### Fixing IID violations
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/1d5I63bliT0")
+```
 
 Given that you have identified an IID violation in your model, what can you do about it? The best solution is to **get a better model**. IID violations are often implicitly telling you that the model you have selected is not the best approach to the actual data-generating process that you have. 
 
@@ -1859,6 +1899,10 @@ As I said earlier, multiple imputation is the gold standard for dealing with mis
 
 ## Multicollinearity and Scale Creation
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/0Xq4UC4ceQU")
+```
+
 The problem of **multicollinearity** arises when the independent variables in a linear model are highly correlated with one another. In such a case it is possible to predict with reasonable accuracy the value of one independent variable based on all of the other independent variables in the model. 
 
 Multicollinearity creates problem for model estimation in two ways. First, multicollinearity between independent variables will increase the standard error on regression coefficients making it difficult to identify statistically significant effects. Second, in nested models with highly collinear variables, results from model to model can be highly variable and inconsistent. It is not unusual that two highly collinear variables both produce substantively large and statistically significant effects when put in a model separately, but when put in together, both variables fail to produce a statistically significant effect. 
@@ -1971,6 +2015,10 @@ vif(model.full)
 Since a VIF of four implies a doubling of the standard error, this is often used as a rule of thumb to identify problematic levels of VIF. However, even a smaller increase in the standard error can produce problems for model estimation, so this rule of thumb should be exercised with care.
 
 ### Addressing Multicollinearity
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/eE82ZYLyevI")
+```
 
 Given that you have identified data-based multicollinearity, what do you do about it? A simple approach is to remove some of the highly collinear variables. However, this approach has some drawbacks. First, you have to decide which variable(s) to keep and which to remove. Because the effects of these variables are not easily distinguished, making this decision may not be easy. If the variables operationalize different conceptual ideas, you don't have a strong empirical rationale for preferring one over the other. Second, because the variables are not perfectly correlated, you are throwing away some information. 
 
@@ -2175,6 +2223,10 @@ In closing, I should note that factor analysis is a huge area of research and I 
 
 ## Model Selection
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/LYBMr95z1ww")
+```
+
 In practice, researchers often have to decide between a variety of possible models. The different models available to a researcher can derive from a number of factors, but most often arise because the researcher has a wide set of possible control variables that could be added to the model. In addition, these models could be added as simple additive effects, or the researcher could add additional interaction terms, squared terms, splines, etc. In practice, the number of possible models one could construct from a set of variables is quite large. How does one go about choosing the "right" model? 
 
 For example, Table \@ref(tab:modelcompare) shows a variety of models that could be used to predict violent crime rates across US states. Note that the model estimates for some variables such as percent male differ substantially across models. How can we possibly decide which of these models is the best model? 
@@ -2243,6 +2295,10 @@ summary(model_saturated)$r.squared
 In practice, all real models fall somewhere between these two extremes. Most of the model selection tools that we discuss below will make use of these two conceptual models theoretically. 
 
 ### A not-very-useful tool: the F-test
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/-phP4QxEwHw")
+```
 
 The F-test is not terribly useful in practice, but we will build some important principles from it for later tools in this module and the next module. The F-test is a classic tool that uses the framework of hypothesis testing to adjudicate between models.
 
@@ -2329,6 +2385,10 @@ Aside from the issues highlighted above, the primary problem with the F-test is 
 
 ### Tools with a parsimony penalty
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/mOGXGpGlCiw")
+```
+
 Two model selection tools allow us to more formally consider the parsimony vs. accuracy tradeoff. We can think of the $R^2$ value as a measure of accuracy. These two tools then apply a "parsimony penalty" to this measure of accuracy to get a single score that measures the quality of the model. In both cases, lack of parsimony is reflected by $p$, the number of independent variables in the model. 
 
 #### Adjusted $R^2$
@@ -2407,6 +2467,10 @@ Difference in BIC | Strength of Preference
 greater than 10   | Very Strong
 
 ### Model Averaging
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/QQ80OrAHXJY")
+```
 
 None of the tools mentioned above can fully address the complexity of model selection. One of the key difficulties is that given a set of potential variables, it includes not only what gets included but the order of inclusion. As we have seen above, percent male seems to have a large negative effect on violent crime rates until we consider a model that includes Gini coefficients. Where and how we include these variables in sequential models might affect our ultimate model selection.
 

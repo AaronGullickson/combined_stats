@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-04-14" />
+<meta name="date" content="2020-04-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -398,6 +398,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="multicollinearity-and-scale-creation" class="section level2">
 <h2>Multicollinearity and Scale Creation</h2>
+<iframe src="https://www.youtube.com/embed/0Xq4UC4ceQU" width="672" height="400px">
+</iframe>
 <p>The problem of <strong>multicollinearity</strong> arises when the independent variables in a linear model are highly correlated with one another. In such a case it is possible to predict with reasonable accuracy the value of one independent variable based on all of the other independent variables in the model.</p>
 <p>Multicollinearity creates problem for model estimation in two ways. First, multicollinearity between independent variables will increase the standard error on regression coefficients making it difficult to identify statistically significant effects. Second, in nested models with highly collinear variables, results from model to model can be highly variable and inconsistent. It is not unusual that two highly collinear variables both produce substantively large and statistically significant effects when put in a model separately, but when put in together, both variables fail to produce a statistically significant effect.</p>
 <p>The intuition behind why this happens is fairly straightforward. If two independent variables are highly correlated with one another, then when they are both included in a model, it is difficult to determine which variable is actually driving the effect, because there are relatively few cases where the two variables are different. Thus, the two variables are effectively blowing each other up in the full model.</p>
@@ -762,6 +764,8 @@ Num. obs.
 </div>
 <div id="addressing-multicollinearity" class="section level3">
 <h3>Addressing Multicollinearity</h3>
+<iframe src="https://www.youtube.com/embed/eE82ZYLyevI" width="672" height="400px">
+</iframe>
 <p>Given that you have identified data-based multicollinearity, what do you do about it? A simple approach is to remove some of the highly collinear variables. However, this approach has some drawbacks. First, you have to decide which variable(s) to keep and which to remove. Because the effects of these variables are not easily distinguished, making this decision may not be easy. If the variables operationalize different conceptual ideas, you don’t have a strong empirical rationale for preferring one over the other. Second, because the variables are not perfectly correlated, you are throwing away some information.</p>
 <p>Another approach is to run separate models with only one of the highly collinear variables in each model. The primary advantage of this approach over removal is that you are being more honest with yourself (and potential readers) about the indeterminacy over which variable properly predicts the outcome. However, in this case you are also underestimating the total effects of these variables collectively and their effect as control variables in models with additional variables. It also can become unworkably complex if you have multiple sets of highly correlated variables.</p>
 <p>If the variables that are highly collinear are all thought to represent the same underlying conceptual variable, then another approach is to combine these variables into a single scale. In my example, for instance, all three of my independent variables are thought to represent I turn to the mechanics of such scale creation in the next section.</p>
