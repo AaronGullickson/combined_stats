@@ -195,7 +195,7 @@ ggplot(good_ship, aes(x=fare, y=probs, color=gender))+
 
 ---
 
-##  The logistic regression model
+##  The logit (logistic regression) model
 
 .pull-left[
 ### The link function
@@ -347,7 +347,7 @@ Technically we should also show that the second derivative is negative not posit
 
 ---
 
-##  MLE for the logistic regression model
+##  MLE for the logit model
 
 --
 
@@ -372,7 +372,7 @@ Technically we should also show that the second derivative is negative not posit
 
 ---
 
-## Likelihood formula for logistic regression model
+## Likelihood formula for logit model
 
 We can write the predicted log-odds of an observation by vector multiplication as $\mathbf{x_i'\beta}$. This log odds can be converted into a probability as:
 

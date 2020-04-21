@@ -1,0 +1,644 @@
+class: inverse, center, middle
+
+background-image: url(images/robert-anasch-ZFYg5jTvB4A-unsplash.jpg)
+background-size: cover
+
+name: logit-model
+
+# The Logit Model
+
+---
+
+## The logit (logistic regression) model
+
+.pull-left[
+The logit model is used to predict dichotomous outcomes. It is a specific kind of GLM with a binomial error distribution and a logit link. Formally:
+
+$$y_i \sim binom(1, \hat{p}_i)$$
+
+$$log(\frac{\hat{p}_i}{1-\hat{p}_i}) = \beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$
+
+- We are predicting the log-odds of "success" as a linear function of the independent variables.
+- In terms of the interpretation of results, we have to consider both the log transformation and the use of odds. The key concept is the **odds ratio**.
+]
+
+--
+
+.pull-right[
+We can fit the logit model with the `glm` command:
+
+```{r trylogistic}
+model.fare <- glm((survival=="Survived")~fare, 
+                 data=titanic, 
+                 family=binomial(link=logit))
+round(summary(model.fare)$coef, 3)
+```
+
+- We specify the link and error distribution in the `family` argument. 
+- I can just put in `survival` directly as the dependent variable in my model but it will then predict whichever is the second category as my "success" category. Since I want to be sure to predict survival, I explicitly use a boolean statement.
+]
+
+---
+
+## Survival by gender, two ways
+
+--
+
+.pull-left[
+### Two-way table
+
+```{r twoway_titanic}
+table(titanic$sex,titanic$survival)
+```
+
+```{r crossprod}
+161/682
+339*682/(161*127)
+```
+0.24 men survived for every one that died. The odds of survival for women is 11.3 times higher. ]
+
+
+--
+
+.pull-right[
+### Logit model
+```{r logistic_titanic_gender}
+model.gender <- glm((survival=="Survived")~
+                 (sex=="Female"), 
+            data=titanic, 
+            family=binomial(logit))
+round(coef(model.gender), 4)
+```
+
+So we have the following model:
+
+$$log(\frac{\hat{p}_i}{1-\hat{p}_i}) = -1.444+2.425(female_i)$$
+
+Are these approaches the same?
+]
+
+---
+
+## From log-odds to odds
+
+$$log(\frac{\hat{p}_i}{1-\hat{p}_i}) = -1.444+2.425(female_i)$$
+
+The dependent variable is literally measured in the log-odds of survival, but this is not very intuitive. We can convert directly to odds by exponentiating both sides:
+
+--
+
+$$e^{log(\frac{\hat{p}_i}{1-\hat{p}_i})} = e^{-1.444+2.425(female_i)}$$
+
+--
+
+$$\frac{\hat{p}_i}{1-\hat{p}_i} = (e^{-1.444})(e^{2.425(female_i)})$$
+
+--
+
+$$\frac{\hat{p}_i}{1-\hat{p}_i} = (0.24)(11.3)^{(female_i)}$$
+We now have a multiplicative model that describes the relationship between survival and sex. 
+
+---
+
+## Predicting odds for men and women
+
+$$\frac{\hat{p}_i}{1-\hat{p}_i} = (0.24)(11.3)^{(female_i)}$$
+
+What are the odds of survival for men?
+
+--
+
+$$\frac{\hat{p}_i}{1-\hat{p}_i} = (0.24)(11.3)^{0}=(0.24)(1)=0.24$$
+
+--
+
+What are the odds of survival for women?
+
+--
+
+$$\frac{\hat{p}_i}{1-\hat{p}_i} = (0.24)(11.3)^{1}=(0.24)(11.3)$$
+
+--
+
+- This model reproduces exactly the results we derived directly from the two-way table of survival by sex.
+
+--
+
+- The advantage of the linear model framework is that we can easily add in other variables, complex non-linear effects, interaction terms, etc. 
+
+---
+
+## Gender and passenger class models
+
+```{r titanic_genderclass}
+titanic$survival <- relevel(titanic$survival, "Died")
+titanic$sex <- relevel(titanic$sex, "Male")
+model.gender <- glm(survival~sex, data=titanic, family=binomial(logit))
+model.genderclass <- update(model.gender, .~.+pclass)
+model.interact <- update(model.genderclass,.~.+sex*pclass)
+```
+
+I use the `relevel` function here to reset the reference category in order to simplify my model formulas. Then I run a bivariate model by gender, a model that controls for passenger class, and a model that interacts gender and passenger class. 
+
+---
+
+## Gender and passenger class models
+
+.pull-left[
+.stargazer[
+```{r genderclass_stargazer, echo=FALSE, results="asis"}
+knitreg(list(model.gender, model.genderclass, model.interact),
+        custom.coef.names = c("Intercept","Female","Second Class",
+                              "Third Class", "Female x Second Class",
+                              "Female x Third Class"),
+        caption="Models predicting survival on the Titanic",
+        caption.above=TRUE,
+        include.aic=FALSE, include.deviance=FALSE, include.bic=FALSE)
+```
+]
+]
+
+.pull-right[
+- Holding constant passenger class, women were 12.4 $(e^{2.52})$ times more likely to survive than men. 
+- Holding constant gender, second class passengers were 59% $(1-e^{-.88})$ less likely than first class passengers to survive and third class passengers were 82% $(1-e^{-1.72})$ less likely than first class passengers to survive.
+- Women in first class were 53.5 $(e^{3.98})$ times (!) more likely to survive than first class men. Among second class passengers, the ratio in survival by gender was slightly smaller at 45.6 $(e^{3.98-.16})$, but in third class it was much smaller at 5.4 $(e^{3.98-2.3})$.
+- Men in second and third class were both about 65-67% $(1-e^{-1.06})$ or $(1-e^{-1.1})$ less likely to survive than first class men.
+]
+
+???
+
+- Note that the model reports the log-likelihood for the best-fitting model from MLE.
+
+---
+
+## Interpreting quantitative independent variables 
+
+$$log(\frac{\hat{p}_i}{1-\hat{p}_i}) = -0.882+0.012(fare_i)$$
+
+How do we interpret?
+
+--
+
+Lets exponentiate both sides again: 
+
+$$\frac{\hat{p}_i}{1-\hat{p}_i} = (e^{-0.882})(e^{0.012(fare_i)})$$
+
+$$\frac{\hat{p}_i}{1-\hat{p}_i} = (0.414)(1.012)^{fare_i}$$
+
+--
+
+How do the odds of survival compare for someone who paid no fare, one pound, and two pounds?
+
+--
+
+$$
+\begin{aligned}
+\frac{\hat{p}_i}{1-\hat{p}_i}& = (0.414)(1.012)^{0})=(0.414)\\
+& = (0.414)(1.012)^{1}=(0.414)(1.012)\\
+& = (0.414)(1.012)^{2}=(0.414)(1.012)(1.012)\\
+\end{aligned}
+$$
+
+Each one pound increase in fare is associated with a 1.2% increase in the odds of survival. 
+
+---
+
+##  Predicted probabilities from logit model
+
+.pull-left[
+Lets use the model to predict odds and probabilities for the entire range of fare:
+```{r convertodds}
+lodds <- predict(model.fare, 
+                 data.frame(fare=0:512))
+odds <- exp(lodds)
+prob <- odds/(1+odds)
+```
+]
+
+.pull-right[
+```{r lpm_plot2, echo=FALSE}
+model_lpm <- lm((survival=="Survived")~fare, data=titanic)
+y_lpm <- predict(model_lpm, data.frame(fare=0:512))
+predicted_df <- data.frame(fare=rep(0:512, 2),
+                           y=c(y_lpm, prob),
+                           model=c(rep("lpm",513),
+                                   rep("logit",513)))
+ggplot(titanic, aes(x=fare, 
+                    y=as.numeric(survival=="Survived")))+
+  annotate("rect",xmin=-Inf, xmax=Inf, ymin=1, ymax=Inf, alpha=0.2,
+           fill="red")+
+  annotate("text", x=250, y=1.2, label="Nonsense region")+
+  annotate("rect",xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=0, alpha=0.2,
+           fill="red")+
+  geom_hline(yintercept = c(0,1), linetype=2)+
+  geom_point(alpha=0.1)+
+  geom_line(data=predicted_df, aes(y=y, color=model),
+            size=1.5)+
+  scale_y_continuous(breaks = c(0,1), labels=c("0","1"))+
+  labs(x="fare paid in pounds", y="Titanic survival as numeric value")
+```
+]
+
+---
+
+## A full example from Add Health
+
+```{r full_logit_example}
+model.full <- glm(smoker~grade+sex*honorsociety+alcoholuse+sex, 
+                  data=popularity, family=binomial)
+round(summary(model.full)$coef,3)
+round(exp(model.full$coef),3)
+```
+
+---
+
+## Marginal effects in logit models
+
+--
+ 
+- In a logit model, the slope $(\beta)$ gives the marginal effect of $x$ on the **log-odds** of success, not the **probability** of success.
+
+--
+
+- Many people prefer to think of the marginal effects of logit models in terms of the probability and so when people talk about the marginal effect of an independent variable in a logit regression model they typically mean the marginal effect of $x$ on the probability.
+
+--
+
+- Because of the logistic curve, the marginal effect on the probability is not constant, but depends on what value of $x$ you are currently at. As your predicted probability approaches one, the marginal effects will get smaller and smaller.  
+
+--
+
+
+???
+
+I am not a big fan of this approach. I think it reflects an implicit bias toward thinking in probability rather than odds which throws away one of the important features of logit models. But its still worthwhile to know.
+
+---
+
+## Different marginal effects on probability
+
+```{r plot_marginal, echo=FALSE, fig.width=12}
+fare <- 0:512
+odds <- 0.414*(1.012)^fare
+prob <- odds/(1+odds)
+marginals <- prob*(1-prob)*log(1.012)
+intercepts <- prob-fare*marginals
+df <- data.frame(fare, odds, prob, marginals, intercepts)
+ggplot(df, aes(x=fare, y=prob))+
+  geom_line(size=1.5)+
+  geom_abline(data=subset(df, fare==50 | fare==200 | fare==500),
+              aes(intercept=intercepts, slope=marginals, color=as.factor(fare)),
+              alpha=1)+
+  geom_segment(data=subset(df, fare==50 | fare==200 | fare==500),
+               aes(x=fare, xend=fare, yend=prob, 
+                   color=as.factor(fare)), 
+               y=0, linetype=2)+
+  labs(x="fare paid in pounds", y="probability of survival",
+       title="Different marginal effects (tangent lines) at 50, 200, and 500 pounds",
+       color="fare in pounds")
+```
+
+---
+
+## Estimating marginal effects on probability
+
+--
+
+.pull-left[
+For a given vector of values of the independent variables given by $\mathbf{x}$ and a vector of regression coefficients $\mathbf{\beta}$, marginal effects can be estimated by first calculating the expected probability $\hat{p}$:
+
+$$\hat{p}=\frac{e^\mathbf{x'\beta}}{1+e^{\mathbf{x'\beta}}}$$
+The marginal effect of the $k$th independent variable in the model is then given by:
+
+$$\hat{p}(1-\hat{p})\beta_k$$
+]
+
+--
+
+.pull-right[
+
+```{r marginaleffects}
+model <- glm(survival~fare+age, 
+             data=titanic, 
+             family=binomial(logit))
+#get predicted probabilty at mean fare and age
+df <- data.frame(fare=mean(titanic$fare),
+                 age=mean(titanic$age))
+lodds <- predict(model, df)
+p <- exp(lodds)/(1+exp(lodds))
+#get marginal effects
+p*(1-p)*coef(model)[c("fare","age")]
+```
+
+- The marginal effect of a one pound increase in fare **when fare and age are at the mean** is a 0.32% increase in the probability of survival. 
+- The marginal effect of a one year increase in age **when fare and age are at the mean** is a 0.32% decrease in the probability of survival.
+]
+
+---
+
+## Marginal effects for a categorical variable
+
+The marginal effects for categorical variables are different. Typically you will estimate the difference in probability of survival across the categories when at the mean on all other variables.
+
+```{r marginaleffect_categorical}
+model <- glm(survival~fare+age+sex, data=titanic, family=binomial(logit))
+df <- data.frame(fare=rep(mean(titanic$fare),2),
+                 age =rep(mean(titanic$age),2),
+                 sex=c("Male","Female"))
+lodds <- predict(model, df)
+p <- exp(lodds)/(1+exp(lodds))
+p
+diff(p)
+```
+
+When at the mean of age and fare, women's probability of survival is 52 percentage points higher than men's.
+
+---
+
+## Using `mfx` package for marginal effects
+
+Marginal effects are easy to calculate in the `mfx` package:
+
+```{r mfxfake, eval=FALSE}
+library(mfx)
+```
+```{r mfx, messages=FALSE, error=FALSE}
+logitmfx(survival~fare+age+sex, data=titanic)
+```
+
+---
+
+## An alternative link: probit
+
+.pull-left[
+- The probit transforms the probability by calculating the inverse of the cumulative normal distribution, $\Phi^{-1}(p)$. 
+- Intuitively, you are converting the probabilities to scores that follow a normal distribution.
+- A probit model can be estimated with the `glm` command by using `binomial(probit)` as the family argument rather than `binomial(logit)`.
+- While the actual numbers will be different from a logit model, the probit model will generally produce very similar results in terms of the strength of the relationship and the predicted values at the cost of being more difficult to interpret. 
+]
+
+.pull-right[
+```{r probit, echo=FALSE, fig.height=5}
+par(mar=c(4,4,0.5,0.5))
+z <- seq(from=-2.75,to=2.75,by=.01)
+y <- dnorm(z)
+plot(z,y,type="l",xlab="probit score",ylab="density", las=1)
+polygon(c(z[1:376],z[376:1]),c(y[1:376],rep(0,376)),col="grey")
+text(0,0.2,"0.84",col="red",cex=2)
+```
+A probability of 0.84 would correspond to a probit score of one.
+]
+
+---
+
+##  Predicted values from logit and probit models
+
+```{r probit_plot, echo=FALSE, fig.width=12}
+model_logit <- glm(survival~fare, data=titanic,
+                 family=binomial(logit))
+model_probit <- glm(survival~fare, data=titanic,
+                 family=binomial(probit))
+y_logit <- predict(model_logit, data.frame(fare=0:512))
+prob_logit <- exp(y_logit)/(1+exp(y_logit))
+y_probit <- predict(model_probit, data.frame(fare=0:512))
+prob_probit <- pnorm(y_probit)
+predicted_df <- data.frame(fare=rep(0:512, 2),
+                           prob=c(prob_logit, prob_probit), 
+                           model=c(rep("logit",513),
+                                   rep("probit",513)))
+ggplot(titanic, aes(x=fare, 
+                    y=as.numeric(survival=="Survived")))+
+  annotate("rect",xmin=-Inf, xmax=Inf, ymin=1, ymax=Inf, alpha=0.2,
+           fill="red")+
+  annotate("text", x=250, y=1.2, label="Nonsense region")+
+  annotate("rect",xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=0, alpha=0.2,
+           fill="red")+
+  geom_hline(yintercept = c(0,1), linetype=2)+
+  geom_point(alpha=0.1)+
+  geom_line(data=predicted_df, aes(y=prob, color=model),
+            size=1.5, alpha=0.7)+
+  scale_y_continuous(breaks = c(0,1), labels=c("0","1"))+
+  labs(x="fare paid in pounds", y="Titanic survival as numeric value")
+```
+
+---
+
+## Assessing model fit with deviance
+
+There is no $R^2$ value for a generalized linear model. A model predicting categorical outcomes does not have residuals in the same sense as the linear model.
+
+--
+
+Most measures of model fit for GLMs rely up on the **deviance** of the model, or $G^2$. The deviance is simply the log-likelihood of the model multiplied by negative 2:
+
+$$G^2=-2(logL)$$
+
+The smaller the deviance, the better the fit of the model, because the likelihood is getting higher. 
+
+Typically we are concerned with the deviance of three conceptual models:
+
+--
+
+- The deviance of the null model, $G^2_0$ where we assign each observation the same probability $p_i$.
+
+--
+
+- The deviance of the saturated model where the number of predictors is equal to the number of cases. This model would fit the data perfectly and therefore has a likelihood of one and a deviance of zero. 
+
+--
+
+- The deviance of the current model $G^2$ that we are currently fitting with $p$ independent variables as predictors.
+
+---
+
+## Two approachdes
+
+--
+
+.pull-left[
+### Pseudo $R^2$
+We can calculate a measure that is similar to $R^2$ which measures the proportion of deviance from the null model that is accounted for in the current model. This measure is also called **McFadden's D**.
+
+$$D=\frac{G^2_0-G^2}{G^2_0}$$
+
+```{r pseudorsq_example}
+model.g <- glm(survival~sex, data=titanic, 
+                    family=binomial)
+(model.g$null.deviance-model.g$deviance)/
+  model.g$null.deviance
+```
+
+Adding age as a predictor reduced the deviance of the null model by 21.4%. 
+]
+
+--
+
+.pull-right[
+### Likelihood Ratio Test
+The Likelihood Ratio Test (LRT) is the analog to the F-test for GLMs. The test statistic for the LRT is the reduction in deviance in the more complex model. Assuming the null hypothesis that all of the additional terms in the second model have no predictive power, this observed difference should come from a $\chi^2$ distribution with degrees of freedom equal to the number of additional terms in the second model. 
+
+```{r lrt_example}
+model.g$null.deviance-model.g$deviance
+1-pchisq(373,1)
+```
+
+]
+
+---
+
+## Using `anova` to do LRT
+
+We can also use the `anova` command to do an LRT test if we add in the additional argument of `test="LRT"`:
+
+```{r lrt_anova_example}
+anova(model.gender, test="LRT")
+```
+
+---
+
+## Comparing to non-null models by LRT
+
+```{r lrt_anova_example2}
+model.complex <- update(model.gender, .~.+pclass) 
+anova(model.gender, model.complex, test="LRT")
+```
+
+---
+
+## BIC for GLMs
+
+You can also calculate BIC for generalized linear models. The general formula to compare any two GLMs by BIC is:
+
+$$BIC=(G^2_2-G^2_1)+(p_2-p_1)\log n$$
+The first part is the difference in deviance between the two models which measures goodness of fit and the second part is the parsimony penalty. If BIC is negative, model 2 is preferred to model 1. If BIC is positive, model 1 is preferred to model 2.
+
+If you are comparing the current model to the null model, then BIC becomes:
+
+$$BIC'=(G^2-G^2_0)+(p)\log n$$
+
+You can use this value to compare any two models since the difference in BIC' between any two models is equivalent to the BIC between them. 
+
+---
+
+## BIC Example
+
+Write a function for BIC compared to the null
+```{r bic_function}
+BIC.null.glm <- function(model) {
+    n <- length(model$resid)
+    p <- length(model$coef)-1
+    return((model$deviance-model$null.deviance)+p*log(n))
+}
+```
+
+```{r usebic}
+BIC.null.glm(model.complex)-BIC.null.glm(model.gender)
+(model.complex$deviance-model.gender$deviance)+(3-1)*log(nrow(titanic))
+```
+
+Both approaches lead to the same BIC difference. We prefer the more complex model.
+
+---
+
+## Model comparison
+
+.stargazer[
+```{r modelchoices, echo=FALSE, message=FALSE, error=FALSE, results="asis"}
+
+model.basic <- glm(alcoholuse~grade+sex, data=popularity, family=binomial)
+model.achieve <- update(model.basic, .~.+pseudoGPA+honorsociety)
+model.activities <- update(model.achieve, .~.+bandchoir+nsports)
+model.popular <- update(model.activities, .~.+indegree)
+model.interact <- update(model.activities, .~.+nsports*sex)
+model.nonnested <- update(model.popular, .~.-nsports-honorsociety-sex)
+
+convertModel <- function(model) {
+  coef_table <- summary(model)$coef
+  tr <- createTexreg(coef.names = rownames(coef_table),
+                     coef = coef_table[,1], 
+                     se = coef_table[,2], 
+                     pvalues = coef_table[,4],
+                     gof.names = c("deviance","pseudo-R2","BIC (null)"), 
+                     gof = c(summary(model)$deviance, 
+                             (summary(model)$null.deviance-summary(model)$deviance)/summary(model)$null.deviance,
+                             BIC.null.glm(model)), 
+                     gof.decimal = c(T,T,T))
+  return(tr)
+}
+knitreg(lapply(list(model.basic, model.achieve, model.activities,
+                    model.popular, model.nonnested),
+               convertModel), digit=3,
+        custom.coef.names=c("intercept","grade","male","gpa","honor society",
+                            "band or choir","number of sports","popularity"),
+        caption="Models predicting alcohol use, Add Health data",
+        caption.above=TRUE,
+        single.row=TRUE)
+```
+]
+
+---
+
+## Bayesian Model Averaging
+
+```{r bma_input, message=FALSE, error=FALSE, eval=FALSE}
+library(BMA)
+model.bma <- bic.glm(addhealth[,c("grade","sex","pseudoGPA","honorsociety",
+                                  "bandchoir","academicclub","nsports","indegree")], 
+                     addhealth$alcoholuse, glm.family="binomial")
+summary(model.bma)
+```
+
+
+---
+
+## Separation
+
+--
+
+.pull-left[
+Separation can occur in logit models when the dichotomous outcome completely or nearly completely separates the values of an independent variable. 
+
+I have taken a subset of 100 observations of the Add Health data to show you an example of separation. For this subset, lets look at the two-way table between smoking and band/choir participation. 
+
+```{r separation}
+table(addhealth.samp$bandchoir, 
+      addhealth.samp$smoker)
+```
+
+In this sample, none of the band/choir participants were smokers, leading to a zero cell.
+]
+
+--
+
+.pull-right[
+The consequence of this separation is that the coefficient and standard error for the variable will "explode" into ridiculously large numbers.
+
+```{r separation_model}
+model <- glm(smoker~bandchoir, 
+             data=addhealth.samp, 
+             family=binomial)
+round(summary(model)$coef, 3)
+```
+
+The very large coefficient and SE are clear signs of separation. 
+]
+
+???
+
+
+This is most likely to occur when using categorical independent variables with **sparse** data where some of the cell frequencies are so low that they may be zero when crosstabbed with the dependent variable. 
+
+---
+
+## Fixing separation
+
+In this case, the band/choir variable is dichotomous, so it is not possible to collapse categories. This model can be estimated with adjustments for separation using a **penalized likelihood** model. These types of models apply a penalty to the maximum likelihood estimation for very large coefficients. They have multiple uses but were developed originally to deal precisely with the problem of separation. 
+
+--
+
+The `logistf` package provides a penalized likelihood logistic model in R:
+
+```{r logistf}
+library(logistf)
+logistf(smoker~bandchoir, data=addhealth.samp)
+```
