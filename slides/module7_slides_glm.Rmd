@@ -1,0 +1,512 @@
+class: inverse, center, middle
+
+background-image: url(images/rachel-ferriman-0_2sDFbiBp8-unsplash.jpg)
+background-size: cover
+
+name: glm
+
+# Generalized Linear Model
+
+---
+
+## Linear model as data-generating process
+
+Lets return to this particular set up of the linear model:
+
+$$y_i=\hat{y}_i+\epsilon_i$$
+$$\hat{y_i}=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$
+
+--
+
+There are several key concepts to understand here:
+
+--
+
+- The actual outcome $y_i$ is treated as a combination of a structural part $(\hat{y}_i)$ and a stochastic part $(\epsilon_i)$.
+
+--
+
+- The structural part is predicted by a linear relationship of the independent variables to the dependent variable. 
+
+--
+
+- The stochastic part comes from independent draws from some identical distribution.
+
+---
+
+##  Reformulating the Data-Generating Process
+
+Lets assume that the error terms $\epsilon_i$ are drawn from a normal distribution with some standard deviation $\sigma$:
+
+$$\epsilon_i \sim N(0,\sigma)$$
+
+--
+
+We can then rethink the data-generation process for $y_i$ as reaching into a distribution:
+
+$$y_i \sim N(\hat{y}_i,\sigma)$$
+
+--
+
+To get the value of $y_i$ for any observation we reach into a normal distribution that is centered on the predicted value, but that always has the same standard deviation. The predicted value is given by a linear combination of the independent variables: 
+
+$$\hat{y_i}=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$
+
+---
+
+##  GLM: link function and error distribution
+
+We now have the two basic components of a Generalized Linear Model (GLM):
+
+$$y_i \sim N(\hat{y}_i,\sigma)$$
+$$\hat{y_i}=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$
+
+--
+
+.pull-left[
+
+### Error distribution
+
+$$y_i \sim N(\hat{y}_i,\sigma)$$
+
+The **error distribution** defines how the distribution of the dependent variable is produced. 
+
+* The error distribution in this case is normal, or (to be fancy) **gaussian**.
+]
+
+--
+
+.pull-right[
+### Link function
+
+$$\hat{y_i}=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$
+
+The **link function** defines how the key parameter of the error distribution (in this case, the center at $\hat{y_i}$) is related to the independent variables. 
+
+* In this case, the link function is a direct linear relationship. In GLM-speak, this is called the **identity** link.
+]
+
+---
+
+##  Try out GLM
+
+First the good old `lm` command using OLS regression to estimate:
+```{r lm_glm_compare1}
+summary(lm(Violent~MedianAge, data=crimes))$coef
+```
+
+--
+
+The `glm` command with the `family` option will allow you to run a model and specify the error distribution and link function.
+
+--
+
+```{r lm_glm_compare2}
+summary(glm(Violent~MedianAge, data=crimes, family=gaussian(link=identity)))$coef
+```
+
+The results are identical. We can use a GLM with a gaussian error term and an identity link to estimate a standard linear model.
+
+---
+
+##  Things to consider about the GLM
+
+--
+
+- Even though the results were identical, the `glm` command is using a different technique called maximum likelihood estimation (MLE) to estimate coefficients. We will discuss how this works later.
+
+--
+
+- Because the estimation technique is different for `glm`, the summary statistics are different. The `glm` command, for example, will not give you $R^2$ by default. 
+
+--
+
+- Even though our GLM formulation assumed a normal distribution to the errors, this is not necessary in the case of OLS regression to get unbiased and efficient estimates. 
+
+--
+
+- The GLM approach provides no real improvement over linear models estimated by OLS regression, but by varying up the error distribution and link function the GLM can work for the case of dichotomous dependent variables, as well as other categorical outcomes. 
+
+---
+
+## Creating our own disaster
+
+.left-column[
+.center[![](images/shirley-temple.jpg)]
+]
+
+.right-colum[
+In order to see how the GLM can be used to predict dichotomous outcomes, it will be useful to play god and create our own transatlantic ocean liner disaster. 
+
+We have 10000 brave souls on the **Good Ship Lollipop** which will sink on its maiden voyage due to ineptitude by the crew who were too busy eating candy to keep a look out for icebergs. We know the gender and the fare paid for all passengers.
+
+```{r good-ship-check-yourself}
+good_ship <- data.frame(gender=sample(c("Male","Female"),10000,replace=TRUE),
+                        fare=rgamma(10000, 1,0.01))
+summary(good_ship)
+```
+]
+
+---
+
+## Determining who lives and dies
+
+--
+
+.pull-left[
+### The link function
+
+Since we are playing god, we can define the relationship between survival and the variables of fare and gender.
+
+To avoid problems of nonsensical probabilities, lets create a linear function of the log-odds of survival.
+
+$$\log(\frac{p_i}{1-p_i})=0.12-0.6(male_i)+0.007(fare_i)$$
+
+```{r modeling-survival} 
+good_ship$log_odds <- 0.12-
+  0.6*(good_ship$gender=="Male")+
+  0.007*good_ship$fare
+good_ship$odds <- exp(good_ship$log_odds)
+good_ship$probs <- good_ship$odds/
+  (1+good_ship$odds)
+```
+]
+
+
+--
+
+.pull-right[
+### The error distribution
+
+Each passenger gets a single bernoulli trial to see whether they live or die.
+
+```{r sampling-deaths}
+good_ship$survived <- rbinom(10000, 1, 
+                             good_ship$probs)
+```
+
+```{r play-god, echo=FALSE, fig.height=4}
+ggplot(good_ship, aes(x=fare, y=probs, color=gender))+
+  geom_line()+
+  geom_point(aes(y=survived), alpha=0.1)+
+  labs(x="fare paid", y="probability of survival")
+```
+]
+
+---
+
+##  The logistic regression model
+
+.pull-left[
+### The link function
+
+The survival variable $y_i$ is just a set of ones and zeros that can thought of as being produced by a **binomial distribution** like so:
+
+$$y_i \sim binom(1, p_i)$$
+
+### The error distribution
+
+The key parameter in this distribution is $p_i$ which we transform with a **logit link**, so that the independent variables are linearly related to the log of the odds of survival:
+
+$$logit(p_i)=\log(\frac{p_i}{1-p_i})=\beta_0+\beta_1(male_i)+\beta_2(fare_i)$$
+]
+
+--
+
+.pull-right[
+
+### Estimate in R
+
+use `binomial` with a `logit` link in the `family` argument.
+
+```{r good-ship-model}
+model.glm <- glm(survived~gender+fare, 
+                 data=good_ship, 
+                 family=binomial(link=logit)) #<<
+round(summary(model.glm)$coef, 4)
+```
+
+The results are pretty close to what we specified. They differ a little due to sampling variability when we draw from the binomial.
+
+But where did the estimates come from?
+]
+
+---
+
+## How does the GLM estimate model parameters?
+
+It uses **Maximum Likelihood Estimation (MLE)**!
+
+--
+
+### The logic of MLE
+
+--
+
+1. We have some **data-generating process** that produces a set of observed data (e.g. $y_1,y_2,\ldots,y_n$) and is governed by some set of parameters $\theta$ (e.g. $\beta_0,\beta_1,\beta_2$).
+
+--
+
+2. We ask what is the likelihood, given the process, that we observe the actual data that we have? This leads to the **likelihood function**, $L(\theta)$, which gives the likelihood of the data as a function of the set of parameters. 
+
+--
+
+3. We have the data and want to estimate the parameters. Therefore, we choose a $\hat{\theta}$ that maximizes $L(\theta)$.
+
+--
+
+In practice, it is generally easier to find the maximum of the log-likelihood function, $\log(L(\theta))$. The value of $\hat{\theta}$ that maximimizes the log-likelihood function will always maximize the likelihood function as well. 
+
+---
+
+##  A Simple Example: Flipping Coins
+
+Lets say we flip a coin 50 times and observe 20 heads. 
+
+--
+
+* The values of 50 trials and 20 heads are the **data**. 
+
+--
+
+* The data-generating process is governed by the binomial distribution where the key **parameter** is $p$, the probability of a heads on each trial. 
+
+--
+
+.pull-left[
+### The likelihood function
+
+Because we know that the data-generating process is a binomial distribution, we also know that the likelihood function is for a given $p$:
+
+$$L(p)={50 \choose 20}p^{20}(1-p)^{30}$$
+
+This formula is identical to the binomial formula except that it is now a function of $p$ rather than $n$ and $k$.
+]
+
+--
+
+.pull-right[
+```{r plotmlecoins, fig.height=3}
+p <- seq(from=0,to=1,by=.01)
+likelihood <- choose(50,20)*p^20*(1-p)^30
+ggplot(data.frame(p,likelihood), 
+       aes(x=p, y=likelihood))+
+  geom_line()
+```
+
+]
+
+---
+
+##  Finding the maximum likelihood
+
+
+--
+
+.pull-left[
+First, transform the likelihood function into the log-likelihood function:
+
+$$
+\begin{aligned}
+\log L(p)&=\log({50 \choose 20}p^{20}(1-p)^{30})\\
+\log L(p)&=\log {50 \choose 20} + 20 \log(p) + 30\log(1-p)\\
+\end{aligned}
+$$
+
+Then, take the derivative:
+
+$$\frac{\partial \log L(p)}{\partial p}=\frac{20}{p}-\frac{30}{1-p}$$
+]
+
+--
+
+.pull-right[
+
+Set this equal to zero and solve for $p$ to find the maximum.
+
+$$
+\begin{aligned}
+0&=\frac{20}{p}-\frac{30}{1-p}\\
+\frac{30}{1-p}&=\frac{20}{p}\\
+30p&=20(1-p)\\
+30p&=20-20p\\
+50p&=20\\
+p&=20/50=0.4
+\end{aligned}
+$$
+
+
+]
+
+???
+
+Congratulations, we have proved the obvious! The most likely value of $p$ for 50 trials with 20 successes is the proportion of successes, 20/50 or 40%. In general, we can show that the MLE of $p$ for any $k$ successes in $n$ trials is $k/n$.
+
+Technically we should also show that the second derivative is negative not positive here to demonstrate its a maximum and not a minimum, but we won't go through that here.
+
+
+---
+
+##  MLE for the logistic regression model
+
+--
+
+- The data are the actual ones and zeros of $y_i$ for the dependent variable and the matrix $X$ of independent variables.
+
+--
+
+- The parameters of interest are the regression slopes and intercept $(\beta)$ of the model predicting the log-odds of a success, which can be converted into the probability of success for each observation, $p_i$.
+
+--
+
+- We want to choose the $\beta$ values that produce $p_i$ values that maximize the likelihood of actually observing the ones and zero for $y_i$ that we have. 
+
+--
+
+- There is no closed-form solution for calculating the parameters of a GLM via MLE. Iterative techniques have to be used instead. 
+
+--
+
+### `r emo::ji("warning")` heavy math ahead
+
+
+---
+
+## Likelihood formula for logistic regression model
+
+We can write the predicted log-odds of an observation by vector multiplication as $\mathbf{x_i'\beta}$. This log odds can be converted into a probability as:
+
+$$\hat{p}_i=F(\mathbf{x_i'\beta})=\frac{e^{\mathbf{x_i'\beta}}}{1+e^{\mathbf{x_i'\beta}}}$$
+
+--
+
+The likelihood of a particular observation $i$ being equal to $y_i$ (1 or 0) is given by the bernoulli distribution:
+
+$$L_i=\hat{p}_i^{y_i}(1-\hat{p}_i)^{1-y_i}=F(\mathbf{x_i'\beta})^{y_i}(1-F(\mathbf{x_i'\beta}))^{1-y_i}$$
+
+--
+
+The log-likelihood is equal to:
+
+$$\log L_i=y_i\log F(\mathbf{x_i'\beta})+(1-y_i) \log (1-F(\mathbf{x_i'\beta}))$$
+
+--
+
+The log-likelihood for all the observations is just the sum of these individual log-likelihoods:
+
+$$\log L= \sum_{i=1}^n \log L_i= \sum_{i=1}^n y_i\log F(\mathbf{x_i'\beta})+(1-y_i) \log (1-F(\mathbf{x_i'\beta}))$$
+
+---
+
+## Maximize this!
+
+$$\log L = \sum_{i=1}^n y_i\log F(\mathbf{x_i'\beta})+(1-y_i) \log (1-F(\mathbf{x_i'\beta}))$$
+
+--
+
+- We know $y_i$ and $x_i$. We just need to choose the $\beta$ vector that maximizes the log-likelihood. 
+
+--
+
+- There is no closed-form solution to this problem. It can only be solved by iterative methods where we start with initial estimates and then iteratively adjust them until they no longer change. 
+
+--
+
+- There are multiple algorithms that can do this, but the simplest (and the one R uses in `glm` by default) is a form of iteratively-reweighted least squares (IRLS). 
+
+---
+
+## The IRLS Technique
+
+The IRLS technique calculates the next iteration $(t+1)$ of $\beta$ values from the current iteration $(t)$ as:
+ 
+$$\beta^{(t+1)}=\mathbf{(X'W^{(t)}X)^{-1}X'W^{(t)}z^{(t)}}$$
+
+--
+
+Like, WLS this technique uses a weighting matrix $\mathbf{W}$. This weighting matrix only has elements along the diagonal that are equal to:
+
+$$w_i=\hat{p}_i(1-\hat{p}_i)$$
+
+Where $\hat{p}_i$ is the estimated probabilities from iteration $(t)$. 
+
+--
+
+The $\mathbf{z}$ vector is a transformed vector of the dependent variable where each element is given by:
+
+$$z_i=\mathbf{x_i'\beta}+\frac{y_i-\hat{p}_i}{\hat{p}_i(1-\hat{p}_i)}$$
+
+--
+
+Lets try this estimation procedure out by hand on the Titanic data by predicting survival from fare.
+
+---
+
+##  Initialize values assuming null model
+
+Lets begin by setting up the X matrix and y values.
+
+```{r irls_mle_initialize1}
+X <- as.matrix(cbind(rep(1,nrow(titanic)), titanic[,"fare"]))
+y <- as.vector(as.numeric(titanic$survival=="Survived"))
+```
+
+--
+
+I calculate the average log odds of survival by the survival proportion and use this for my initial model.
+```{r irls_mle_initialize2}
+lodds <- log(mean(y)/(1-mean(y)))
+beta <- c(lodds, 0) #the intercept is the log-odds and the slope is zero in the null model
+pred_lodds <- X%*%beta
+p <- exp(pred_lodds)/(1+exp(pred_lodds))
+```
+
+--
+
+The $p$ vector repeats the same probability. I can use this to calculate the log-likelihood of the null model:
+```{r irls_mle_initialize3}
+logL <- sum(y*log(p)+(1-y)*log(1-p))
+logL
+```
+
+---
+
+##  Iteratively estimate $\beta$
+
+```{r irls_mle_iterate}
+beta.prev <- beta
+for(i in 1:6) {
+  w <- p*(1-p)
+  z <- pred_lodds + (y-p)/w
+  W <- matrix(0, nrow(X), nrow(X))
+  diag(W) <- w
+  beta <- solve(t(X)%*%W%*%X)%*%(t(X)%*%W%*%z)
+  beta.prev <- cbind(beta.prev, beta)
+  pred_lodds <- X%*%beta
+  p <- exp(pred_lodds)/(1+exp(pred_lodds))
+  logL <- c(logL, sum(y*log(p)+(1-y)*log(1-p)))
+}
+```
+
+--
+
+```{r irls_mle_report}
+round(beta.prev,5)
+logL
+```
+
+???
+
+Convergence happened quickly.
+
+---
+
+## `glm` command does the same for you
+
+```{r glmcommand}
+model.survival <- glm((survival=="Survived")~fare, data=titanic, 
+                      family=binomial(logit),
+                      control=glm.control(trace=TRUE))
+coef(model.survival)
+beta.prev[,5]
+```
