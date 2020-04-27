@@ -1,0 +1,3274 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Modeling Categorical Outcomes</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Aaron Gullickson" />
+    <meta name="date" content="2020-04-27" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/uo.css" rel="stylesheet" />
+    <link href="libs/remark-css/uol-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="lecture_slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Modeling Categorical Outcomes
+## Sociology 513
+### Aaron Gullickson
+### University of Oregon
+### 2020-04-27
+
+---
+
+
+
+
+
+
+
+
+
+## Jump to...
+
+[Dichotomous Outcomes and the Binomial Distribution](#dichotomous)
+
+[Linear Probability Model](#lpm)
+
+[Generalized Linear Model](#glm)
+
+[Logit Model](#logit-model)
+
+[Models for Polytomous Outcomes](#polytomous-models)
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/riho-kroll-m4sGYaHYN5o-unsplash.jpg)
+background-size: cover
+
+name: dichotomous
+
+# Dichotomous Outcomes and The Binomial Distribution
+
+---
+
+##  Categorical dependent variables?
+
+--
+
+.pull-left[
+###  Life and death on the Titanic
+
+.center[![titanic](images/titanic.jpg)]
+
+
+- Survival of the Titanic is a **dichotomous** outcome, meaning it is a categorical variable with two possible outcomes. 
+- We can use a two-way table or mean differences to look at bivariate relationships.
+- A linear model framework predicting survival would allow us to control for variables, add non-linearity, and include interactions.
+]
+
+--
+
+.pull-right[
+### We don't know how to do that
+
+.center[😕]
+
+- We know how to include categorical variables on the right hand side of regression model using indicator/dummy variables, but we can't use OLS regression to predict categorical outcomes on the left-hand side of the equation. 
+- We need a linear model framework that allows us to predict categorical outcomes.
+- In order to develop that framework, we need to develop our understanding of the actual **data-generating process** producing our outcomes.
+]
+
+---
+
+##  The binomial distribution
+
+The binomial distribution arises in situations where:
+
+--
+
+- `\(n\)` repeated **independent** trials are performed where the result of each trial is either a **success** or **failure**
+
+--
+
+- the probability of success on each trial is given by `\(p\)` and the probability of failure is `\(1-p\)`
+
+--
+
+- We are interested in a **random variable** `\(X\)` that gives the number of successes
+
+--
+
+.right-column[
+### 🎲 Dice pools
+
+A simple example of this type of process would be rolling five dice `\((n=5)\)` and counting the number of sixes `\((p=0.167)\)`. 
+]
+
+.left-column[
+![5d6](images/5d6.jpg)
+]
+
+---
+
+##  The binomial formula
+
+The binomial formula gives the probability that the random variable representing the number of successes `\(X\)` will be some specific number `\(k\)`. This formula is:
+
+`$$P(X=k)={n \choose k}p^k(1-p)^{n-k}$$`
+
+This formula can be broken down into two parts. 
+
+--
+
+- The first part, `\({n \choose k}\)` is called "n choose k" and gives the number of ways that `\(k\)` successes and `\(n-k\)` failures can be combined.
+
+--
+
+- The second part, `\(p^k(1-p)^{n-k}\)` gives the probability of any particular sequence of `\(k\)` successes and `\(n-k\)` failures. 
+
+---
+
+## The binomial formula, broken down
+
+--
+
+.pull-left[
+###  Probability of a sequence
+
+**When events are independent of one another**, then the probability that they all occur is given by multiplying their individual probabilities together.
+
+For example, if we wanted to know the probability of getting 2 successes and 3 failures for the dice rolling example we would just take:
+
+`$$(1/6)(1/6)(5/6)(5/6)(5/6)=(1/6)^2(5/6)^3=0.016$$`
+More generally, we can just say:
+`$$p^k(1-p)^{n-k}$$`
+]
+
+--
+
+.pull-right[
+###  Possible sequences
+
+Does 1.6% seem like a low probability of rolling exactly two sixes in five dice rolls? That is because it is! This is only the probability of rolling any particular sequence of successes and failures. However, its possible to roll two successes and three failures in multiple permutations:
+
+SSFFF, SFSFF, SFFSF, SFFFS, FSSFF, FSFSF, FSFFS, FFSSF, FFSFS, FFFSS
+
+There are ten possible ways to combine two successes and three failures. Therefore, the total probability of rolling exactly two sixes in five dice rolls is:
+
+`$$10*(1/6)^2(5/6)^3=0.161$$`
+]
+
+---
+
+##  The n choose k formula
+
+The `\({n \choose k}\)` formula provides a mathematical way to determine how many ways `\(k\)` successes can be distributed in `\(n\)` trials. The full formula is:
+
+`$${n \choose k}=\frac{n!}{k!(n-k)!}$$`
+
+--
+
+The exclamation points indicate a factorial which means you multiply that number by each integer lower than it in succession. For example:
+
+`$$4!=4*3*2*1$$`
+
+Typically, many of these values will cancel in the numerator and denominator, so calculation is not too hard for small `\(n\)` and `\(k\)`. Lets take the example of two successes in five trials:
+
+`$${5 \choose 2}=\frac{5!}{2!(5-2)!}=\frac{5*4*3*2}{2*3*2}=5*2=10$$`
+
+---
+
+##  Calculate all the probabilities
+
+.pull-left[
+
+```r
+k &lt;- 0:5
+p &lt;- 1/6
+n &lt;- 5
+prob &lt;- choose(n,k)*p^k*(1-p)^(n-k)
+ggplot(data.frame(k,prob), aes(x=k, y=prob))+
+  geom_col()+
+  scale_y_continuous(labels=scales::percent)+
+  labs(x="number of sixes in five dice rolls",
+       y="probability")
+```
+]
+
+.pull-right[
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/unnamed-chunk-7-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+##  What about twenty dice?
+
+.pull-left[
+
+```r
+k &lt;- 0:20
+p &lt;- 1/6
+n &lt;- 20
+prob &lt;- choose(n,k)*p^k*(1-p)^(n-k)
+ggplot(data.frame(k,prob), aes(x=k, y=prob))+
+  geom_col()+
+  scale_y_continuous(labels=scales::percent)+
+  labs(x="number of sixes in twenty dice rolls",
+       y="probability")
+```
+]
+
+.pull-right[
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/unnamed-chunk-8-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+##  Features of the binomial distribution
+
+--
+
+.pull-left[
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/expected-value-binomial-1.png" width="504" style="display: block; margin: auto;" /&gt;
+The mean (or *expected value*) of the binomial distribution is always given by `\((np)\)`.
+]
+
+--
+
+.pull-right[
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/varbinom-1.png" width="504" style="display: block; margin: auto;" /&gt;
+The variance of the binomial distribution is given by:
+
+`$$(n)(p)(1-p)$$`
+]
+
+---
+
+##  The Bernoulli distribution
+
+.pull-left[
+
+.center[![jacob bernoulli](images/jakob_bernoulli.jpg)]
+
+The Bernoulli distribution is a special case of the binomial distribution where `\(n=1\)`. The only two possible outcomes for `\(X\)` in the Bernoulli distribution are 0 and 1. 
+
+`$$E(X)=p$$`
+`$$V(X)=(p)(1-p)$$`
+]
+
+--
+
+.pull-right[
+###  Back to the Titanic
+
+.center[![titanic](images/titanic.jpg)]
+
+- We can think of each passenger on the Titanic as a single Bernoulli trial where the probability of success is given by `\(p_i\)`.
+- We don't observe the `\(p_i\)` values for individual passengers. We only observe the "count"" of successes - 0 or 1. 
+- How can we attempt to recover predicted values of `\(p_i\)` that are related to our independent variables? 
+]
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/rachel-ferriman-0_2sDFbiBp8-unsplash.jpg)
+background-size: cover
+
+name: lpm
+
+# Linear Probability Model
+
+---
+
+## The linear probability model
+
+
+--
+
+.pull-left[
+###  😉 I lied, sort of
+
+You can put a dichotomous outcome on the left-hand side of a linear model equation! R will estimate a model with a boolean variable on the left-hand side by turning that boolean variable into 0s and 1s. 
+
+Lets try this out with survival on the left hand side and fare paid on the right hand side.
+
+
+```r
+model_lpm &lt;- lm((survival=="Survived")~fare, 
+                data=titanic)
+coef(model_lpm)
+```
+
+```
+## (Intercept)        fare 
+## 0.305551559 0.002296519
+```
+]
+
+--
+
+.pull-right[
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/lpm_plot-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## The linear probability model interpreted
+
+By treating survival as a 1 and death as a 0, we are implicitly modeling the probability of surviving as a function of fare:
+
+`$$\hat{p}_i=0.3059+0.0023(fare_i)$$`
+
+--
+
+We would interpret the intercept and slope as follows:
+
+--
+
+- The model predicts that individuals who paid no fare had a 30.59% probability of surviving the Titanic. 
+
+--
+
+- The model predicts that each additional pound paid in fare is associated with an increase of 0.23% in the probability of surviving the Titanic. 
+
+--
+
+The linear probability model has two major flaws:
+
+--
+
+.pull-left[
+### 👮 IID Violation
+
+The outcome variable is distributed as a bernoulli variable with a variance equal to `\((p_i)(1-p_i)\)`. This will vary by observatrion and thus we have **heteroscedasticity**.
+]
+
+--
+
+.pull-right[
+### 😕 Nonsense values
+The linear probability model can produce predicted values that lie outside the range from 0 to 1. These are nonsensical values for a probability to take, which suggests that we aren't using a very good model.
+]
+
+---
+
+## Using GLS to fix heteroscedasticity
+
+Remember that Generalize Least Squares (GLS) applies a weighting matrix to model estimation to account for autocorrelation or heteroscedasticity. In the case of heteroscedasticity, the solution is to use the inverse of the variance for each observation as weights. 
+
+--
+
+Since we know that the variance is given by `\((p_i)(1-p_i)\)`, we can use the predicted values from an OLS regression model to derive weights:  
+
+
+```r
+p_predicted &lt;- model_lpm$fitted.values
+p_predicted[p_predicted&gt;0.99] &lt;- 0.99
+w &lt;- 1/(p_predicted*(1-p_predicted))
+model_fgls &lt;- update(model_lpm, weights=w)
+cbind(coef(model_lpm),coef(model_fgls))
+```
+
+```
+##                    [,1]        [,2]
+## (Intercept) 0.305551559 0.324832554
+## fare        0.002296519 0.001457149
+```
+
+Because we are using an estimate to generate the weights, this method is called **feasible generalized least squares** (FGLS) estimation.
+
+---
+
+## Iterating to perfection
+
+FGLS can be improved by iterating it multiple times until the results stop varying. At this point, we have performed **iteratively reweighted least squares** (IRLS) estimation which should correct for heteroscedasticity. Lets try iterating 8 times to see if that stabilizes the result.
+
+
+```r
+model_last &lt;- model_lpm
+coefs &lt;- coef(model_lpm)
+for(i in 1:8) {
+  p_predicted &lt;- model_last$fitted.values
+  p_predicted[p_predicted&gt;=1] &lt;- max(p_predicted[p_predicted&lt;1])
+  w &lt;- 1/(p_predicted*(1-p_predicted))
+  model_last &lt;- update(model_last, weights=w)
+  coefs &lt;- cbind(coefs,coef(model_last))
+}
+round(coefs, 4)
+```
+
+```
+##              coefs                                                        
+## (Intercept) 0.3056 0.3126 0.3071 0.3096 0.3082 0.3089 0.3085 0.3087 0.3086
+## fare        0.0023 0.0019 0.0021 0.0020 0.0021 0.0020 0.0020 0.0020 0.0020
+```
+
+We reached convergence down to the fourth decimal place by the eighth iteration.
+
+???
+
+I technically only "sort of" solved for heteroscedasticity in this model because I had to initially fudge my predicted values to get them in the range of 0 to 1 and it turns out the results are highly dependent on how that fudge is done.
+
+---
+
+##  Predicted values still oustide the range
+
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/lpm_plot2-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+???
+## Should you use the LPM?
+
+- **No!**
+- While heteroscedasticity can theoretically be corrected, the range problem cannot be corrected. Furthermore, the range problem may lead to difficulty in estimating IRLS because of predicted probabilities below zero or above one. 
+- The LPM is a poor model because it doesn't properly model the outcome which *must* be restricted to the range between zero and one. 
+
+---
+
+## The logit transformation
+
+The LPM is bad but hints at the solution: we need a model that transforms probabilities so that the predicted probabilities always remains between 0 and 1. 
+
+--
+
+The **logit** transformation will do this for us. The logit is the log-odds of success. It can be calculated as:
+
+`$$logit(p)=\log(\frac{p}{1-p})$$`
+
+--
+
+- The part inside the log function is the **odds** of success, which is just the ratio of the probability of success to the probability of failure.
+
+--
+
+- Probabilities must lie between 0 and 1, but the odds lies between 0 and `\(\infty\)`. If we log the odds then the resulting number will lie between `\(-\infty\)` and `\(\infty\)`.
+
+--
+
+- For any real value of the logit `\(g\)`, you can compute the probability by reversing the formula:
+
+`$$p=\frac{e^g}{1+e^g}$$`
+
+---
+
+## The logistic curve
+
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/logit_plot-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Using the logit transformation
+
+If we predict the logit of the probability of survival rather than the probability of survival, then all of the predicted probabilities will be between zero and one when reverse-transformed.
+
+`$$\log(\frac{p_i}{1-p_i})=\beta_0+\beta_1(fare_i)$$`
+
+--
+
+### The Catch
+
+We cannot apply this transformation because we don't actually have the `\(p_i\)` values to directly transform. All we have are the 1 and 0 values and we can't logit transform these values.
+
+We need a new kind of model and a new means of estimation. We need...
+
+--
+
+### Generalized Linear Models
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/jj-ying-PDxYfXVlK2M-unsplash.jpg)
+background-size: cover
+
+name: glm
+
+# Generalized Linear Model
+
+---
+
+## Linear model as data-generating process
+
+Lets return to this particular set up of the linear model:
+
+`$$y_i=\hat{y}_i+\epsilon_i$$`
+`$$\hat{y_i}=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$`
+
+--
+
+There are several key concepts to understand here:
+
+--
+
+- The actual outcome `\(y_i\)` is treated as a combination of a structural part `\((\hat{y}_i)\)` and a stochastic part `\((\epsilon_i)\)`.
+
+--
+
+- The structural part is predicted by a linear relationship of the independent variables to the dependent variable. 
+
+--
+
+- The stochastic part comes from independent draws from some identical distribution.
+
+---
+
+##  Reformulating the Data-Generating Process
+
+Lets assume that the error terms `\(\epsilon_i\)` are drawn from a normal distribution with some standard deviation `\(\sigma\)`:
+
+`$$\epsilon_i \sim N(0,\sigma)$$`
+
+--
+
+We can then rethink the data-generation process for `\(y_i\)` as reaching into a distribution:
+
+`$$y_i \sim N(\hat{y}_i,\sigma)$$`
+
+--
+
+To get the value of `\(y_i\)` for any observation we reach into a normal distribution that is centered on the predicted value, but that always has the same standard deviation. The predicted value is given by a linear combination of the independent variables: 
+
+`$$\hat{y_i}=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$`
+
+---
+
+##  GLM: link function and error distribution
+
+We now have the two basic components of a Generalized Linear Model (GLM):
+
+`$$y_i \sim N(\hat{y}_i,\sigma)$$`
+`$$\hat{y_i}=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$`
+
+--
+
+.pull-left[
+
+### Error distribution
+
+`$$y_i \sim N(\hat{y}_i,\sigma)$$`
+
+The **error distribution** defines how the distribution of the dependent variable is produced. 
+
+* The error distribution in this case is normal, or (to be fancy) **gaussian**.
+]
+
+--
+
+.pull-right[
+### Link function
+
+`$$\hat{y_i}=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$`
+
+The **link function** defines how the key parameter of the error distribution (in this case, the center at `\(\hat{y_i}\)`) is related to the independent variables. 
+
+* In this case, the link function is a direct linear relationship. In GLM-speak, this is called the **identity** link.
+]
+
+---
+
+##  Try out GLM
+
+First the good old `lm` command using OLS regression to estimate:
+
+```r
+summary(lm(Violent~MedianAge, data=crimes))$coef
+```
+
+```
+##              Estimate Std. Error   t value    Pr(&gt;|t|)
+## (Intercept) 1343.9360  434.20828  3.095141 0.003248259
+## MedianAge    -25.5795   11.55514 -2.213690 0.031535942
+```
+
+--
+
+The `glm` command with the `family` option will allow you to run a model and specify the error distribution and link function.
+
+--
+
+
+```r
+summary(glm(Violent~MedianAge, data=crimes, family=gaussian(link=identity)))$coef
+```
+
+```
+##              Estimate Std. Error   t value    Pr(&gt;|t|)
+## (Intercept) 1343.9360  434.20828  3.095141 0.003248259
+## MedianAge    -25.5795   11.55514 -2.213690 0.031535942
+```
+
+The results are identical. We can use a GLM with a gaussian error term and an identity link to estimate a standard linear model.
+
+---
+
+##  Things to consider about the GLM
+
+--
+
+- Even though the results were identical, the `glm` command is using a different technique called maximum likelihood estimation (MLE) to estimate coefficients. We will discuss how this works later.
+
+--
+
+- Because the estimation technique is different for `glm`, the summary statistics are different. The `glm` command, for example, will not give you `\(R^2\)` by default. 
+
+--
+
+- Even though our GLM formulation assumed a normal distribution to the errors, this is not necessary in the case of OLS regression to get unbiased and efficient estimates. 
+
+--
+
+- The GLM approach provides no real improvement over linear models estimated by OLS regression, but by varying up the error distribution and link function the GLM can work for the case of dichotomous dependent variables, as well as other categorical outcomes. 
+
+---
+
+## Creating our own disaster
+
+.left-column[
+.center[![](images/shirley-temple.jpg)]
+]
+
+.right-colum[
+In order to see how the GLM can be used to predict dichotomous outcomes, it will be useful to play god and create our own transatlantic ocean liner disaster. 
+
+We have 10000 brave souls on the **Good Ship Lollipop** which will sink on its maiden voyage due to ineptitude by the crew who were too busy eating candy to keep a look out for icebergs. We know the gender and the fare paid for all passengers.
+
+
+```r
+good_ship &lt;- data.frame(gender=sample(c("Male","Female"),10000,replace=TRUE),
+                        fare=rgamma(10000, 1,0.01))
+summary(good_ship)
+```
+
+```
+##     gender          fare         
+##  Female:4995   Min.   :  0.0098  
+##  Male  :5005   1st Qu.: 28.7081  
+##                Median : 70.0401  
+##                Mean   : 99.8416  
+##                3rd Qu.:137.8878  
+##                Max.   :928.8174
+```
+]
+
+---
+
+## Determining who lives and dies
+
+--
+
+.pull-left[
+### The link function
+
+Since we are playing god, we can define the relationship between survival and the variables of fare and gender.
+
+To avoid problems of nonsensical probabilities, lets create a linear function of the log-odds of survival.
+
+`$$\log(\frac{p_i}{1-p_i})=0.12-0.6(male_i)+0.007(fare_i)$$`
+
+
+```r
+good_ship$log_odds &lt;- 0.12-
+  0.6*(good_ship$gender=="Male")+
+  0.007*good_ship$fare
+good_ship$odds &lt;- exp(good_ship$log_odds)
+good_ship$probs &lt;- good_ship$odds/
+  (1+good_ship$odds)
+```
+]
+
+
+--
+
+.pull-right[
+### The error distribution
+
+Each passenger gets a single bernoulli trial to see whether they live or die.
+
+
+```r
+good_ship$survived &lt;- rbinom(10000, 1, 
+                             good_ship$probs)
+```
+
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/play-god-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+##  The logit (logistic regression) model
+
+.pull-left[
+### The link function
+
+The survival variable `\(y_i\)` is just a set of ones and zeros that can thought of as being produced by a **binomial distribution** like so:
+
+`$$y_i \sim binom(1, p_i)$$`
+
+### The error distribution
+
+The key parameter in this distribution is `\(p_i\)` which we transform with a **logit link**, so that the independent variables are linearly related to the log of the odds of survival:
+
+`$$logit(p_i)=\log(\frac{p_i}{1-p_i})=\beta_0+\beta_1(male_i)+\beta_2(fare_i)$$`
+]
+
+--
+
+.pull-right[
+
+### Estimate in R
+
+use `binomial` with a `logit` link in the `family` argument.
+
+
+```r
+model.glm &lt;- glm(survived~gender+fare, 
+                 data=good_ship, 
+*                family=binomial(link=logit))
+round(summary(model.glm)$coef, 4)
+```
+
+```
+##             Estimate Std. Error  z value Pr(&gt;|z|)
+## (Intercept)   0.1239     0.0380   3.2624   0.0011
+## genderMale   -0.5225     0.0429 -12.1776   0.0000
+## fare          0.0068     0.0003  23.3633   0.0000
+```
+
+The results are pretty close to what we specified. They differ a little due to sampling variability when we draw from the binomial.
+
+But where did the estimates come from?
+]
+
+---
+
+## How does the GLM estimate model parameters?
+
+It uses **Maximum Likelihood Estimation (MLE)**!
+
+--
+
+### The logic of MLE
+
+--
+
+1. We have some **data-generating process** that produces a set of observed data (e.g. `\(y_1,y_2,\ldots,y_n\)`) and is governed by some set of parameters `\(\theta\)` (e.g. `\(\beta_0,\beta_1,\beta_2\)`).
+
+--
+
+2. We ask what is the likelihood, given the process, that we observe the actual data that we have? This leads to the **likelihood function**, `\(L(\theta)\)`, which gives the likelihood of the data as a function of the set of parameters. 
+
+--
+
+3. We have the data and want to estimate the parameters. Therefore, we choose a `\(\hat{\theta}\)` that maximizes `\(L(\theta)\)`.
+
+--
+
+In practice, it is generally easier to find the maximum of the log-likelihood function, `\(\log(L(\theta))\)`. The value of `\(\hat{\theta}\)` that maximimizes the log-likelihood function will always maximize the likelihood function as well. 
+
+---
+
+##  A Simple Example: Flipping Coins
+
+Lets say we flip a coin 50 times and observe 20 heads. 
+
+--
+
+* The values of 50 trials and 20 heads are the **data**. 
+
+--
+
+* The data-generating process is governed by the binomial distribution where the key **parameter** is `\(p\)`, the probability of a heads on each trial. 
+
+--
+
+.pull-left[
+### The likelihood function
+
+Because we know that the data-generating process is a binomial distribution, we also know that the likelihood function is for a given `\(p\)`:
+
+`$$L(p)={50 \choose 20}p^{20}(1-p)^{30}$$`
+
+This formula is identical to the binomial formula except that it is now a function of `\(p\)` rather than `\(n\)` and `\(k\)`.
+]
+
+--
+
+.pull-right[
+
+```r
+p &lt;- seq(from=0,to=1,by=.01)
+likelihood &lt;- choose(50,20)*p^20*(1-p)^30
+ggplot(data.frame(p,likelihood), 
+       aes(x=p, y=likelihood))+
+  geom_line()
+```
+
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/plotmlecoins-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+]
+
+---
+
+##  Finding the maximum likelihood
+
+
+--
+
+.pull-left[
+First, transform the likelihood function into the log-likelihood function:
+
+$$
+`\begin{aligned}
+\log L(p)&amp;=\log({50 \choose 20}p^{20}(1-p)^{30})\\
+\log L(p)&amp;=\log {50 \choose 20} + 20 \log(p) + 30\log(1-p)\\
+\end{aligned}`
+$$
+
+Then, take the derivative:
+
+`$$\frac{\partial \log L(p)}{\partial p}=\frac{20}{p}-\frac{30}{1-p}$$`
+]
+
+--
+
+.pull-right[
+
+Set this equal to zero and solve for `\(p\)` to find the maximum.
+
+$$
+`\begin{aligned}
+0&amp;=\frac{20}{p}-\frac{30}{1-p}\\
+\frac{30}{1-p}&amp;=\frac{20}{p}\\
+30p&amp;=20(1-p)\\
+30p&amp;=20-20p\\
+50p&amp;=20\\
+p&amp;=20/50=0.4
+\end{aligned}`
+$$
+
+
+]
+
+???
+
+Congratulations, we have proved the obvious! The most likely value of `\(p\)` for 50 trials with 20 successes is the proportion of successes, 20/50 or 40%. In general, we can show that the MLE of `\(p\)` for any `\(k\)` successes in `\(n\)` trials is `\(k/n\)`.
+
+Technically we should also show that the second derivative is negative not positive here to demonstrate its a maximum and not a minimum, but we won't go through that here.
+
+
+---
+
+##  MLE for the logit model
+
+--
+
+- The data are the actual ones and zeros of `\(y_i\)` for the dependent variable and the matrix `\(X\)` of independent variables.
+
+--
+
+- The parameters of interest are the regression slopes and intercept `\((\beta)\)` of the model predicting the log-odds of a success, which can be converted into the probability of success for each observation, `\(p_i\)`.
+
+--
+
+- We want to choose the `\(\beta\)` values that produce `\(p_i\)` values that maximize the likelihood of actually observing the ones and zero for `\(y_i\)` that we have. 
+
+--
+
+- There is no closed-form solution for calculating the parameters of a GLM via MLE. Iterative techniques have to be used instead. 
+
+--
+
+### ⚠️ heavy math ahead
+
+
+---
+
+## Likelihood formula for logit model
+
+We can write the predicted log-odds of an observation by vector multiplication as `\(\mathbf{x_i'\beta}\)`. This log odds can be converted into a probability as:
+
+`$$\hat{p}_i=F(\mathbf{x_i'\beta})=\frac{e^{\mathbf{x_i'\beta}}}{1+e^{\mathbf{x_i'\beta}}}$$`
+
+--
+
+The likelihood of a particular observation `\(i\)` being equal to `\(y_i\)` (1 or 0) is given by the bernoulli distribution:
+
+`$$L_i=\hat{p}_i^{y_i}(1-\hat{p}_i)^{1-y_i}=F(\mathbf{x_i'\beta})^{y_i}(1-F(\mathbf{x_i'\beta}))^{1-y_i}$$`
+
+--
+
+The log-likelihood is equal to:
+
+`$$\log L_i=y_i\log F(\mathbf{x_i'\beta})+(1-y_i) \log (1-F(\mathbf{x_i'\beta}))$$`
+
+--
+
+The log-likelihood for all the observations is just the sum of these individual log-likelihoods:
+
+`$$\log L= \sum_{i=1}^n \log L_i= \sum_{i=1}^n y_i\log F(\mathbf{x_i'\beta})+(1-y_i) \log (1-F(\mathbf{x_i'\beta}))$$`
+
+---
+
+## Maximize this!
+
+`$$\log L = \sum_{i=1}^n y_i\log F(\mathbf{x_i'\beta})+(1-y_i) \log (1-F(\mathbf{x_i'\beta}))$$`
+
+--
+
+- We know `\(y_i\)` and `\(x_i\)`. We just need to choose the `\(\beta\)` vector that maximizes the log-likelihood. 
+
+--
+
+- There is no closed-form solution to this problem. It can only be solved by iterative methods where we start with initial estimates and then iteratively adjust them until they no longer change. 
+
+--
+
+- There are multiple algorithms that can do this, but the simplest (and the one R uses in `glm` by default) is a form of iteratively-reweighted least squares (IRLS). 
+
+---
+
+## The IRLS Technique
+
+The IRLS technique calculates the next iteration `\((t+1)\)` of `\(\beta\)` values from the current iteration `\((t)\)` as:
+ 
+`$$\beta^{(t+1)}=\mathbf{(X'W^{(t)}X)^{-1}X'W^{(t)}z^{(t)}}$$`
+
+--
+
+Like, WLS this technique uses a weighting matrix `\(\mathbf{W}\)`. This weighting matrix only has elements along the diagonal that are equal to:
+
+`$$w_i=\hat{p}_i(1-\hat{p}_i)$$`
+
+Where `\(\hat{p}_i\)` is the estimated probabilities from iteration `\((t)\)`. 
+
+--
+
+The `\(\mathbf{z}\)` vector is a transformed vector of the dependent variable where each element is given by:
+
+`$$z_i=\mathbf{x_i'\beta}+\frac{y_i-\hat{p}_i}{\hat{p}_i(1-\hat{p}_i)}$$`
+
+--
+
+Lets try this estimation procedure out by hand on the Titanic data by predicting survival from fare.
+
+---
+
+##  Initialize values assuming null model
+
+Lets begin by setting up the X matrix and y values.
+
+
+```r
+X &lt;- as.matrix(cbind(rep(1,nrow(titanic)), titanic[,"fare"]))
+y &lt;- as.vector(as.numeric(titanic$survival=="Survived"))
+```
+
+--
+
+I calculate the average log odds of survival by the survival proportion and use this for my initial model.
+
+```r
+lodds &lt;- log(mean(y)/(1-mean(y)))
+beta &lt;- c(lodds, 0) #the intercept is the log-odds and the slope is zero in the null model
+pred_lodds &lt;- X%*%beta
+p &lt;- exp(pred_lodds)/(1+exp(pred_lodds))
+```
+
+--
+
+The `\(p\)` vector repeats the same probability. I can use this to calculate the log-likelihood of the null model:
+
+```r
+logL &lt;- sum(y*log(p)+(1-y)*log(1-p))
+logL
+```
+
+```
+## [1] -870.5122
+```
+
+---
+
+##  Iteratively estimate `\(\beta\)`
+
+
+```r
+beta.prev &lt;- beta
+for(i in 1:6) {
+  w &lt;- p*(1-p)
+  z &lt;- pred_lodds + (y-p)/w
+  W &lt;- matrix(0, nrow(X), nrow(X))
+  diag(W) &lt;- w
+  beta &lt;- solve(t(X)%*%W%*%X)%*%(t(X)%*%W%*%z)
+  beta.prev &lt;- cbind(beta.prev, beta)
+  pred_lodds &lt;- X%*%beta
+  p &lt;- exp(pred_lodds)/(1+exp(pred_lodds))
+  logL &lt;- c(logL, sum(y*log(p)+(1-y)*log(1-p)))
+}
+```
+
+--
+
+
+```r
+round(beta.prev,5)
+```
+
+```
+##      beta.prev                                                      
+## [1,]  -0.48119 -0.80491 -0.87722 -0.88395 -0.88402 -0.88402 -0.88402
+## [2,]   0.00000  0.00973  0.01219  0.01247  0.01247  0.01247  0.01247
+```
+
+```r
+logL
+```
+
+```
+## [1] -870.5122 -828.9650 -827.4084 -827.3924 -827.3924 -827.3924 -827.3924
+```
+
+???
+
+Convergence happened quickly.
+
+---
+
+## `glm` command does the same for you
+
+
+```r
+model.survival &lt;- glm((survival=="Survived")~fare, data=titanic, 
+                      family=binomial(logit),
+                      control=glm.control(trace=TRUE))
+```
+
+```
+## Deviance = 1658.387 Iterations - 1
+## Deviance = 1654.791 Iterations - 2
+## Deviance = 1654.785 Iterations - 3
+## Deviance = 1654.785 Iterations - 4
+```
+
+```r
+coef(model.survival)
+```
+
+```
+## (Intercept)        fare 
+## -0.88402354  0.01247006
+```
+
+```r
+beta.prev[,5]
+```
+
+```
+## [1] -0.88402353  0.01247006
+```
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/robert-anasch-ZFYg5jTvB4A-unsplash.jpg)
+background-size: cover
+
+name: logit-model
+
+# The Logit Model
+
+---
+
+## The logit (logistic regression) model
+
+.pull-left[
+The logit model is used to predict dichotomous outcomes. It is a specific kind of GLM with a binomial error distribution and a logit link. Formally:
+
+`$$y_i \sim binom(1, \hat{p}_i)$$`
+
+`$$log(\frac{\hat{p}_i}{1-\hat{p}_i}) = \beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$`
+
+- We are predicting the log-odds of "success" as a linear function of the independent variables.
+- In terms of the interpretation of results, we have to consider both the log transformation and the use of odds. The key concept is the **odds ratio**.
+]
+
+--
+
+.pull-right[
+We can fit the logit model with the `glm` command:
+
+
+```r
+model.fare &lt;- glm((survival=="Survived")~fare, 
+                 data=titanic, 
+                 family=binomial(link=logit))
+round(summary(model.fare)$coef, 3)
+```
+
+```
+##             Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)   -0.884      0.076 -11.707        0
+## fare           0.012      0.002   7.770        0
+```
+
+- We specify the link and error distribution in the `family` argument. 
+- I can just put in `survival` directly as the dependent variable in my model but it will then predict whichever is the second category as my "success" category. Since I want to be sure to predict survival, I explicitly use a boolean statement.
+]
+
+---
+
+## Survival by gender, two ways
+
+--
+
+.pull-left[
+### Two-way table
+
+
+```r
+table(titanic$sex,titanic$survival)
+```
+
+```
+##         
+##          Survived Died
+##   Female      339  127
+##   Male        161  682
+```
+
+
+```r
+161/682
+```
+
+```
+## [1] 0.2360704
+```
+
+```r
+339*682/(161*127)
+```
+
+```
+## [1] 11.30718
+```
+0.24 men survived for every one that died. The odds of survival for women is 11.3 times higher. ]
+
+
+--
+
+.pull-right[
+### Logit model
+
+```r
+model.gender &lt;- glm((survival=="Survived")~
+                 (sex=="Female"), 
+            data=titanic, 
+            family=binomial(logit))
+round(coef(model.gender), 4)
+```
+
+```
+##         (Intercept) sex == "Female"TRUE 
+##             -1.4436              2.4254
+```
+
+So we have the following model:
+
+`$$log(\frac{\hat{p}_i}{1-\hat{p}_i}) = -1.444+2.425(female_i)$$`
+
+Are these approaches the same?
+]
+
+---
+
+## From log-odds to odds
+
+`$$log(\frac{\hat{p}_i}{1-\hat{p}_i}) = -1.444+2.425(female_i)$$`
+
+The dependent variable is literally measured in the log-odds of survival, but this is not very intuitive. We can convert directly to odds by exponentiating both sides:
+
+--
+
+`$$e^{log(\frac{\hat{p}_i}{1-\hat{p}_i})} = e^{-1.444+2.425(female_i)}$$`
+
+--
+
+`$$\frac{\hat{p}_i}{1-\hat{p}_i} = (e^{-1.444})(e^{2.425(female_i)})$$`
+
+--
+
+`$$\frac{\hat{p}_i}{1-\hat{p}_i} = (0.24)(11.3)^{(female_i)}$$`
+We now have a multiplicative model that describes the relationship between survival and sex. 
+
+---
+
+## Predicting odds for men and women
+
+`$$\frac{\hat{p}_i}{1-\hat{p}_i} = (0.24)(11.3)^{(female_i)}$$`
+
+What are the odds of survival for men?
+
+--
+
+`$$\frac{\hat{p}_i}{1-\hat{p}_i} = (0.24)(11.3)^{0}=(0.24)(1)=0.24$$`
+
+--
+
+What are the odds of survival for women?
+
+--
+
+`$$\frac{\hat{p}_i}{1-\hat{p}_i} = (0.24)(11.3)^{1}=(0.24)(11.3)$$`
+
+--
+
+- This model reproduces exactly the results we derived directly from the two-way table of survival by sex.
+
+--
+
+- The advantage of the linear model framework is that we can easily add in other variables, complex non-linear effects, interaction terms, etc. 
+
+---
+
+## Gender and passenger class models
+
+
+```r
+titanic$survival &lt;- relevel(titanic$survival, "Died")
+titanic$sex &lt;- relevel(titanic$sex, "Male")
+model.gender &lt;- glm(survival~sex, data=titanic, family=binomial(logit))
+model.genderclass &lt;- update(model.gender, .~.+pclass)
+model.interact &lt;- update(model.genderclass,.~.+sex*pclass)
+```
+
+I use the `relevel` function here to reset the reference category in order to simplify my model formulas. Then I run a bivariate model by gender, a model that controls for passenger class, and a model that interacts gender and passenger class. 
+
+---
+
+## Gender and passenger class models
+
+.pull-left[
+.stargazer[
+
+&lt;table cellspacing="0" align="center" style="border: none;"&gt;
+&lt;caption align="top" style="margin-bottom:0.3em;"&gt;Models predicting survival on the Titanic&lt;/caption&gt;
+&lt;tr&gt;
+&lt;th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;"&gt;&lt;b&gt;&lt;/b&gt;&lt;/th&gt;
+&lt;th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;"&gt;&lt;b&gt;Model 1&lt;/b&gt;&lt;/th&gt;
+&lt;th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;"&gt;&lt;b&gt;Model 2&lt;/b&gt;&lt;/th&gt;
+&lt;th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;"&gt;&lt;b&gt;Model 3&lt;/b&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;Intercept&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-1.44&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-0.41&lt;sup style="vertical-align: 0px;"&gt;**&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-0.66&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;(0.09)&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;(0.14)&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;(0.16)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;Female&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;2.43&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;2.52&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;3.98&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;(0.14)&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;(0.15)&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;(0.48)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;Second Class&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-0.88&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-1.10&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;(0.20)&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;(0.27)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;Third Class&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-1.72&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-1.06&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;(0.17)&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;(0.20)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;Female x Second Class&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-0.16&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;(0.61)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;Female x Third Class&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-2.30&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;(0.52)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="border-top: 1px solid black;"&gt;Log Likelihood&lt;/td&gt;
+&lt;td style="border-top: 1px solid black;"&gt;-684.05&lt;/td&gt;
+&lt;td style="border-top: 1px solid black;"&gt;-628.61&lt;/td&gt;
+&lt;td style="border-top: 1px solid black;"&gt;-605.02&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="border-bottom: 2px solid black;"&gt;Num. obs.&lt;/td&gt;
+&lt;td style="border-bottom: 2px solid black;"&gt;1309&lt;/td&gt;
+&lt;td style="border-bottom: 2px solid black;"&gt;1309&lt;/td&gt;
+&lt;td style="border-bottom: 2px solid black;"&gt;1309&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;" colspan="5"&gt;&lt;span style="font-size:0.8em"&gt;&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;p &amp;lt; 0.001; &lt;sup style="vertical-align: 0px;"&gt;**&lt;/sup&gt;p &amp;lt; 0.01; &lt;sup style="vertical-align: 0px;"&gt;*&lt;/sup&gt;p &amp;lt; 0.05&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+]
+]
+
+.pull-right[
+- Holding constant passenger class, women were 12.4 `\((e^{2.52})\)` times more likely to survive than men. 
+- Holding constant gender, second class passengers were 59% `\((1-e^{-.88})\)` less likely than first class passengers to survive and third class passengers were 82% `\((1-e^{-1.72})\)` less likely than first class passengers to survive.
+- Women in first class were 53.5 `\((e^{3.98})\)` times (!) more likely to survive than first class men. Among second class passengers, the ratio in survival by gender was slightly smaller at 45.6 `\((e^{3.98-.16})\)`, but in third class it was much smaller at 5.4 `\((e^{3.98-2.3})\)`.
+- Men in second and third class were both about 65-67% `\((1-e^{-1.06})\)` or `\((1-e^{-1.1})\)` less likely to survive than first class men.
+]
+
+???
+
+- Note that the model reports the log-likelihood for the best-fitting model from MLE.
+
+---
+
+## Interpreting quantitative independent variables 
+
+`$$log(\frac{\hat{p}_i}{1-\hat{p}_i}) = -0.882+0.012(fare_i)$$`
+
+How do we interpret?
+
+--
+
+Lets exponentiate both sides again: 
+
+`$$\frac{\hat{p}_i}{1-\hat{p}_i} = (e^{-0.882})(e^{0.012(fare_i)})$$`
+
+`$$\frac{\hat{p}_i}{1-\hat{p}_i} = (0.414)(1.012)^{fare_i}$$`
+
+--
+
+How do the odds of survival compare for someone who paid no fare, one pound, and two pounds?
+
+--
+
+$$
+`\begin{aligned}
+\frac{\hat{p}_i}{1-\hat{p}_i}&amp; = (0.414)(1.012)^{0})=(0.414)\\
+&amp; = (0.414)(1.012)^{1}=(0.414)(1.012)\\
+&amp; = (0.414)(1.012)^{2}=(0.414)(1.012)(1.012)\\
+\end{aligned}`
+$$
+
+Each one pound increase in fare is associated with a 1.2% increase in the odds of survival. 
+
+---
+
+##  Predicted probabilities from logit model
+
+.pull-left[
+Lets use the model to predict odds and probabilities for the entire range of fare:
+
+```r
+lodds &lt;- predict(model.fare, 
+                 data.frame(fare=0:512))
+odds &lt;- exp(lodds)
+prob &lt;- odds/(1+odds)
+```
+]
+
+.pull-right[
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/lpm_plot3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## A full example from Add Health
+
+
+```r
+model.full &lt;- glm(smoker~grade+sex*honorsociety+alcoholuse+sex, 
+                  data=popularity, family=binomial)
+round(summary(model.full)$coef,3)
+```
+
+```
+##                           Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)                 -4.151      0.289 -14.388    0.000
+## grade                        0.218      0.029   7.595    0.000
+## sex Male                    -0.070      0.092  -0.758    0.448
+## honorsocietyTRUE            -1.022      0.266  -3.843    0.000
+## alcoholuseDrinker            1.565      0.096  16.229    0.000
+## sex Male:honorsocietyTRUE    0.464      0.381   1.219    0.223
+```
+
+```r
+round(exp(model.full$coef),3)
+```
+
+```
+##               (Intercept)                     grade                  sex Male 
+##                     0.016                     1.243                     0.933 
+##          honorsocietyTRUE         alcoholuseDrinker sex Male:honorsocietyTRUE 
+##                     0.360                     4.781                     1.591
+```
+
+---
+
+## Marginal effects in logit models
+
+--
+ 
+- In a logit model, the slope `\((\beta)\)` gives the marginal effect of `\(x\)` on the **log-odds** of success, not the **probability** of success.
+
+--
+
+- Many people prefer to think of the marginal effects of logit models in terms of the probability and so when people talk about the marginal effect of an independent variable in a logit regression model they typically mean the marginal effect of `\(x\)` on the probability.
+
+--
+
+- Because of the logistic curve, the marginal effect on the probability is not constant, but depends on what value of `\(x\)` you are currently at. As your predicted probability approaches one, the marginal effects will get smaller and smaller.  
+
+--
+
+
+???
+
+I am not a big fan of this approach. I think it reflects an implicit bias toward thinking in probability rather than odds which throws away one of the important features of logit models. But its still worthwhile to know.
+
+---
+
+## Different marginal effects on probability
+
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/plot_marginal-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Estimating marginal effects on probability
+
+--
+
+.pull-left[
+For a given vector of values of the independent variables given by `\(\mathbf{x}\)` and a vector of regression coefficients `\(\mathbf{\beta}\)`, marginal effects can be estimated by first calculating the expected probability `\(\hat{p}\)`:
+
+`$$\hat{p}=\frac{e^\mathbf{x'\beta}}{1+e^{\mathbf{x'\beta}}}$$`
+The marginal effect of the `\(k\)`th independent variable in the model is then given by:
+
+`$$\hat{p}(1-\hat{p})\beta_k$$`
+]
+
+--
+
+.pull-right[
+
+
+```r
+model &lt;- glm(survival~fare+age, 
+             data=titanic, 
+             family=binomial(logit))
+#get predicted probabilty at mean fare and age
+df &lt;- data.frame(fare=mean(titanic$fare),
+                 age=mean(titanic$age))
+lodds &lt;- predict(model, df)
+p &lt;- exp(lodds)/(1+exp(lodds))
+#get marginal effects
+p*(1-p)*coef(model)[c("fare","age")]
+```
+
+```
+##         fare          age 
+##  0.003197334 -0.003233789
+```
+
+- The marginal effect of a one pound increase in fare **when fare and age are at the mean** is a 0.32% increase in the probability of survival. 
+- The marginal effect of a one year increase in age **when fare and age are at the mean** is a 0.32% decrease in the probability of survival.
+]
+
+---
+
+## Marginal effects for a categorical variable
+
+The marginal effects for categorical variables are different. Typically you will estimate the difference in probability of survival across the categories when at the mean on all other variables.
+
+
+```r
+model &lt;- glm(survival~fare+age+sex, data=titanic, family=binomial(logit))
+df &lt;- data.frame(fare=rep(mean(titanic$fare),2),
+                 age =rep(mean(titanic$age),2),
+                 sex=c("Male","Female"))
+lodds &lt;- predict(model, df)
+p &lt;- exp(lodds)/(1+exp(lodds))
+p
+```
+
+```
+##         1         2 
+## 0.1974925 0.7158298
+```
+
+```r
+diff(p)
+```
+
+```
+##         2 
+## 0.5183373
+```
+
+When at the mean of age and fare, women's probability of survival is 52 percentage points higher than men's.
+
+---
+
+## Using `mfx` package for marginal effects
+
+Marginal effects are easy to calculate in the `mfx` package:
+
+
+```r
+library(mfx)
+```
+
+```r
+logitmfx(survival~fare+age+sex, data=titanic)
+```
+
+```
+## Call:
+## logitmfx(formula = survival ~ fare + age + sex, data = titanic)
+## 
+## Marginal Effects:
+##                 dF/dx   Std. Err.       z     P&gt;|z|    
+## fare       0.00231089  0.00039964  5.7824 7.365e-09 ***
+## age       -0.00208935  0.00115590 -1.8075   0.07068 .  
+## sexFemale  0.51833735  0.02577096 20.1132 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## dF/dx is for discrete change for the following variables:
+## 
+## [1] "sexFemale"
+```
+
+---
+
+## An alternative link: probit
+
+.pull-left[
+- The probit transforms the probability by calculating the inverse of the cumulative normal distribution, `\(\Phi^{-1}(p)\)`. 
+- Intuitively, you are converting the probabilities to scores that follow a normal distribution.
+- A probit model can be estimated with the `glm` command by using `binomial(probit)` as the family argument rather than `binomial(logit)`.
+- While the actual numbers will be different from a logit model, the probit model will generally produce very similar results in terms of the strength of the relationship and the predicted values at the cost of being more difficult to interpret. 
+]
+
+.pull-right[
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/probit-1.png" width="504" style="display: block; margin: auto;" /&gt;
+A probability of 0.84 would correspond to a probit score of one.
+]
+
+---
+
+##  Predicted values from logit and probit models
+
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/probit_plot-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Assessing model fit with deviance
+
+There is no `\(R^2\)` value for a generalized linear model. A model predicting categorical outcomes does not have residuals in the same sense as the linear model.
+
+--
+
+Most measures of model fit for GLMs rely up on the **deviance** of the model, or `\(G^2\)`. The deviance is simply the log-likelihood of the model multiplied by negative 2:
+
+`$$G^2=-2(logL)$$`
+
+The smaller the deviance, the better the fit of the model, because the likelihood is getting higher. 
+
+Typically we are concerned with the deviance of three conceptual models:
+
+--
+
+- The deviance of the null model, `\(G^2_0\)` where we assign each observation the same probability `\(p_i\)`.
+
+--
+
+- The deviance of the saturated model where the number of predictors is equal to the number of cases. This model would fit the data perfectly and therefore has a likelihood of one and a deviance of zero. 
+
+--
+
+- The deviance of the current model `\(G^2\)` that we are currently fitting with `\(p\)` independent variables as predictors.
+
+---
+
+## Two approachdes
+
+--
+
+.pull-left[
+### Pseudo `\(R^2\)`
+We can calculate a measure that is similar to `\(R^2\)` which measures the proportion of deviance from the null model that is accounted for in the current model. This measure is also called **McFadden's D**.
+
+`$$D=\frac{G^2_0-G^2}{G^2_0}$$`
+
+
+```r
+model.g &lt;- glm(survival~sex, data=titanic, 
+                    family=binomial)
+(model.g$null.deviance-model.g$deviance)/
+  model.g$null.deviance
+```
+
+```
+## [1] 0.2141965
+```
+
+Adding age as a predictor reduced the deviance of the null model by 21.4%. 
+]
+
+--
+
+.pull-right[
+### Likelihood Ratio Test
+The Likelihood Ratio Test (LRT) is the analog to the F-test for GLMs. The test statistic for the LRT is the reduction in deviance in the more complex model. Assuming the null hypothesis that all of the additional terms in the second model have no predictive power, this observed difference should come from a `\(\chi^2\)` distribution with degrees of freedom equal to the number of additional terms in the second model. 
+
+
+```r
+model.g$null.deviance-model.g$deviance
+```
+
+```
+## [1] 372.9213
+```
+
+```r
+1-pchisq(373,1)
+```
+
+```
+## [1] 0
+```
+
+]
+
+---
+
+## Using `anova` to do LRT
+
+We can also use the `anova` command to do an LRT test if we add in the additional argument of `test="LRT"`:
+
+
+```r
+anova(model.gender, test="LRT")
+```
+
+```
+## Analysis of Deviance Table
+## 
+## Model: binomial, link: logit
+## 
+## Response: survival
+## 
+## Terms added sequentially (first to last)
+## 
+## 
+##      Df Deviance Resid. Df Resid. Dev  Pr(&gt;Chi)    
+## NULL                  1308     1741.0              
+## sex   1   372.92      1307     1368.1 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+---
+
+## Comparing to non-null models by LRT
+
+
+```r
+model.complex &lt;- update(model.gender, .~.+pclass) 
+anova(model.gender, model.complex, test="LRT")
+```
+
+```
+## Analysis of Deviance Table
+## 
+## Model 1: survival ~ sex
+## Model 2: survival ~ sex + pclass
+##   Resid. Df Resid. Dev Df Deviance  Pr(&gt;Chi)    
+## 1      1307     1368.1                          
+## 2      1305     1257.2  2   110.88 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+---
+
+## BIC for GLMs
+
+You can also calculate BIC for generalized linear models. The general formula to compare any two GLMs by BIC is:
+
+`$$BIC=(G^2_2-G^2_1)+(p_2-p_1)\log n$$`
+The first part is the difference in deviance between the two models which measures goodness of fit and the second part is the parsimony penalty. If BIC is negative, model 2 is preferred to model 1. If BIC is positive, model 1 is preferred to model 2.
+
+If you are comparing the current model to the null model, then BIC becomes:
+
+`$$BIC'=(G^2-G^2_0)+(p)\log n$$`
+
+You can use this value to compare any two models since the difference in BIC' between any two models is equivalent to the BIC between them. 
+
+---
+
+## BIC Example
+
+Write a function for BIC compared to the null
+
+```r
+BIC.null.glm &lt;- function(model) {
+    n &lt;- length(model$resid)
+    p &lt;- length(model$coef)-1
+    return((model$deviance-model$null.deviance)+p*log(n))
+}
+```
+
+
+```r
+BIC.null.glm(model.complex)-BIC.null.glm(model.gender)
+```
+
+```
+## [1] -96.52692
+```
+
+```r
+(model.complex$deviance-model.gender$deviance)+(3-1)*log(nrow(titanic))
+```
+
+```
+## [1] -96.52692
+```
+
+Both approaches lead to the same BIC difference. We prefer the more complex model.
+
+---
+
+## Model comparison
+
+.stargazer[
+
+&lt;table cellspacing="0" align="center" style="border: none;"&gt;
+&lt;caption align="top" style="margin-bottom:0.3em;"&gt;Models predicting alcohol use, Add Health data&lt;/caption&gt;
+&lt;tr&gt;
+&lt;th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;"&gt;&lt;b&gt;&lt;/b&gt;&lt;/th&gt;
+&lt;th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;"&gt;&lt;b&gt;Model 1&lt;/b&gt;&lt;/th&gt;
+&lt;th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;"&gt;&lt;b&gt;Model 2&lt;/b&gt;&lt;/th&gt;
+&lt;th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;"&gt;&lt;b&gt;Model 3&lt;/b&gt;&lt;/th&gt;
+&lt;th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;"&gt;&lt;b&gt;Model 4&lt;/b&gt;&lt;/th&gt;
+&lt;th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;"&gt;&lt;b&gt;Model 5&lt;/b&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;intercept&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-5.197 (0.279)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-4.279 (0.319)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-4.379 (0.329)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-4.591 (0.333)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-4.249 (0.313)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;grade&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.347 (0.027)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.356 (0.027)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.366 (0.028)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.370 (0.028)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.355 (0.028)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;male&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.322 (0.083)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.244 (0.085)&lt;sup style="vertical-align: 0px;"&gt;**&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.150 (0.088)&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.173 (0.088)&lt;sup style="vertical-align: 0px;"&gt;*&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;gpa&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-0.351 (0.059)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-0.356 (0.060)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-0.402 (0.061)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-0.415 (0.058)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;honor society&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.003 (0.156)&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-0.006 (0.157)&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-0.102 (0.159)&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;band or choir&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-0.335 (0.113)&lt;sup style="vertical-align: 0px;"&gt;**&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-0.371 (0.114)&lt;sup style="vertical-align: 0px;"&gt;**&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;-0.401 (0.112)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;number of sports&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.121 (0.034)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.086 (0.035)&lt;sup style="vertical-align: 0px;"&gt;*&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;popularity&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.072 (0.011)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.075 (0.011)&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="border-top: 1px solid black;"&gt;deviance&lt;/td&gt;
+&lt;td style="border-top: 1px solid black;"&gt;3730.665&lt;/td&gt;
+&lt;td style="border-top: 1px solid black;"&gt;3692.784&lt;/td&gt;
+&lt;td style="border-top: 1px solid black;"&gt;3672.770&lt;/td&gt;
+&lt;td style="border-top: 1px solid black;"&gt;3632.695&lt;/td&gt;
+&lt;td style="border-top: 1px solid black;"&gt;3645.139&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;pseudo-R2&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.050&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.060&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.065&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.075&lt;/td&gt;
+&lt;td style="padding-right: 12px; border: none;"&gt;0.072&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="border-bottom: 2px solid black;"&gt;BIC (null)&lt;/td&gt;
+&lt;td style="border-bottom: 2px solid black;"&gt;-179.729&lt;/td&gt;
+&lt;td style="border-bottom: 2px solid black;"&gt;-200.833&lt;/td&gt;
+&lt;td style="border-bottom: 2px solid black;"&gt;-204.069&lt;/td&gt;
+&lt;td style="border-bottom: 2px solid black;"&gt;-235.755&lt;/td&gt;
+&lt;td style="border-bottom: 2px solid black;"&gt;-248.477&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="padding-right: 12px; border: none;" colspan="7"&gt;&lt;span style="font-size:0.8em"&gt;&lt;sup style="vertical-align: 0px;"&gt;***&lt;/sup&gt;p &amp;lt; 0.001; &lt;sup style="vertical-align: 0px;"&gt;**&lt;/sup&gt;p &amp;lt; 0.01; &lt;sup style="vertical-align: 0px;"&gt;*&lt;/sup&gt;p &amp;lt; 0.05&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+]
+
+---
+
+## Bayesian Model Averaging
+
+
+```r
+library(BMA)
+model.bma &lt;- bic.glm(addhealth[,c("grade","sex","pseudoGPA","honorsociety",
+                                  "bandchoir","academicclub","nsports","indegree")], 
+                     addhealth$alcoholuse, glm.family="binomial")
+summary(model.bma)
+```
+
+
+---
+
+## Separation
+
+--
+
+.pull-left[
+Separation can occur in logit models when the dichotomous outcome completely or nearly completely separates the values of an independent variable. 
+
+I have taken a subset of 100 observations of the Add Health data to show you an example of separation. For this subset, lets look at the two-way table between smoking and band/choir participation. 
+
+
+```r
+table(addhealth.samp$bandchoir, 
+      addhealth.samp$smoker)
+```
+
+```
+##        
+##         FALSE TRUE
+##   FALSE    62   11
+##   TRUE     25    0
+```
+
+In this sample, none of the band/choir participants were smokers, leading to a zero cell.
+]
+
+--
+
+.pull-right[
+The consequence of this separation is that the coefficient and standard error for the variable will "explode" into ridiculously large numbers.
+
+
+```r
+model &lt;- glm(smoker~bandchoir, 
+             data=addhealth.samp, 
+             family=binomial)
+round(summary(model)$coef, 3)
+```
+
+```
+##               Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)     -1.729      0.327  -5.285    0.000
+## bandchoirTRUE  -17.837   2150.803  -0.008    0.993
+```
+
+The very large coefficient and SE are clear signs of separation. 
+]
+
+???
+
+
+This is most likely to occur when using categorical independent variables with **sparse** data where some of the cell frequencies are so low that they may be zero when crosstabbed with the dependent variable. 
+
+---
+
+## Fixing separation
+
+In this case, the band/choir variable is dichotomous, so it is not possible to collapse categories. This model can be estimated with adjustments for separation using a **penalized likelihood** model. These types of models apply a penalty to the maximum likelihood estimation for very large coefficients. They have multiple uses but were developed originally to deal precisely with the problem of separation. 
+
+--
+
+The `logistf` package provides a penalized likelihood logistic model in R:
+
+
+```r
+library(logistf)
+logistf(smoker~bandchoir, data=addhealth.samp)
+```
+
+```
+## logistf(formula = smoker ~ bandchoir, data = addhealth.samp)
+## Model fitted by Penalized ML
+## Confidence intervals and p-values by Profile Likelihood 
+## 
+##                    coef  se(coef) lower 0.95 upper 0.95    Chisq            p
+## (Intercept)   -1.692820 0.3230586   -2.37358 -1.1037637 38.65395 5.060075e-10
+## bandchoirTRUE -2.239006 1.4916940   -7.10740 -0.1348222  4.51160 3.366574e-02
+## 
+## Likelihood ratio test=4.5116 on 1 df, p=0.03366574, n=98
+```
+
+---
+
+class: inverse, center, middle
+
+background-image: url(images/serena-repice-lentini-IgoMDFTKF-U-unsplash.jpg)
+background-size: cover
+
+name: polytomous-models
+
+# Models for Polytomous Outcomes
+
+---
+
+##  Predicting more than two categories
+
+When we try to predict more than two categories, we have to think carefully about what *kind* of categorical variable we have:
+
+--
+
+.pull-left[
+### Nominal
+
+.center[![scale](images/gender-nominal.png)] 
+
+- If the categories of the dependent variable are unordered, we can use a **multinomial logit model**
+- One category of the dependent variable will need to serve as the reference
+- Model complexity increases rapidly with the number of categories
+
+]
+
+
+--
+
+.pull-right[
+### Ordinal
+
+.center[![scale](images/pepper-scale.jpg)] 
+
+- If the categories of the dependent variable, are ordered we can use the **cumulative (ordered) logit model** or the **adjacent category logit model**
+- Model complexity also increases rapidly with the number of categories, but we can apply constraints/assumptions that limit the complexity
+]
+
+???
+
+- The complexity of the model increases rapidly with the number of categories. 
+
+---
+
+## American Community Survey data example
+
+.pull-left[
+### Race Question
+![census race question](images/census_race.png)
+]
+
+.pull-right[
+.center[
+### Ancestry Question
+![census ancestry question](images/census_ancestry.png)]
+]
+
+---
+
+## Race reporting by white/black ancestry individuals
+
+.pull-left[
+- We use a subset of data that includes all individuals who gave two ancestry responses that suggest both a white and black ancestry (e.g. "African American" and "Irish"). 
+- We will consider three race responses for these individuals: 
+    - white
+    - black
+    - white and black
+- How does the decision to identify racially vary by college completion?
+]
+
+--
+
+.pull-right[
+
+```r
+tab &lt;- table(wbreport$racereport, 
+             wbreport$college)
+tab
+```
+
+```
+##              
+##                  No   Yes
+##   White/Black 32899  2781
+##   Black       23374  3993
+##   White       12112  1598
+```
+
+```r
+prop.table(tab, 2)
+```
+
+```
+##              
+##                      No       Yes
+##   White/Black 0.4810850 0.3321787
+##   Black       0.3418001 0.4769470
+##   White       0.1771149 0.1908743
+```
+
+]
+
+???
+
+
+College-educated respondents are much less likely to report as white and black and substantially more likely to report as black, and slightly more likely to report as white. 
+
+---
+
+##  Odds Ratios by College Completion
+
+
+```
+##              
+##                 Yes    No
+##   Black        3993 23374
+##   White        1598 12112
+##   White/Black  2781 32899
+```
+
+--
+
+- The odds of identifying as black rather than white and black are twice as high among college-educated individuals than among those without a college degree.
+
+`$$\frac{3993*32899}{2781*23374}=2.02$$`
+
+--
+
+- The odds of identifying as white rather than white and black are 56% higher among college-educated individuals than among those without a college degree.
+
+`$$\frac{1598*32899}{2781*12112}=1.56$$`
+
+--
+
+- The odds of identifying as black rather than white are 29.5% (1.56/2.02) higher among college-educated individuals than among those without a college degree.
+
+---
+
+##  Two pairwise comparisons
+
+--
+
+.pull-left[
+### Black vs. Multi
+
+
+```r
+model.b &lt;- glm((racereport=="Black")~college, 
+               data=subset(wbreport, 
+                           racereport!="White"),
+               family=binomial)
+coef(model.b)
+```
+
+```
+## (Intercept)  collegeYes 
+##  -0.3418180   0.7035502
+```
+
+```r
+exp(coef(model.b))
+```
+
+```
+## (Intercept)  collegeYes 
+##   0.7104775   2.0209147
+```
+
+The odds ratio of black vs. white/black identification is 2.02 `\((e^{0.70355})\)`.
+]
+
+--
+
+.pull-right[
+### White vs. Multi
+
+
+```r
+model.w &lt;- glm((racereport=="White")~college, 
+               data=subset(wbreport, 
+                           racereport!="Black"),
+               family=binomial)
+coef(model.w)
+```
+
+```
+## (Intercept)  collegeYes 
+##  -0.9992456   0.4451878
+```
+
+```r
+exp(coef(model.w))
+```
+
+```
+## (Intercept)  collegeYes 
+##   0.3681571   1.5607833
+```
+
+The odds ratio of white vs. white/black identification is 1.56 `\((e^{0.44519})\)`.
+]
+
+???
+
+The intercepts give the baseline odds of black and white identification vs. white/black identification, respectively, among the non-college educated. 
+
+---
+
+##  The multinomial logit model
+
+.pull-left[
+- The multinomial logit model accomplishes the same result as two separate logit models, but estimates parameters using a single MLE procedure. This allows for a single measure of model log-likelihood and deviance. 
+- One of the categories of the dependent variable must serve as the reference category. In the example we are using, the white and black category served as the reference. The choice of reference is arbitrary. 
+- For a model with `\(J\)` categories of the dependent variable, we will get `\(J-1\)` coefficients for each independent variable. 
+- Multinomial logit models can be estimated in R with the `multinom` function in the `nnet` library. 
+]
+
+--
+
+.pull-right[
+
+```r
+library(nnet)
+model &lt;- multinom(racereport~college, 
+                  data=wbreport)
+```
+
+
+```r
+summary(model)
+```
+
+```
+## Call:
+## multinom(formula = racereport ~ college, data = wbreport)
+## 
+## Coefficients:
+##       (Intercept) collegeYes
+## Black  -0.3418185  0.7035608
+## White  -0.9992481  0.4452018
+## 
+## Std. Errors:
+##       (Intercept) collegeYes
+## Black  0.00855445 0.02613812
+## White  0.01062821 0.03314097
+## 
+## Residual Deviance: 157596.4 
+## AIC: 157604.4
+```
+]
+
+---
+
+##  Formal multinomial model specification
+
+`$$\log(p_{ij}/p_{i1})=\beta_{0j}+\beta_{1j}x_{i1}+\beta_{2j}x_{i2}+\ldots+\beta_{pj}x_{ip}$$`
+
+--
+
+- The model fits the log-odds of being in the `\(j\)`th outcome category relative to the reference outcome category as linear function of the independent variables.
+
+--
+
+- Each independent variable will have `\(J-1\)` coefficients rather than a single coefficient. 
+
+--
+
+- Each `\(\beta_j\)` gives the log odds ratio of being in the `\(j\)`th outcome category rather than the reference outcome category for a one unit change in the given independent variable. 
+
+--
+
+- The intercepts `\(\beta_{0j}\)` give the baseline odds of being in the `\(j\)`th outcome category rather than the reference outcome category when all the independent variables are zero. 
+
+---
+
+##  Changing the reference category
+
+If we want to change the reference category for the dependent variable, we can recalculate the regression coefficients as follows:
+
+`$$\beta_j-\beta_{j'}$$`
+
+Where `\(j'\)` is the new category that we want to set as the reference. 
+
+Lets try this out for our example, where we set the new reference to be identifying as black. 
+
+
+```r
+coefs &lt;- coef(model)
+coefs.new &lt;- rbind(c(0,0)-coefs[1,], coefs[2,]-coefs[1,])
+rownames(coefs.new) &lt;- c("White/Black", "White")
+coefs.new
+```
+
+```
+##             (Intercept) collegeYes
+## White/Black   0.3418185 -0.7035608
+## White        -0.6574295 -0.2583589
+```
+
+The white/black effects are just the inverse of the black effects. 
+
+---
+
+##  Estimating predicted probabilities
+
+.pull-left[
+Because there are multiple categories to consider, its often helpful to try to predict how the distribution of the dependent variable will change across different values of the independent variable. For a given set of independent variables `\(X\)`, the probability `\(P_i\)` of being in category `\(i\)` is:
+
+`$$P_i=\frac{exp(X\beta_i)}{\sum_Jexp(X\beta_j)}$$`
+
+The trick here is to remember that the reference category will always have `\(X\beta\)` of zero which exponentiates to one. Therefore, the denominator will always include a one in the sum. 
+]
+
+--
+
+.pull-right[
+
+```r
+temp &lt;- rbind("White/Black"=c(0,0),
+              coef(model))
+temp
+```
+
+```
+##             (Intercept) collegeYes
+## White/Black   0.0000000  0.0000000
+## Black        -0.3418185  0.7035608
+## White        -0.9992481  0.4452018
+```
+
+```r
+#For non-college
+exp(temp[,1])/sum(exp(temp[,1]))
+```
+
+```
+## White/Black       Black       White 
+##   0.4810853   0.3418001   0.1771145
+```
+
+```r
+#for college
+exp(temp[,1]+temp[,2])/
+  sum(exp(temp[,1]+temp[,2]))
+```
+
+```
+## White/Black       Black       White 
+##   0.3321764   0.4769484   0.1908752
+```
+]
+
+---
+
+##  Using `predict` to estimate probabilities
+
+You can also do this in R with the `predict` command where you feed in a new data set to get predicted values.
+
+
+```r
+predicted.probs &lt;- predict(model, newdata = data.frame(college=c("No","Yes")), type="probs")
+predicted.probs
+```
+
+```
+##   White/Black     Black     White
+## 1   0.4810853 0.3418001 0.1771145
+## 2   0.3321764 0.4769484 0.1908752
+```
+
+```r
+t(prop.table(tab, 2))
+```
+
+```
+##      
+##       White/Black     Black     White
+##   No    0.4810850 0.3418001 0.1771149
+##   Yes   0.3321787 0.4769470 0.1908743
+```
+
+The results here are identical to the conditional distributions estimated by the two-way table. 
+
+---
+
+##  A full multinomial logit model
+
+
+```r
+model.full &lt;- multinom(racereport~college+poor+agectr+agectrsq+foreign+female, 
+                       data=wbreport)
+```
+
+
+```r
+round(coef(model.full),5)
+```
+
+```
+##       (Intercept) collegeYes  poorYes  agectr agectrsq foreignYes   female
+## Black    -0.13009   -0.25373  0.09973 0.04543   -1e-05    0.64213 -0.03511
+## White    -0.70266   -0.60671 -0.18088 0.05360   -7e-05    0.03437 -0.00989
+```
+
+--
+
+- The effects of college are very different with controls. College now seems more likely to push respondents away from both single-race identifications towards multiracial identification, although the effect is weaker for pushing away from black-alone identification than white-alone identification. 
+
+--
+
+- How do we interpret the effects of age on racial identification? Age is centered on 22 years and a square is included, so its not easy to sort it out just from the coefficient values. 
+
+---
+
+##  Estimating the effect of age
+
+Lets get predicted probabilities for the effect of age from 22 to 75. We will estimate probabilities for the reference categories of the other variables (non-college, non-poor, male, native-born).
+
+In order to do this, we need to create a fake dataset where all values are held at the reference except for age and its square, and then feed this into the `predict` function. 
+
+
+```r
+x &lt;- 22:75
+fakedata &lt;- data.frame(college=rep("No",length(x)), 
+                       poor=rep("No",length(x)), 
+                       foreign=rep("No",length(x)), 
+                       female=rep(0,length(x)),
+                       agectr=x-22, agectrsq=(x-22)^2)
+predicted.probs &lt;- predict(model.full, fakedata, type="probs")
+head(predicted.probs)
+```
+
+```
+##   White/Black     Black     White
+## 1   0.4213579 0.3699588 0.2086833
+## 2   0.4096159 0.3763606 0.2140234
+## 3   0.3979874 0.3826591 0.2193535
+## 4   0.3864840 0.3888483 0.2246677
+## 5   0.3751172 0.3949225 0.2299603
+## 6   0.3638977 0.4008767 0.2352257
+```
+
+---
+
+## Some data wrangling of `predict` output
+
+To use `ggplot` on the predicted probabilities, we need it in a somewhat different form.
+
+
+```r
+temp &lt;- as.data.frame.table(predicted.probs)
+colnames(temp) &lt;- c("index","race_id","prob")
+head(temp, n=3)
+```
+
+```
+##   index     race_id      prob
+## 1     1 White/Black 0.4213579
+## 2     2 White/Black 0.4096159
+## 3     3 White/Black 0.3979874
+```
+
+```r
+## temp has now stacked all three outcomes so we need to repeat
+## fakedata three times and add to it
+temp &lt;- cbind(rbind(fakedata, fakedata, fakedata), temp[,2:3])
+head(temp)
+```
+
+```
+##   college poor foreign female agectr agectrsq     race_id      prob
+## 1      No   No      No      0      0        0 White/Black 0.4213579
+## 2      No   No      No      0      1        1 White/Black 0.4096159
+## 3      No   No      No      0      2        4 White/Black 0.3979874
+## 4      No   No      No      0      3        9 White/Black 0.3864840
+## 5      No   No      No      0      4       16 White/Black 0.3751172
+## 6      No   No      No      0      5       25 White/Black 0.3638977
+```
+
+---
+
+##  Two display techniques
+
+.pull-left[
+### Separate lines
+
+```r
+ggplot(temp, aes(x=agectr+22, y=prob, 
+                 color=race_id))+
+  geom_line()+
+  scale_y_continuous(labels=scales::percent)+
+  labs(x="age", y="probability", 
+       color="racial identification")
+```
+
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/unnamed-chunk-9-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+### Stacked ribbons
+
+```r
+ggplot(temp, aes(x=agectr+22, y=prob, 
+                 fill=race_id))+
+  geom_area()+
+  scale_y_continuous(labels=scales::percent)+
+  labs(x="age", y="probability", 
+       fill="racial identification")
+```
+
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/unnamed-chunk-10-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+##  Paying attention to ordinal outcomes
+
+Using the National Election Study data, lets look at attitudes toward gay marriage by whether a respondent completed a BA degree. 
+
+
+```r
+politics$college &lt;- as.numeric(politics$educ) &gt; 3
+tab &lt;- table(politics$gaymarriage, politics$college)
+tab
+```
+
+```
+##                       
+##                        FALSE TRUE
+##   No legal recognition   575  198
+##   Civil unions           623  369
+##   Support gay marriage  1385 1088
+```
+
+```r
+prop.table(tab, 2)
+```
+
+```
+##                       
+##                            FALSE      TRUE
+##   No legal recognition 0.2226094 0.1196375
+##   Civil unions         0.2411924 0.2229607
+##   Support gay marriage 0.5361982 0.6574018
+```
+
+---
+
+##  Two kinds of odds ratios
+
+.center[
+
+```
+##                       
+##                        FALSE TRUE
+##   No legal recognition   575  198
+##   Civil unions           623  369
+##   Support gay marriage  1385 1088
+```
+]
+
+--
+
+.pull-left[
+### Static reference
+- Those with college education are 72% more likely to support civil unions rather than **no legal recognition**.
+`$$\frac{369*575}{623*198}=1.72$$`
+- Those with college education are 128% more likely to support gay marriage rather than **no legal recognition**.
+`$$\frac{1088*575}{1385*198}=2.28$$`
+
+]
+
+--
+
+.pull-right[
+### Adjacent categories
+- Those with college education are 72% more likely to support civil unions rather than **no legal recognition**.
+`$$\frac{369*575}{623*198}=1.72$$`
+- Those with college education are 33% more likely to support gay marriage rather than **civil unions**.
+`$$\frac{1088*623}{1385*369}=1.33$$`
+
+]
+
+
+
+---
+
+##  Naive multinomial model
+
+We could just estimate this model as a multinomial model and ignore the ordinal nature of the dependent variable. 
+
+
+```r
+model.multin &lt;- multinom(gaymarriage~college, data=politics)
+```
+
+
+```r
+coef(model.multin)
+```
+
+```
+##                      (Intercept) collegeTRUE
+## Civil unions          0.08010058   0.5424488
+## Support gay marriage  0.87904091   0.8248257
+```
+
+```r
+exp(coef(model.multin))
+```
+
+```
+##                      (Intercept) collegeTRUE
+## Civil unions            1.083396    1.720214
+## Support gay marriage    2.408589    2.281483
+```
+
+The multinomial model gives us the static reference results.
+
+
+---
+
+##  Adjacent category logit model
+
+The Adjacent Category Logit (ACL) Model estimates the log-odds ratio of being in the higher category `\(j\)` for each pair of adjacent categories `\(j\)` and `\(j-1\)`:
+
+`$$\log(p_{ij}/p_{i(j-1)})=\beta_{0j}+\beta_{1j}x_{i1}+\beta_{2j}x_{i2}+\dots+\beta_{pj}x_{ip}$$`
+
+--
+
+- The ACL takes advantage of the ordinal structure of the dependent variable to get the odds ratio between each adjacent set of categories on the ordinal scale. 
+
+--
+
+- In general, we can estimate the parameters for an adjacent category logit model from multinomial model results by coding the lowest category as the reference and taking: `$$\beta_j-\beta_{j-1}$$` for all coefficients.
+
+--
+
+- In terms of model fit, the ACL is identical to the multinomial model, it just gives a more intuitive interpretation for ordinal responses.
+
+--
+
+- The multinomial model is sometimes called the Baseline Category Logit (BCL) model to more clearly distinguish it from the ACL.
+
+---
+
+##  Getting ACL from multinomial logit model
+
+
+```r
+coef(model.multin)
+```
+
+```
+##                      (Intercept) collegeTRUE
+## Civil unions          0.08010058   0.5424488
+## Support gay marriage  0.87904091   0.8248257
+```
+
+```r
+convert_acl &lt;- function(model_m) {
+  coefs &lt;- rbind(c(0,0), coef(model_m))
+  return(diff(coefs))
+}
+acl_coef &lt;- convert_acl(model.multin)
+acl_coef
+```
+
+```
+##                      (Intercept) collegeTRUE
+## Civil unions          0.08010058   0.5424488
+## Support gay marriage  0.79894033   0.2823770
+```
+
+```r
+exp(acl_coef)
+```
+
+```
+##                      (Intercept) collegeTRUE
+## Civil unions            1.083396    1.720214
+## Support gay marriage    2.223184    1.326279
+```
+
+---
+
+##  Same results from two logit models
+
+
+```r
+acl_coef
+```
+
+```
+##                      (Intercept) collegeTRUE
+## Civil unions          0.08010058   0.5424488
+## Support gay marriage  0.79894033   0.2823770
+```
+
+```r
+coef(glm((gaymarriage=="Civil unions")~college, family=binomial,
+            data=subset(politics, gaymarriage!="Support gay marriage")))
+```
+
+```
+## (Intercept) collegeTRUE 
+##  0.08017648  0.54235314
+```
+
+```r
+coef(glm((gaymarriage=="Support gay marriage")~college, family=binomial,
+            data=subset(politics, gaymarriage!="No legal recognition")))
+```
+
+```
+## (Intercept) collegeTRUE 
+##   0.7989089   0.2823909
+```
+
+---
+
+##  The Cumulative Probability
+
+Another way to think about differences in the distribution of an ordinal variable is by comparing the cumulative probability of being in a given category or higher. 
+
+
+```r
+p &lt;- prop.table(tab,2)
+p
+```
+
+```
+##                       
+##                            FALSE      TRUE
+##   No legal recognition 0.2226094 0.1196375
+##   Civil unions         0.2411924 0.2229607
+##   Support gay marriage 0.5361982 0.6574018
+```
+
+```r
+cump &lt;- apply(p[3:1,],2,cumsum)[3:1,]
+cump
+```
+
+```
+##                       
+##                            FALSE      TRUE
+##   No legal recognition 1.0000000 1.0000000
+##   Civil unions         0.7773906 0.8803625
+##   Support gay marriage 0.5361982 0.6574018
+```
+
+
+---
+
+##  The Cumulative Odds
+
+We can convert these cumulative probabilities into cumulative odds:
+
+
+```r
+cumodds &lt;- cump/(1-cump)
+cumodds
+```
+
+```
+##                       
+##                           FALSE     TRUE
+##   No legal recognition      Inf      Inf
+##   Civil unions         3.492174 7.358586
+##   Support gay marriage 1.156093 1.918871
+```
+
+--
+
+- The odds for the first category are irrelevant because everyone is at least in the lowest category. 
+
+--
+
+- Among those without a college degree the odds of supporting civil unions **or more** is 3.49 to one, whereas among the college-educated the same cumulative odds is 7.36. The odds ratio is about 2.11 (7.36/3.49).
+
+--
+
+- The odds of supporting gay marriage among those without a college degree is 1.16 to one. Among the college-educated the same odds is 1.92 to one. The odds ratio is about 1.66 (1.92/1.16).
+
+???
+
+- Since you can't go higher, the cumulative odds for the top category of supporting gay marriage are equal to the odds of being in this category or not. 
+
+---
+
+##  Cumulative/Ordered Logit Model
+
+`$$log(P(y_i&gt;=j)/P(y_i&lt;j))=\alpha_j+\beta_{1j}x_{i1}+\beta_{2j}x_{i2}+\dots+\beta_{pj}x_{ip}$$`
+
+--
+
+- The dependent variable is the cumulative log odds of being in the `\(j\)`th category or higher. 
+
+--
+
+- The coefficients tell us how the the cumulative log odds of being in the `\(j\)`th or higher category change due to a one unit increase in `\(x\)`.
+
+--
+
+- The `\(\alpha_j\)` are intercepts but they are often called the *cut points*. They define the cumulative distribution of ordinal responses when all the `\(x\)`'s are zero. 
+
+--
+
+- Because this model allows the effect of each independent variable to be different at each cut-point, it has the same model fit as the multinomial model, but a different parameterization.
+
+--
+
+- Think of the model as testing all possible dichotomous collapsings of your dependent variable simultaneously.
+
+---
+
+##  Estimating the cumulative logit model
+
+
+```r
+lcumodds &lt;- log(cumodds[-1,])
+lcumodds
+```
+
+```
+##                       
+##                            FALSE      TRUE
+##   Civil unions         1.2505244 1.9958678
+##   Support gay marriage 0.1450466 0.6517371
+```
+
+The first column gives the *cut points* for the model of 0.85 and -0.49. These define the cumulative log odds among the non-college educated. The log-odds ratios for the college educated are given by the difference in log-odds.
+
+
+```r
+model.cumlogit &lt;- data.frame(cut=lcumodds[,1],
+                             college=lcumodds[,2]-lcumodds[,1])
+model.cumlogit
+```
+
+```
+##                            cut   college
+## Civil unions         1.2505244 0.7453433
+## Support gay marriage 0.1450466 0.5066905
+```
+
+---
+
+##  Interpreting terms in cumulative logit model
+
+
+```r
+exp(model.cumlogit)
+```
+
+```
+##                           cut  college
+## Civil unions         3.492174 2.107165
+## Support gay marriage 1.156093 1.659789
+```
+
+--
+
+- Among the non-college educated, the odds of supporting civil unions **or more** are 3.49 to one, and the odds of supporting gay marriage fully are 1.16 to one. 
+
+--
+
+- The odds of supporting civil unions **or more** are 2.11 times higher for the college educated than the non-college educated.
+
+--
+
+- The odds of supporting gay marriage are 66% higher for the college educated than the non-college educated.
+
+---
+
+##  Same results from logit models
+
+
+```r
+model.cumlogit
+```
+
+```
+##                            cut   college
+## Civil unions         1.2505244 0.7453433
+## Support gay marriage 0.1450466 0.5066905
+```
+
+```r
+coef(glm((gaymarriage=="Support gay marriage" | gaymarriage=="Civil unions")~college, 
+         data=politics, family=binomial))
+```
+
+```
+## (Intercept) collegeTRUE 
+##   1.2505244   0.7453433
+```
+
+```r
+coef(glm((gaymarriage=="Support gay marriage")~college, 
+         data=politics, family=binomial))
+```
+
+```
+## (Intercept) collegeTRUE 
+##   0.1450466   0.5066905
+```
+
+---
+
+##  Estimating polytmous models with `vglm`
+
+The `VGAM` library includes a function called `vglm` for estimating "vector generalized linear models." This package can be used to estimate a variety of nominal and ordinal response models. 
+
+The structure of the dependent variable in `vglm` is somewhat different than `glm` or `lm`. We need to feed in a matrix of responses ordered from lowest to highest response category, where each vector is a sequence of zeroes/ones or FALSE/TRUE for being in that particular category. 
+
+
+```r
+politics$norecog &lt;- politics$gaymarriage=="No legal recognition"
+politics$civil &lt;- politics$gaymarriage=="Civil unions"
+politics$marriage &lt;- politics$gaymarriage=="Support gay marriage"
+##Check yourself before your wreck yourself
+apply(politics[,c("norecog","civil","marriage")],2,mean, na.rm=TRUE)
+```
+
+```
+##   norecog     civil  marriage 
+## 0.1823974 0.2340727 0.5835300
+```
+
+```r
+prop.table(table(politics$gaymarriage))
+```
+
+```
+## 
+## No legal recognition         Civil unions Support gay marriage 
+##            0.1823974            0.2340727            0.5835300
+```
+
+---
+
+##  Ordinal models using `vglm`
+
+--
+
+### Multinomial logit (Baseline category logit) model:
+
+```r
+model.multinom &lt;- vglm(cbind(norecog, civil, marriage)~college, family=multinomial(refLevel=1), 
+                       data=politics)
+```
+
+--
+
+### Adjacent category logit model: 
+
+```r
+model.acl &lt;- vglm(cbind(norecog, civil, marriage)~college, family=acat(parallel=FALSE), data=politics)
+```
+
+--
+
+### Cumulative logit model:
+
+```r
+model.cumlogit &lt;- vglm(cbind(norecog, civil, marriage)~college, 
+                       family=cumulative(parallel=FALSE,reverse=TRUE), data=politics)
+```
+
+---
+
+## `vglm` model output
+
+
+```r
+coef(model.multinom)
+```
+
+```
+## (Intercept):1 (Intercept):2 collegeTRUE:1 collegeTRUE:2 
+##    0.08017648    0.87908538    0.54235314    0.82474402
+```
+
+```r
+coef(model.acl)
+```
+
+```
+## (Intercept):1 (Intercept):2 collegeTRUE:1 collegeTRUE:2 
+##    0.08017648    0.79890890    0.54235314    0.28239088
+```
+
+```r
+coef(model.cumlogit)
+```
+
+```
+## (Intercept):1 (Intercept):2 collegeTRUE:1 collegeTRUE:2 
+##     1.2505244     0.1450466     0.7453433     0.5066905
+```
+
+Deviance is the same because they are the same model differently parameterized.
+
+```r
+sapply(list(model.multinom,model.acl,model.cumlogit),deviance)
+```
+
+```
+## [1] 8087.233 8087.233 8087.233
+```
+
+---
+
+## Constraints in ordinal models
+
+--
+
+- For the ACL and cumulative logit model, it is possible to apply a simple constraint that the effect of college education is the same at each cut point.  This is the assumption of **proportional odds**.
+
+--
+
+- The ACL and cumulative logit models estimated under this constraint are no longer identical in terms of fit and neither will fit the table exactly.
+
+--
+
+- This constrained model has the advantage of being more parsimonious and having less coefficients to interpret
+
+--
+
+- This constrained model has the disadvantage of making an assumption. In our case, the assumption seems problematic because we can see substantial differences in the effect of college education at different cut points.
+
+---
+
+##  Constrained models with `vglm`
+
+Constrained models can be estimating by changing the `parallel` option for family to `TRUE`:
+
+
+```r
+model.acl.c      &lt;-  vglm(cbind(norecog, civil, marriage)~college,
+                          family=acat(parallel=TRUE), data=politics)
+model.cumlogit.c &lt;-  vglm(cbind(norecog, civil, marriage)~college, 
+                          family=cumulative(parallel=TRUE,reverse=TRUE), data=politics)
+coef(model.acl.c)
+```
+
+```
+## (Intercept):1 (Intercept):2   collegeTRUE 
+##     0.1297157     0.7597523     0.3869614
+```
+
+```r
+coef(model.cumlogit.c)
+```
+
+```
+## (Intercept):1 (Intercept):2   collegeTRUE 
+##     1.3029165     0.1236276     0.5547281
+```
+
+```r
+sapply(list(model.acl,model.cumlogit, model.acl.c, model.cumlogit.c), deviance)
+```
+
+```
+## [1] 8087.233 8087.233 8089.857 8097.113
+```
+
+---
+
+##  Predicted probabilities
+
+No pre-defined method for getting back to predicted probabilities, so I wrote custom functions for ACL and cumulative logit (disclaimer: not stress tested!)
+
+
+```r
+predictprobs.acl &lt;- function(model, fakedata) {
+  temp &lt;- cbind(rep(0,nrow(fakedata)),predict(model, fakedata))
+  #get back to multinomial logit interpretation and apply multinomial logit method
+  temp[,2:ncol(temp)] &lt;- temp[,2:ncol(temp)]+temp[,1:(ncol(temp)-1)]
+  temp &lt;- exp(temp)
+  p &lt;- temp/apply(temp,1,sum)
+  colnames(p) &lt;- colnames(model@fitted.values)
+  ncat &lt;- ncol(p)
+  p &lt;- as.data.frame.table(p)[,2:3]
+  colnames(p) &lt;- c("outcome","p")
+  return(cbind(fakedata, p))
+}
+
+predictprobs.cumlogit &lt;- function(model, fakedata) {
+  cumodds &lt;- exp(predict(model, fakedata))
+  cumprob &lt;- cbind(rep(1,nrow(fakedata)),cumodds/(1+cumodds))
+  p &lt;- t(rbind(cumprob[,ncol(cumprob)],diff(t(cumprob[,ncol(cumprob):1])))[ncol(cumprob):1,])
+  colnames(p) &lt;- colnames(model@fitted.values)
+  ncat &lt;- ncol(p)
+  p &lt;- as.data.frame.table(p)[,2:3]
+  colnames(p) &lt;- c("outcome","p")
+  return(cbind(fakedata, p))
+}
+```
+
+---
+
+##  Predicted probabilities across models
+
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/predictprobs_college-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+---
+
+##  Fuller models
+
+
+```
+##                            cumlogit cumlogit, c     ACL  ACL, c
+## (Intercept):1                0.2287      0.3823 -0.5287 -0.3414
+## (Intercept):2               -0.8679     -0.9994  0.0918 -0.0576
+## collegeTRUE:1                0.5681      0.4089  0.3900  0.2872
+## collegeTRUE:2                0.3611              0.2230        
+## religMainline Protestant:1   1.7374      1.4359  1.3174  0.9612
+## religMainline Protestant:2   1.2851              0.7248        
+## religCatholic:1              1.9903      1.6374  1.4621  1.1021
+## religCatholic:2              1.4827              0.8746        
+## religJewish:1                2.0663      2.3065  0.6152  1.4896
+## religJewish:2                2.2624              1.9440        
+## religNon-religious:1         3.1510      2.7997  1.7109  1.9907
+## religNon-religious:2         2.6913              2.0301        
+## religOther:1                 1.2760      1.5119  0.4668  0.9380
+## religOther:2                 1.4799              1.2417        
+## I(age - 40):1               -0.0127     -0.0227  0.0081 -0.0145
+## I(age - 40):2               -0.0255             -0.0297        
+## I((age - 40)^2):1            0.0000      0.0002 -0.0003  0.0001
+## I((age - 40)^2):2            0.0002              0.0003
+```
+
+---
+
+## What is the effect of age?
+
+&lt;img src="module7_slides_categorical_outcomes_files/figure-html/age-compare-1.png" width="864" style="display: block; margin: auto;" /&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "",
+"ratio": "16:10"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  /* Replace <script> tags in slides area to make them executable
+   *
+   * Runs after post-processing of markdown source into slides and replaces only
+   * <script>s on the last slide of continued slides using the .has-continuation
+   * class added by xaringan. Finally, any <script>s in the slides area that
+   * aren't executed are commented out.
+   */
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container:not(.has-continuation) script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+  var scriptsNotExecuted = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container.has-continuation script'
+  );
+  if (!scriptsNotExecuted.length) return;
+  for (var i = 0; i < scriptsNotExecuted.length; i++) {
+    var comment = document.createComment(scriptsNotExecuted[i].outerHTML)
+    scriptsNotExecuted[i].parentElement.replaceChild(comment, scriptsNotExecuted[i])
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
