@@ -35,6 +35,7 @@ Rscript -e 'rmarkdown::render("module3_slides_measuring_association.Rmd")'
 Rscript -e 'rmarkdown::render("module4_slides_statistical_inference.Rmd")'
 Rscript -e 'rmarkdown::render("module5_slides_building_models.Rmd")'
 Rscript -e 'rmarkdown::render("module6_slides_model_complications.Rmd")'
+Rscript -e 'rmarkdown::render("module7_slides_categorical_outcomes.Rmd")'
 
 #copy over resources, but don't overwrite
 cp -R -n -p images ../_site/stat_slides/
@@ -59,6 +60,9 @@ cp -R module5_slides_building_models_files ../_site/stat_slides/
 
 cp module6_slides_model_complications.html ../_site/stat_slides/
 cp -R module6_slides_model_complications_files ../_site/stat_slides/
+
+cp module7_slides_categorical_outcomes.html ../_site/stat_slides/
+cp -R module7_slides_categorical_outcomes_files ../_site/stat_slides/
 
 #remove all created files
 rm *.html
