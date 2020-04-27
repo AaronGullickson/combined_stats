@@ -1,6 +1,6 @@
 class: inverse, center, middle
 
-background-image: url(images/rachel-ferriman-0_2sDFbiBp8-unsplash.jpg)
+background-image: url(images/jj-ying-PDxYfXVlK2M-unsplash.jpg)
 background-size: cover
 
 name: glm

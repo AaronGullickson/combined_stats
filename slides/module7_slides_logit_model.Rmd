@@ -216,7 +216,7 @@ prob <- odds/(1+odds)
 ]
 
 .pull-right[
-```{r lpm_plot2, echo=FALSE}
+```{r lpm_plot3, echo=FALSE}
 model_lpm <- lm((survival=="Survived")~fare, data=titanic)
 y_lpm <- predict(model_lpm, data.frame(fare=0:512))
 predicted_df <- data.frame(fare=rep(0:512, 2),
