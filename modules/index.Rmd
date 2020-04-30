@@ -9,6 +9,7 @@ output:
   bookdown::gitbook:
     split_by: "section+number"
     number_section: false
+    css: my_styles.css
 site: bookdown::bookdown_site
 lot: yes
 lof: yes

@@ -1,0 +1,10 @@
+/* Adjustments for caption headings */
+p.caption {
+  font-size: 0.9em;
+  /*font-style: italic;*/
+  color: grey;
+  margin-right: 5%;
+  margin-left: 5%;  
+  margin-bottom: 2%;
+  text-align: center;
+}
