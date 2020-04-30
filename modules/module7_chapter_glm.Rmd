@@ -1,9 +1,163 @@
 
 # Modeling Categorical Outcomes
 
+In this chapter, we will extend the concept of the linear model to include the case where we want to predict categorical outcomes on the left-hand side of our model equation. In order to do this, we will have to learn an extension of the OLS regression model called the **generalized linear model** which will provide a more flexible way to specify linear models, including ones with categorical outcomes. By the end of this chapter, you will be able to run full linear models with dichotomous (two categories) and polytomous (many categories) variables as outcomes. 
+
+Slides for this module can be found [here](stat_slides/module7_slides_categorical_outcomes.html).
+
 ---
 
 ## Dichotomous Outcomes and The Binomial Distribution
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/WMxenh7t_Rs")
+```
+
+We now have a great many tools to produce more complex and realistic specifications for the right-hand side of the linear model formula. We can add dummy variables, interaction terms, transformations, splines, and polynomial terms. For outcomes, however, we are still stuck with quantitative variables, which eliminates a lot of potential outcomes that we care about in the social sciences.
+
+Lets take the Titanic data as an example. The obvious outcome of interest is whether someone survived or died on the Titanic. We already know how to examine a bivariate relationship between survival and one other variable. We can do this using a two-way table if the other variable is categorical and mean differences if both variables are quantitative. However, we can't put this into a model framework where we can control for multiple variables simultaneously, look at interaction terms, model non-linearity, etc. 
+
+For example, we know that women were more likely to survive the Titanic than men and we know that higher-class passengers were more likely to survive than lower-class passengers. However, we also know that women were more likely to be higher-class passengers than men. How much of the gender difference in survival might be accounted for by these underlying class differences? Alternatively, we might be interested in interacting gender and passenger class to look at how the gender difference in survival varies by passenger class. Both of these tasks would be easier if we could use the same model framework we have developed to predict survival and death. 
+
+It turns out that we can use this model framework, but in order to do so we need to develop more understanding of the **data-generating process** that underlies the survivals and deaths on the Titanic, and by extension any dichotomous outcome in which there is a choice between two categorical possibilities. It turns out that this data-generating process is the **binomial distribution**.
+
+### The binomial distribution
+
+The binomial distribution is a theoretical probability distribution that arises when we have some process that follows these rules:
+
+- We perform $n$ repeated **independent** trials where the result of each trial is either a **success** or **failure**. The language of "success"" and "failure"" here is purely aesthetic. We can use the binomial distribution in any case where there are two possible outcomes. 
+
+- The probability of success on each trial is given by $p$. Because there are only two possible outcomes, the probability of a failure must therefore be $1-p$.
+
+The binomial distribution governs how many successes we can expect to see in these $n$ trials. We consider that number of successes to be a **random variable** and traditionally write it as $X$. 
+
+One of the simplest example of a binomial distribution would be to count the number of heads in a certain number of coin tosses. In this case, $p=0.5$. However that example is boring so instead we will consider the basic dice mechanic from the popular [Shadowrun tabletop role-playing game](https://en.wikipedia.org/wiki/Shadowrun). In that game, players determine whether their characters succeed at a task by rolling a "dice pool" which is a certain number of six-sided die. They then count the number of 5's or 6's that they roll on this dice. This count then determines whether they succeed and by how much. On an evenly-weighted die, the probability of rolling 5 or 6 should be two out of six, which simplifies to one out of three, so we have a binomial distribution with $n$ equal to how many dice the character has in their pool and $p=1/3$.
+
+The binomial distribution formula below will tell us the probability that $X$ equals some number of successes $k$:
+
+$$P(X=k)={n \choose k}p^k(1-p)^{n-k}$$
+
+This formula may look complex, but its actually fairly intuitive if we break down into its parts. The binomial formula basically has two parts:
+
+- $p^k(1-p)^{n-k}$ defines the probability of getting any particular sequence of $k$ successes and $n-k$ failures.
+- ${n \choose k}$ tells us the number of unique ways that we can combine $k$ successes and $n-k$ into a sequence. 
+
+Lets start with the first part. Lets assume that our Shadowrun player had a dice pool of five dice, so $n=5$. What is the probability that they rolled the following sequence: success, success, failure, failure, failure? 
+
+One important feature of probabilities is that when events are **independent**, then the probability that they **all** happen is given by multiplying the individual probabilities together. In this case, the probability of a success is $1/3$ and the probability of a failure is $2/3$. Therefore the probability of getting that **exact** sequence is given by:
+
+$$(1/3)(1/3)(2/3)(2/3)(2/3)=(1/3)^2(2/3)^3=0.033$$
+
+I just multiply the probabilities together to get the probability of the exact sequence. Because I am multiplying the same number together, I can collect these terms together by using powers. The probability of getting this **exact** sequence is 0.033 or 3.3%. 
+
+Note that this is also the probability of getting the sequence of success, failure, success, failure, failure because the order of the multiplication can be moved around and will still come out to $(1/3)^2(2/3)^3$. So, this is the probability of getting any particular sequence of two successes and three failures. 
+
+I can generalize this to any $n$ and $k$ by just replacing the numbers with the abstract values. So:
+$$p^k(1-p)^{n-k}$$
+is the probability of any particular sequence of $k$ successes and $n-k$ failures in $n$ trials.
+
+Notice that I keep saying "any particular sequence." If we are only interested in the total number of successes, we don't care what order they come in. However, the equation above, only gives us the probability of getting a particular order of $k$ successes and $n-k$ failures. To consider the total probability of $k$ successes, we have to consider all the possible ways we could get a sequence giving us $k$ successes.
+
+For example, to continue our example of the Shadowrun dice pool of five dice, how many ways could we combine two successes and three failures. Here are all the ways:
+
+- SSFFF
+- SFSFF
+- SFFSF
+- SFFFS
+- FSSFF
+- FSFSF
+- FSFFS
+- FFSSF
+- FFSFS
+- FFFSS
+
+There are ten possible sequences (or permutations) that would give us two successes in five trials. Each of these permutations has a probability of 0.033. To get the overall probability we need to add them up or just take $10*0.033=0.33$. So, the actual probability of rolling two successes in five trials is about 33%. Thats much better than 3.3%! The lesson here is that permutations matter.
+
+How can I determine the number of possible permutations systematically? Thats what the ${n \choose k}$ or "$n$ choose $k$" formula answers. This formula is given by:
+
+$${n \choose k}=\frac{n!}{k!(n-k)!}$$
+
+If you are wondering what all the exclamations points are about, its not because I am really excited (although I am). These are called **factorials**. A factorial indicates that a number should be multiplied by all of the descending integers down to one. So, $4!$ is actually:
+
+$$4*3*2*1$$
+
+In practice, many of the numbers in the n choose k formula actually cancel out so it typically involves less math than you would think. Here is the n choose k formula for $n=5$ and $k=2$:
+
+$${5 \choose 2}=\frac{5!}{2!(5-2)!}=\frac{5!}{2!3!}=\frac{5*4*3*2}{2*3*2}=5*2=10$$
+
+When we put these two parts together, we get the full binomial formula:
+
+$$P(X=k)={n \choose k}p^k(1-p)^{n-k}$$
+
+Lets try it out for all the possible values in our Shadowrun dice pool:
+
+```{r dice-pool, fig.cap="Probabilities of the number of hits (rolling a five or six) in a five dice pool"}
+n <- 5
+k <- 0:n
+p <- 1/3
+prob <- choose(n,k)*p^k*(1-p)^(n-k)
+ggplot(data.frame(k,prob), aes(x=k, y=prob))+
+  geom_col()+
+  scale_y_continuous(labels=scales::percent)+
+  labs(x="hits (number of fives or sixes) in five dice rolls",
+       y="probability")+
+  theme_bw()
+```
+
+We have about a one in three chance of rolling either one or two successes and about a 12% chance of getting no successes. At the other end of the spectrum, it is very unlikely to get five successes in five trials. Go ahead and pause here and play this game for yourself if you like to see how your results stack up. Al you need is five dice. Go ahead, I will wait. 
+
+What would happen if we had a dice pool of twenty dice? Lets try it:
+
+```{r dice-pool-gib, fig.cap="Probabilities of the number of hits (rolling a five or six) in a twenty dice pool"}
+n <- 20
+k <- 0:n
+p <- 1/3
+prob <- choose(n,k)*p^k*(1-p)^(n-k)
+ggplot(data.frame(k,prob), aes(x=k, y=prob))+
+  geom_col()+
+  scale_y_continuous(labels=scales::percent)+
+  labs(x="hits (number of fives or sixes) in twenty dice rolls",
+       y="probability")+
+  theme_bw()
+```
+
+Of course, the most likely number of successes is higher because we are rolling more dice. The shape is also starting to look more like a normal distribution. This is not a coincidence. As $n$ increases the shape of the binomial distribution will look more and more like a normal distribution. 
+
+#### Expected value and variance
+
+The **expected value** of a random variable given by $E(X)$ is the same as the mean of its probability distribution. In the case of the binomial distribution, the expected value is:
+
+$$E(X)=np$$
+
+If you think about it for a second, this value is completely intuitive. The expected number of successes is equal the probability of a success on any given trial multiplied by the number of trials.
+
+We can also calculate the variance of the random variable $V(X)$. For the binomial distribution, this is given by:
+
+$$V(X)=np(1-p)$$
+
+This formula has an important implication. First, the variance depends on the underlying probability of success. Second, for a given $n$, this probability will be maximized at a certain value of $p$. To see what value of $p$ that is, lets go ahead and calculate the variance for our example with $n=5$ for every possible $p$ at 0.01 intervals:
+
+```{r varbinom, fig.cap="Standard deviation for binomial distribution with five trials by different probabilities of success"}
+p <- seq(from=0.001,to=0.999, by=.001)
+v <- 5*p*(1-p)
+ggplot(data.frame(p,v), aes(x=p, y=sqrt(v)))+
+  geom_line()+
+  labs(x="probability of success",
+       y="standard deviation in number of successes for n=5")+
+  theme_bw()
+```
+
+The variance will always be at its greatest when the probability of success is 50%. As you get closer to probabilities of 0% or 100%, you will get less variance because most trials will be failures or successes, respectively.
+
+#### The Bernoulli distribution
+
+The Bernoulli distribution is a special case of the binomial distribution with just a single trial $(n=1)$. Alternatively, a binomial distribution can be thought of as the sum of $n$ independent Bernoulli distributions. The Bernoulli distribution is particularly important for our purposes because each observation in our data typicallly only has one trial. The expected value of the bernoulli distribution is simply $p$ and the variance is $p(1-p)$. 
+
+### The binomial distribution as a data-generating process
+
+Let us now return to the Titanic example and consider the process that generated our actual data. In our actual data we only have a record of "successes" (i.e. survival) and "failures" (i.e. deaths). However, underlying this data, we can imagine that each passenger had their own very personal (and stressful) Bernoulli trial. Each passenger had some underlying probability of surviving the Titanic. We can refer to that underlying probability as $p_i$. Importantly, it is subset by $i$ because we imagine that probability was different for each passenger. Given that $p_i$, each passenger was then given one bernoulli trial and the result was either survival or death. 
+
+Although survival and death is what we observe, what we actually want to know about is $p_i$. Furthermore, we would like to know how $p_i$ was affected by other characteristics of the passenger such as gender, passenger class, age, and fare paid. In the next section, we will make our first attempt at estimating these $p_i$ values in a model.
 
 ---
 
@@ -13,20 +167,14 @@
 
 ## Generalized Linear Model
 
----
-
-## Maximum Likelihood Estimation
+### Maximum Likelihood Estimation
 
 ---
 
-## Logistic Regression Model
+## Logit Model
 
 ---
 
-## Models for Nominal Polytomous Outcomes
-
----
-
-## Models for Ordinal Polytomous Outcomes
+## Models Polytomous Outcomes
 
 ---
