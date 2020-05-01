@@ -15,7 +15,7 @@ mkdir _site
 #TODO: for now cd into the modules section, but ultimately I need to use the 
 #here package so this works from base directory
 cd modules
-Rscript -e 'bookdown::render_book("index.Rmd", bookdown::gitbook(split_by="section+number", number_section=FALSE), output_dir="../_site")'
+Rscript -e 'bookdown::render_book("index.Rmd", bookdown::gitbook(split_by="section+number", number_section=FALSE, css="my_styles.css"), output_dir="../_site")'
 rm -r _bookdown_files
 cd ..
 
