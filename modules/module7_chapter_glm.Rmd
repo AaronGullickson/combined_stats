@@ -163,9 +163,184 @@ Although survival and death is what we observe, what we actually want to know ab
 
 ## Linear Probability Model
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/AQXIzrEJL1I")
+```
+
+In the previous section, I said that you cannot fit a linear model by OLS regression if the dependent variable is categorical. This is mostly true, but not exactly true. I can brute-force an OLS regression model by turning a dichotomous dependent variable into numeric values of 0 (for failure) and 1 (for success). In *R*, I can do this by turning my dependent variable into a boolean statement. Lets try it with a model that predicts survival on the Titanic by fare paid.
+
+```{r lpm_survival}
+model_lpm <- lm((survival=="Survived")~fare, data=titanic)
+coef(model_lpm)
+```
+
+I now have a model that works, but what do the results mean? One way we can try to understand this model is by visualizing it on a scatterplot.
+
+```{r lpm-plot, fig.cap="Scatterplot of fare paid by survival on the Titanic with linear probability model fit. Points are shown with semi-transparency to address overplotting."}
+ggplot(titanic, aes(x=fare,  y=as.numeric(survival=="Survived")))+
+  geom_point(alpha=0.1)+
+  geom_smooth(method="lm", se=FALSE)+
+  scale_y_continuous(breaks = c(0,1), labels=c("0","1"))+
+  labs(x="fare paid in pounds", y="Titanic survival as numeric value")+
+  theme_bw()
+```
+
+All of the points fall on two horizontal lines at $y=0$ (deaths) and $y=1$ (survivors). We can sort of see the positive relationship in that the deaths are more tightly clustered around low values of fare, while the survivors are more spread out. The blue line plots the OLS regression line I just calculated above. 
+
+If we were to take all the passengers at any interval, we could calculate the proportion who survived by simply taking the means of the zeros and ones for the survival variable. Lets try that for all passengers who paid between ten and twenty pounds:
+
+```{r surival-means}
+mean(subset(titanic, fare>=10 & fare<=20)$survival=="Survived")
+```
+
+So about 37.9% of the passengers paying between 10 and 20 pounds survived. Figure \@ref(fig:lpm-plot-markup) below shows this point graphically. You can see that it falls pretty close to the best-fitting line. This best-fitting line is estimating the same exact thing: the predicted proportion of survivors at a given value of fare.
+
+```{r lpm-plot-markup, fig.cap="Scatterplot of fare paid by survival on the Titanic with linear probability model fit. Red dot shows proportion of surviving passengers within the grey band."}
+ggplot(titanic, aes(x=fare,  y=as.numeric(survival=="Survived")))+
+  annotate("rect", xmin = 10, xmax = 20, ymin = 0, ymax = 1, alpha = 0.2)+
+  geom_point(alpha=0.1)+
+  geom_smooth(method="lm", se=FALSE)+
+  geom_point(data=data.frame(fare=15, y=0.3793103), aes(y=y), color="red", size=2)+
+  scale_y_continuous(breaks = c(0,1), labels=c("0","1"))+
+  labs(x="fare paid in pounds", y="Titanic survival as numeric value")+
+  theme_bw()
+```
+
+This blue line is giving us the **linear probability model**. Formally, the linear probability model in this case gives us:
+
+$$\hat{p}_i=0.3059+0.0023(fare_i)$$
+
+The outcome, $\hat{p}_i$ is the predicted probability of survival for the $i$th passenger. When fare paid is zero, we expect that probability to be 0.3059 of 30.59%. The model predicts that each additional pound of fare paid is associated with a 0.23 percentage point increase in the probability of survival. 
+
+At first glance, this model seems to give us exactly what we said we wanted from the last section -- the predicted probability of survival for each passenger. However, it turns out there are two significant problems with the linear probability model that make it a less than ideal model. 
+
+### Heteroscedasticity
+
+The first problem is one we have seen before -- heteroscedasticity. However, we will now see it in a new form. From the previous section we know that the variance of the actual survival outcome for a passenger should be given by:
+
+$$p_i(1-p_i)$$
+
+The problem here is that the variance of the outcome is itself a function of the value of $p_i$ and $p_i$ in our model will be different for each passenger. So, we have unequal variance in the residuals of our outcome and violate the assumption of identical distributions. Each passenger is reaching into their own very personal Bernoulli distribution to decide whether they live or die. 
+
+This problem is theoretically correctable, via the **iteratively reweighted least squares** approach that we used in the previous module. In this case, we need to apply weights to our results that are the inverse of the variance for each observation. In this case, the weight for each observation should be:
+
+$$w_i=\frac{1}{\hat{p}_i(1-\hat{p}_i)}$$
+
+Where $\hat{p}_i$ is the estimated probability from our initial model. We can then iterate through models until our estimates stop changing. Lets try it out using our initial model from above as the starting point.
+
+```{r irls-lpm, error=TRUE}
+model_next <- model_lpm
+for(i in 1:10) {
+phat <- model_next$fitted.values
+weight <- 1/(phat*(1-phat))
+model_next <- update(model_next, w=weight)
+}
+```
+
+It looks like something went wrong. The problem is that some of the values for $\hat{p}_i$ are greater than one. You can look at the line in Figure \@ref(fig:lpm-plot) to confirm this issue. That causes problems in our approach because it makes some of the estimated weights negative. There is no particularly good approach to solving this problem. We could eliminate observations where $\hat{p}_i>1$ or we could truncate those values to some value like 0.99, but if we choose 0.999 rather than 0.99, we will get different results. The fundamental issue is that we are running into the second problem with linear probability models detailed below -- they can give you nonsense values for predicted probabilities outside the range of zero to one.
+
+One solution to this problem if we still want to fit this model and deal with heteroscedastictity is to apply robust standard errors as we saw in the last module:
+
+```{r robust-lpm}
+library(lmtest)
+library(sandwich)
+coeftest(model_lpm, vcov=vcovHC(model_lpm, "HC1"))
+```
+
+This approach should give us correct standard errors. However, as is often the case with robust standard errors, we are getting correct standard errors for a bad model because we have not been able to address the much more important problem.
+
+### Nonsense values
+
+By definition, the linear probability model fits probabilities via a straight line. The thing about straight lines is they just keep going up and up (and down and down) at a constant slope with no upper or lower limits on the values that they can take. However, a probability does have a very clear theoretical upper and lower bounds. Probabilities cannot be below zero or above one. You cannot have a -20% or 150% chance of surviving the Titanic. 
+
+In some cases, you may by happenstance get a line that fits within the theoretical range for the scope of your independent variable. However, there is no guarantee of this. Figure \@ref(fig:lpm-plot-nonsense) below clearly shows that we get predicted probabilities above one within the scope of the data for our linear probability model of survival on the Titanic by passenger class.
+
+```{r lpm-plot-nonsense, echo=FALSE, fig.cap="Scatterplot of fare paid by survival on the Titanic with linear probability model fit. Points are shown with semi-transparency to address overplotting. Nonsense values above one and below zero are shaded in red."}
+ggplot(titanic, aes(x=fare, 
+                    y=as.numeric(survival=="Survived")))+
+  annotate("rect",xmin=-Inf, xmax=Inf, ymin=1, ymax=Inf, alpha=0.2,
+           fill="red")+
+  annotate("text", x=250, y=1.2, label="Nonsense region")+
+  annotate("rect",xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=0, alpha=0.2,
+           fill="red")+
+  geom_hline(yintercept = c(0,1), linetype=2)+
+  geom_point(alpha=0.1)+
+  geom_smooth(method="lm", se=FALSE)+
+  scale_y_continuous(breaks = c(0,1), labels=c("0","1"))+
+  labs(x="fare paid in pounds", y="Titanic survival as numeric value")
+```
+
+While we can fix heteroscedasticity, there is no fix for this problem within the framework of the linear probability model. The linear probability model is not a very good model because it does not respect the underlying data generation process.
+
+### Logit transformation to the rescue
+
+In order to resolve this problem, we need some kind of transformation of the $p_i$ values that will cause them to be contained within the interval from zero to one. It turns out that the transformation we are looking for is the **logit** transformation.
+
+The logit transformation converts a probability into the log-odds. Formally, 
+
+$$logit(p)=log(\frac{p}{1-p})$$
+
+There are really two parts to this transformation. First, we convert from probabilities to odds by taking $p/(1-p)$. We have seen odds before in this course, in the section on two-way tables. There we learned how to calculate the odds ratio. The odds is the ratio of the expected number of successes to failures. So, if $p=0.75$, we expect that three out of every four trials will produce successes, on average. In terms of the odds, we expect three successes for every one failure. To convert:
+
+$$O=\frac{p}{1-p}=\frac{0.75}{1-0.75}=\frac{0.75}{0.25}=3$$
+
+Why do we convert from probabilities to odds? The advantage of the odds is that it has no upper limit. As the probability gets closer and closer to onem, the odds will approach infinity, with no finite limit. Therefore, any non-negative number for the odds can be converted back into a probability that will give sensible values between zero and one. I can convert back to a probability by:
+
+$$p=\frac{O}{1+O}$$
+
+So, for the case of $O=3$ above:
+
+$$p=\frac{3}{1+3}=\frac{3}{4}=0.75$$
+
+Lets choose a really high odds like $O=100,000$. If we convert back to a probability:
+
+$$p=\frac{100000}{1+100000}=\frac{1}{100001}=0.99999$$
+
+We get a very high probability, but its still less than one. 
+
+This partially helps us with our problems. If we were to look at a linear relationship between the odds of success and our independent variables we would get sensible probabilities no matter how high the predicted odds. However, it only partially helps us because it would still be possible to get negative odds from such a linear model which would be nonsensical.
+
+The second step of logging the odds will get us all the way there. If I log a value below one, I will get a negative value and that logged value will approach negative infinity as the original value approaches zero. So a log-odds can always be converted back to a probability that will lie between zero and one. 
+
+To convert from a log-odds $g$ to a probability, I take:
+
+$$p=\frac{e^g}{1+e^g}$$
+
+The value $e^g$ converts from log-odds to odds and then I just use the formula for converting from an odds to a probability. 
+
+In essence the log-odds, or *logit*, transformation stretches out my probabilities across the entire number line. Lets see what this looks like graphically for a sequence of probabilities from 1% to 99%:
+
+```{r logistic-curve, fig.cap="The relationship between probability and the logit transformation"}
+p <- seq(from=0.01, to=0.99, by=0.001)
+logit <- log(p/(1-p))
+ggplot(data.frame(p, logit), aes(x=logit, y=p))+
+  geom_line()+
+  geom_hline(yintercept = c(0, 1), linetype=2, color="red")+
+  labs(x="logit transformation", y="probability")+
+  theme_bw()
+```
+
+The "S" curve shown here is often called the **logistic curve**. There are a couple of things to note about this curve:
+
+- The curve approaches but never crosses the horizontal lines for $p=0$ and $p=1$. Thats because all finite logit values will produce probabilities within the correct theoretical range. 
+- A probability of 50% corresponds to a logit of zero. Logit values below zero indicate probabilities less than 50% and logit values above zero indicate probabilities greater than 50%. 
+
+So, it seems like we now have a potential solution to our problem with the linear probability model. If we were to transform our dependent variable from predicting probabilities to predicting log-odds, we could then get predicted log-odds for each passenger on the Titanic. When converted back to probabilities, we would be ensured that our predicted probabilities never strayed beyond zero and one. 
+
+That all sounds great, except there is an important catch. 
+
+```{r logit-transform-naive, error=TRUE}
+titanic$survived <- titanic$survival=="Survived"
+model_better <- lm(I(log(survived/(1-survived)))~fare, data=titanic)
+```
+
+We cannot actually apply this transformation directly to our dependent variable, as we have done in the past. Why not? The problem is that we want to apply this transformation directly to $p_i$ but we don't have $p_i$. We only have the actual recorded outcome as either a zero (died) or a one (survived). But there are no proper finite values of the logit at exactly zero and one. So, this approach will not work using OLS regression techniques. In order to get what we want, we need to move to a new model estimation technique -- the **Generalized Linear Model**.
+
 ---
 
 ## Generalized Linear Model
+
+
 
 ### Maximum Likelihood Estimation
 
