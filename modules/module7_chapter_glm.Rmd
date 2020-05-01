@@ -340,9 +340,146 @@ We cannot actually apply this transformation directly to our dependent variable,
 
 ## Generalized Linear Model
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/FbbHf4rdVgI")
+```
+
+Generalized linear models (GLM) will allow us to extend the basic idea of our linear model to incorporate more divderse outcomes and to specify more directly the **data generating process** behind our data. 
+
+To better understand what GLMs do, I want to return to a particular set-up of the linear model. In this set-up, there are two equations. The first equation partitions the value of an actual outcome $(y_i)$ into the part accounted for by our model $(\hat{y}_i)$ and the random residual "leftover" bits $(\epsilon_i)$:
+
+$$y_i=\hat{y}_i+\epsilon_i$$
+
+We then have a second equation that details how the structural model part $(\hat{y}_i)$ is specified by a linear function of the independent variables:
+
+$$\hat{y_i}=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$
+
+We should have a good sense of the second equation by now as its the basic linear model set-up. I want to focus more on the first equation right now. Its important to remember that the error terms $(\epsilon_i)$ are randomly drawn from some distribution. Its not important what that distribution is so long as all of the $\epsilon_i$ are drawn from the same distribution independently. However, for the purposes of illustration lets assume that the $\epsilon_i$ are being drawn from a normal distribution. We can then describe that distribution mathematically as:
+
+$$\epsilon_i \sim N(0, \sigma)$$
+
+The $\sim$ sign means "distributed as." In this case, our error terms are distributed as a normal distribution that is centered on zero and has some standard deviation $\sigma$. It doesn't really matter what that $\sigma$ is for our purposes here.
+
+Think about this from a data-generating perspective. To get an actual value of $y$ for the $i$th observation:
+
+1. We feed all of that observation's values for $x$ into our linear function which gives us a predicted value of $y$, $\hat{y}_i$. This is only the structural part. All observations with the same values of $x$ will get the same $\hat{y}_i$ because we have not added the random bit.
+2. Reach into our normal distribution and pick out a residual that we add onto the end of our predicted value to get the actual value. This residual adjusts for all the random factors not accounted for in our model that might cause variation between observations with the exact same predicted value. 
+
+One way of thinking about the second part is that instead of reaching into a normal distribution centered on zero for the residual, we are reaching into a normal distribution centered on $\hat{y}_i$ because all we are going to do is add the constant value of $\hat{y}_i$ to whatever we pull out of that distribution. Therefore, we can actually re-write the first equation parsing $y$ into the structural and stochastic components as:
+
+$$y_i \sim N(\hat{y}_i, \sigma)$$
+
+We can now have all the pieces to reformulate this linear model in the framework of the generalized linear model. 
+
+### Generalized linear model framework
+
+The generalized linear model requires two components: the **error distribution** and the **link function**.
+
+The **error distribution** specifies how the outcome that we actually measure in our data is distributed. In this case, the error distribution is given by:
+
+$$y_i \sim N(\hat{y}_i, \sigma)$$
+
+Therefore, the error distribution is normal. The normal distribution is also sometimes called the **gaussian* distribution and that is how we will specify it in *R* below.
+
+The **link function** specifies how the linear function of the independent variables is related to the key parameter of the error distribution. In this case the key parameter of the error distribution is $\hat{y}_i$ and our linear function is related directly to that parameter:
+
+$$\hat{y_i}=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$
+
+In this case, the link function is somewhat invisible because there is not really a link function at all. We are simply relating the linear function of the independent variables directly to the key parameter of the error distribution. In practice this si called the *identity* link.
+
+So within the generalized linear model framework, we can express our traditional linear model as using a gaussian error distribution and an identity link. Lets go ahead and try that out. The command `glm` in *R* will estimate a generalized linear model. We will talk later in this section about how that estimation works, but for now I just want to focus on the results. 
 
 
-### Maximum Likelihood Estimation
+```{r glm-example}
+summary(glm(indegree~nsports, data=popularity,
+            family=gaussian(identity)))$coef
+```
+
+To specify the error distribution and link function, I used the `family` argument in the `glm` command. Lets compare this result to the traditional `lm` command that is estimated via OLS regression:
+
+```{r lm-example}
+summary(lm(indegree~nsports, data=popularity))$coef
+```
+
+The results are identical. Keep in mind that these two commands used completely different estimation strategies. We know that OLS regression minimizes the sum of squared residuals. The GLM uses a technique called **maximum likelihood estimation** that we will learn about later in this section. However, the key point is that they both produced the same estimate. When we specify the data-generating process as a guassian error distribution with an identity link, we are estimating a traditional linear model.
+
+At this point, this new framework and estimation approach hasn't really done much for us. The `lm` command will work fine and we also don't need to make the assumption that our residual terms are normally distributed for OLS regression models to be valid. So why set up this more complex framework? The answer is that by changin the error distribution and link function, we can accomodate a broad set of models that are cannot be estimated well by OLS regression techniques. Most of those models involve categorical variables. The most common model is the **logit model** (also called the logistic regression model) that can be used for dichotomous outcomes.
+
+### A GLM for dichotomous outcomes
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/2uClzwRGMuk")
+```
+
+In order to help us understand the logit model better, I want to start this in reverse. We will play god and actually generate the data. Then we can use the model to help recover the process we used to generate the data.
+
+For this example, I want to stick with the theme of ocean liner disasters, but I want to create my own disaster. To do that, we are going to use the fictional example of the *Good Ship Lollipop*. The *Good Ship Lollipop* has a large number of 10,000 passengers. We know two things about these passengers: their gender and the amount they paid in fare. To create the passengers of the *Good Ship Lollipop* I am going to use some handy functions in R for producing random outcomes:
+
+```{r good-ship-lollipop}
+good_ship <- data.frame(gender=sample(c("Male","Female"),10000,replace=TRUE),
+                        fare=rgamma(10000, 1,0.01))
+summary(good_ship)
+```
+
+The data looks pretty reasonable. Unfortunately, the *Good Ship Lollipop* is going to hit an iceberg and sink on its first voyage because the crew were too busy singing and drinking spiked Shirley Temples to keep an eye out. Some passengers will survive this sinking and some will not. Since I am playing god, the first thing I need to do is figure out the underlying $p_i$ probability of survival for each passenger.
+
+I want $p_i$ to be a function of gender and fiare paid. However, I know that its not safe or sensible to make it a direct linear function because I am end up with nonsensical values of $p_i$. If I instead make the log-odds (or logit) of survival be a linear function of gender and fare paid, then I will be assured that when the log-odds are converted to probabilities, all the probabilities will fall between zero and one. So I set up my model:
+
+$$log(\frac{p_i}{1-p_i})=0.05-0.40(male_i)+0.005(fare_i)$$
+
+The numbers I put in here aren't particular important and I could vary them if I wanted to change how they related to survival. Right now, I am saying that men were less likely to survive and fare was positively associated with survival. The baseline log-odds of survival for a man who paid no fare is 0.05 which works out to a probability of 0.512 or 51.2%.
+
+Lets go ahead and feed this equation into my data to get predicted log-odds. We can then convert from those log-odds to probabilities:
+
+```{r gsl-convertlogit}
+good_ship$log_odds <- 0.05-0.4*(good_ship$gender=="Male")+0.005*good_ship$fare
+good_ship$odds <- exp(good_ship$log_odds)
+good_ship$probs <- good_ship$odds/(1+good_ship$odds)
+```
+
+The `probs` vector gives us the probability of survival for every passenger. In order to complete this process I now need to have every passenger make their Bernoulli trial to see if they survive the disaster. I can do this easily in *R* by using the `rbinom` function:
+
+```{r gsl-killem}
+good_ship$survived <- rbinom(10000, 1, good_ship$probs)
+```
+
+Lets use `ggplot` to visualize how this all played out:
+
+```{r gsl-visualize, fig.cap="Life and death on the Good Ship Lollipop. The lines show the underlying probabilities of survival by gender and survival. The dots show actual outcomes after drawing a bernoulli trial for each passenger."}
+ggplot(good_ship, aes(x=fare, color=gender))+
+  geom_point(aes(y=survived), alpha=0.2)+
+  geom_line(aes(y=probs))+
+  labs(x="fare paid", y="probability of survival")+
+  theme_bw()
+```
+
+We can see that women were more likely to survive. This difference in survival shrank as fare paid increased because both groups started to approach the 100% probability threshold. We can also see from the dots that more women ended up in the survivor group as we would expect and that people were more likely to survive at higher fares paid. What we are seeing in Figure \@ref(fig:gsl-visualize) is the data-generating process. The lines give us the underlying probabilities and the dots show us the realization of those probabilities into the ones and zeros we actually would have in the data. 
+
+Can we reverse this data-generating process to recover the values I used to construct the probabilities? We can do so using a GLM approach. In this case we know the error distribution and link function.
+
+The error distribution tells us how our dependent variable is distributed. In this case, we either have a 1 (survived) or a 0 (died). Each of these values was produced by a binomial distribution with $n=1$ and a probability equal to $p_i$. So:
+
+$$y_i \sim binom(1, p_i)$$
+
+The key parameter in this error distribution is $p_i$. The link function should tell us how we relate $p_i$ to the linear function of the independent variables of gender and fare. In this case, the relationship is not direct. We related the linear function of the independent variables to the log-odds or logit of the probability of survival:
+
+$$log(\frac{p_i}{1-p_i})=\beta_0+\beta_1(male_i)+\beta_2(fare_i)$$
+
+So to run this model we need to specify a **binomial** error distribution and a **logit** link function in a `glm` framework. Lets try it out:
+
+```{r gsl-logit}
+model.glm <- glm(survived~gender+fare, data=good_ship, 
+                  family=binomial(link=logit))
+summary(model.glm)$coef
+```
+
+It worked! Note that my coefficient estimates are very close to the actual values I used when playing god. They differ slightly because there is some inherent random in choosing survivors and deaths by the binomial distribution. 
+
+We now have a framework for a model that predicts dichotomous outcomes. This is called the **logit model** or **logistic regression model**. In practice, it is one specification of the generalized linear model. 
+
+However, we still need to understand two things. First, how are those values actually estimated in the generalized linear model? We will take that up below. Second, how do we interpret those results? We will take that up with a more thorough discussion of the logit model in the next section.
+
+### Maximum likelihood estimation
 
 ---
 
