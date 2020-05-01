@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-04-20" />
+<meta name="date" content="2020-05-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="linear-probability-model.html"/>
-<link rel="next" href="maximum-likelihood-estimation.html"/>
+<link rel="next" href="logit-model.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -123,6 +123,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<link rel="stylesheet" href="my_styles.css" type="text/css" />
 </head>
 
 <body>
@@ -287,13 +288,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="modeling-categorical-outcomes.html"><a href="modeling-categorical-outcomes.html"><i class="fa fa-check"></i>Modeling Categorical Outcomes</a><ul>
-<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html"><i class="fa fa-check"></i>Dichotomous Outcomes and The Binomial Distribution</a></li>
-<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html"><i class="fa fa-check"></i>Linear Probability Model</a></li>
-<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
-<li class="chapter" data-level="" data-path="maximum-likelihood-estimation.html"><a href="maximum-likelihood-estimation.html"><i class="fa fa-check"></i>Maximum Likelihood Estimation</a></li>
-<li class="chapter" data-level="" data-path="logistic-regression-model.html"><a href="logistic-regression-model.html"><i class="fa fa-check"></i>Logistic Regression Model</a></li>
-<li class="chapter" data-level="" data-path="models-for-nominal-polytomous-outcomes.html"><a href="models-for-nominal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Nominal Polytomous Outcomes</a></li>
-<li class="chapter" data-level="" data-path="models-for-ordinal-polytomous-outcomes.html"><a href="models-for-ordinal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Ordinal Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html"><i class="fa fa-check"></i>Dichotomous Outcomes and The Binomial Distribution</a><ul>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html#the-binomial-distribution"><i class="fa fa-check"></i>The binomial distribution</a></li>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html#the-binomial-distribution-as-a-data-generating-process"><i class="fa fa-check"></i>The binomial distribution as a data-generating process</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html"><i class="fa fa-check"></i>Linear Probability Model</a><ul>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html#heteroscedasticity-1"><i class="fa fa-check"></i>Heteroscedasticity</a></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html#nonsense-values"><i class="fa fa-check"></i>Nonsense values</a></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html#logit-transformation-to-the-rescue"><i class="fa fa-check"></i>Logit transformation to the rescue</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html"><i class="fa fa-check"></i>Generalized Linear Model</a><ul>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#generalized-linear-model-framework"><i class="fa fa-check"></i>Generalized linear model framework</a></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#a-glm-for-dichotomous-outcomes"><i class="fa fa-check"></i>A GLM for dichotomous outcomes</a></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum likelihood estimation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a></li>
+<li class="chapter" data-level="" data-path="models-polytomous-outcomes.html"><a href="models-polytomous-outcomes.html"><i class="fa fa-check"></i>Models Polytomous Outcomes</a></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
@@ -398,7 +408,107 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="generalized-linear-model" class="section level2">
 <h2>Generalized Linear Model</h2>
+<iframe src="https://www.youtube.com/embed/FbbHf4rdVgI" width="672" height="400px">
+</iframe>
+<p>Generalized linear models (GLM) will allow us to extend the basic idea of our linear model to incorporate more divderse outcomes and to specify more directly the <strong>data generating process</strong> behind our data.</p>
+<p>To better understand what GLMs do, I want to return to a particular set-up of the linear model. In this set-up, there are two equations. The first equation partitions the value of an actual outcome <span class="math inline">\((y_i)\)</span> into the part accounted for by our model <span class="math inline">\((\hat{y}_i)\)</span> and the random residual “leftover” bits <span class="math inline">\((\epsilon_i)\)</span>:</p>
+<p><span class="math display">\[y_i=\hat{y}_i+\epsilon_i\]</span></p>
+<p>We then have a second equation that details how the structural model part <span class="math inline">\((\hat{y}_i)\)</span> is specified by a linear function of the independent variables:</p>
+<p><span class="math display">\[\hat{y_i}=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}\]</span></p>
+<p>We should have a good sense of the second equation by now as its the basic linear model set-up. I want to focus more on the first equation right now. Its important to remember that the error terms <span class="math inline">\((\epsilon_i)\)</span> are randomly drawn from some distribution. Its not important what that distribution is so long as all of the <span class="math inline">\(\epsilon_i\)</span> are drawn from the same distribution independently. However, for the purposes of illustration lets assume that the <span class="math inline">\(\epsilon_i\)</span> are being drawn from a normal distribution. We can then describe that distribution mathematically as:</p>
+<p><span class="math display">\[\epsilon_i \sim N(0, \sigma)\]</span></p>
+<p>The <span class="math inline">\(\sim\)</span> sign means “distributed as.” In this case, our error terms are distributed as a normal distribution that is centered on zero and has some standard deviation <span class="math inline">\(\sigma\)</span>. It doesn’t really matter what that <span class="math inline">\(\sigma\)</span> is for our purposes here.</p>
+<p>Think about this from a data-generating perspective. To get an actual value of <span class="math inline">\(y\)</span> for the <span class="math inline">\(i\)</span>th observation:</p>
+<ol style="list-style-type: decimal">
+<li>We feed all of that observation’s values for <span class="math inline">\(x\)</span> into our linear function which gives us a predicted value of <span class="math inline">\(y\)</span>, <span class="math inline">\(\hat{y}_i\)</span>. This is only the structural part. All observations with the same values of <span class="math inline">\(x\)</span> will get the same <span class="math inline">\(\hat{y}_i\)</span> because we have not added the random bit.</li>
+<li>Reach into our normal distribution and pick out a residual that we add onto the end of our predicted value to get the actual value. This residual adjusts for all the random factors not accounted for in our model that might cause variation between observations with the exact same predicted value.</li>
+</ol>
+<p>One way of thinking about the second part is that instead of reaching into a normal distribution centered on zero for the residual, we are reaching into a normal distribution centered on <span class="math inline">\(\hat{y}_i\)</span> because all we are going to do is add the constant value of <span class="math inline">\(\hat{y}_i\)</span> to whatever we pull out of that distribution. Therefore, we can actually re-write the first equation parsing <span class="math inline">\(y\)</span> into the structural and stochastic components as:</p>
+<p><span class="math display">\[y_i \sim N(\hat{y}_i, \sigma)\]</span></p>
+<p>We can now have all the pieces to reformulate this linear model in the framework of the generalized linear model.</p>
+<div id="generalized-linear-model-framework" class="section level3">
+<h3>Generalized linear model framework</h3>
+<p>The generalized linear model requires two components: the <strong>error distribution</strong> and the <strong>link function</strong>.</p>
+<p>The <strong>error distribution</strong> specifies how the outcome that we actually measure in our data is distributed. In this case, the error distribution is given by:</p>
+<p><span class="math display">\[y_i \sim N(\hat{y}_i, \sigma)\]</span></p>
+<p>Therefore, the error distribution is normal. The normal distribution is also sometimes called the **gaussian* distribution and that is how we will specify it in <em>R</em> below.</p>
+<p>The <strong>link function</strong> specifies how the linear function of the independent variables is related to the key parameter of the error distribution. In this case the key parameter of the error distribution is <span class="math inline">\(\hat{y}_i\)</span> and our linear function is related directly to that parameter:</p>
+<p><span class="math display">\[\hat{y_i}=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}\]</span></p>
+<p>In this case, the link function is somewhat invisible because there is not really a link function at all. We are simply relating the linear function of the independent variables directly to the key parameter of the error distribution. In practice this si called the <em>identity</em> link.</p>
+<p>So within the generalized linear model framework, we can express our traditional linear model as using a gaussian error distribution and an identity link. Lets go ahead and try that out. The command <code>glm</code> in <em>R</em> will estimate a generalized linear model. We will talk later in this section about how that estimation works, but for now I just want to focus on the results.</p>
+<div class="sourceCode" id="cb520"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb520-1" title="1"><span class="kw">summary</span>(<span class="kw">glm</span>(indegree<span class="op">~</span>nsports, <span class="dt">data=</span>popularity,</a>
+<a class="sourceLine" id="cb520-2" title="2">            <span class="dt">family=</span><span class="kw">gaussian</span>(identity)))<span class="op">$</span>coef</a></code></pre></div>
+<pre><code>##              Estimate Std. Error  t value     Pr(&gt;|t|)
+## (Intercept) 3.9969128 0.07221383 55.34830 0.000000e+00
+## nsports     0.5044705 0.04282271 11.78044 1.462129e-31</code></pre>
+<p>To specify the error distribution and link function, I used the <code>family</code> argument in the <code>glm</code> command. Lets compare this result to the traditional <code>lm</code> command that is estimated via OLS regression:</p>
+<div class="sourceCode" id="cb522"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb522-1" title="1"><span class="kw">summary</span>(<span class="kw">lm</span>(indegree<span class="op">~</span>nsports, <span class="dt">data=</span>popularity))<span class="op">$</span>coef</a></code></pre></div>
+<pre><code>##              Estimate Std. Error  t value     Pr(&gt;|t|)
+## (Intercept) 3.9969128 0.07221383 55.34830 0.000000e+00
+## nsports     0.5044705 0.04282271 11.78044 1.462129e-31</code></pre>
+<p>The results are identical. Keep in mind that these two commands used completely different estimation strategies. We know that OLS regression minimizes the sum of squared residuals. The GLM uses a technique called <strong>maximum likelihood estimation</strong> that we will learn about later in this section. However, the key point is that they both produced the same estimate. When we specify the data-generating process as a guassian error distribution with an identity link, we are estimating a traditional linear model.</p>
+<p>At this point, this new framework and estimation approach hasn’t really done much for us. The <code>lm</code> command will work fine and we also don’t need to make the assumption that our residual terms are normally distributed for OLS regression models to be valid. So why set up this more complex framework? The answer is that by changin the error distribution and link function, we can accomodate a broad set of models that are cannot be estimated well by OLS regression techniques. Most of those models involve categorical variables. The most common model is the <strong>logit model</strong> (also called the logistic regression model) that can be used for dichotomous outcomes.</p>
+</div>
+<div id="a-glm-for-dichotomous-outcomes" class="section level3">
+<h3>A GLM for dichotomous outcomes</h3>
+<iframe src="https://www.youtube.com/embed/2uClzwRGMuk" width="672" height="400px">
+</iframe>
+<p>In order to help us understand the logit model better, I want to start this in reverse. We will play god and actually generate the data. Then we can use the model to help recover the process we used to generate the data.</p>
+<p>For this example, I want to stick with the theme of ocean liner disasters, but I want to create my own disaster. To do that, we are going to use the fictional example of the <em>Good Ship Lollipop</em>. The <em>Good Ship Lollipop</em> has a large number of 10,000 passengers. We know two things about these passengers: their gender and the amount they paid in fare. To create the passengers of the <em>Good Ship Lollipop</em> I am going to use some handy functions in R for producing random outcomes:</p>
+<div class="sourceCode" id="cb524"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb524-1" title="1">good_ship &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">gender=</span><span class="kw">sample</span>(<span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>,<span class="st">&quot;Female&quot;</span>),<span class="dv">10000</span>,<span class="dt">replace=</span><span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb524-2" title="2">                        <span class="dt">fare=</span><span class="kw">rgamma</span>(<span class="dv">10000</span>, <span class="dv">1</span>,<span class="fl">0.01</span>))</a>
+<a class="sourceLine" id="cb524-3" title="3"><span class="kw">summary</span>(good_ship)</a></code></pre></div>
+<pre><code>##     gender          fare         
+##  Female:5057   Min.   :  0.0031  
+##  Male  :4943   1st Qu.: 28.4345  
+##                Median : 69.1671  
+##                Mean   : 99.8009  
+##                3rd Qu.:137.6850  
+##                Max.   :872.0241</code></pre>
+<p>The data looks pretty reasonable. Unfortunately, the <em>Good Ship Lollipop</em> is going to hit an iceberg and sink on its first voyage because the crew were too busy singing and drinking spiked Shirley Temples to keep an eye out. Some passengers will survive this sinking and some will not. Since I am playing god, the first thing I need to do is figure out the underlying <span class="math inline">\(p_i\)</span> probability of survival for each passenger.</p>
+<p>I want <span class="math inline">\(p_i\)</span> to be a function of gender and fiare paid. However, I know that its not safe or sensible to make it a direct linear function because I am end up with nonsensical values of <span class="math inline">\(p_i\)</span>. If I instead make the log-odds (or logit) of survival be a linear function of gender and fare paid, then I will be assured that when the log-odds are converted to probabilities, all the probabilities will fall between zero and one. So I set up my model:</p>
+<p><span class="math display">\[log(\frac{p_i}{1-p_i})=0.05-0.40(male_i)+0.005(fare_i)\]</span></p>
+<p>The numbers I put in here aren’t particular important and I could vary them if I wanted to change how they related to survival. Right now, I am saying that men were less likely to survive and fare was positively associated with survival. The baseline log-odds of survival for a man who paid no fare is 0.05 which works out to a probability of 0.512 or 51.2%.</p>
+<p>Lets go ahead and feed this equation into my data to get predicted log-odds. We can then convert from those log-odds to probabilities:</p>
+<div class="sourceCode" id="cb526"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb526-1" title="1">good_ship<span class="op">$</span>log_odds &lt;-<span class="st"> </span><span class="fl">0.05-0.4</span><span class="op">*</span>(good_ship<span class="op">$</span>gender<span class="op">==</span><span class="st">&quot;Male&quot;</span>)<span class="op">+</span><span class="fl">0.005</span><span class="op">*</span>good_ship<span class="op">$</span>fare</a>
+<a class="sourceLine" id="cb526-2" title="2">good_ship<span class="op">$</span>odds &lt;-<span class="st"> </span><span class="kw">exp</span>(good_ship<span class="op">$</span>log_odds)</a>
+<a class="sourceLine" id="cb526-3" title="3">good_ship<span class="op">$</span>probs &lt;-<span class="st"> </span>good_ship<span class="op">$</span>odds<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>good_ship<span class="op">$</span>odds)</a></code></pre></div>
+<p>The <code>probs</code> vector gives us the probability of survival for every passenger. In order to complete this process I now need to have every passenger make their Bernoulli trial to see if they survive the disaster. I can do this easily in <em>R</em> by using the <code>rbinom</code> function:</p>
+<div class="sourceCode" id="cb527"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb527-1" title="1">good_ship<span class="op">$</span>survived &lt;-<span class="st"> </span><span class="kw">rbinom</span>(<span class="dv">10000</span>, <span class="dv">1</span>, good_ship<span class="op">$</span>probs)</a></code></pre></div>
+<p>Lets use <code>ggplot</code> to visualize how this all played out:</p>
+<div class="sourceCode" id="cb528"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb528-1" title="1"><span class="kw">ggplot</span>(good_ship, <span class="kw">aes</span>(<span class="dt">x=</span>fare, <span class="dt">color=</span>gender))<span class="op">+</span></a>
+<a class="sourceLine" id="cb528-2" title="2"><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">y=</span>survived), <span class="dt">alpha=</span><span class="fl">0.2</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb528-3" title="3"><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">y=</span>probs))<span class="op">+</span></a>
+<a class="sourceLine" id="cb528-4" title="4"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;fare paid&quot;</span>, <span class="dt">y=</span><span class="st">&quot;probability of survival&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb528-5" title="5"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:gsl-visualize"></span>
+<img src="stat_book_files/figure-html/gsl-visualize-1.png" alt="Life and death on the Good Ship Lollipop. The lines show the underlying probabilities of survival by gender and survival. The dots show actual outcomes after drawing a bernoulli trial for each passenger." width="672" />
+<p class="caption">
+Figure 98: Life and death on the Good Ship Lollipop. The lines show the underlying probabilities of survival by gender and survival. The dots show actual outcomes after drawing a bernoulli trial for each passenger.
+</p>
+</div>
+<p>We can see that women were more likely to survive. This difference in survival shrank as fare paid increased because both groups started to approach the 100% probability threshold. We can also see from the dots that more women ended up in the survivor group as we would expect and that people were more likely to survive at higher fares paid. What we are seeing in Figure <a href="generalized-linear-model.html#fig:gsl-visualize">98</a> is the data-generating process. The lines give us the underlying probabilities and the dots show us the realization of those probabilities into the ones and zeros we actually would have in the data.</p>
+<p>Can we reverse this data-generating process to recover the values I used to construct the probabilities? We can do so using a GLM approach. In this case we know the error distribution and link function.</p>
+<p>The error distribution tells us how our dependent variable is distributed. In this case, we either have a 1 (survived) or a 0 (died). Each of these values was produced by a binomial distribution with <span class="math inline">\(n=1\)</span> and a probability equal to <span class="math inline">\(p_i\)</span>. So:</p>
+<p><span class="math display">\[y_i \sim binom(1, p_i)\]</span></p>
+<p>The key parameter in this error distribution is <span class="math inline">\(p_i\)</span>. The link function should tell us how we relate <span class="math inline">\(p_i\)</span> to the linear function of the independent variables of gender and fare. In this case, the relationship is not direct. We related the linear function of the independent variables to the log-odds or logit of the probability of survival:</p>
+<p><span class="math display">\[log(\frac{p_i}{1-p_i})=\beta_0+\beta_1(male_i)+\beta_2(fare_i)\]</span></p>
+<p>So to run this model we need to specify a <strong>binomial</strong> error distribution and a <strong>logit</strong> link function in a <code>glm</code> framework. Lets try it out:</p>
+<div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb529-1" title="1">model.glm &lt;-<span class="st"> </span><span class="kw">glm</span>(survived<span class="op">~</span>gender<span class="op">+</span>fare, <span class="dt">data=</span>good_ship, </a>
+<a class="sourceLine" id="cb529-2" title="2">                  <span class="dt">family=</span><span class="kw">binomial</span>(<span class="dt">link=</span>logit))</a>
+<a class="sourceLine" id="cb529-3" title="3"><span class="kw">summary</span>(model.glm)<span class="op">$</span>coef</a></code></pre></div>
+<pre><code>##                 Estimate   Std. Error   z value     Pr(&gt;|z|)
+## (Intercept)  0.043243079 0.0366186671  1.180903 2.376414e-01
+## genderMale  -0.405344191 0.0418497872 -9.685693 3.468482e-22
+## fare         0.005410885 0.0002589993 20.891509 6.396671e-97</code></pre>
+<p>It worked! Note that my coefficient estimates are very close to the actual values I used when playing god. They differ slightly because there is some inherent random in choosing survivors and deaths by the binomial distribution.</p>
+<p>We now have a framework for a model that predicts dichotomous outcomes. This is called the <strong>logit model</strong> or <strong>logistic regression model</strong>. In practice, it is one specification of the generalized linear model.</p>
+<p>However, we still need to understand two things. First, how are those values actually estimated in the generalized linear model? We will take that up below. Second, how do we interpret those results? We will take that up with a more thorough discussion of the logit model in the next section.</p>
+</div>
+<div id="maximum-likelihood-estimation" class="section level3">
+<h3>Maximum likelihood estimation</h3>
 <hr />
+</div>
 </div>
             </section>
 
@@ -406,7 +516,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         </div>
       </div>
 <a href="linear-probability-model.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="maximum-likelihood-estimation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="logit-model.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

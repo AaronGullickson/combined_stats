@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-04-20" />
+<meta name="date" content="2020-05-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -123,6 +123,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<link rel="stylesheet" href="my_styles.css" type="text/css" />
 </head>
 
 <body>
@@ -287,13 +288,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="modeling-categorical-outcomes.html"><a href="modeling-categorical-outcomes.html"><i class="fa fa-check"></i>Modeling Categorical Outcomes</a><ul>
-<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html"><i class="fa fa-check"></i>Dichotomous Outcomes and The Binomial Distribution</a></li>
-<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html"><i class="fa fa-check"></i>Linear Probability Model</a></li>
-<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
-<li class="chapter" data-level="" data-path="maximum-likelihood-estimation.html"><a href="maximum-likelihood-estimation.html"><i class="fa fa-check"></i>Maximum Likelihood Estimation</a></li>
-<li class="chapter" data-level="" data-path="logistic-regression-model.html"><a href="logistic-regression-model.html"><i class="fa fa-check"></i>Logistic Regression Model</a></li>
-<li class="chapter" data-level="" data-path="models-for-nominal-polytomous-outcomes.html"><a href="models-for-nominal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Nominal Polytomous Outcomes</a></li>
-<li class="chapter" data-level="" data-path="models-for-ordinal-polytomous-outcomes.html"><a href="models-for-ordinal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Ordinal Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html"><i class="fa fa-check"></i>Dichotomous Outcomes and The Binomial Distribution</a><ul>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html#the-binomial-distribution"><i class="fa fa-check"></i>The binomial distribution</a></li>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html#the-binomial-distribution-as-a-data-generating-process"><i class="fa fa-check"></i>The binomial distribution as a data-generating process</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html"><i class="fa fa-check"></i>Linear Probability Model</a><ul>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html#heteroscedasticity-1"><i class="fa fa-check"></i>Heteroscedasticity</a></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html#nonsense-values"><i class="fa fa-check"></i>Nonsense values</a></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html#logit-transformation-to-the-rescue"><i class="fa fa-check"></i>Logit transformation to the rescue</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html"><i class="fa fa-check"></i>Generalized Linear Model</a><ul>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#generalized-linear-model-framework"><i class="fa fa-check"></i>Generalized linear model framework</a></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#a-glm-for-dichotomous-outcomes"><i class="fa fa-check"></i>A GLM for dichotomous outcomes</a></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum likelihood estimation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a></li>
+<li class="chapter" data-level="" data-path="models-polytomous-outcomes.html"><a href="models-polytomous-outcomes.html"><i class="fa fa-check"></i>Models Polytomous Outcomes</a></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
@@ -398,7 +408,129 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="dichotomous-outcomes-and-the-binomial-distribution" class="section level2">
 <h2>Dichotomous Outcomes and The Binomial Distribution</h2>
+<iframe src="https://www.youtube.com/embed/WMxenh7t_Rs" width="672" height="400px">
+</iframe>
+<p>We now have a great many tools to produce more complex and realistic specifications for the right-hand side of the linear model formula. We can add dummy variables, interaction terms, transformations, splines, and polynomial terms. For outcomes, however, we are still stuck with quantitative variables, which eliminates a lot of potential outcomes that we care about in the social sciences.</p>
+<p>Lets take the Titanic data as an example. The obvious outcome of interest is whether someone survived or died on the Titanic. We already know how to examine a bivariate relationship between survival and one other variable. We can do this using a two-way table if the other variable is categorical and mean differences if both variables are quantitative. However, we can’t put this into a model framework where we can control for multiple variables simultaneously, look at interaction terms, model non-linearity, etc.</p>
+<p>For example, we know that women were more likely to survive the Titanic than men and we know that higher-class passengers were more likely to survive than lower-class passengers. However, we also know that women were more likely to be higher-class passengers than men. How much of the gender difference in survival might be accounted for by these underlying class differences? Alternatively, we might be interested in interacting gender and passenger class to look at how the gender difference in survival varies by passenger class. Both of these tasks would be easier if we could use the same model framework we have developed to predict survival and death.</p>
+<p>It turns out that we can use this model framework, but in order to do so we need to develop more understanding of the <strong>data-generating process</strong> that underlies the survivals and deaths on the Titanic, and by extension any dichotomous outcome in which there is a choice between two categorical possibilities. It turns out that this data-generating process is the <strong>binomial distribution</strong>.</p>
+<div id="the-binomial-distribution" class="section level3">
+<h3>The binomial distribution</h3>
+<p>The binomial distribution is a theoretical probability distribution that arises when we have some process that follows these rules:</p>
+<ul>
+<li><p>We perform <span class="math inline">\(n\)</span> repeated <strong>independent</strong> trials where the result of each trial is either a <strong>success</strong> or <strong>failure</strong>. The language of “success”" and “failure”" here is purely aesthetic. We can use the binomial distribution in any case where there are two possible outcomes.</p></li>
+<li><p>The probability of success on each trial is given by <span class="math inline">\(p\)</span>. Because there are only two possible outcomes, the probability of a failure must therefore be <span class="math inline">\(1-p\)</span>.</p></li>
+</ul>
+<p>The binomial distribution governs how many successes we can expect to see in these <span class="math inline">\(n\)</span> trials. We consider that number of successes to be a <strong>random variable</strong> and traditionally write it as <span class="math inline">\(X\)</span>.</p>
+<p>One of the simplest example of a binomial distribution would be to count the number of heads in a certain number of coin tosses. In this case, <span class="math inline">\(p=0.5\)</span>. However that example is boring so instead we will consider the basic dice mechanic from the popular <a href="https://en.wikipedia.org/wiki/Shadowrun">Shadowrun tabletop role-playing game</a>. In that game, players determine whether their characters succeed at a task by rolling a “dice pool” which is a certain number of six-sided die. They then count the number of 5’s or 6’s that they roll on this dice. This count then determines whether they succeed and by how much. On an evenly-weighted die, the probability of rolling 5 or 6 should be two out of six, which simplifies to one out of three, so we have a binomial distribution with <span class="math inline">\(n\)</span> equal to how many dice the character has in their pool and <span class="math inline">\(p=1/3\)</span>.</p>
+<p>The binomial distribution formula below will tell us the probability that <span class="math inline">\(X\)</span> equals some number of successes <span class="math inline">\(k\)</span>:</p>
+<p><span class="math display">\[P(X=k)={n \choose k}p^k(1-p)^{n-k}\]</span></p>
+<p>This formula may look complex, but its actually fairly intuitive if we break down into its parts. The binomial formula basically has two parts:</p>
+<ul>
+<li><span class="math inline">\(p^k(1-p)^{n-k}\)</span> defines the probability of getting any particular sequence of <span class="math inline">\(k\)</span> successes and <span class="math inline">\(n-k\)</span> failures.</li>
+<li><span class="math inline">\({n \choose k}\)</span> tells us the number of unique ways that we can combine <span class="math inline">\(k\)</span> successes and <span class="math inline">\(n-k\)</span> into a sequence.</li>
+</ul>
+<p>Lets start with the first part. Lets assume that our Shadowrun player had a dice pool of five dice, so <span class="math inline">\(n=5\)</span>. What is the probability that they rolled the following sequence: success, success, failure, failure, failure?</p>
+<p>One important feature of probabilities is that when events are <strong>independent</strong>, then the probability that they <strong>all</strong> happen is given by multiplying the individual probabilities together. In this case, the probability of a success is <span class="math inline">\(1/3\)</span> and the probability of a failure is <span class="math inline">\(2/3\)</span>. Therefore the probability of getting that <strong>exact</strong> sequence is given by:</p>
+<p><span class="math display">\[(1/3)(1/3)(2/3)(2/3)(2/3)=(1/3)^2(2/3)^3=0.033\]</span></p>
+<p>I just multiply the probabilities together to get the probability of the exact sequence. Because I am multiplying the same number together, I can collect these terms together by using powers. The probability of getting this <strong>exact</strong> sequence is 0.033 or 3.3%.</p>
+<p>Note that this is also the probability of getting the sequence of success, failure, success, failure, failure because the order of the multiplication can be moved around and will still come out to <span class="math inline">\((1/3)^2(2/3)^3\)</span>. So, this is the probability of getting any particular sequence of two successes and three failures.</p>
+<p>I can generalize this to any <span class="math inline">\(n\)</span> and <span class="math inline">\(k\)</span> by just replacing the numbers with the abstract values. So:
+<span class="math display">\[p^k(1-p)^{n-k}\]</span>
+is the probability of any particular sequence of <span class="math inline">\(k\)</span> successes and <span class="math inline">\(n-k\)</span> failures in <span class="math inline">\(n\)</span> trials.</p>
+<p>Notice that I keep saying “any particular sequence.” If we are only interested in the total number of successes, we don’t care what order they come in. However, the equation above, only gives us the probability of getting a particular order of <span class="math inline">\(k\)</span> successes and <span class="math inline">\(n-k\)</span> failures. To consider the total probability of <span class="math inline">\(k\)</span> successes, we have to consider all the possible ways we could get a sequence giving us <span class="math inline">\(k\)</span> successes.</p>
+<p>For example, to continue our example of the Shadowrun dice pool of five dice, how many ways could we combine two successes and three failures. Here are all the ways:</p>
+<ul>
+<li>SSFFF</li>
+<li>SFSFF</li>
+<li>SFFSF</li>
+<li>SFFFS</li>
+<li>FSSFF</li>
+<li>FSFSF</li>
+<li>FSFFS</li>
+<li>FFSSF</li>
+<li>FFSFS</li>
+<li>FFFSS</li>
+</ul>
+<p>There are ten possible sequences (or permutations) that would give us two successes in five trials. Each of these permutations has a probability of 0.033. To get the overall probability we need to add them up or just take <span class="math inline">\(10*0.033=0.33\)</span>. So, the actual probability of rolling two successes in five trials is about 33%. Thats much better than 3.3%! The lesson here is that permutations matter.</p>
+<p>How can I determine the number of possible permutations systematically? Thats what the <span class="math inline">\({n \choose k}\)</span> or “<span class="math inline">\(n\)</span> choose <span class="math inline">\(k\)</span>” formula answers. This formula is given by:</p>
+<p><span class="math display">\[{n \choose k}=\frac{n!}{k!(n-k)!}\]</span></p>
+<p>If you are wondering what all the exclamations points are about, its not because I am really excited (although I am). These are called <strong>factorials</strong>. A factorial indicates that a number should be multiplied by all of the descending integers down to one. So, <span class="math inline">\(4!\)</span> is actually:</p>
+<p><span class="math display">\[4*3*2*1\]</span></p>
+<p>In practice, many of the numbers in the n choose k formula actually cancel out so it typically involves less math than you would think. Here is the n choose k formula for <span class="math inline">\(n=5\)</span> and <span class="math inline">\(k=2\)</span>:</p>
+<p><span class="math display">\[{5 \choose 2}=\frac{5!}{2!(5-2)!}=\frac{5!}{2!3!}=\frac{5*4*3*2}{2*3*2}=5*2=10\]</span></p>
+<p>When we put these two parts together, we get the full binomial formula:</p>
+<p><span class="math display">\[P(X=k)={n \choose k}p^k(1-p)^{n-k}\]</span></p>
+<p>Lets try it out for all the possible values in our Shadowrun dice pool:</p>
+<div class="sourceCode" id="cb504"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb504-1" title="1">n &lt;-<span class="st"> </span><span class="dv">5</span></a>
+<a class="sourceLine" id="cb504-2" title="2">k &lt;-<span class="st"> </span><span class="dv">0</span><span class="op">:</span>n</a>
+<a class="sourceLine" id="cb504-3" title="3">p &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">/</span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb504-4" title="4">prob &lt;-<span class="st"> </span><span class="kw">choose</span>(n,k)<span class="op">*</span>p<span class="op">^</span>k<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)<span class="op">^</span>(n<span class="op">-</span>k)</a>
+<a class="sourceLine" id="cb504-5" title="5"><span class="kw">ggplot</span>(<span class="kw">data.frame</span>(k,prob), <span class="kw">aes</span>(<span class="dt">x=</span>k, <span class="dt">y=</span>prob))<span class="op">+</span></a>
+<a class="sourceLine" id="cb504-6" title="6"><span class="st">  </span><span class="kw">geom_col</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb504-7" title="7"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels=</span>scales<span class="op">::</span>percent)<span class="op">+</span></a>
+<a class="sourceLine" id="cb504-8" title="8"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;hits (number of fives or sixes) in five dice rolls&quot;</span>,</a>
+<a class="sourceLine" id="cb504-9" title="9">       <span class="dt">y=</span><span class="st">&quot;probability&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb504-10" title="10"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:dice-pool"></span>
+<img src="stat_book_files/figure-html/dice-pool-1.png" alt="Probabilities of the number of hits (rolling a five or six) in a five dice pool" width="672" />
+<p class="caption">
+Figure 91: Probabilities of the number of hits (rolling a five or six) in a five dice pool
+</p>
+</div>
+<p>We have about a one in three chance of rolling either one or two successes and about a 12% chance of getting no successes. At the other end of the spectrum, it is very unlikely to get five successes in five trials. Go ahead and pause here and play this game for yourself if you like to see how your results stack up. Al you need is five dice. Go ahead, I will wait.</p>
+<p>What would happen if we had a dice pool of twenty dice? Lets try it:</p>
+<div class="sourceCode" id="cb505"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb505-1" title="1">n &lt;-<span class="st"> </span><span class="dv">20</span></a>
+<a class="sourceLine" id="cb505-2" title="2">k &lt;-<span class="st"> </span><span class="dv">0</span><span class="op">:</span>n</a>
+<a class="sourceLine" id="cb505-3" title="3">p &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">/</span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb505-4" title="4">prob &lt;-<span class="st"> </span><span class="kw">choose</span>(n,k)<span class="op">*</span>p<span class="op">^</span>k<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)<span class="op">^</span>(n<span class="op">-</span>k)</a>
+<a class="sourceLine" id="cb505-5" title="5"><span class="kw">ggplot</span>(<span class="kw">data.frame</span>(k,prob), <span class="kw">aes</span>(<span class="dt">x=</span>k, <span class="dt">y=</span>prob))<span class="op">+</span></a>
+<a class="sourceLine" id="cb505-6" title="6"><span class="st">  </span><span class="kw">geom_col</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb505-7" title="7"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels=</span>scales<span class="op">::</span>percent)<span class="op">+</span></a>
+<a class="sourceLine" id="cb505-8" title="8"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;hits (number of fives or sixes) in twenty dice rolls&quot;</span>,</a>
+<a class="sourceLine" id="cb505-9" title="9">       <span class="dt">y=</span><span class="st">&quot;probability&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb505-10" title="10"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:dice-pool-gib"></span>
+<img src="stat_book_files/figure-html/dice-pool-gib-1.png" alt="Probabilities of the number of hits (rolling a five or six) in a twenty dice pool" width="672" />
+<p class="caption">
+Figure 92: Probabilities of the number of hits (rolling a five or six) in a twenty dice pool
+</p>
+</div>
+<p>Of course, the most likely number of successes is higher because we are rolling more dice. The shape is also starting to look more like a normal distribution. This is not a coincidence. As <span class="math inline">\(n\)</span> increases the shape of the binomial distribution will look more and more like a normal distribution.</p>
+<div id="expected-value-and-variance" class="section level4">
+<h4>Expected value and variance</h4>
+<p>The <strong>expected value</strong> of a random variable given by <span class="math inline">\(E(X)\)</span> is the same as the mean of its probability distribution. In the case of the binomial distribution, the expected value is:</p>
+<p><span class="math display">\[E(X)=np\]</span></p>
+<p>If you think about it for a second, this value is completely intuitive. The expected number of successes is equal the probability of a success on any given trial multiplied by the number of trials.</p>
+<p>We can also calculate the variance of the random variable <span class="math inline">\(V(X)\)</span>. For the binomial distribution, this is given by:</p>
+<p><span class="math display">\[V(X)=np(1-p)\]</span></p>
+<p>This formula has an important implication. First, the variance depends on the underlying probability of success. Second, for a given <span class="math inline">\(n\)</span>, this probability will be maximized at a certain value of <span class="math inline">\(p\)</span>. To see what value of <span class="math inline">\(p\)</span> that is, lets go ahead and calculate the variance for our example with <span class="math inline">\(n=5\)</span> for every possible <span class="math inline">\(p\)</span> at 0.01 intervals:</p>
+<div class="sourceCode" id="cb506"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb506-1" title="1">p &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dt">from=</span><span class="fl">0.001</span>,<span class="dt">to=</span><span class="fl">0.999</span>, <span class="dt">by=</span>.<span class="dv">001</span>)</a>
+<a class="sourceLine" id="cb506-2" title="2">v &lt;-<span class="st"> </span><span class="dv">5</span><span class="op">*</span>p<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)</a>
+<a class="sourceLine" id="cb506-3" title="3"><span class="kw">ggplot</span>(<span class="kw">data.frame</span>(p,v), <span class="kw">aes</span>(<span class="dt">x=</span>p, <span class="dt">y=</span><span class="kw">sqrt</span>(v)))<span class="op">+</span></a>
+<a class="sourceLine" id="cb506-4" title="4"><span class="st">  </span><span class="kw">geom_line</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb506-5" title="5"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;probability of success&quot;</span>,</a>
+<a class="sourceLine" id="cb506-6" title="6">       <span class="dt">y=</span><span class="st">&quot;standard deviation in number of successes for n=5&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb506-7" title="7"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:varbinom"></span>
+<img src="stat_book_files/figure-html/varbinom-1.png" alt="Standard deviation for binomial distribution with five trials by different probabilities of success" width="672" />
+<p class="caption">
+Figure 93: Standard deviation for binomial distribution with five trials by different probabilities of success
+</p>
+</div>
+<p>The variance will always be at its greatest when the probability of success is 50%. As you get closer to probabilities of 0% or 100%, you will get less variance because most trials will be failures or successes, respectively.</p>
+</div>
+<div id="the-bernoulli-distribution" class="section level4">
+<h4>The Bernoulli distribution</h4>
+<p>The Bernoulli distribution is a special case of the binomial distribution with just a single trial <span class="math inline">\((n=1)\)</span>. Alternatively, a binomial distribution can be thought of as the sum of <span class="math inline">\(n\)</span> independent Bernoulli distributions. The Bernoulli distribution is particularly important for our purposes because each observation in our data typicallly only has one trial. The expected value of the bernoulli distribution is simply <span class="math inline">\(p\)</span> and the variance is <span class="math inline">\(p(1-p)\)</span>.</p>
+</div>
+</div>
+<div id="the-binomial-distribution-as-a-data-generating-process" class="section level3">
+<h3>The binomial distribution as a data-generating process</h3>
+<p>Let us now return to the Titanic example and consider the process that generated our actual data. In our actual data we only have a record of “successes” (i.e. survival) and “failures” (i.e. deaths). However, underlying this data, we can imagine that each passenger had their own very personal (and stressful) Bernoulli trial. Each passenger had some underlying probability of surviving the Titanic. We can refer to that underlying probability as <span class="math inline">\(p_i\)</span>. Importantly, it is subset by <span class="math inline">\(i\)</span> because we imagine that probability was different for each passenger. Given that <span class="math inline">\(p_i\)</span>, each passenger was then given one bernoulli trial and the result was either survival or death.</p>
+<p>Although survival and death is what we observe, what we actually want to know about is <span class="math inline">\(p_i\)</span>. Furthermore, we would like to know how <span class="math inline">\(p_i\)</span> was affected by other characteristics of the passenger such as gender, passenger class, age, and fare paid. In the next section, we will make our first attempt at estimating these <span class="math inline">\(p_i\)</span> values in a model.</p>
 <hr />
+</div>
 </div>
             </section>
 

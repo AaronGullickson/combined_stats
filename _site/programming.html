@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-04-20" />
+<meta name="date" content="2020-05-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -123,6 +123,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<link rel="stylesheet" href="my_styles.css" type="text/css" />
 </head>
 
 <body>
@@ -287,13 +288,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="modeling-categorical-outcomes.html"><a href="modeling-categorical-outcomes.html"><i class="fa fa-check"></i>Modeling Categorical Outcomes</a><ul>
-<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html"><i class="fa fa-check"></i>Dichotomous Outcomes and The Binomial Distribution</a></li>
-<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html"><i class="fa fa-check"></i>Linear Probability Model</a></li>
-<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
-<li class="chapter" data-level="" data-path="maximum-likelihood-estimation.html"><a href="maximum-likelihood-estimation.html"><i class="fa fa-check"></i>Maximum Likelihood Estimation</a></li>
-<li class="chapter" data-level="" data-path="logistic-regression-model.html"><a href="logistic-regression-model.html"><i class="fa fa-check"></i>Logistic Regression Model</a></li>
-<li class="chapter" data-level="" data-path="models-for-nominal-polytomous-outcomes.html"><a href="models-for-nominal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Nominal Polytomous Outcomes</a></li>
-<li class="chapter" data-level="" data-path="models-for-ordinal-polytomous-outcomes.html"><a href="models-for-ordinal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Ordinal Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html"><i class="fa fa-check"></i>Dichotomous Outcomes and The Binomial Distribution</a><ul>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html#the-binomial-distribution"><i class="fa fa-check"></i>The binomial distribution</a></li>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html#the-binomial-distribution-as-a-data-generating-process"><i class="fa fa-check"></i>The binomial distribution as a data-generating process</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html"><i class="fa fa-check"></i>Linear Probability Model</a><ul>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html#heteroscedasticity-1"><i class="fa fa-check"></i>Heteroscedasticity</a></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html#nonsense-values"><i class="fa fa-check"></i>Nonsense values</a></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html#logit-transformation-to-the-rescue"><i class="fa fa-check"></i>Logit transformation to the rescue</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html"><i class="fa fa-check"></i>Generalized Linear Model</a><ul>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#generalized-linear-model-framework"><i class="fa fa-check"></i>Generalized linear model framework</a></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#a-glm-for-dichotomous-outcomes"><i class="fa fa-check"></i>A GLM for dichotomous outcomes</a></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum likelihood estimation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a></li>
+<li class="chapter" data-level="" data-path="models-polytomous-outcomes.html"><a href="models-polytomous-outcomes.html"><i class="fa fa-check"></i>Models Polytomous Outcomes</a></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
@@ -418,9 +428,9 @@ With the natural log used here for three groups, the maximum value of entropy is
 <div id="our-data" class="section level3">
 <h3>Our Data</h3>
 <p>For this example, I have <a href="/stat_book/resources/tracts_state.csv">data</a> on the number of racial groups (white, black, Latino, Asian, indigenous, and other) in 2010 for each census tract in all 50 states (no Washington DC). Here is a glimpse of the data.</p>
-<div class="sourceCode" id="cb897"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb897-1" title="1"><span class="kw">library</span>(readr)</a>
-<a class="sourceLine" id="cb897-2" title="2">tracts &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;resources/tracts_state.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb897-3" title="3"><span class="kw">head</span>(tracts)</a></code></pre></div>
+<div class="sourceCode" id="cb924"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb924-1" title="1"><span class="kw">library</span>(readr)</a>
+<a class="sourceLine" id="cb924-2" title="2">tracts &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;resources/tracts_state.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb924-3" title="3"><span class="kw">head</span>(tracts)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 8
 ##   statename tractid white latino black asian indigenous other
 ##   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;
@@ -431,7 +441,7 @@ With the natural log used here for three groups, the maximum value of entropy is
 ## 5 Alabama     20500  8438    355  1418   295         50   210
 ## 6 Alabama     20600  2672    176   738     6         10    66</code></pre>
 <p>Each observation here is a census tract and we have census tracts identified by state. To see the number of census tracts within each state:</p>
-<div class="sourceCode" id="cb899"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb899-1" title="1"><span class="kw">table</span>(tracts<span class="op">$</span>statename)</a></code></pre></div>
+<div class="sourceCode" id="cb926"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb926-1" title="1"><span class="kw">table</span>(tracts<span class="op">$</span>statename)</a></code></pre></div>
 <pre><code>## 
 ##        Alabama         Alaska        Arizona       Arkansas     California 
 ##           1178            167           1520            686           8024 
@@ -463,8 +473,8 @@ With the natural log used here for three groups, the maximum value of entropy is
 <h3>Calculating Theil’s H for a single state</h3>
 <p>Clearly we need to do some work here that is going to be <em>iterative</em>. We want to calculate Theil’s H for each state, so however we do that calculation we will need to repeat it for all fifty states. Below, we will learn easy ways to make our work iterative, but the first step here is to make sure we understand how to do this calculation for a single case. Once we are satisfied with how we handled that case, we can learn how to generalize our code and make it iterative.</p>
 <p>To get started, I am going to use Alabama as an example. Let me first pull out these census tracts and save them to a different object.</p>
-<div class="sourceCode" id="cb901"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb901-1" title="1">alabama_tracts &lt;-<span class="st"> </span><span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;Alabama&quot;</span>)</a>
-<a class="sourceLine" id="cb901-2" title="2"><span class="kw">head</span>(alabama_tracts)</a></code></pre></div>
+<div class="sourceCode" id="cb928"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb928-1" title="1">alabama_tracts &lt;-<span class="st"> </span><span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;Alabama&quot;</span>)</a>
+<a class="sourceLine" id="cb928-2" title="2"><span class="kw">head</span>(alabama_tracts)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 8
 ##   statename tractid white latino black asian indigenous other
 ##   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;
@@ -475,8 +485,8 @@ With the natural log used here for three groups, the maximum value of entropy is
 ## 5 Alabama     20500  8438    355  1418   295         50   210
 ## 6 Alabama     20600  2672    176   738     6         10    66</code></pre>
 <p>The first step is to calculate the proportion of each racial group within each census tract. There are number of ways to do this, but the most straightforward approach would be to just use a <code>prop.table</code> on a subset of the data that just includes the counts, being sure to specify that I want proportions within rows. There is one caveat to this approach. The <code>prop.table</code> command expects a matrix or an array object not a data.frame so I need to recast my subset into a matrix with the <code>as.matrix</code> command.</p>
-<div class="sourceCode" id="cb903"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb903-1" title="1">props &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">as.matrix</span>(alabama_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)]), <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb903-2" title="2"><span class="kw">head</span>(props)</a></code></pre></div>
+<div class="sourceCode" id="cb930"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb930-1" title="1">props &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">as.matrix</span>(alabama_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)]), <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb930-2" title="2"><span class="kw">head</span>(props)</a></code></pre></div>
 <pre><code>##          white     latino      black       asian  indigenous      other
 ## [1,] 0.8373431 0.02301255 0.11349372 0.007322176 0.006799163 0.01202929
 ## [2,] 0.3889401 0.03456221 0.55944700 0.002304147 0.002304147 0.01244240
@@ -485,12 +495,12 @@ With the natural log used here for three groups, the maximum value of entropy is
 ## [5,] 0.7837637 0.03297418 0.13171094 0.027401077 0.004644250 0.01950585
 ## [6,] 0.7284624 0.04798255 0.20119956 0.001635769 0.002726281 0.01799346</code></pre>
 <p>Lets make sure that the proportions add up to one in each row:</p>
-<div class="sourceCode" id="cb905"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb905-1" title="1"><span class="kw">summary</span>(<span class="kw">apply</span>(props, <span class="dv">1</span>, sum))</a></code></pre></div>
+<div class="sourceCode" id="cb932"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb932-1" title="1"><span class="kw">summary</span>(<span class="kw">apply</span>(props, <span class="dv">1</span>, sum))</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##       1       1       1       1       1       1</code></pre>
 <p>The next step is to use these proportions to calculate entropy for each tract. The only hard part about this part is summing up across groups within the same tract. I can do this again with the <code>apply</code> command:</p>
-<div class="sourceCode" id="cb907"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb907-1" title="1">alabama_tracts<span class="op">$</span>entropy &lt;-<span class="st"> </span><span class="kw">apply</span>(props<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props), <span class="dv">1</span>, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb907-2" title="2"><span class="kw">head</span>(alabama_tracts)</a></code></pre></div>
+<div class="sourceCode" id="cb934"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb934-1" title="1">alabama_tracts<span class="op">$</span>entropy &lt;-<span class="st"> </span><span class="kw">apply</span>(props<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props), <span class="dv">1</span>, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb934-2" title="2"><span class="kw">head</span>(alabama_tracts)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 9
 ##   statename tractid white latino black asian indigenous other entropy
 ##   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
@@ -500,14 +510,14 @@ With the natural log used here for three groups, the maximum value of entropy is
 ## 4 Alabama     20400  4030     85   191    18         14    48   0.381
 ## 5 Alabama     20500  8438    355  1418   295         50   210   0.771
 ## 6 Alabama     20600  2672    176   738     6         10    66   0.798</code></pre>
-<div class="sourceCode" id="cb909"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb909-1" title="1"><span class="kw">summary</span>(alabama_tracts<span class="op">$</span>entropy)</a></code></pre></div>
+<div class="sourceCode" id="cb936"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb936-1" title="1"><span class="kw">summary</span>(alabama_tracts<span class="op">$</span>entropy)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##  0.0000  0.4405  0.6734  0.6376  0.8293  1.3033</code></pre>
 <p>The <code>na.rm=TRUE</code> is important here because groups with a proportion of zero need to be ignored since the log of zero is not defined.</p>
 <p>In order to calculate Theil’s H, I also need a couple of other pieces of information. First, I need <span class="math inline">\(t_i\)</span> which is the total population of each tract. I can get this with the <code>apply</code> command.</p>
-<div class="sourceCode" id="cb911"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb911-1" title="1">alabama_tracts<span class="op">$</span>total &lt;-<span class="st"> </span><span class="kw">apply</span>(alabama_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
-<a class="sourceLine" id="cb911-2" title="2">                            <span class="dv">1</span>, sum)</a>
-<a class="sourceLine" id="cb911-3" title="3"><span class="kw">head</span>(alabama_tracts)</a></code></pre></div>
+<div class="sourceCode" id="cb938"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb938-1" title="1">alabama_tracts<span class="op">$</span>total &lt;-<span class="st"> </span><span class="kw">apply</span>(alabama_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
+<a class="sourceLine" id="cb938-2" title="2">                            <span class="dv">1</span>, sum)</a>
+<a class="sourceLine" id="cb938-3" title="3"><span class="kw">head</span>(alabama_tracts)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 10
 ##   statename tractid white latino black asian indigenous other entropy total
 ##   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
@@ -518,93 +528,93 @@ With the natural log used here for three groups, the maximum value of entropy is
 ## 5 Alabama     20500  8438    355  1418   295         50   210   0.771 10766
 ## 6 Alabama     20600  2672    176   738     6         10    66   0.798  3668</code></pre>
 <p>Now I just need to calculate entropy for the whole state of Alabama. I can do this by using <code>apply</code> again to sum up tract populations by race and then using <code>prop.table</code> again.</p>
-<div class="sourceCode" id="cb913"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb913-1" title="1">props_alabama &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">apply</span>(alabama_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
-<a class="sourceLine" id="cb913-2" title="2">                                                    <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
-<a class="sourceLine" id="cb913-3" title="3">                                  <span class="dv">2</span>, sum))</a>
-<a class="sourceLine" id="cb913-4" title="4"><span class="kw">sum</span>(props_alabama)</a></code></pre></div>
+<div class="sourceCode" id="cb940"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb940-1" title="1">props_alabama &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">apply</span>(alabama_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb940-2" title="2">                                                    <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
+<a class="sourceLine" id="cb940-3" title="3">                                  <span class="dv">2</span>, sum))</a>
+<a class="sourceLine" id="cb940-4" title="4"><span class="kw">sum</span>(props_alabama)</a></code></pre></div>
 <pre><code>## [1] 1</code></pre>
-<div class="sourceCode" id="cb915"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb915-1" title="1">alabama_entropy &lt;-<span class="st"> </span><span class="kw">sum</span>(props_alabama<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props_alabama))</a>
-<a class="sourceLine" id="cb915-2" title="2">alabama_entropy</a></code></pre></div>
+<div class="sourceCode" id="cb942"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb942-1" title="1">alabama_entropy &lt;-<span class="st"> </span><span class="kw">sum</span>(props_alabama<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props_alabama))</a>
+<a class="sourceLine" id="cb942-2" title="2">alabama_entropy</a></code></pre></div>
 <pre><code>## [1] 0.8825423</code></pre>
 <p>Ok, now I have all the pieces that I need to calculate Theil’s H for alabama:</p>
-<div class="sourceCode" id="cb917"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb917-1" title="1"><span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(alabama_tracts<span class="op">$</span>total <span class="op">*</span><span class="st"> </span>alabama_tracts<span class="op">$</span>entropy)<span class="op">/</span></a>
-<a class="sourceLine" id="cb917-2" title="2"><span class="st">  </span>(<span class="kw">sum</span>(alabama_tracts<span class="op">$</span>total)<span class="op">*</span>alabama_entropy)</a></code></pre></div>
+<div class="sourceCode" id="cb944"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb944-1" title="1"><span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(alabama_tracts<span class="op">$</span>total <span class="op">*</span><span class="st"> </span>alabama_tracts<span class="op">$</span>entropy)<span class="op">/</span></a>
+<a class="sourceLine" id="cb944-2" title="2"><span class="st">  </span>(<span class="kw">sum</span>(alabama_tracts<span class="op">$</span>total)<span class="op">*</span>alabama_entropy)</a></code></pre></div>
 <pre><code>## [1] 0.2675507</code></pre>
 <p>So, to re-capitulate, here is the code altogether that will calculate entropy for Alabama:</p>
-<div class="sourceCode" id="cb919"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb919-1" title="1">state_tracts &lt;-<span class="st"> </span><span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;Alabama&quot;</span>)</a>
-<a class="sourceLine" id="cb919-2" title="2">props &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">as.matrix</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
-<a class="sourceLine" id="cb919-3" title="3">                                              <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)]), <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb919-4" title="4">state_tracts<span class="op">$</span>entropy &lt;-<span class="st"> </span><span class="kw">apply</span>(props<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props), <span class="dv">1</span>, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb919-5" title="5">state_tracts<span class="op">$</span>total &lt;-<span class="st"> </span><span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,</a>
-<a class="sourceLine" id="cb919-6" title="6">                                            <span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], <span class="dv">1</span>, sum)</a>
-<a class="sourceLine" id="cb919-7" title="7">props_state &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
-<a class="sourceLine" id="cb919-8" title="8">                                                <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], <span class="dv">2</span>, sum))</a>
-<a class="sourceLine" id="cb919-9" title="9">entropy_state &lt;-<span class="st"> </span><span class="kw">sum</span>(props_state<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props_state))</a>
-<a class="sourceLine" id="cb919-10" title="10">theil_h &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(state_tracts<span class="op">$</span>total <span class="op">*</span><span class="st"> </span>state_tracts<span class="op">$</span>entropy)<span class="op">/</span></a>
-<a class="sourceLine" id="cb919-11" title="11"><span class="st">  </span>(<span class="kw">sum</span>(state_tracts<span class="op">$</span>total)<span class="op">*</span>entropy_state)</a>
-<a class="sourceLine" id="cb919-12" title="12">theil_h</a></code></pre></div>
+<div class="sourceCode" id="cb946"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb946-1" title="1">state_tracts &lt;-<span class="st"> </span><span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;Alabama&quot;</span>)</a>
+<a class="sourceLine" id="cb946-2" title="2">props &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">as.matrix</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb946-3" title="3">                                              <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)]), <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb946-4" title="4">state_tracts<span class="op">$</span>entropy &lt;-<span class="st"> </span><span class="kw">apply</span>(props<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props), <span class="dv">1</span>, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb946-5" title="5">state_tracts<span class="op">$</span>total &lt;-<span class="st"> </span><span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,</a>
+<a class="sourceLine" id="cb946-6" title="6">                                            <span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], <span class="dv">1</span>, sum)</a>
+<a class="sourceLine" id="cb946-7" title="7">props_state &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb946-8" title="8">                                                <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], <span class="dv">2</span>, sum))</a>
+<a class="sourceLine" id="cb946-9" title="9">entropy_state &lt;-<span class="st"> </span><span class="kw">sum</span>(props_state<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props_state))</a>
+<a class="sourceLine" id="cb946-10" title="10">theil_h &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(state_tracts<span class="op">$</span>total <span class="op">*</span><span class="st"> </span>state_tracts<span class="op">$</span>entropy)<span class="op">/</span></a>
+<a class="sourceLine" id="cb946-11" title="11"><span class="st">  </span>(<span class="kw">sum</span>(state_tracts<span class="op">$</span>total)<span class="op">*</span>entropy_state)</a>
+<a class="sourceLine" id="cb946-12" title="12">theil_h</a></code></pre></div>
 <pre><code>## [1] 0.2675507</code></pre>
 <p>Notice that I have changed all of the names of objects I create here that contain “alabama” to a more general “state” name. The only place where “Alabama” is referenced is in the first line of the code. This makes the code very <em>re-usable</em>. I can just change the state name that is called in the first <code>subset</code> command and the code will produce a Theil’s H for that state. Lets try that with Oregon:</p>
-<div class="sourceCode" id="cb921"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb921-1" title="1">state_tracts &lt;-<span class="st"> </span><span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;Oregon&quot;</span>)</a>
-<a class="sourceLine" id="cb921-2" title="2">props &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">as.matrix</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
-<a class="sourceLine" id="cb921-3" title="3">                                              <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)]), <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb921-4" title="4">state_tracts<span class="op">$</span>entropy &lt;-<span class="st"> </span><span class="kw">apply</span>(props<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props), <span class="dv">1</span>, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb921-5" title="5">state_tracts<span class="op">$</span>total &lt;-<span class="st"> </span><span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,</a>
-<a class="sourceLine" id="cb921-6" title="6">                                            <span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], <span class="dv">1</span>, sum)</a>
-<a class="sourceLine" id="cb921-7" title="7">props_state &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
-<a class="sourceLine" id="cb921-8" title="8">                                                <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], <span class="dv">2</span>, sum))</a>
-<a class="sourceLine" id="cb921-9" title="9">entropy_state &lt;-<span class="st"> </span><span class="kw">sum</span>(props_state<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props_state))</a>
-<a class="sourceLine" id="cb921-10" title="10">theil_h &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(state_tracts<span class="op">$</span>total <span class="op">*</span><span class="st"> </span>state_tracts<span class="op">$</span>entropy)<span class="op">/</span></a>
-<a class="sourceLine" id="cb921-11" title="11"><span class="st">  </span>(<span class="kw">sum</span>(state_tracts<span class="op">$</span>total)<span class="op">*</span>entropy_state)</a>
-<a class="sourceLine" id="cb921-12" title="12">theil_h</a></code></pre></div>
+<div class="sourceCode" id="cb948"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb948-1" title="1">state_tracts &lt;-<span class="st"> </span><span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;Oregon&quot;</span>)</a>
+<a class="sourceLine" id="cb948-2" title="2">props &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">as.matrix</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb948-3" title="3">                                              <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)]), <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb948-4" title="4">state_tracts<span class="op">$</span>entropy &lt;-<span class="st"> </span><span class="kw">apply</span>(props<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props), <span class="dv">1</span>, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb948-5" title="5">state_tracts<span class="op">$</span>total &lt;-<span class="st"> </span><span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,</a>
+<a class="sourceLine" id="cb948-6" title="6">                                            <span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], <span class="dv">1</span>, sum)</a>
+<a class="sourceLine" id="cb948-7" title="7">props_state &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb948-8" title="8">                                                <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], <span class="dv">2</span>, sum))</a>
+<a class="sourceLine" id="cb948-9" title="9">entropy_state &lt;-<span class="st"> </span><span class="kw">sum</span>(props_state<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props_state))</a>
+<a class="sourceLine" id="cb948-10" title="10">theil_h &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(state_tracts<span class="op">$</span>total <span class="op">*</span><span class="st"> </span>state_tracts<span class="op">$</span>entropy)<span class="op">/</span></a>
+<a class="sourceLine" id="cb948-11" title="11"><span class="st">  </span>(<span class="kw">sum</span>(state_tracts<span class="op">$</span>total)<span class="op">*</span>entropy_state)</a>
+<a class="sourceLine" id="cb948-12" title="12">theil_h</a></code></pre></div>
 <pre><code>## [1] 0.1135007</code></pre>
 </div>
 <div id="creating-functions" class="section level3">
 <h3>Creating Functions</h3>
 <p>In cases like this where you will end up re-using the same code on different but identically structured objects, I strongly recommend that you create your own custom function. By creating a custom function, you will only have to write the code you need in one place. Also, if you realize there are bugs in the code later, you only need to fix it in one place.</p>
 <p>Custom functions can be created with the following syntax:</p>
-<div class="sourceCode" id="cb923"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb923-1" title="1">myfunctionname &lt;-<span class="st"> </span><span class="cf">function</span>(argument1, argument2, ...) {</a>
-<a class="sourceLine" id="cb923-2" title="2">  <span class="co">#a bunch of code to run on the objects argument1 and argument2</span></a>
-<a class="sourceLine" id="cb923-3" title="3">  <span class="kw">return</span>(value)</a>
-<a class="sourceLine" id="cb923-4" title="4">}</a></code></pre></div>
+<div class="sourceCode" id="cb950"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb950-1" title="1">myfunctionname &lt;-<span class="st"> </span><span class="cf">function</span>(argument1, argument2, ...) {</a>
+<a class="sourceLine" id="cb950-2" title="2">  <span class="co">#a bunch of code to run on the objects argument1 and argument2</span></a>
+<a class="sourceLine" id="cb950-3" title="3">  <span class="kw">return</span>(value)</a>
+<a class="sourceLine" id="cb950-4" title="4">}</a></code></pre></div>
 <p>In the call to <code>function</code> you can define how many arguments you wish to feed into the function. Then within the curly brackets you can declare code to run on the objects as you named them. Any object referenced within the curly brackets must be an object identified in the initial function call. The last call within the curly brackets is usually the <code>return</code> command which will return whatever value or object you want the function to produce. Here is my code to create a function named <code>calculateTheilH</code>.</p>
-<div class="sourceCode" id="cb924"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb924-1" title="1">calculateTheilH &lt;-<span class="st"> </span><span class="cf">function</span>(state_tracts) {</a>
-<a class="sourceLine" id="cb924-2" title="2">  props &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">as.matrix</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
-<a class="sourceLine" id="cb924-3" title="3">                                                <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)]), </a>
-<a class="sourceLine" id="cb924-4" title="4">                      <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb924-5" title="5">  state_tracts<span class="op">$</span>entropy &lt;-<span class="st"> </span><span class="kw">apply</span>(props<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props), <span class="dv">1</span>, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb924-6" title="6">  state_tracts<span class="op">$</span>total &lt;-<span class="st"> </span><span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,</a>
-<a class="sourceLine" id="cb924-7" title="7">                                              <span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
-<a class="sourceLine" id="cb924-8" title="8">                              <span class="dv">1</span>, sum)</a>
-<a class="sourceLine" id="cb924-9" title="9">  props_state &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
-<a class="sourceLine" id="cb924-10" title="10">                                                  <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
-<a class="sourceLine" id="cb924-11" title="11">                                  <span class="dv">2</span>, sum))</a>
-<a class="sourceLine" id="cb924-12" title="12">  entropy_state &lt;-<span class="st"> </span><span class="kw">sum</span>(props_state<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props_state))</a>
-<a class="sourceLine" id="cb924-13" title="13">  theil_h &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(state_tracts<span class="op">$</span>total <span class="op">*</span><span class="st"> </span>state_tracts<span class="op">$</span>entropy)<span class="op">/</span>(<span class="kw">sum</span>(state_tracts<span class="op">$</span>total)<span class="op">*</span>entropy_state)</a>
-<a class="sourceLine" id="cb924-14" title="14">  <span class="kw">return</span>(theil_h)</a>
-<a class="sourceLine" id="cb924-15" title="15">}</a></code></pre></div>
+<div class="sourceCode" id="cb951"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb951-1" title="1">calculateTheilH &lt;-<span class="st"> </span><span class="cf">function</span>(state_tracts) {</a>
+<a class="sourceLine" id="cb951-2" title="2">  props &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">as.matrix</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb951-3" title="3">                                                <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)]), </a>
+<a class="sourceLine" id="cb951-4" title="4">                      <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb951-5" title="5">  state_tracts<span class="op">$</span>entropy &lt;-<span class="st"> </span><span class="kw">apply</span>(props<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props), <span class="dv">1</span>, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb951-6" title="6">  state_tracts<span class="op">$</span>total &lt;-<span class="st"> </span><span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,</a>
+<a class="sourceLine" id="cb951-7" title="7">                                              <span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
+<a class="sourceLine" id="cb951-8" title="8">                              <span class="dv">1</span>, sum)</a>
+<a class="sourceLine" id="cb951-9" title="9">  props_state &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb951-10" title="10">                                                  <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
+<a class="sourceLine" id="cb951-11" title="11">                                  <span class="dv">2</span>, sum))</a>
+<a class="sourceLine" id="cb951-12" title="12">  entropy_state &lt;-<span class="st"> </span><span class="kw">sum</span>(props_state<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props_state))</a>
+<a class="sourceLine" id="cb951-13" title="13">  theil_h &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(state_tracts<span class="op">$</span>total <span class="op">*</span><span class="st"> </span>state_tracts<span class="op">$</span>entropy)<span class="op">/</span>(<span class="kw">sum</span>(state_tracts<span class="op">$</span>total)<span class="op">*</span>entropy_state)</a>
+<a class="sourceLine" id="cb951-14" title="14">  <span class="kw">return</span>(theil_h)</a>
+<a class="sourceLine" id="cb951-15" title="15">}</a></code></pre></div>
 <p>The function feeds in an object called <code>state_tracts</code> which should be the data.frame of tracts for a given state. The function then runs the same lines of code that I created above. Lets try it out on a couple of states.</p>
-<div class="sourceCode" id="cb925"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb925-1" title="1"><span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;Alabama&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb952"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb952-1" title="1"><span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;Alabama&quot;</span>))</a></code></pre></div>
 <pre><code>## [1] 0.2675507</code></pre>
-<div class="sourceCode" id="cb927"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb927-1" title="1"><span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;Oregon&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb954"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb954-1" title="1"><span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;Oregon&quot;</span>))</a></code></pre></div>
 <pre><code>## [1] 0.1135007</code></pre>
-<div class="sourceCode" id="cb929"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb929-1" title="1"><span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;California&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb956"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb956-1" title="1"><span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;California&quot;</span>))</a></code></pre></div>
 <pre><code>## [1] 0.2356094</code></pre>
-<div class="sourceCode" id="cb931"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb931-1" title="1"><span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;New York&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb958"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb958-1" title="1"><span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span><span class="st">&quot;New York&quot;</span>))</a></code></pre></div>
 <pre><code>## [1] 0.3633379</code></pre>
 <p>I have now simplified my code considerably. Without the function I would have had to copy and paste the code for calculating entropy fifty different times. If I then changed or corrected something later in that code, it would have been a nightmare to fix it for all fifty versions. Now I can keep all that code in one place and I just need to type one line for each state to calculate Theil’s H. But I can improve this even more by iteration.</p>
 </div>
 <div id="iteration" class="section level3">
 <h3>Iteration</h3>
 <p>Basically, I want to iterate over states and calculate Theil’s H for each state. Computers are great at this kind of iterative process. Iterative methods are very common in real programming languages because they can handle problems where a lot of repitition is necessary and computers can typically execute them quickly. The way this is handled in most programming languages is by <em>looping</em>. In R, we can solve our iteration problem with a for-loop.</p>
-<div class="sourceCode" id="cb933"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb933-1" title="1"><span class="cf">for</span>(i <span class="cf">in</span> some_vector) {</a>
-<a class="sourceLine" id="cb933-2" title="2">  <span class="co">#some code to run that will usually call i</span></a>
-<a class="sourceLine" id="cb933-3" title="3">}</a></code></pre></div>
+<div class="sourceCode" id="cb960"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb960-1" title="1"><span class="cf">for</span>(i <span class="cf">in</span> some_vector) {</a>
+<a class="sourceLine" id="cb960-2" title="2">  <span class="co">#some code to run that will usually call i</span></a>
+<a class="sourceLine" id="cb960-3" title="3">}</a></code></pre></div>
 <p>A for-loop will sequentially move through all of the values in a vector and run the code within the curly brackets each time. Usually, this code will reference the particular value of the vector.</p>
 <p>Here is a very simple example of a for-loop that iterates through all the unique names of states and prints them out.</p>
-<div class="sourceCode" id="cb934"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb934-1" title="1"><span class="cf">for</span>(state <span class="cf">in</span> <span class="kw">unique</span>(tracts<span class="op">$</span>statename)) {</a>
-<a class="sourceLine" id="cb934-2" title="2">  <span class="kw">print</span>(state)</a>
-<a class="sourceLine" id="cb934-3" title="3">}</a></code></pre></div>
+<div class="sourceCode" id="cb961"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb961-1" title="1"><span class="cf">for</span>(state <span class="cf">in</span> <span class="kw">unique</span>(tracts<span class="op">$</span>statename)) {</a>
+<a class="sourceLine" id="cb961-2" title="2">  <span class="kw">print</span>(state)</a>
+<a class="sourceLine" id="cb961-3" title="3">}</a></code></pre></div>
 <pre><code>## [1] &quot;Alabama&quot;
 ## [1] &quot;Alaska&quot;
 ## [1] &quot;Arizona&quot;
@@ -656,9 +666,9 @@ With the natural log used here for three groups, the maximum value of entropy is
 ## [1] &quot;Wisconsin&quot;
 ## [1] &quot;Wyoming&quot;</code></pre>
 <p>This is not very useful, but it does give us a hint of a for-loop that would be more useful. We could iterate through unique state names and then use each state name to define a subset of tracts from that state and apply our calculateTheilH function:</p>
-<div class="sourceCode" id="cb936"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb936-1" title="1"><span class="cf">for</span>(state <span class="cf">in</span> <span class="kw">unique</span>(tracts<span class="op">$</span>statename)) {</a>
-<a class="sourceLine" id="cb936-2" title="2">  <span class="kw">print</span>(<span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span>state)))</a>
-<a class="sourceLine" id="cb936-3" title="3">}</a></code></pre></div>
+<div class="sourceCode" id="cb963"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb963-1" title="1"><span class="cf">for</span>(state <span class="cf">in</span> <span class="kw">unique</span>(tracts<span class="op">$</span>statename)) {</a>
+<a class="sourceLine" id="cb963-2" title="2">  <span class="kw">print</span>(<span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span>state)))</a>
+<a class="sourceLine" id="cb963-3" title="3">}</a></code></pre></div>
 <pre><code>## [1] 0.2675507
 ## [1] 0.1682601
 ## [1] 0.2372527
@@ -710,18 +720,18 @@ With the natural log used here for three groups, the maximum value of entropy is
 ## [1] 0.3002023
 ## [1] 0.1187653</code></pre>
 <p>That worked! We just have one problem. These results are just being printed to the console. We want to save them to a new vector. We can do this by initializing a <code>NULL</code> vector and then adding each calculated value to this vector with the concatenate command:</p>
-<div class="sourceCode" id="cb938"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb938-1" title="1">theil_h &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb938-2" title="2"><span class="cf">for</span>(state <span class="cf">in</span> <span class="kw">unique</span>(tracts<span class="op">$</span>statename)) {</a>
-<a class="sourceLine" id="cb938-3" title="3">  theil_h &lt;-<span class="st"> </span><span class="kw">c</span>(theil_h, <span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span>state)))</a>
-<a class="sourceLine" id="cb938-4" title="4">}</a>
-<a class="sourceLine" id="cb938-5" title="5"><span class="kw">length</span>(theil_h)</a></code></pre></div>
+<div class="sourceCode" id="cb965"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb965-1" title="1">theil_h &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb965-2" title="2"><span class="cf">for</span>(state <span class="cf">in</span> <span class="kw">unique</span>(tracts<span class="op">$</span>statename)) {</a>
+<a class="sourceLine" id="cb965-3" title="3">  theil_h &lt;-<span class="st"> </span><span class="kw">c</span>(theil_h, <span class="kw">calculateTheilH</span>(<span class="kw">subset</span>(tracts, statename<span class="op">==</span>state)))</a>
+<a class="sourceLine" id="cb965-4" title="4">}</a>
+<a class="sourceLine" id="cb965-5" title="5"><span class="kw">length</span>(theil_h)</a></code></pre></div>
 <pre><code>## [1] 50</code></pre>
-<div class="sourceCode" id="cb940"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb940-1" title="1"><span class="kw">summary</span>(theil_h)</a></code></pre></div>
+<div class="sourceCode" id="cb967"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb967-1" title="1"><span class="kw">summary</span>(theil_h)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ## 0.05189 0.15284 0.23005 0.21467 0.26727 0.37018</code></pre>
 <p>Ok, so now we have a vector of length 50 that gives the Theil’s H for each state. As a final touch-up step, we can go ahead and put this back into a data frame with a state id.</p>
-<div class="sourceCode" id="cb942"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb942-1" title="1">state_data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">statename=</span><span class="kw">unique</span>(tracts<span class="op">$</span>statename), theil_h)</a>
-<a class="sourceLine" id="cb942-2" title="2"><span class="kw">head</span>(state_data)</a></code></pre></div>
+<div class="sourceCode" id="cb969"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb969-1" title="1">state_data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">statename=</span><span class="kw">unique</span>(tracts<span class="op">$</span>statename), theil_h)</a>
+<a class="sourceLine" id="cb969-2" title="2"><span class="kw">head</span>(state_data)</a></code></pre></div>
 <pre><code>##    statename   theil_h
 ## 1    Alabama 0.2675507
 ## 2     Alaska 0.1682601
@@ -733,12 +743,12 @@ With the natural log used here for three groups, the maximum value of entropy is
 <h4>The <code>lapply</code> command</h4>
 <p>It turns out that <a href="http://stackoverflow.com/questions/7142767/why-are-loops-slow-in-r">R is not very efficient with iterative loops</a>. So, while iterative looping can help solve problems, its better to look for a different solution before you start using iteration in R. That different solution is usually the <code>lapply</code> command or its closely related cousin <code>sapply</code>.</p>
 <p>The <code>lapply</code> command will apply a given function to every object in a list. If we were to put all of our state-specific tract datasets into a list, we could run an <code>lapply</code> command calling <code>calculateTheilH</code> on the entire list at once. Generally, this will be much faster than a for-loop. The code would look something like:</p>
-<div class="sourceCode" id="cb944"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb944-1" title="1">theil_h &lt;-<span class="st"> </span><span class="kw">lapply</span>(state_list, calculateTheilH)</a></code></pre></div>
+<div class="sourceCode" id="cb971"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb971-1" title="1">theil_h &lt;-<span class="st"> </span><span class="kw">lapply</span>(state_list, calculateTheilH)</a></code></pre></div>
 <p>The only trick is figuring out how to create a list of state tract data where each object in the list is a data frame of tract data for a specific state. It turns out that the <code>split</code> command is just what we need. It will split an object into a list of the same objects by some factor variable. In our case:</p>
-<div class="sourceCode" id="cb945"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb945-1" title="1">state_list &lt;-<span class="st"> </span><span class="kw">split</span>(tracts, tracts<span class="op">$</span>statename)</a>
-<a class="sourceLine" id="cb945-2" title="2"><span class="kw">length</span>(state_list)</a></code></pre></div>
+<div class="sourceCode" id="cb972"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb972-1" title="1">state_list &lt;-<span class="st"> </span><span class="kw">split</span>(tracts, tracts<span class="op">$</span>statename)</a>
+<a class="sourceLine" id="cb972-2" title="2"><span class="kw">length</span>(state_list)</a></code></pre></div>
 <pre><code>## [1] 50</code></pre>
-<div class="sourceCode" id="cb947"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb947-1" title="1"><span class="kw">head</span>(state_list<span class="op">$</span>Alabama)</a></code></pre></div>
+<div class="sourceCode" id="cb974"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb974-1" title="1"><span class="kw">head</span>(state_list<span class="op">$</span>Alabama)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 8
 ##   statename tractid white latino black asian indigenous other
 ##   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;
@@ -749,16 +759,16 @@ With the natural log used here for three groups, the maximum value of entropy is
 ## 5 Alabama     20500  8438    355  1418   295         50   210
 ## 6 Alabama     20600  2672    176   738     6         10    66</code></pre>
 <p>The <code>state_list</code> object is a list where each object is the tract data.frame for a given state. Now we can run our <code>lapply</code> command from above:</p>
-<div class="sourceCode" id="cb949"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb949-1" title="1">theil_h &lt;-<span class="st"> </span><span class="kw">lapply</span>(state_list, calculateTheilH)</a>
-<a class="sourceLine" id="cb949-2" title="2"><span class="kw">class</span>(theil_h)</a></code></pre></div>
+<div class="sourceCode" id="cb976"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb976-1" title="1">theil_h &lt;-<span class="st"> </span><span class="kw">lapply</span>(state_list, calculateTheilH)</a>
+<a class="sourceLine" id="cb976-2" title="2"><span class="kw">class</span>(theil_h)</a></code></pre></div>
 <pre><code>## [1] &quot;list&quot;</code></pre>
-<div class="sourceCode" id="cb951"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb951-1" title="1">theil_h<span class="op">$</span>Alabama</a></code></pre></div>
+<div class="sourceCode" id="cb978"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb978-1" title="1">theil_h<span class="op">$</span>Alabama</a></code></pre></div>
 <pre><code>## [1] 0.2675507</code></pre>
 <p>The only downside to the <code>lapply</code> function is that it outputs the results as a list as well. In this case, where the output of our function is a just a simple number, we would like the output to just be a simple vector. It turns out the <code>sapply</code> function can do this. The <code>sapply</code> function is just a wrapper to <code>lapply</code> that converts the output when possible to a simple vector or matrix format.</p>
-<div class="sourceCode" id="cb953"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb953-1" title="1">theil_h &lt;-<span class="st"> </span><span class="kw">sapply</span>(state_list, calculateTheilH)</a>
-<a class="sourceLine" id="cb953-2" title="2"><span class="kw">class</span>(theil_h)</a></code></pre></div>
+<div class="sourceCode" id="cb980"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb980-1" title="1">theil_h &lt;-<span class="st"> </span><span class="kw">sapply</span>(state_list, calculateTheilH)</a>
+<a class="sourceLine" id="cb980-2" title="2"><span class="kw">class</span>(theil_h)</a></code></pre></div>
 <pre><code>## [1] &quot;numeric&quot;</code></pre>
-<div class="sourceCode" id="cb955"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb955-1" title="1"><span class="kw">head</span>(theil_h)</a></code></pre></div>
+<div class="sourceCode" id="cb982"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb982-1" title="1"><span class="kw">head</span>(theil_h)</a></code></pre></div>
 <pre><code>##    Alabama     Alaska    Arizona   Arkansas California   Colorado 
 ##  0.2675507  0.1682601  0.2372527  0.2664347  0.2356094  0.1620947</code></pre>
 </div>
@@ -766,27 +776,27 @@ With the natural log used here for three groups, the maximum value of entropy is
 <div id="putting-it-all-together" class="section level3">
 <h3>Putting It All Together</h3>
 <p>Without the use of functions and iterative methods, calculating this measure would have been a nightmare. We would have had to copy and paste code fifty different times for each state. Instead, we have been able to reduce the entire process to just a few lines of code, most of which is just code for the function:</p>
-<div class="sourceCode" id="cb957"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb957-1" title="1">calculateTheilH &lt;-<span class="st"> </span><span class="cf">function</span>(state_tracts) {</a>
-<a class="sourceLine" id="cb957-2" title="2">  props &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">as.matrix</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
-<a class="sourceLine" id="cb957-3" title="3">                                                <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)]), </a>
-<a class="sourceLine" id="cb957-4" title="4">                      <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb957-5" title="5">  state_tracts<span class="op">$</span>entropy &lt;-<span class="st"> </span><span class="kw">apply</span>(props<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props), <span class="dv">1</span>, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb957-6" title="6">  state_tracts<span class="op">$</span>total &lt;-<span class="st"> </span><span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,</a>
-<a class="sourceLine" id="cb957-7" title="7">                                              <span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
-<a class="sourceLine" id="cb957-8" title="8">                              <span class="dv">1</span>, sum)</a>
-<a class="sourceLine" id="cb957-9" title="9">  props_state &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
-<a class="sourceLine" id="cb957-10" title="10">                                                  <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
-<a class="sourceLine" id="cb957-11" title="11">                                  <span class="dv">2</span>, sum))</a>
-<a class="sourceLine" id="cb957-12" title="12">  entropy_state &lt;-<span class="st"> </span><span class="kw">sum</span>(props_state<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props_state))</a>
-<a class="sourceLine" id="cb957-13" title="13">  theil_h &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(state_tracts<span class="op">$</span>total <span class="op">*</span><span class="st"> </span>state_tracts<span class="op">$</span>entropy)<span class="op">/</span></a>
-<a class="sourceLine" id="cb957-14" title="14"><span class="st">    </span>(<span class="kw">sum</span>(state_tracts<span class="op">$</span>total)<span class="op">*</span>entropy_state)</a>
-<a class="sourceLine" id="cb957-15" title="15">  <span class="kw">return</span>(theil_h)</a>
-<a class="sourceLine" id="cb957-16" title="16">}</a>
-<a class="sourceLine" id="cb957-17" title="17">tracts &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;resources/tracts_state.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb957-18" title="18">theil_h &lt;-<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">split</span>(tracts, tracts<span class="op">$</span>statename), calculateTheilH)</a>
-<a class="sourceLine" id="cb957-19" title="19">theil_h &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">statename=</span><span class="kw">names</span>(theil_h), theil_h)</a>
-<a class="sourceLine" id="cb957-20" title="20"><span class="kw">rownames</span>(theil_h) &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb957-21" title="21"><span class="kw">head</span>(theil_h)</a></code></pre></div>
+<div class="sourceCode" id="cb984"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb984-1" title="1">calculateTheilH &lt;-<span class="st"> </span><span class="cf">function</span>(state_tracts) {</a>
+<a class="sourceLine" id="cb984-2" title="2">  props &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">as.matrix</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb984-3" title="3">                                                <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)]), </a>
+<a class="sourceLine" id="cb984-4" title="4">                      <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb984-5" title="5">  state_tracts<span class="op">$</span>entropy &lt;-<span class="st"> </span><span class="kw">apply</span>(props<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props), <span class="dv">1</span>, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb984-6" title="6">  state_tracts<span class="op">$</span>total &lt;-<span class="st"> </span><span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,<span class="st">&quot;asian&quot;</span>,</a>
+<a class="sourceLine" id="cb984-7" title="7">                                              <span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
+<a class="sourceLine" id="cb984-8" title="8">                              <span class="dv">1</span>, sum)</a>
+<a class="sourceLine" id="cb984-9" title="9">  props_state &lt;-<span class="st"> </span><span class="kw">prop.table</span>(<span class="kw">apply</span>(state_tracts[,<span class="kw">c</span>(<span class="st">&quot;white&quot;</span>,<span class="st">&quot;latino&quot;</span>,<span class="st">&quot;black&quot;</span>,</a>
+<a class="sourceLine" id="cb984-10" title="10">                                                  <span class="st">&quot;asian&quot;</span>,<span class="st">&quot;indigenous&quot;</span>,<span class="st">&quot;other&quot;</span>)], </a>
+<a class="sourceLine" id="cb984-11" title="11">                                  <span class="dv">2</span>, sum))</a>
+<a class="sourceLine" id="cb984-12" title="12">  entropy_state &lt;-<span class="st"> </span><span class="kw">sum</span>(props_state<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">/</span>props_state))</a>
+<a class="sourceLine" id="cb984-13" title="13">  theil_h &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(state_tracts<span class="op">$</span>total <span class="op">*</span><span class="st"> </span>state_tracts<span class="op">$</span>entropy)<span class="op">/</span></a>
+<a class="sourceLine" id="cb984-14" title="14"><span class="st">    </span>(<span class="kw">sum</span>(state_tracts<span class="op">$</span>total)<span class="op">*</span>entropy_state)</a>
+<a class="sourceLine" id="cb984-15" title="15">  <span class="kw">return</span>(theil_h)</a>
+<a class="sourceLine" id="cb984-16" title="16">}</a>
+<a class="sourceLine" id="cb984-17" title="17">tracts &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;resources/tracts_state.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb984-18" title="18">theil_h &lt;-<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">split</span>(tracts, tracts<span class="op">$</span>statename), calculateTheilH)</a>
+<a class="sourceLine" id="cb984-19" title="19">theil_h &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">statename=</span><span class="kw">names</span>(theil_h), theil_h)</a>
+<a class="sourceLine" id="cb984-20" title="20"><span class="kw">rownames</span>(theil_h) &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb984-21" title="21"><span class="kw">head</span>(theil_h)</a></code></pre></div>
 <pre><code>##    statename   theil_h
 ## 1    Alabama 0.2675507
 ## 2     Alaska 0.1682601

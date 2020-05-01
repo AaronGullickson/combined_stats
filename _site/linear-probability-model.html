@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-04-20" />
+<meta name="date" content="2020-05-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -123,6 +123,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<link rel="stylesheet" href="my_styles.css" type="text/css" />
 </head>
 
 <body>
@@ -287,13 +288,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="modeling-categorical-outcomes.html"><a href="modeling-categorical-outcomes.html"><i class="fa fa-check"></i>Modeling Categorical Outcomes</a><ul>
-<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html"><i class="fa fa-check"></i>Dichotomous Outcomes and The Binomial Distribution</a></li>
-<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html"><i class="fa fa-check"></i>Linear Probability Model</a></li>
-<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
-<li class="chapter" data-level="" data-path="maximum-likelihood-estimation.html"><a href="maximum-likelihood-estimation.html"><i class="fa fa-check"></i>Maximum Likelihood Estimation</a></li>
-<li class="chapter" data-level="" data-path="logistic-regression-model.html"><a href="logistic-regression-model.html"><i class="fa fa-check"></i>Logistic Regression Model</a></li>
-<li class="chapter" data-level="" data-path="models-for-nominal-polytomous-outcomes.html"><a href="models-for-nominal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Nominal Polytomous Outcomes</a></li>
-<li class="chapter" data-level="" data-path="models-for-ordinal-polytomous-outcomes.html"><a href="models-for-ordinal-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Ordinal Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html"><i class="fa fa-check"></i>Dichotomous Outcomes and The Binomial Distribution</a><ul>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html#the-binomial-distribution"><i class="fa fa-check"></i>The binomial distribution</a></li>
+<li class="chapter" data-level="" data-path="dichotomous-outcomes-and-the-binomial-distribution.html"><a href="dichotomous-outcomes-and-the-binomial-distribution.html#the-binomial-distribution-as-a-data-generating-process"><i class="fa fa-check"></i>The binomial distribution as a data-generating process</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html"><i class="fa fa-check"></i>Linear Probability Model</a><ul>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html#heteroscedasticity-1"><i class="fa fa-check"></i>Heteroscedasticity</a></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html#nonsense-values"><i class="fa fa-check"></i>Nonsense values</a></li>
+<li class="chapter" data-level="" data-path="linear-probability-model.html"><a href="linear-probability-model.html#logit-transformation-to-the-rescue"><i class="fa fa-check"></i>Logit transformation to the rescue</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html"><i class="fa fa-check"></i>Generalized Linear Model</a><ul>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#generalized-linear-model-framework"><i class="fa fa-check"></i>Generalized linear model framework</a></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#a-glm-for-dichotomous-outcomes"><i class="fa fa-check"></i>A GLM for dichotomous outcomes</a></li>
+<li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum likelihood estimation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a></li>
+<li class="chapter" data-level="" data-path="models-polytomous-outcomes.html"><a href="models-polytomous-outcomes.html"><i class="fa fa-check"></i>Models Polytomous Outcomes</a></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
@@ -398,7 +408,137 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="linear-probability-model" class="section level2">
 <h2>Linear Probability Model</h2>
+<iframe src="https://www.youtube.com/embed/AQXIzrEJL1I" width="672" height="400px">
+</iframe>
+<p>In the previous section, I said that you cannot fit a linear model by OLS regression if the dependent variable is categorical. This is mostly true, but not exactly true. I can brute-force an OLS regression model by turning a dichotomous dependent variable into numeric values of 0 (for failure) and 1 (for success). In <em>R</em>, I can do this by turning my dependent variable into a boolean statement. Lets try it with a model that predicts survival on the Titanic by fare paid.</p>
+<div class="sourceCode" id="cb507"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb507-1" title="1">model_lpm &lt;-<span class="st"> </span><span class="kw">lm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>fare, <span class="dt">data=</span>titanic)</a>
+<a class="sourceLine" id="cb507-2" title="2"><span class="kw">coef</span>(model_lpm)</a></code></pre></div>
+<pre><code>## (Intercept)        fare 
+## 0.305551559 0.002296519</code></pre>
+<p>I now have a model that works, but what do the results mean? One way we can try to understand this model is by visualizing it on a scatterplot.</p>
+<div class="sourceCode" id="cb509"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb509-1" title="1"><span class="kw">ggplot</span>(titanic, <span class="kw">aes</span>(<span class="dt">x=</span>fare,  <span class="dt">y=</span><span class="kw">as.numeric</span>(survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)))<span class="op">+</span></a>
+<a class="sourceLine" id="cb509-2" title="2"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha=</span><span class="fl">0.1</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb509-3" title="3"><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span><span class="st">&quot;lm&quot;</span>, <span class="dt">se=</span><span class="ot">FALSE</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb509-4" title="4"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&quot;0&quot;</span>,<span class="st">&quot;1&quot;</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb509-5" title="5"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;fare paid in pounds&quot;</span>, <span class="dt">y=</span><span class="st">&quot;Titanic survival as numeric value&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb509-6" title="6"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:lpm-plot"></span>
+<img src="stat_book_files/figure-html/lpm-plot-1.png" alt="Scatterplot of fare paid by survival on the Titanic with linear probability model fit. Points are shown with semi-transparency to address overplotting." width="672" />
+<p class="caption">
+Figure 94: Scatterplot of fare paid by survival on the Titanic with linear probability model fit. Points are shown with semi-transparency to address overplotting.
+</p>
+</div>
+<p>All of the points fall on two horizontal lines at <span class="math inline">\(y=0\)</span> (deaths) and <span class="math inline">\(y=1\)</span> (survivors). We can sort of see the positive relationship in that the deaths are more tightly clustered around low values of fare, while the survivors are more spread out. The blue line plots the OLS regression line I just calculated above.</p>
+<p>If we were to take all the passengers at any interval, we could calculate the proportion who survived by simply taking the means of the zeros and ones for the survival variable. Lets try that for all passengers who paid between ten and twenty pounds:</p>
+<div class="sourceCode" id="cb510"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb510-1" title="1"><span class="kw">mean</span>(<span class="kw">subset</span>(titanic, fare<span class="op">&gt;=</span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>fare<span class="op">&lt;=</span><span class="dv">20</span>)<span class="op">$</span>survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)</a></code></pre></div>
+<pre><code>## [1] 0.3793103</code></pre>
+<p>So about 37.9% of the passengers paying between 10 and 20 pounds survived. Figure <a href="linear-probability-model.html#fig:lpm-plot-markup">95</a> below shows this point graphically. You can see that it falls pretty close to the best-fitting line. This best-fitting line is estimating the same exact thing: the predicted proportion of survivors at a given value of fare.</p>
+<div class="sourceCode" id="cb512"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb512-1" title="1"><span class="kw">ggplot</span>(titanic, <span class="kw">aes</span>(<span class="dt">x=</span>fare,  <span class="dt">y=</span><span class="kw">as.numeric</span>(survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)))<span class="op">+</span></a>
+<a class="sourceLine" id="cb512-2" title="2"><span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;rect&quot;</span>, <span class="dt">xmin =</span> <span class="dv">10</span>, <span class="dt">xmax =</span> <span class="dv">20</span>, <span class="dt">ymin =</span> <span class="dv">0</span>, <span class="dt">ymax =</span> <span class="dv">1</span>, <span class="dt">alpha =</span> <span class="fl">0.2</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb512-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha=</span><span class="fl">0.1</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb512-4" title="4"><span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method=</span><span class="st">&quot;lm&quot;</span>, <span class="dt">se=</span><span class="ot">FALSE</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb512-5" title="5"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data=</span><span class="kw">data.frame</span>(<span class="dt">fare=</span><span class="dv">15</span>, <span class="dt">y=</span><span class="fl">0.3793103</span>), <span class="kw">aes</span>(<span class="dt">y=</span>y), <span class="dt">color=</span><span class="st">&quot;red&quot;</span>, <span class="dt">size=</span><span class="dv">2</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb512-6" title="6"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">labels=</span><span class="kw">c</span>(<span class="st">&quot;0&quot;</span>,<span class="st">&quot;1&quot;</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb512-7" title="7"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;fare paid in pounds&quot;</span>, <span class="dt">y=</span><span class="st">&quot;Titanic survival as numeric value&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb512-8" title="8"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:lpm-plot-markup"></span>
+<img src="stat_book_files/figure-html/lpm-plot-markup-1.png" alt="Scatterplot of fare paid by survival on the Titanic with linear probability model fit. Red dot shows proportion of surviving passengers within the grey band." width="672" />
+<p class="caption">
+Figure 95: Scatterplot of fare paid by survival on the Titanic with linear probability model fit. Red dot shows proportion of surviving passengers within the grey band.
+</p>
+</div>
+<p>This blue line is giving us the <strong>linear probability model</strong>. Formally, the linear probability model in this case gives us:</p>
+<p><span class="math display">\[\hat{p}_i=0.3059+0.0023(fare_i)\]</span></p>
+<p>The outcome, <span class="math inline">\(\hat{p}_i\)</span> is the predicted probability of survival for the <span class="math inline">\(i\)</span>th passenger. When fare paid is zero, we expect that probability to be 0.3059 of 30.59%. The model predicts that each additional pound of fare paid is associated with a 0.23 percentage point increase in the probability of survival.</p>
+<p>At first glance, this model seems to give us exactly what we said we wanted from the last section – the predicted probability of survival for each passenger. However, it turns out there are two significant problems with the linear probability model that make it a less than ideal model.</p>
+<div id="heteroscedasticity-1" class="section level3">
+<h3>Heteroscedasticity</h3>
+<p>The first problem is one we have seen before – heteroscedasticity. However, we will now see it in a new form. From the previous section we know that the variance of the actual survival outcome for a passenger should be given by:</p>
+<p><span class="math display">\[p_i(1-p_i)\]</span></p>
+<p>The problem here is that the variance of the outcome is itself a function of the value of <span class="math inline">\(p_i\)</span> and <span class="math inline">\(p_i\)</span> in our model will be different for each passenger. So, we have unequal variance in the residuals of our outcome and violate the assumption of identical distributions. Each passenger is reaching into their own very personal Bernoulli distribution to decide whether they live or die.</p>
+<p>This problem is theoretically correctable, via the <strong>iteratively reweighted least squares</strong> approach that we used in the previous module. In this case, we need to apply weights to our results that are the inverse of the variance for each observation. In this case, the weight for each observation should be:</p>
+<p><span class="math display">\[w_i=\frac{1}{\hat{p}_i(1-\hat{p}_i)}\]</span></p>
+<p>Where <span class="math inline">\(\hat{p}_i\)</span> is the estimated probability from our initial model. We can then iterate through models until our estimates stop changing. Lets try it out using our initial model from above as the starting point.</p>
+<div class="sourceCode" id="cb513"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb513-1" title="1">model_next &lt;-<span class="st"> </span>model_lpm</a>
+<a class="sourceLine" id="cb513-2" title="2"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>) {</a>
+<a class="sourceLine" id="cb513-3" title="3">phat &lt;-<span class="st"> </span>model_next<span class="op">$</span>fitted.values</a>
+<a class="sourceLine" id="cb513-4" title="4">weight &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">/</span>(phat<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>phat))</a>
+<a class="sourceLine" id="cb513-5" title="5">model_next &lt;-<span class="st"> </span><span class="kw">update</span>(model_next, <span class="dt">w=</span>weight)</a>
+<a class="sourceLine" id="cb513-6" title="6">}</a></code></pre></div>
+<pre><code>## Error in lm.wfit(x, y, w, offset = offset, singular.ok = singular.ok, : missing or negative weights not allowed</code></pre>
+<p>It looks like something went wrong. The problem is that some of the values for <span class="math inline">\(\hat{p}_i\)</span> are greater than one. You can look at the line in Figure <a href="linear-probability-model.html#fig:lpm-plot">94</a> to confirm this issue. That causes problems in our approach because it makes some of the estimated weights negative. There is no particularly good approach to solving this problem. We could eliminate observations where <span class="math inline">\(\hat{p}_i&gt;1\)</span> or we could truncate those values to some value like 0.99, but if we choose 0.999 rather than 0.99, we will get different results. The fundamental issue is that we are running into the second problem with linear probability models detailed below – they can give you nonsense values for predicted probabilities outside the range of zero to one.</p>
+<p>One solution to this problem if we still want to fit this model and deal with heteroscedastictity is to apply robust standard errors as we saw in the last module:</p>
+<div class="sourceCode" id="cb515"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb515-1" title="1"><span class="kw">library</span>(lmtest)</a>
+<a class="sourceLine" id="cb515-2" title="2"><span class="kw">library</span>(sandwich)</a>
+<a class="sourceLine" id="cb515-3" title="3"><span class="kw">coeftest</span>(model_lpm, <span class="dt">vcov=</span><span class="kw">vcovHC</span>(model_lpm, <span class="st">&quot;HC1&quot;</span>))</a></code></pre></div>
+<pre><code>## 
+## t test of coefficients:
+## 
+##               Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept) 0.30555156 0.01525321 20.0319 &lt; 2.2e-16 ***
+## fare        0.00229652 0.00025975  8.8413 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>This approach should give us correct standard errors. However, as is often the case with robust standard errors, we are getting correct standard errors for a bad model because we have not been able to address the much more important problem.</p>
+</div>
+<div id="nonsense-values" class="section level3">
+<h3>Nonsense values</h3>
+<p>By definition, the linear probability model fits probabilities via a straight line. The thing about straight lines is they just keep going up and up (and down and down) at a constant slope with no upper or lower limits on the values that they can take. However, a probability does have a very clear theoretical upper and lower bounds. Probabilities cannot be below zero or above one. You cannot have a -20% or 150% chance of surviving the Titanic.</p>
+<p>In some cases, you may by happenstance get a line that fits within the theoretical range for the scope of your independent variable. However, there is no guarantee of this. Figure <a href="linear-probability-model.html#fig:lpm-plot-nonsense">96</a> below clearly shows that we get predicted probabilities above one within the scope of the data for our linear probability model of survival on the Titanic by passenger class.</p>
+<div class="figure" style="text-align: center"><span id="fig:lpm-plot-nonsense"></span>
+<img src="stat_book_files/figure-html/lpm-plot-nonsense-1.png" alt="Scatterplot of fare paid by survival on the Titanic with linear probability model fit. Points are shown with semi-transparency to address overplotting. Nonsense values above one and below zero are shaded in red." width="672" />
+<p class="caption">
+Figure 96: Scatterplot of fare paid by survival on the Titanic with linear probability model fit. Points are shown with semi-transparency to address overplotting. Nonsense values above one and below zero are shaded in red.
+</p>
+</div>
+<p>While we can fix heteroscedasticity, there is no fix for this problem within the framework of the linear probability model. The linear probability model is not a very good model because it does not respect the underlying data generation process.</p>
+</div>
+<div id="logit-transformation-to-the-rescue" class="section level3">
+<h3>Logit transformation to the rescue</h3>
+<p>In order to resolve this problem, we need some kind of transformation of the <span class="math inline">\(p_i\)</span> values that will cause them to be contained within the interval from zero to one. It turns out that the transformation we are looking for is the <strong>logit</strong> transformation.</p>
+<p>The logit transformation converts a probability into the log-odds. Formally,</p>
+<p><span class="math display">\[logit(p)=log(\frac{p}{1-p})\]</span></p>
+<p>There are really two parts to this transformation. First, we convert from probabilities to odds by taking <span class="math inline">\(p/(1-p)\)</span>. We have seen odds before in this course, in the section on two-way tables. There we learned how to calculate the odds ratio. The odds is the ratio of the expected number of successes to failures. So, if <span class="math inline">\(p=0.75\)</span>, we expect that three out of every four trials will produce successes, on average. In terms of the odds, we expect three successes for every one failure. To convert:</p>
+<p><span class="math display">\[O=\frac{p}{1-p}=\frac{0.75}{1-0.75}=\frac{0.75}{0.25}=3\]</span></p>
+<p>Why do we convert from probabilities to odds? The advantage of the odds is that it has no upper limit. As the probability gets closer and closer to onem, the odds will approach infinity, with no finite limit. Therefore, any non-negative number for the odds can be converted back into a probability that will give sensible values between zero and one. I can convert back to a probability by:</p>
+<p><span class="math display">\[p=\frac{O}{1+O}\]</span></p>
+<p>So, for the case of <span class="math inline">\(O=3\)</span> above:</p>
+<p><span class="math display">\[p=\frac{3}{1+3}=\frac{3}{4}=0.75\]</span></p>
+<p>Lets choose a really high odds like <span class="math inline">\(O=100,000\)</span>. If we convert back to a probability:</p>
+<p><span class="math display">\[p=\frac{100000}{1+100000}=\frac{1}{100001}=0.99999\]</span></p>
+<p>We get a very high probability, but its still less than one.</p>
+<p>This partially helps us with our problems. If we were to look at a linear relationship between the odds of success and our independent variables we would get sensible probabilities no matter how high the predicted odds. However, it only partially helps us because it would still be possible to get negative odds from such a linear model which would be nonsensical.</p>
+<p>The second step of logging the odds will get us all the way there. If I log a value below one, I will get a negative value and that logged value will approach negative infinity as the original value approaches zero. So a log-odds can always be converted back to a probability that will lie between zero and one.</p>
+<p>To convert from a log-odds <span class="math inline">\(g\)</span> to a probability, I take:</p>
+<p><span class="math display">\[p=\frac{e^g}{1+e^g}\]</span></p>
+<p>The value <span class="math inline">\(e^g\)</span> converts from log-odds to odds and then I just use the formula for converting from an odds to a probability.</p>
+<p>In essence the log-odds, or <em>logit</em>, transformation stretches out my probabilities across the entire number line. Lets see what this looks like graphically for a sequence of probabilities from 1% to 99%:</p>
+<div class="sourceCode" id="cb517"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb517-1" title="1">p &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dt">from=</span><span class="fl">0.01</span>, <span class="dt">to=</span><span class="fl">0.99</span>, <span class="dt">by=</span><span class="fl">0.001</span>)</a>
+<a class="sourceLine" id="cb517-2" title="2">logit &lt;-<span class="st"> </span><span class="kw">log</span>(p<span class="op">/</span>(<span class="dv">1</span><span class="op">-</span>p))</a>
+<a class="sourceLine" id="cb517-3" title="3"><span class="kw">ggplot</span>(<span class="kw">data.frame</span>(p, logit), <span class="kw">aes</span>(<span class="dt">x=</span>logit, <span class="dt">y=</span>p))<span class="op">+</span></a>
+<a class="sourceLine" id="cb517-4" title="4"><span class="st">  </span><span class="kw">geom_line</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb517-5" title="5"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">linetype=</span><span class="dv">2</span>, <span class="dt">color=</span><span class="st">&quot;red&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb517-6" title="6"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;logit transformation&quot;</span>, <span class="dt">y=</span><span class="st">&quot;probability&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb517-7" title="7"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:logistic-curve"></span>
+<img src="stat_book_files/figure-html/logistic-curve-1.png" alt="The relationship between probability and the logit transformation" width="672" />
+<p class="caption">
+Figure 97: The relationship between probability and the logit transformation
+</p>
+</div>
+<p>The “S” curve shown here is often called the <strong>logistic curve</strong>. There are a couple of things to note about this curve:</p>
+<ul>
+<li>The curve approaches but never crosses the horizontal lines for <span class="math inline">\(p=0\)</span> and <span class="math inline">\(p=1\)</span>. Thats because all finite logit values will produce probabilities within the correct theoretical range.</li>
+<li>A probability of 50% corresponds to a logit of zero. Logit values below zero indicate probabilities less than 50% and logit values above zero indicate probabilities greater than 50%.</li>
+</ul>
+<p>So, it seems like we now have a potential solution to our problem with the linear probability model. If we were to transform our dependent variable from predicting probabilities to predicting log-odds, we could then get predicted log-odds for each passenger on the Titanic. When converted back to probabilities, we would be ensured that our predicted probabilities never strayed beyond zero and one.</p>
+<p>That all sounds great, except there is an important catch.</p>
+<div class="sourceCode" id="cb518"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb518-1" title="1">titanic<span class="op">$</span>survived &lt;-<span class="st"> </span>titanic<span class="op">$</span>survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span></a>
+<a class="sourceLine" id="cb518-2" title="2">model_better &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">I</span>(<span class="kw">log</span>(survived<span class="op">/</span>(<span class="dv">1</span><span class="op">-</span>survived)))<span class="op">~</span>fare, <span class="dt">data=</span>titanic)</a></code></pre></div>
+<pre><code>## Error in lm.fit(x, y, offset = offset, singular.ok = singular.ok, ...): NA/NaN/Inf in &#39;y&#39;</code></pre>
+<p>We cannot actually apply this transformation directly to our dependent variable, as we have done in the past. Why not? The problem is that we want to apply this transformation directly to <span class="math inline">\(p_i\)</span> but we don’t have <span class="math inline">\(p_i\)</span>. We only have the actual recorded outcome as either a zero (died) or a one (survived). But there are no proper finite values of the logit at exactly zero and one. So, this approach will not work using OLS regression techniques. In order to get what we want, we need to move to a new model estimation technique – the <strong>Generalized Linear Model</strong>.</p>
 <hr />
+</div>
 </div>
             </section>
 
