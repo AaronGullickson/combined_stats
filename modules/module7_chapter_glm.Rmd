@@ -344,7 +344,7 @@ We cannot actually apply this transformation directly to our dependent variable,
 knitr::include_url("https://www.youtube.com/embed/FbbHf4rdVgI")
 ```
 
-Generalized linear models (GLM) will allow us to extend the basic idea of our linear model to incorporate more divderse outcomes and to specify more directly the **data generating process** behind our data. 
+Generalized linear models (GLM) will allow us to extend the basic idea of our linear model to incorporate more diverse outcomes and to specify more directly the **data generating process** behind our data. 
 
 To better understand what GLMs do, I want to return to a particular set-up of the linear model. In this set-up, there are two equations. The first equation partitions the value of an actual outcome $(y_i)$ into the part accounted for by our model $(\hat{y}_i)$ and the random residual "leftover" bits $(\epsilon_i)$:
 
@@ -473,13 +473,230 @@ model.glm <- glm(survived~gender+fare, data=good_ship,
 summary(model.glm)$coef
 ```
 
-It worked! Note that my coefficient estimates are very close to the actual values I used when playing god. They differ slightly because there is some inherent random in choosing survivors and deaths by the binomial distribution. 
+It worked! Note that my coefficient estimates are very close to the actual values I used when playing god. They differ slightly because there is some inherent randomness in choosing survivors and deaths by the binomial distribution. 
 
 We now have a framework for a model that predicts dichotomous outcomes. This is called the **logit model** or **logistic regression model**. In practice, it is one specification of the generalized linear model. 
 
 However, we still need to understand two things. First, how are those values actually estimated in the generalized linear model? We will take that up below. Second, how do we interpret those results? We will take that up with a more thorough discussion of the logit model in the next section.
 
 ### Maximum likelihood estimation
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/FpAMN6tHvLA")
+```
+
+The technique that the generalized linear model uses to estimate parameters (i.e. intercept and slopes) is called maximum likelihood estimation. This technique is different than the technique we learned for OLS regression model which sought to minimize the sum of squared residuals, although it turns out that OLS regression technique is the maximum likelihood estimate for a simple linear model. However, we now have a more complex model that does not even have residuals in the sense that we have been using up to this point.
+
+The basic principle of maximum likelihood estimation (MLE) is fairly straightforward: **We choose the parameters that maximize the likelihood of observing the data that we actually have**. More formally, the process of maximum likelihood estimation operates as follows:
+
+1. We have some data-generating process that produces a set of observed outcomes. In the case of the Titanic of the Good Ship Lollipop, these outcomes are the vectors of zero and one that indicate death or survival. This data-generating process is governed by some unknown parameters. In our case, those unknown parameters are the intercept and slopes of the linear function in our link function. In general, we call the set of unknown parameters $\theta$ as a shorthand.
+2. Based on the data-generating process, we can construct a **likelihood function**, $L(\theta)$ that determines the probability of observing the data that we actually observe, assuming some $\theta$. The important thing to note about the likelihood function is that its a function of the unknown parameters $\theta$, not the actual data, which are known. 
+3. We determine what values of $\theta$ would produce the maximum possible value in the likelihood function $L(\theta)$. These are the maximum likelihood estimates. As usual to find maximums of functions, we need to use calculus. In practice, we typically log the likelihood function to get the log-likelihood function and find the maximum for that function which will give us the same result. We prefer the log-likelihood function because it makes multiplicative functions additive, which simplifies the math.
+
+This is all very abstract, so lets take a simple example. Lets say I flip a coin 50 times and observe 20 heads. What is my maximum likelihood estimate of $p$, the probability that we get a head on a single coin toss?
+
+Now, you may be saying to yourself, isn't the probability of a head on a coin toss 50%? It is true that we have strong prior beliefs that this should be so. However, the principle of maximum likelihood estimation is to produce estimates purely driven by the data at hand, not prior beliefs. So we are going to act naively and estimate $p$ via MLE. 
+
+What is our data-generating process. We know that this is a basic binomial process. However, we are making some changes here from how we usually conceptualize this binomial process. Before, we have always known $p$ and $n$ (number of trials) and then considered the probability of getting $k$ successes. Now, we know $n$ and $k$ and want to figure out $p$. The good news is that our likelihood function is familiar:
+
+$$L(p)={50 \choose 20}p^{20}(1-p)^{30}$$
+
+The likelihood function is just the binomial formula. Except now it is a function of $p$ with the values for $n$ and $k$ filled in. Remember that a likelihood function gives us the probability of getting the data that we actually have. This function will give us the probability of getting 20 heads in 50 coin tosses for a given value of $p$. We just need to figure out which value of $p$ will actually give us the maximum possible value for $L(p)$. We can do this by brute force by just using *R* to try every possible value of $p$ from 0.001 to 0.999:
+
+```{r mle-binom, fig.cap="Likelihood function for p from binomial process with 50 trials and 20 successes. It is clearly maximized at p=0.4."}
+p <- seq(from=.001, to=.999, by=.001)
+likelihood <- choose(50,20)*p^20*(1-p)^30
+ggplot(data.frame(p, likelihood), aes(x=p, y=likelihood))+
+  geom_line()+
+  labs(y="L(p)")+
+  theme_bw()
+```
+
+Figure \@ref(fig:mle-binom) shows the likelihood function for $p$ calculated by hand. It is clear that the reasonable range of values of $p$ are between about 0.25 and 0.55 and $L(p)$ is maximized at $p=0.4$. This should not be surprising. If we have a binomial process with 50 trials and 20 successes, then our best guess for the probability of a success is $20/50=0.4$. 
+
+Now lets try to derive the $p$ that maximized $L(p)$ more formally. To find the maximum of a function we need to take the derivative of that function and solve for zero^[Technically we also need to show that the second derivative is negative at this value of $p$, but we will skip that step here. You can try it as an exercise at home if you  are so inclined]. As I noted earlier, it is usually easier to take the derivative of a log-likelihood function, so lets first log our likelihood function:
+
+$$
+\begin{aligned}
+\log L(p)&=\log({50 \choose 20}p^{20}(1-p)^{30})\\
+\log L(p)&=\log {50 \choose 20} + 20 \log(p) + 30\log(1-p)\\
+\end{aligned}
+$$
+
+Now, we just need to take the derivative of this function with respect to $p$. If you know calculus, this is a mildly complex and enjoyable calculation that you can try out, but for others I will tell you mathemagically, the derivative comes out to:
+
+$$\frac{\partial \log L(p)}{\partial p}=\frac{20}{p}-\frac{30}{1-p}$$
+
+We now just need to set this equal to zero on the left-hand side and solve for $p$. Thats just alegbra:
+
+$$
+\begin{aligned}
+0&=\frac{20}{p}-\frac{30}{1-p}\\
+\frac{30}{1-p}&=\frac{20}{p}\\
+30p&=20(1-p)\\
+30p&=20-20p\\
+50p&=20\\
+p&=20/50=0.4
+\end{aligned}
+$$
+
+In general, if you replace 20 and 50 with $n$ and $k$, then this result will give you the MLE solution of $p=k/n$. 
+
+#### MLE for GLMs
+
+The previous example is fairly simple and we are able to get a closed-form solution that is satisfying and straightforward. Maximum likelihood estimation for GLMs is not so easy. 
+
+Lets consider our case for the logit model. Each observation gets a bernoulli trial to determine success where the outcome of 0 or 1 is recorded at $y_i$. Therefore, the likelihood $L_i$ for a single observation is given by:
+
+$$L_i=p_i^{y_i}(1-p_i)^{1-y_i}$$
+
+This formula may look complicated, but its fairly straightforward. If the passenger survived $(y_i=1)$, then this formula just simplifies to $p_i$,the probability of survival for that passenger. If the person did not survive $(y_i=0)$, then this formula just simplifies to $(1-p_i)$, the probabiility of not surviving for that passenger. 
+
+As usual, lets take the log of that likelihood to get the log-likelihood:
+
+$$\log L_i=y_i\log(p_i)+(1-y_i) \log (1-p_i)$$
+
+To get the log-likelihood of all observations, we just need to add up these log-likelihoods. Why do we add them? On the original scale of likelihoods, we would multiply them together, so on the log-scale we add them.
+
+$$\log L= \sum_{i=1}^n \log L_i= \sum_{i=1}^n y_i\log(p_i)+(1-y_i) \log (1-p_i)$$
+
+Now, the only problem we have at the moment is that our goal is to maximize the slopes and intercept of our linear model but we don't have those in the formulat the moment. However, we can add that by remembering that we were predicting the log-odds of success as a linear function of the independent variables:
+
+$$log(\frac{p_i}{1-p_i})=\mathbf{x_i'\beta}$$
+
+I am writing the linear function in matrix notation here $(\mathbf{x_i'\beta})$ for brevity. We can convert this back to $p$ by using the formula for converting from log-odds to probabilities:
+
+$${p}_i=\frac{e^{\mathbf{x_i'\beta}}}{1+e^{\mathbf{x_i'\beta}}}$$
+
+We can then plug this into our log-likelihood function for $p_i$:
+
+$$\log L(\beta) = \sum_{i=1}^n y_i\log(\frac{e^{\mathbf{x_i'\beta}}}{1+e^{\mathbf{x_i'\beta}}})+(1-y_i) \log (1-\frac{e^{\mathbf{x_i'\beta}}}{1+e^{\mathbf{x_i'\beta}}})$$
+
+We now have the full log-likelihood function for a logit model. To figure out $\beta$ we just have the rather difficult task of finding the $\beta$ values that maximize this function.
+
+Finding the MLE for this log-likelihood function is no easy task and there are no closed-form solutions as there were for the simple binomial process case. We need to use iterative estimation procedures to estimate the best values for $\beta$. 
+
+Several algorithms have been developed for finding MLE for this case and for other forms of the GLMs. The technique that I will show you below uses a version of iteratively-reweighted least squares (IRLS). You will never typically have to do this as the `glm` command will do all of the heavy-lifting here, but its worthwhile to have some familiarity with how `glm` is doing what it does. I will show you below how this procedure works using the case of the Titanic where we predict survival by fare paid. Lets first set up our outcome vector of zeros and ones:
+
+```{r irls-logit-y}
+y <- as.vector(as.numeric(titanic$survival=="Survived"))
+head(y)
+```
+
+Beause we will also be using matrix notation, I am also going to set up my design matrix of independent variables, taking consideration to add a column of ones for my intercept.
+
+```{r irls-logit-x}
+X <- as.matrix(cbind(rep(1,nrow(titanic)), titanic[,"fare"]))
+head(X)
+```
+
+The basic IRLS procedure is to estimate via an iterative procedure. To get the process started we first fit the null model as our logit model. The null model just assumes that every observation had an equal probability of survival. 
+
+```{r null-model-irls}
+mean(y)
+#convert to log-odds
+lodds <- log(mean(y)/(1-mean(y)))
+lodds
+```
+
+Based on the proportion of survivors, the log-odds of survival as a whole was -0.4811908. So my null model is:
+
+$$\log(\frac{p_i}{1-p_i})=-0.4811908$$
+
+Lets set this up as my initial $\beta$ vector:
+
+```{r irls-initial-beta}
+beta <- c(lodds, 0)
+```
+
+I can matrix-multiply this vector by my design matrix to get predicted log-odds which I can convert to $p$. At this point, they all should give me the same value.
+
+```{r irls-calculate-p}
+pred_lodds <- X%*%beta
+p <- exp(pred_lodds)/(1+exp(pred_lodds))
+head(p)
+```
+
+I can also use that `p` vector to calculate my log-likelihood for the current model:
+
+```{r irls-initial-logl}
+logL <- sum(y*log(p)+(1-y)*log(1-p))
+logL
+```
+
+Now I want to iterate this process and improve my estimation. At each iteration $t$ of the process, I estimate the best-fitting $\beta$ vector for $t+1$ by the following formula:
+
+$$\beta^{(t+1)}=\mathbf{(X'W^{(t)}X)^{-1}X'W^{(t)}z^{(t)}}$$
+
+This formula is somewhat similar to the OLS regression formula we saw in the previous module. We can see the design matrix $\mathbf{X}$ of independent variables. We also have a $\mathbf{X}$ weighting matrix to consider. You will also notice a $z$ vector where we would usually have a $y$ vector.
+
+The weighting matrix only has non-zero values along the diagonal. These values are given by: 
+
+$$w_i=\hat{p}_i(1-\hat{p}_i)$$
+
+Where $hat{p}_i$ is estimated probability of success for observation $i$ from the current iteration of the model. I can estimate this weighting matrix from my initial model as follows:
+
+```{r irls-weight-matrix}
+W <- matrix(0, nrow(X), nrow(X))
+diag(W) <- p*(1-p)
+```
+
+The $z$ vector accounts for the transformation of the dependent variable and is estimated as:
+
+$$z_i=\mathbf{x_i'\beta}+\frac{y_i-\hat{p}_i}{\hat{p}_i(1-\hat{p}_i)}$$
+
+I can calculate this from my null model as:
+
+```{r irls-z}
+z <- pred_lodds + (y-p)/(p*(1-p))
+```
+
+I now have all the pieces for my first iteration:
+
+```{r irls-first-iterate}
+beta <- solve(t(X)%*%W%*%X)%*%(t(X)%*%W%*%z)
+beta
+pred_lodds <- X%*%beta
+p <- exp(pred_lodds)/(1+exp(pred_lodds))
+logL <- sum(y*log(p)+(1-y)*log(1-p))
+logL
+```
+
+You can see that I now have a non-zero slope for fare paid and a less negative log-likelihood which means a higher overall likelihood. I can keep iterating this procedure until my $\beta$ values stop moving around. Lets try a total of six iterations from the top:
+
+```{r irls-full-iterate}
+#initial null model
+lodds <- log(mean(y)/(1-mean(y)))
+beta <- c(lodds, 0) 
+pred_lodds <- X%*%beta
+p <- exp(pred_lodds)/(1+exp(pred_lodds))
+logL <- sum(y*log(p)+(1-y)*log(1-p))
+beta.prev <- beta
+for(i in 1:6) {
+  w <- p*(1-p)
+  z <- pred_lodds + (y-p)/w
+  W <- matrix(0, nrow(X), nrow(X))
+  diag(W) <- w
+  beta <- solve(t(X)%*%W%*%X)%*%(t(X)%*%W%*%z)
+  beta.prev <- cbind(beta.prev, beta)
+  pred_lodds <- X%*%beta
+  p <- exp(pred_lodds)/(1+exp(pred_lodds))
+  logL <- c(logL, sum(y*log(p)+(1-y)*log(1-p)))
+}
+beta.prev
+logL
+```
+
+By the sixth iteration, my intercept and slope values have stopped cahnging down to the eighth decimal place and the log-likelihood has also stabilized. Lets compare our results to the `glm` command to see how they compare:
+
+```{r irls-glm-compare}
+model.survival <- glm((survival=="Survived")~fare, data=titanic, 
+                      family=binomial(logit),
+                      control=glm.control(trace=TRUE))
+coef(model.survival)
+```
+                      
+We get the exact same values from the `glm` command. 
 
 ---
 
