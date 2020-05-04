@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-01" />
+<meta name="date" content="2020-05-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -410,7 +410,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2>Generalized Linear Model</h2>
 <iframe src="https://www.youtube.com/embed/FbbHf4rdVgI" width="672" height="400px">
 </iframe>
-<p>Generalized linear models (GLM) will allow us to extend the basic idea of our linear model to incorporate more divderse outcomes and to specify more directly the <strong>data generating process</strong> behind our data.</p>
+<p>Generalized linear models (GLM) will allow us to extend the basic idea of our linear model to incorporate more diverse outcomes and to specify more directly the <strong>data generating process</strong> behind our data.</p>
 <p>To better understand what GLMs do, I want to return to a particular set-up of the linear model. In this set-up, there are two equations. The first equation partitions the value of an actual outcome <span class="math inline">\((y_i)\)</span> into the part accounted for by our model <span class="math inline">\((\hat{y}_i)\)</span> and the random residual “leftover” bits <span class="math inline">\((\epsilon_i)\)</span>:</p>
 <p><span class="math display">\[y_i=\hat{y}_i+\epsilon_i\]</span></p>
 <p>We then have a second equation that details how the structural model part <span class="math inline">\((\hat{y}_i)\)</span> is specified by a linear function of the independent variables:</p>
@@ -501,14 +501,190 @@ Figure 98: Life and death on the Good Ship Lollipop. The lines show the underlyi
 ## (Intercept)  0.043243079 0.0366186671  1.180903 2.376414e-01
 ## genderMale  -0.405344191 0.0418497872 -9.685693 3.468482e-22
 ## fare         0.005410885 0.0002589993 20.891509 6.396671e-97</code></pre>
-<p>It worked! Note that my coefficient estimates are very close to the actual values I used when playing god. They differ slightly because there is some inherent random in choosing survivors and deaths by the binomial distribution.</p>
+<p>It worked! Note that my coefficient estimates are very close to the actual values I used when playing god. They differ slightly because there is some inherent randomness in choosing survivors and deaths by the binomial distribution.</p>
 <p>We now have a framework for a model that predicts dichotomous outcomes. This is called the <strong>logit model</strong> or <strong>logistic regression model</strong>. In practice, it is one specification of the generalized linear model.</p>
 <p>However, we still need to understand two things. First, how are those values actually estimated in the generalized linear model? We will take that up below. Second, how do we interpret those results? We will take that up with a more thorough discussion of the logit model in the next section.</p>
 </div>
 <div id="maximum-likelihood-estimation" class="section level3">
 <h3>Maximum likelihood estimation</h3>
+<iframe src="https://www.youtube.com/embed/FpAMN6tHvLA" width="672" height="400px">
+</iframe>
+<p>The technique that the generalized linear model uses to estimate parameters (i.e. intercept and slopes) is called maximum likelihood estimation. This technique is different than the technique we learned for OLS regression model which sought to minimize the sum of squared residuals, although it turns out that OLS regression technique is the maximum likelihood estimate for a simple linear model. However, we now have a more complex model that does not even have residuals in the sense that we have been using up to this point.</p>
+<p>The basic principle of maximum likelihood estimation (MLE) is fairly straightforward: <strong>We choose the parameters that maximize the likelihood of observing the data that we actually have</strong>. More formally, the process of maximum likelihood estimation operates as follows:</p>
+<ol style="list-style-type: decimal">
+<li>We have some data-generating process that produces a set of observed outcomes. In the case of the Titanic of the Good Ship Lollipop, these outcomes are the vectors of zero and one that indicate death or survival. This data-generating process is governed by some unknown parameters. In our case, those unknown parameters are the intercept and slopes of the linear function in our link function. In general, we call the set of unknown parameters <span class="math inline">\(\theta\)</span> as a shorthand.</li>
+<li>Based on the data-generating process, we can construct a <strong>likelihood function</strong>, <span class="math inline">\(L(\theta)\)</span> that determines the probability of observing the data that we actually observe, assuming some <span class="math inline">\(\theta\)</span>. The important thing to note about the likelihood function is that its a function of the unknown parameters <span class="math inline">\(\theta\)</span>, not the actual data, which are known.</li>
+<li>We determine what values of <span class="math inline">\(\theta\)</span> would produce the maximum possible value in the likelihood function <span class="math inline">\(L(\theta)\)</span>. These are the maximum likelihood estimates. As usual to find maximums of functions, we need to use calculus. In practice, we typically log the likelihood function to get the log-likelihood function and find the maximum for that function which will give us the same result. We prefer the log-likelihood function because it makes multiplicative functions additive, which simplifies the math.</li>
+</ol>
+<p>This is all very abstract, so lets take a simple example. Lets say I flip a coin 50 times and observe 20 heads. What is my maximum likelihood estimate of <span class="math inline">\(p\)</span>, the probability that we get a head on a single coin toss?</p>
+<p>Now, you may be saying to yourself, isn’t the probability of a head on a coin toss 50%? It is true that we have strong prior beliefs that this should be so. However, the principle of maximum likelihood estimation is to produce estimates purely driven by the data at hand, not prior beliefs. So we are going to act naively and estimate <span class="math inline">\(p\)</span> via MLE.</p>
+<p>What is our data-generating process. We know that this is a basic binomial process. However, we are making some changes here from how we usually conceptualize this binomial process. Before, we have always known <span class="math inline">\(p\)</span> and <span class="math inline">\(n\)</span> (number of trials) and then considered the probability of getting <span class="math inline">\(k\)</span> successes. Now, we know <span class="math inline">\(n\)</span> and <span class="math inline">\(k\)</span> and want to figure out <span class="math inline">\(p\)</span>. The good news is that our likelihood function is familiar:</p>
+<p><span class="math display">\[L(p)={50 \choose 20}p^{20}(1-p)^{30}\]</span></p>
+<p>The likelihood function is just the binomial formula. Except now it is a function of <span class="math inline">\(p\)</span> with the values for <span class="math inline">\(n\)</span> and <span class="math inline">\(k\)</span> filled in. Remember that a likelihood function gives us the probability of getting the data that we actually have. This function will give us the probability of getting 20 heads in 50 coin tosses for a given value of <span class="math inline">\(p\)</span>. We just need to figure out which value of <span class="math inline">\(p\)</span> will actually give us the maximum possible value for <span class="math inline">\(L(p)\)</span>. We can do this by brute force by just using <em>R</em> to try every possible value of <span class="math inline">\(p\)</span> from 0.001 to 0.999:</p>
+<div class="sourceCode" id="cb531"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb531-1" title="1">p &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dt">from=</span>.<span class="dv">001</span>, <span class="dt">to=</span>.<span class="dv">999</span>, <span class="dt">by=</span>.<span class="dv">001</span>)</a>
+<a class="sourceLine" id="cb531-2" title="2">likelihood &lt;-<span class="st"> </span><span class="kw">choose</span>(<span class="dv">50</span>,<span class="dv">20</span>)<span class="op">*</span>p<span class="op">^</span><span class="dv">20</span><span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)<span class="op">^</span><span class="dv">30</span></a>
+<a class="sourceLine" id="cb531-3" title="3"><span class="kw">ggplot</span>(<span class="kw">data.frame</span>(p, likelihood), <span class="kw">aes</span>(<span class="dt">x=</span>p, <span class="dt">y=</span>likelihood))<span class="op">+</span></a>
+<a class="sourceLine" id="cb531-4" title="4"><span class="st">  </span><span class="kw">geom_line</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb531-5" title="5"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y=</span><span class="st">&quot;L(p)&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb531-6" title="6"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:mle-binom"></span>
+<img src="stat_book_files/figure-html/mle-binom-1.png" alt="Likelihood function for p from binomial process with 50 trials and 20 successes. It is clearly maximized at p=0.4." width="672" />
+<p class="caption">
+Figure 99: Likelihood function for p from binomial process with 50 trials and 20 successes. It is clearly maximized at p=0.4.
+</p>
+</div>
+<p>Figure <a href="generalized-linear-model.html#fig:mle-binom">99</a> shows the likelihood function for <span class="math inline">\(p\)</span> calculated by hand. It is clear that the reasonable range of values of <span class="math inline">\(p\)</span> are between about 0.25 and 0.55 and <span class="math inline">\(L(p)\)</span> is maximized at <span class="math inline">\(p=0.4\)</span>. This should not be surprising. If we have a binomial process with 50 trials and 20 successes, then our best guess for the probability of a success is <span class="math inline">\(20/50=0.4\)</span>.</p>
+<p>Now lets try to derive the <span class="math inline">\(p\)</span> that maximized <span class="math inline">\(L(p)\)</span> more formally. To find the maximum of a function we need to take the derivative of that function and solve for zero<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. As I noted earlier, it is usually easier to take the derivative of a log-likelihood function, so lets first log our likelihood function:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\log L(p)&amp;=\log({50 \choose 20}p^{20}(1-p)^{30})\\
+\log L(p)&amp;=\log {50 \choose 20} + 20 \log(p) + 30\log(1-p)\\
+\end{aligned}
+\]</span></p>
+<p>Now, we just need to take the derivative of this function with respect to <span class="math inline">\(p\)</span>. If you know calculus, this is a mildly complex and enjoyable calculation that you can try out, but for others I will tell you mathemagically, the derivative comes out to:</p>
+<p><span class="math display">\[\frac{\partial \log L(p)}{\partial p}=\frac{20}{p}-\frac{30}{1-p}\]</span></p>
+<p>We now just need to set this equal to zero on the left-hand side and solve for <span class="math inline">\(p\)</span>. Thats just alegbra:</p>
+<p><span class="math display">\[
+\begin{aligned}
+0&amp;=\frac{20}{p}-\frac{30}{1-p}\\
+\frac{30}{1-p}&amp;=\frac{20}{p}\\
+30p&amp;=20(1-p)\\
+30p&amp;=20-20p\\
+50p&amp;=20\\
+p&amp;=20/50=0.4
+\end{aligned}
+\]</span></p>
+<p>In general, if you replace 20 and 50 with <span class="math inline">\(n\)</span> and <span class="math inline">\(k\)</span>, then this result will give you the MLE solution of <span class="math inline">\(p=k/n\)</span>.</p>
+<div id="mle-for-glms" class="section level4">
+<h4>MLE for GLMs</h4>
+<p>The previous example is fairly simple and we are able to get a closed-form solution that is satisfying and straightforward. Maximum likelihood estimation for GLMs is not so easy.</p>
+<p>Lets consider our case for the logit model. Each observation gets a bernoulli trial to determine success where the outcome of 0 or 1 is recorded at <span class="math inline">\(y_i\)</span>. Therefore, the likelihood <span class="math inline">\(L_i\)</span> for a single observation is given by:</p>
+<p><span class="math display">\[L_i=p_i^{y_i}(1-p_i)^{1-y_i}\]</span></p>
+<p>This formula may look complicated, but its fairly straightforward. If the passenger survived <span class="math inline">\((y_i=1)\)</span>, then this formula just simplifies to <span class="math inline">\(p_i\)</span>,the probability of survival for that passenger. If the person did not survive <span class="math inline">\((y_i=0)\)</span>, then this formula just simplifies to <span class="math inline">\((1-p_i)\)</span>, the probabiility of not surviving for that passenger.</p>
+<p>As usual, lets take the log of that likelihood to get the log-likelihood:</p>
+<p><span class="math display">\[\log L_i=y_i\log(p_i)+(1-y_i) \log (1-p_i)\]</span></p>
+<p>To get the log-likelihood of all observations, we just need to add up these log-likelihoods. Why do we add them? On the original scale of likelihoods, we would multiply them together, so on the log-scale we add them.</p>
+<p><span class="math display">\[\log L= \sum_{i=1}^n \log L_i= \sum_{i=1}^n y_i\log(p_i)+(1-y_i) \log (1-p_i)\]</span></p>
+<p>Now, the only problem we have at the moment is that our goal is to maximize the slopes and intercept of our linear model but we don’t have those in the formulat the moment. However, we can add that by remembering that we were predicting the log-odds of success as a linear function of the independent variables:</p>
+<p><span class="math display">\[log(\frac{p_i}{1-p_i})=\mathbf{x_i&#39;\beta}\]</span></p>
+<p>I am writing the linear function in matrix notation here <span class="math inline">\((\mathbf{x_i&#39;\beta})\)</span> for brevity. We can convert this back to <span class="math inline">\(p\)</span> by using the formula for converting from log-odds to probabilities:</p>
+<p><span class="math display">\[{p}_i=\frac{e^{\mathbf{x_i&#39;\beta}}}{1+e^{\mathbf{x_i&#39;\beta}}}\]</span></p>
+<p>We can then plug this into our log-likelihood function for <span class="math inline">\(p_i\)</span>:</p>
+<p><span class="math display">\[\log L(\beta) = \sum_{i=1}^n y_i\log(\frac{e^{\mathbf{x_i&#39;\beta}}}{1+e^{\mathbf{x_i&#39;\beta}}})+(1-y_i) \log (1-\frac{e^{\mathbf{x_i&#39;\beta}}}{1+e^{\mathbf{x_i&#39;\beta}}})\]</span></p>
+<p>We now have the full log-likelihood function for a logit model. To figure out <span class="math inline">\(\beta\)</span> we just have the rather difficult task of finding the <span class="math inline">\(\beta\)</span> values that maximize this function.</p>
+<p>Finding the MLE for this log-likelihood function is no easy task and there are no closed-form solutions as there were for the simple binomial process case. We need to use iterative estimation procedures to estimate the best values for <span class="math inline">\(\beta\)</span>.</p>
+<p>Several algorithms have been developed for finding MLE for this case and for other forms of the GLMs. The technique that I will show you below uses a version of iteratively-reweighted least squares (IRLS). You will never typically have to do this as the <code>glm</code> command will do all of the heavy-lifting here, but its worthwhile to have some familiarity with how <code>glm</code> is doing what it does. I will show you below how this procedure works using the case of the Titanic where we predict survival by fare paid. Lets first set up our outcome vector of zeros and ones:</p>
+<div class="sourceCode" id="cb532"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb532-1" title="1">y &lt;-<span class="st"> </span><span class="kw">as.vector</span>(<span class="kw">as.numeric</span>(titanic<span class="op">$</span>survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>))</a>
+<a class="sourceLine" id="cb532-2" title="2"><span class="kw">head</span>(y)</a></code></pre></div>
+<pre><code>## [1] 1 1 0 0 0 1</code></pre>
+<p>Beause we will also be using matrix notation, I am also going to set up my design matrix of independent variables, taking consideration to add a column of ones for my intercept.</p>
+<div class="sourceCode" id="cb534"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb534-1" title="1">X &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">cbind</span>(<span class="kw">rep</span>(<span class="dv">1</span>,<span class="kw">nrow</span>(titanic)), titanic[,<span class="st">&quot;fare&quot;</span>]))</a>
+<a class="sourceLine" id="cb534-2" title="2"><span class="kw">head</span>(X)</a></code></pre></div>
+<pre><code>##      [,1]     [,2]
+## [1,]    1 211.3375
+## [2,]    1 151.5500
+## [3,]    1 151.5500
+## [4,]    1 151.5500
+## [5,]    1 151.5500
+## [6,]    1  26.5500</code></pre>
+<p>The basic IRLS procedure is to estimate via an iterative procedure. To get the process started we first fit the null model as our logit model. The null model just assumes that every observation had an equal probability of survival.</p>
+<div class="sourceCode" id="cb536"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb536-1" title="1"><span class="kw">mean</span>(y)</a></code></pre></div>
+<pre><code>## [1] 0.381971</code></pre>
+<div class="sourceCode" id="cb538"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb538-1" title="1"><span class="co">#convert to log-odds</span></a>
+<a class="sourceLine" id="cb538-2" title="2">lodds &lt;-<span class="st"> </span><span class="kw">log</span>(<span class="kw">mean</span>(y)<span class="op">/</span>(<span class="dv">1</span><span class="op">-</span><span class="kw">mean</span>(y)))</a>
+<a class="sourceLine" id="cb538-3" title="3">lodds</a></code></pre></div>
+<pre><code>## [1] -0.4811908</code></pre>
+<p>Based on the proportion of survivors, the log-odds of survival as a whole was -0.4811908. So my null model is:</p>
+<p><span class="math display">\[\log(\frac{p_i}{1-p_i})=-0.4811908\]</span></p>
+<p>Lets set this up as my initial <span class="math inline">\(\beta\)</span> vector:</p>
+<div class="sourceCode" id="cb540"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb540-1" title="1">beta &lt;-<span class="st"> </span><span class="kw">c</span>(lodds, <span class="dv">0</span>)</a></code></pre></div>
+<p>I can matrix-multiply this vector by my design matrix to get predicted log-odds which I can convert to <span class="math inline">\(p\)</span>. At this point, they all should give me the same value.</p>
+<div class="sourceCode" id="cb541"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb541-1" title="1">pred_lodds &lt;-<span class="st"> </span>X<span class="op">%*%</span>beta</a>
+<a class="sourceLine" id="cb541-2" title="2">p &lt;-<span class="st"> </span><span class="kw">exp</span>(pred_lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(pred_lodds))</a>
+<a class="sourceLine" id="cb541-3" title="3"><span class="kw">head</span>(p)</a></code></pre></div>
+<pre><code>##          [,1]
+## [1,] 0.381971
+## [2,] 0.381971
+## [3,] 0.381971
+## [4,] 0.381971
+## [5,] 0.381971
+## [6,] 0.381971</code></pre>
+<p>I can also use that <code>p</code> vector to calculate my log-likelihood for the current model:</p>
+<div class="sourceCode" id="cb543"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb543-1" title="1">logL &lt;-<span class="st"> </span><span class="kw">sum</span>(y<span class="op">*</span><span class="kw">log</span>(p)<span class="op">+</span>(<span class="dv">1</span><span class="op">-</span>y)<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">-</span>p))</a>
+<a class="sourceLine" id="cb543-2" title="2">logL</a></code></pre></div>
+<pre><code>## [1] -870.5122</code></pre>
+<p>Now I want to iterate this process and improve my estimation. At each iteration <span class="math inline">\(t\)</span> of the process, I estimate the best-fitting <span class="math inline">\(\beta\)</span> vector for <span class="math inline">\(t+1\)</span> by the following formula:</p>
+<p><span class="math display">\[\beta^{(t+1)}=\mathbf{(X&#39;W^{(t)}X)^{-1}X&#39;W^{(t)}z^{(t)}}\]</span></p>
+<p>This formula is somewhat similar to the OLS regression formula we saw in the previous module. We can see the design matrix <span class="math inline">\(\mathbf{X}\)</span> of independent variables. We also have a <span class="math inline">\(\mathbf{X}\)</span> weighting matrix to consider. You will also notice a <span class="math inline">\(z\)</span> vector where we would usually have a <span class="math inline">\(y\)</span> vector.</p>
+<p>The weighting matrix only has non-zero values along the diagonal. These values are given by:</p>
+<p><span class="math display">\[w_i=\hat{p}_i(1-\hat{p}_i)\]</span></p>
+<p>Where <span class="math inline">\(hat{p}_i\)</span> is estimated probability of success for observation <span class="math inline">\(i\)</span> from the current iteration of the model. I can estimate this weighting matrix from my initial model as follows:</p>
+<div class="sourceCode" id="cb545"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb545-1" title="1">W &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="kw">nrow</span>(X), <span class="kw">nrow</span>(X))</a>
+<a class="sourceLine" id="cb545-2" title="2"><span class="kw">diag</span>(W) &lt;-<span class="st"> </span>p<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)</a></code></pre></div>
+<p>The <span class="math inline">\(z\)</span> vector accounts for the transformation of the dependent variable and is estimated as:</p>
+<p><span class="math display">\[z_i=\mathbf{x_i&#39;\beta}+\frac{y_i-\hat{p}_i}{\hat{p}_i(1-\hat{p}_i)}\]</span></p>
+<p>I can calculate this from my null model as:</p>
+<div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb546-1" title="1">z &lt;-<span class="st"> </span>pred_lodds <span class="op">+</span><span class="st"> </span>(y<span class="op">-</span>p)<span class="op">/</span>(p<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p))</a></code></pre></div>
+<p>I now have all the pieces for my first iteration:</p>
+<div class="sourceCode" id="cb547"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb547-1" title="1">beta &lt;-<span class="st"> </span><span class="kw">solve</span>(<span class="kw">t</span>(X)<span class="op">%*%</span>W<span class="op">%*%</span>X)<span class="op">%*%</span>(<span class="kw">t</span>(X)<span class="op">%*%</span>W<span class="op">%*%</span>z)</a>
+<a class="sourceLine" id="cb547-2" title="2">beta</a></code></pre></div>
+<pre><code>##              [,1]
+## [1,] -0.804907036
+## [2,]  0.009728163</code></pre>
+<div class="sourceCode" id="cb549"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb549-1" title="1">pred_lodds &lt;-<span class="st"> </span>X<span class="op">%*%</span>beta</a>
+<a class="sourceLine" id="cb549-2" title="2">p &lt;-<span class="st"> </span><span class="kw">exp</span>(pred_lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(pred_lodds))</a>
+<a class="sourceLine" id="cb549-3" title="3">logL &lt;-<span class="st"> </span><span class="kw">sum</span>(y<span class="op">*</span><span class="kw">log</span>(p)<span class="op">+</span>(<span class="dv">1</span><span class="op">-</span>y)<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">-</span>p))</a>
+<a class="sourceLine" id="cb549-4" title="4">logL</a></code></pre></div>
+<pre><code>## [1] -828.965</code></pre>
+<p>You can see that I now have a non-zero slope for fare paid and a less negative log-likelihood which means a higher overall likelihood. I can keep iterating this procedure until my <span class="math inline">\(\beta\)</span> values stop moving around. Lets try a total of six iterations from the top:</p>
+<div class="sourceCode" id="cb551"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb551-1" title="1"><span class="co">#initial null model</span></a>
+<a class="sourceLine" id="cb551-2" title="2">lodds &lt;-<span class="st"> </span><span class="kw">log</span>(<span class="kw">mean</span>(y)<span class="op">/</span>(<span class="dv">1</span><span class="op">-</span><span class="kw">mean</span>(y)))</a>
+<a class="sourceLine" id="cb551-3" title="3">beta &lt;-<span class="st"> </span><span class="kw">c</span>(lodds, <span class="dv">0</span>) </a>
+<a class="sourceLine" id="cb551-4" title="4">pred_lodds &lt;-<span class="st"> </span>X<span class="op">%*%</span>beta</a>
+<a class="sourceLine" id="cb551-5" title="5">p &lt;-<span class="st"> </span><span class="kw">exp</span>(pred_lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(pred_lodds))</a>
+<a class="sourceLine" id="cb551-6" title="6">logL &lt;-<span class="st"> </span><span class="kw">sum</span>(y<span class="op">*</span><span class="kw">log</span>(p)<span class="op">+</span>(<span class="dv">1</span><span class="op">-</span>y)<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">-</span>p))</a>
+<a class="sourceLine" id="cb551-7" title="7">beta.prev &lt;-<span class="st"> </span>beta</a>
+<a class="sourceLine" id="cb551-8" title="8"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">6</span>) {</a>
+<a class="sourceLine" id="cb551-9" title="9">  w &lt;-<span class="st"> </span>p<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)</a>
+<a class="sourceLine" id="cb551-10" title="10">  z &lt;-<span class="st"> </span>pred_lodds <span class="op">+</span><span class="st"> </span>(y<span class="op">-</span>p)<span class="op">/</span>w</a>
+<a class="sourceLine" id="cb551-11" title="11">  W &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="kw">nrow</span>(X), <span class="kw">nrow</span>(X))</a>
+<a class="sourceLine" id="cb551-12" title="12">  <span class="kw">diag</span>(W) &lt;-<span class="st"> </span>w</a>
+<a class="sourceLine" id="cb551-13" title="13">  beta &lt;-<span class="st"> </span><span class="kw">solve</span>(<span class="kw">t</span>(X)<span class="op">%*%</span>W<span class="op">%*%</span>X)<span class="op">%*%</span>(<span class="kw">t</span>(X)<span class="op">%*%</span>W<span class="op">%*%</span>z)</a>
+<a class="sourceLine" id="cb551-14" title="14">  beta.prev &lt;-<span class="st"> </span><span class="kw">cbind</span>(beta.prev, beta)</a>
+<a class="sourceLine" id="cb551-15" title="15">  pred_lodds &lt;-<span class="st"> </span>X<span class="op">%*%</span>beta</a>
+<a class="sourceLine" id="cb551-16" title="16">  p &lt;-<span class="st"> </span><span class="kw">exp</span>(pred_lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(pred_lodds))</a>
+<a class="sourceLine" id="cb551-17" title="17">  logL &lt;-<span class="st"> </span><span class="kw">c</span>(logL, <span class="kw">sum</span>(y<span class="op">*</span><span class="kw">log</span>(p)<span class="op">+</span>(<span class="dv">1</span><span class="op">-</span>y)<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">-</span>p)))</a>
+<a class="sourceLine" id="cb551-18" title="18">}</a>
+<a class="sourceLine" id="cb551-19" title="19">beta.prev</a></code></pre></div>
+<pre><code>##       beta.prev                                                             
+## [1,] -0.4811908 -0.804907036 -0.87722472 -0.88394804 -0.88402353 -0.88402354
+## [2,]  0.0000000  0.009728163  0.01218691  0.01246678  0.01247006  0.01247006
+##                 
+## [1,] -0.88402354
+## [2,]  0.01247006</code></pre>
+<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb553-1" title="1">logL</a></code></pre></div>
+<pre><code>## [1] -870.5122 -828.9650 -827.4084 -827.3924 -827.3924 -827.3924 -827.3924</code></pre>
+<p>By the sixth iteration, my intercept and slope values have stopped cahnging down to the eighth decimal place and the log-likelihood has also stabilized. Lets compare our results to the <code>glm</code> command to see how they compare:</p>
+<div class="sourceCode" id="cb555"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb555-1" title="1">model.survival &lt;-<span class="st"> </span><span class="kw">glm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>fare, <span class="dt">data=</span>titanic, </a>
+<a class="sourceLine" id="cb555-2" title="2">                      <span class="dt">family=</span><span class="kw">binomial</span>(logit),</a>
+<a class="sourceLine" id="cb555-3" title="3">                      <span class="dt">control=</span><span class="kw">glm.control</span>(<span class="dt">trace=</span><span class="ot">TRUE</span>))</a></code></pre></div>
+<pre><code>## Deviance = 1658.387 Iterations - 1
+## Deviance = 1654.791 Iterations - 2
+## Deviance = 1654.785 Iterations - 3
+## Deviance = 1654.785 Iterations - 4</code></pre>
+<div class="sourceCode" id="cb557"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb557-1" title="1"><span class="kw">coef</span>(model.survival)</a></code></pre></div>
+<pre><code>## (Intercept)        fare 
+## -0.88402354  0.01247006</code></pre>
+<p>We get the exact same values from the <code>glm</code> command.</p>
 <hr />
 </div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p>Technically we also need to show that the second derivative is negative at this value of <span class="math inline">\(p\)</span>, but we will skip that step here. You can try it as an exercise at home if you are so inclined<a href="generalized-linear-model.html#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
 </div>
             </section>
 

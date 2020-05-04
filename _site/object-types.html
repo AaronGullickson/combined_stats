@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-01" />
+<meta name="date" content="2020-05-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -419,26 +419,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><code>logical</code>: records either a TRUE or FALSE value. In computer science parlance, this is called a “boolean.”</li>
 </ul>
 <p>There is also a fourth type <code>complex</code> for things like imaginary numbers, but we won’t really need to worry about that. Lets try assigning values to an object of each mode:</p>
-<div class="sourceCode" id="cb613"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb613-1" title="1">a &lt;-<span class="st"> </span><span class="dv">3</span></a>
-<a class="sourceLine" id="cb613-2" title="2">b &lt;-<span class="st"> &quot;bob said&quot;</span></a>
-<a class="sourceLine" id="cb613-3" title="3">c &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb613-4" title="4">a</a></code></pre></div>
+<div class="sourceCode" id="cb641"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb641-1" title="1">a &lt;-<span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb641-2" title="2">b &lt;-<span class="st"> &quot;bob said&quot;</span></a>
+<a class="sourceLine" id="cb641-3" title="3">c &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb641-4" title="4">a</a></code></pre></div>
 <pre><code>## [1] 3</code></pre>
-<div class="sourceCode" id="cb615"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb615-1" title="1"><span class="kw">mode</span>(a)</a></code></pre></div>
+<div class="sourceCode" id="cb643"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb643-1" title="1"><span class="kw">mode</span>(a)</a></code></pre></div>
 <pre><code>## [1] &quot;numeric&quot;</code></pre>
-<div class="sourceCode" id="cb617"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb617-1" title="1"><span class="kw">class</span>(a)</a></code></pre></div>
+<div class="sourceCode" id="cb645"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb645-1" title="1"><span class="kw">class</span>(a)</a></code></pre></div>
 <pre><code>## [1] &quot;numeric&quot;</code></pre>
-<div class="sourceCode" id="cb619"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb619-1" title="1">b</a></code></pre></div>
+<div class="sourceCode" id="cb647"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb647-1" title="1">b</a></code></pre></div>
 <pre><code>## [1] &quot;bob said&quot;</code></pre>
-<div class="sourceCode" id="cb621"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb621-1" title="1"><span class="kw">mode</span>(b)</a></code></pre></div>
+<div class="sourceCode" id="cb649"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb649-1" title="1"><span class="kw">mode</span>(b)</a></code></pre></div>
 <pre><code>## [1] &quot;character&quot;</code></pre>
-<div class="sourceCode" id="cb623"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb623-1" title="1"><span class="kw">class</span>(b)</a></code></pre></div>
+<div class="sourceCode" id="cb651"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb651-1" title="1"><span class="kw">class</span>(b)</a></code></pre></div>
 <pre><code>## [1] &quot;character&quot;</code></pre>
-<div class="sourceCode" id="cb625"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb625-1" title="1">c</a></code></pre></div>
+<div class="sourceCode" id="cb653"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb653-1" title="1">c</a></code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode" id="cb627"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb627-1" title="1"><span class="kw">mode</span>(c)</a></code></pre></div>
+<div class="sourceCode" id="cb655"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb655-1" title="1"><span class="kw">mode</span>(c)</a></code></pre></div>
 <pre><code>## [1] &quot;logical&quot;</code></pre>
-<div class="sourceCode" id="cb629"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb629-1" title="1"><span class="kw">class</span>(c)</a></code></pre></div>
+<div class="sourceCode" id="cb657"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb657-1" title="1"><span class="kw">class</span>(c)</a></code></pre></div>
 <pre><code>## [1] &quot;logical&quot;</code></pre>
 <p>note that for these simple objects the mode is the same as the class. These objects will now show up in my upper right panel. However, programming with these simple objects with one value is not very useful. What we usually really want is an aggregation of many of these values. There are a variety of ways we can do this.</p>
 </div>
@@ -447,39 +447,39 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="vectors" class="section level4">
 <h4>Vectors</h4>
 <p>If you want to put a bunch of values of the same mode together (don’t call it a “list” because that means something else, see below), you can do that with a <code>vector</code>. You can create a vector with the concatenation function <code>c</code>. Lets do that below:</p>
-<div class="sourceCode" id="cb631"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb631-1" title="1">name &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Bob&quot;</span>,<span class="st">&quot;Juan&quot;</span>,<span class="st">&quot;Maria&quot;</span>,<span class="st">&quot;Jane&quot;</span>,<span class="st">&quot;Howie&quot;</span>)</a>
-<a class="sourceLine" id="cb631-2" title="2">age &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">15</span>,<span class="dv">25</span>,<span class="dv">19</span>,<span class="dv">12</span>,<span class="dv">21</span>)</a>
-<a class="sourceLine" id="cb631-3" title="3">ate_breakfast &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb631-4" title="4">name</a></code></pre></div>
+<div class="sourceCode" id="cb659"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb659-1" title="1">name &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Bob&quot;</span>,<span class="st">&quot;Juan&quot;</span>,<span class="st">&quot;Maria&quot;</span>,<span class="st">&quot;Jane&quot;</span>,<span class="st">&quot;Howie&quot;</span>)</a>
+<a class="sourceLine" id="cb659-2" title="2">age &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">15</span>,<span class="dv">25</span>,<span class="dv">19</span>,<span class="dv">12</span>,<span class="dv">21</span>)</a>
+<a class="sourceLine" id="cb659-3" title="3">ate_breakfast &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">TRUE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb659-4" title="4">name</a></code></pre></div>
 <pre><code>## [1] &quot;Bob&quot;   &quot;Juan&quot;  &quot;Maria&quot; &quot;Jane&quot;  &quot;Howie&quot;</code></pre>
-<div class="sourceCode" id="cb633"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb633-1" title="1">age</a></code></pre></div>
+<div class="sourceCode" id="cb661"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb661-1" title="1">age</a></code></pre></div>
 <pre><code>## [1] 15 25 19 12 21</code></pre>
-<div class="sourceCode" id="cb635"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb635-1" title="1">ate_breakfast</a></code></pre></div>
+<div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb663-1" title="1">ate_breakfast</a></code></pre></div>
 <pre><code>## [1]  TRUE FALSE  TRUE  TRUE FALSE</code></pre>
-<div class="sourceCode" id="cb637"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb637-1" title="1"><span class="kw">mode</span>(name)</a></code></pre></div>
+<div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb665-1" title="1"><span class="kw">mode</span>(name)</a></code></pre></div>
 <pre><code>## [1] &quot;character&quot;</code></pre>
-<div class="sourceCode" id="cb639"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb639-1" title="1"><span class="kw">class</span>(name)</a></code></pre></div>
+<div class="sourceCode" id="cb667"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb667-1" title="1"><span class="kw">class</span>(name)</a></code></pre></div>
 <pre><code>## [1] &quot;character&quot;</code></pre>
-<div class="sourceCode" id="cb641"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb641-1" title="1"><span class="kw">mode</span>(age)</a></code></pre></div>
+<div class="sourceCode" id="cb669"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb669-1" title="1"><span class="kw">mode</span>(age)</a></code></pre></div>
 <pre><code>## [1] &quot;numeric&quot;</code></pre>
-<div class="sourceCode" id="cb643"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb643-1" title="1"><span class="kw">class</span>(age)</a></code></pre></div>
+<div class="sourceCode" id="cb671"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb671-1" title="1"><span class="kw">class</span>(age)</a></code></pre></div>
 <pre><code>## [1] &quot;numeric&quot;</code></pre>
-<div class="sourceCode" id="cb645"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb645-1" title="1"><span class="kw">mode</span>(ate_breakfast)</a></code></pre></div>
+<div class="sourceCode" id="cb673"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb673-1" title="1"><span class="kw">mode</span>(ate_breakfast)</a></code></pre></div>
 <pre><code>## [1] &quot;logical&quot;</code></pre>
-<div class="sourceCode" id="cb647"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb647-1" title="1"><span class="kw">class</span>(ate_breakfast)</a></code></pre></div>
+<div class="sourceCode" id="cb675"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb675-1" title="1"><span class="kw">class</span>(ate_breakfast)</a></code></pre></div>
 <pre><code>## [1] &quot;logical&quot;</code></pre>
 <p>Note that the <code>mode</code> and <code>class</code> of each vector is given by the <code>mode</code> of the values that makes up the vector. As you can see, vectors are basically equivalent to variables for the purpose of data analysis. We can even calculate values like the mean for numeric and logical vectors:</p>
-<div class="sourceCode" id="cb649"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb649-1" title="1"><span class="kw">mean</span>(age)</a></code></pre></div>
+<div class="sourceCode" id="cb677"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb677-1" title="1"><span class="kw">mean</span>(age)</a></code></pre></div>
 <pre><code>## [1] 18.4</code></pre>
-<div class="sourceCode" id="cb651"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb651-1" title="1"><span class="kw">mean</span>(ate_breakfast)</a></code></pre></div>
+<div class="sourceCode" id="cb679"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb679-1" title="1"><span class="kw">mean</span>(ate_breakfast)</a></code></pre></div>
 <pre><code>## [1] 0.6</code></pre>
 <p>How can you calculate a mean for a logical vector? R automatically converts logical values to numeric values where <code>TRUE=1</code> and <code>FALSE=0</code> when it seems like a numeric value is needed. Therefore, the mean is tellling us that 60% of respondents ate breakfast.</p>
 <p>You can also force vectors (and some other objects) into a different basic type:</p>
-<div class="sourceCode" id="cb653"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb653-1" title="1"><span class="kw">as.character</span>(age)</a></code></pre></div>
+<div class="sourceCode" id="cb681"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb681-1" title="1"><span class="kw">as.character</span>(age)</a></code></pre></div>
 <pre><code>## [1] &quot;15&quot; &quot;25&quot; &quot;19&quot; &quot;12&quot; &quot;21&quot;</code></pre>
-<div class="sourceCode" id="cb655"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb655-1" title="1"><span class="kw">as.numeric</span>(ate_breakfast)</a></code></pre></div>
+<div class="sourceCode" id="cb683"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb683-1" title="1"><span class="kw">as.numeric</span>(ate_breakfast)</a></code></pre></div>
 <pre><code>## [1] 1 0 1 1 0</code></pre>
-<div class="sourceCode" id="cb657"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb657-1" title="1"><span class="kw">as.numeric</span>(name)</a></code></pre></div>
+<div class="sourceCode" id="cb685"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb685-1" title="1"><span class="kw">as.numeric</span>(name)</a></code></pre></div>
 <pre><code>## Warning: NAs introduced by coercion</code></pre>
 <pre><code>## [1] NA NA NA NA NA</code></pre>
 <p>Note that this didn’t work so well when converting a character string to a number and I ended up with a set of missing values (NA).</p>
@@ -487,31 +487,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="matrices" class="section level4">
 <h4>Matrices</h4>
 <p>A <code>matrix</code> is just an extention of a vector, but two dimensional instead of one dimensional. We can use the <code>matrix</code> command to turn a vector into a matrix, by speficying the number of rows and columns.</p>
-<div class="sourceCode" id="cb660"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb660-1" title="1">x &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">3</span>,<span class="dv">9</span>,<span class="dv">7</span>,<span class="dv">8</span>), <span class="dv">3</span>, <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb660-2" title="2">x</a></code></pre></div>
+<div class="sourceCode" id="cb688"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb688-1" title="1">x &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">3</span>,<span class="dv">9</span>,<span class="dv">7</span>,<span class="dv">8</span>), <span class="dv">3</span>, <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb688-2" title="2">x</a></code></pre></div>
 <pre><code>##      [,1] [,2]
 ## [1,]    4    9
 ## [2,]    5    7
 ## [3,]    3    8</code></pre>
-<div class="sourceCode" id="cb662"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb662-1" title="1"><span class="kw">mode</span>(x)</a></code></pre></div>
+<div class="sourceCode" id="cb690"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb690-1" title="1"><span class="kw">mode</span>(x)</a></code></pre></div>
 <pre><code>## [1] &quot;numeric&quot;</code></pre>
-<div class="sourceCode" id="cb664"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb664-1" title="1"><span class="kw">class</span>(x)</a></code></pre></div>
+<div class="sourceCode" id="cb692"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb692-1" title="1"><span class="kw">class</span>(x)</a></code></pre></div>
 <pre><code>## [1] &quot;matrix&quot;</code></pre>
 <p>I created a matrix of numeric values with three rows and two columns. Notice that when putting all of these values, R tries to fill up each column before moving on to the next column. Its also worth noting that the mode and class of my matrix are no longer the same. This means that I can specify specific functions that will apply to the class of <code>matrix</code>. The mode tells me what kind of values I have within the matrix.</p>
 <p>I can also create a matrix by binding together vectors into different rows (<code>rbind</code>) or columns (<code>cbind</code>).</p>
-<div class="sourceCode" id="cb666"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb666-1" title="1">a &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb666-2" title="2">b &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">7</span>,<span class="dv">8</span>)</a>
-<a class="sourceLine" id="cb666-3" title="3"><span class="kw">cbind</span>(a,b)</a></code></pre></div>
+<div class="sourceCode" id="cb694"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb694-1" title="1">a &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb694-2" title="2">b &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">9</span>,<span class="dv">7</span>,<span class="dv">8</span>)</a>
+<a class="sourceLine" id="cb694-3" title="3"><span class="kw">cbind</span>(a,b)</a></code></pre></div>
 <pre><code>##      a b
 ## [1,] 4 9
 ## [2,] 5 7
 ## [3,] 3 8</code></pre>
-<div class="sourceCode" id="cb668"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb668-1" title="1"><span class="kw">rbind</span>(a,b)</a></code></pre></div>
+<div class="sourceCode" id="cb696"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb696-1" title="1"><span class="kw">rbind</span>(a,b)</a></code></pre></div>
 <pre><code>##   [,1] [,2] [,3]
 ## a    4    5    3
 ## b    9    7    8</code></pre>
 <p>This might seem like a good way to create a full dataset from the variables I created above, but there is a problem:</p>
-<div class="sourceCode" id="cb670"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb670-1" title="1"><span class="kw">cbind</span>(name, age, ate_breakfast)</a></code></pre></div>
+<div class="sourceCode" id="cb698"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb698-1" title="1"><span class="kw">cbind</span>(name, age, ate_breakfast)</a></code></pre></div>
 <pre><code>##      name    age  ate_breakfast
 ## [1,] &quot;Bob&quot;   &quot;15&quot; &quot;TRUE&quot;       
 ## [2,] &quot;Juan&quot;  &quot;25&quot; &quot;FALSE&quot;      
@@ -524,25 +524,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="indexing-vectors-and-matrices" class="section level4">
 <h4>Indexing Vectors and Matrices</h4>
 <p>What if I want to know a specific value in my vector or matrix. Lets say I want to know the name of the fourth person in my <code>name</code> vector. You can easily get this value by indexing the vector or matrix with square brackets. In my case:</p>
-<div class="sourceCode" id="cb672"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb672-1" title="1">name[<span class="dv">4</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb700"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb700-1" title="1">name[<span class="dv">4</span>]</a></code></pre></div>
 <pre><code>## [1] &quot;Jane&quot;</code></pre>
 <p>Because a vector only has one dimension, I only need one index. In the case of matrices, you will need two numbers, separated by a comma. If you want to get an entire row or column, you can leave one of the indices blank, but you still need the comma.</p>
-<div class="sourceCode" id="cb674"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb674-1" title="1">x</a></code></pre></div>
+<div class="sourceCode" id="cb702"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb702-1" title="1">x</a></code></pre></div>
 <pre><code>##      [,1] [,2]
 ## [1,]    4    9
 ## [2,]    5    7
 ## [3,]    3    8</code></pre>
-<div class="sourceCode" id="cb676"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb676-1" title="1"><span class="co">#value in 2nd row, 1st column</span></a>
-<a class="sourceLine" id="cb676-2" title="2">x[<span class="dv">2</span>,<span class="dv">1</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb704"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb704-1" title="1"><span class="co">#value in 2nd row, 1st column</span></a>
+<a class="sourceLine" id="cb704-2" title="2">x[<span class="dv">2</span>,<span class="dv">1</span>]</a></code></pre></div>
 <pre><code>## [1] 5</code></pre>
-<div class="sourceCode" id="cb678"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb678-1" title="1"><span class="co">#2nd row</span></a>
-<a class="sourceLine" id="cb678-2" title="2">x[<span class="dv">2</span>,]</a></code></pre></div>
+<div class="sourceCode" id="cb706"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb706-1" title="1"><span class="co">#2nd row</span></a>
+<a class="sourceLine" id="cb706-2" title="2">x[<span class="dv">2</span>,]</a></code></pre></div>
 <pre><code>## [1] 5 7</code></pre>
-<div class="sourceCode" id="cb680"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb680-1" title="1"><span class="co">#1st column</span></a>
-<a class="sourceLine" id="cb680-2" title="2">x[,<span class="dv">1</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb708"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb708-1" title="1"><span class="co">#1st column</span></a>
+<a class="sourceLine" id="cb708-2" title="2">x[,<span class="dv">1</span>]</a></code></pre></div>
 <pre><code>## [1] 4 5 3</code></pre>
-<div class="sourceCode" id="cb682"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb682-1" title="1"><span class="co">#1st and 2nd row</span></a>
-<a class="sourceLine" id="cb682-2" title="2">x[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),]</a></code></pre></div>
+<div class="sourceCode" id="cb710"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb710-1" title="1"><span class="co">#1st and 2nd row</span></a>
+<a class="sourceLine" id="cb710-2" title="2">x[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),]</a></code></pre></div>
 <pre><code>##      [,1] [,2]
 ## [1,]    4    9
 ## [2,]    5    7</code></pre>
@@ -551,38 +551,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="factors" class="section level3">
 <h3>Factors</h3>
 <p>You will note that we don’t yet have a representation for categorical variables. Lets say for example that I wanted to include highest degree received for my respondents from above. I could create this as a character variable:</p>
-<div class="sourceCode" id="cb684"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb684-1" title="1">high_degree &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Less than HS&quot;</span>, <span class="st">&quot;College&quot;</span>, <span class="st">&quot;HS Diploma&quot;</span>, <span class="st">&quot;HS Diploma&quot;</span>, <span class="st">&quot;College&quot;</span>)</a>
-<a class="sourceLine" id="cb684-2" title="2"><span class="kw">summary</span>(high_degree)</a></code></pre></div>
+<div class="sourceCode" id="cb712"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb712-1" title="1">high_degree &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Less than HS&quot;</span>, <span class="st">&quot;College&quot;</span>, <span class="st">&quot;HS Diploma&quot;</span>, <span class="st">&quot;HS Diploma&quot;</span>, <span class="st">&quot;College&quot;</span>)</a>
+<a class="sourceLine" id="cb712-2" title="2"><span class="kw">summary</span>(high_degree)</a></code></pre></div>
 <pre><code>##    Length     Class      Mode 
 ##         5 character character</code></pre>
 <p>However, this is not very satisfying because there is very little that can be done with categorical variables. As you see the <code>summary</code> command failed to produce anything useful.</p>
 <p>What I want to do is turn this into a <code>factor</code>. A factor in R is the standard object for coding categorical variables. Each value is actually recorded with a mode of “numeric” but the object also contains a set of labels that provide the meaning of each level. Almost all functions in R will know how to handle these factor objects correcly.</p>
 <p>To create a factor object, I can just apply the <code>factor</code> function to my vector:</p>
-<div class="sourceCode" id="cb686"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb686-1" title="1">high_degree_fctr &lt;-<span class="st"> </span><span class="kw">factor</span>(high_degree)</a>
-<a class="sourceLine" id="cb686-2" title="2"><span class="kw">levels</span>(high_degree_fctr)</a></code></pre></div>
+<div class="sourceCode" id="cb714"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb714-1" title="1">high_degree_fctr &lt;-<span class="st"> </span><span class="kw">factor</span>(high_degree)</a>
+<a class="sourceLine" id="cb714-2" title="2"><span class="kw">levels</span>(high_degree_fctr)</a></code></pre></div>
 <pre><code>## [1] &quot;College&quot;      &quot;HS Diploma&quot;   &quot;Less than HS&quot;</code></pre>
-<div class="sourceCode" id="cb688"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb688-1" title="1"><span class="kw">summary</span>(high_degree_fctr)</a></code></pre></div>
+<div class="sourceCode" id="cb716"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb716-1" title="1"><span class="kw">summary</span>(high_degree_fctr)</a></code></pre></div>
 <pre><code>##      College   HS Diploma Less than HS 
 ##            2            2            1</code></pre>
-<div class="sourceCode" id="cb690"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb690-1" title="1"><span class="kw">mode</span>(high_degree_fctr)</a></code></pre></div>
+<div class="sourceCode" id="cb718"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb718-1" title="1"><span class="kw">mode</span>(high_degree_fctr)</a></code></pre></div>
 <pre><code>## [1] &quot;numeric&quot;</code></pre>
-<div class="sourceCode" id="cb692"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb692-1" title="1"><span class="kw">class</span>(high_degree_fctr)</a></code></pre></div>
+<div class="sourceCode" id="cb720"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb720-1" title="1"><span class="kw">class</span>(high_degree_fctr)</a></code></pre></div>
 <pre><code>## [1] &quot;factor&quot;</code></pre>
 <p>Now the summary command gives me a table of frequencies for each category.</p>
 <div id="re-ordering-categories-in-factors" class="section level4">
 <h4>Re-ordering categories in factors</h4>
 <p>The only problem with my factor is that this is an ordinal variable and the categories are backwards with “College” first and “Less than HS” last. This is because R sorts alphabetically by default. In order to ensure a specific order to the categories in the factor, I will need to specify the <code>levels</code> argument in the <code>factor</code> function and explicitly write out the order I want:</p>
-<div class="sourceCode" id="cb694"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb694-1" title="1">high_degree_fctr &lt;-<span class="st"> </span><span class="kw">factor</span>(high_degree,</a>
-<a class="sourceLine" id="cb694-2" title="2">                           <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;Less than HS&quot;</span>,<span class="st">&quot;HS Diploma&quot;</span>,<span class="st">&quot;College&quot;</span>))</a>
-<a class="sourceLine" id="cb694-3" title="3"><span class="kw">levels</span>(high_degree_fctr)</a></code></pre></div>
+<div class="sourceCode" id="cb722"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb722-1" title="1">high_degree_fctr &lt;-<span class="st"> </span><span class="kw">factor</span>(high_degree,</a>
+<a class="sourceLine" id="cb722-2" title="2">                           <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;Less than HS&quot;</span>,<span class="st">&quot;HS Diploma&quot;</span>,<span class="st">&quot;College&quot;</span>))</a>
+<a class="sourceLine" id="cb722-3" title="3"><span class="kw">levels</span>(high_degree_fctr)</a></code></pre></div>
 <pre><code>## [1] &quot;Less than HS&quot; &quot;HS Diploma&quot;   &quot;College&quot;</code></pre>
-<div class="sourceCode" id="cb696"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb696-1" title="1"><span class="kw">summary</span>(high_degree_fctr)</a></code></pre></div>
+<div class="sourceCode" id="cb724"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb724-1" title="1"><span class="kw">summary</span>(high_degree_fctr)</a></code></pre></div>
 <pre><code>## Less than HS   HS Diploma      College 
 ##            1            2            2</code></pre>
 <p>Another option is to use the <code>relevel</code> function on a factor to just change the very first level of a factor to something else:</p>
-<div class="sourceCode" id="cb698"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb698-1" title="1"><span class="kw">levels</span>(high_degree_fctr)</a></code></pre></div>
+<div class="sourceCode" id="cb726"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb726-1" title="1"><span class="kw">levels</span>(high_degree_fctr)</a></code></pre></div>
 <pre><code>## [1] &quot;Less than HS&quot; &quot;HS Diploma&quot;   &quot;College&quot;</code></pre>
-<div class="sourceCode" id="cb700"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb700-1" title="1"><span class="kw">levels</span>(<span class="kw">relevel</span>(high_degree_fctr,<span class="st">&quot;HS Diploma&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb728"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb728-1" title="1"><span class="kw">levels</span>(<span class="kw">relevel</span>(high_degree_fctr,<span class="st">&quot;HS Diploma&quot;</span>))</a></code></pre></div>
 <pre><code>## [1] &quot;HS Diploma&quot;   &quot;Less than HS&quot; &quot;College&quot;</code></pre>
 </div>
 </div>
@@ -625,50 +625,50 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </table>
 <p>Note that the “equal to” syntax is a double-equals. This is because the single equals is used for assignment of values to objects.</p>
 <p>As a simple example, lets say that I wanted to identify all respondents from my data above that were 18 years of age or older:</p>
-<div class="sourceCode" id="cb702"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb702-1" title="1">age<span class="op">&gt;=</span><span class="dv">18</span></a></code></pre></div>
+<div class="sourceCode" id="cb730"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb730-1" title="1">age<span class="op">&gt;=</span><span class="dv">18</span></a></code></pre></div>
 <pre><code>## [1] FALSE  TRUE  TRUE FALSE  TRUE</code></pre>
 <p>You can use factor variables in boolean statements of equality as well, but you need to use the character string variables. Lets say I want to identify all respondents with a college degree:</p>
-<div class="sourceCode" id="cb704"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb704-1" title="1">high_degree<span class="op">==</span><span class="st">&quot;College&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb732"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb732-1" title="1">high_degree<span class="op">==</span><span class="st">&quot;College&quot;</span></a></code></pre></div>
 <pre><code>## [1] FALSE  TRUE FALSE FALSE  TRUE</code></pre>
 <p>A very important feature of boolean statements is the ability to string together multiple boolean statements with a &amp; (AND) or | (OR) in order to make compound statement. Lets say I wanted to identify all respondents who had either a high school diploma or a college degree:</p>
-<div class="sourceCode" id="cb706"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb706-1" title="1">high_degree<span class="op">==</span><span class="st">&quot;College&quot;</span> <span class="op">|</span><span class="st"> </span>high_degree<span class="op">==</span><span class="st">&quot;HS Diploma&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb734"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb734-1" title="1">high_degree<span class="op">==</span><span class="st">&quot;College&quot;</span> <span class="op">|</span><span class="st"> </span>high_degree<span class="op">==</span><span class="st">&quot;HS Diploma&quot;</span></a></code></pre></div>
 <pre><code>## [1] FALSE  TRUE  TRUE  TRUE  TRUE</code></pre>
 <p>Lets say I want to find all respondents who are between the ages of [20,25):</p>
-<div class="sourceCode" id="cb708"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb708-1" title="1">age<span class="op">&gt;=</span><span class="dv">20</span> <span class="op">&amp;</span><span class="st"> </span>age<span class="op">&lt;</span><span class="dv">25</span></a></code></pre></div>
+<div class="sourceCode" id="cb736"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb736-1" title="1">age<span class="op">&gt;=</span><span class="dv">20</span> <span class="op">&amp;</span><span class="st"> </span>age<span class="op">&lt;</span><span class="dv">25</span></a></code></pre></div>
 <pre><code>## [1] FALSE FALSE FALSE FALSE  TRUE</code></pre>
 <p>You can also use parenthesis to ensure that your compound boolean statements are interpreted in the correct order.</p>
-<div class="sourceCode" id="cb710"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb710-1" title="1">(age<span class="op">&gt;=</span><span class="dv">20</span> <span class="op">&amp;</span><span class="st"> </span>age<span class="op">&lt;</span><span class="dv">25</span>) <span class="op">&amp;</span><span class="st"> </span>(high_degree<span class="op">==</span><span class="st">&quot;College&quot;</span> <span class="op">|</span><span class="st"> </span>high_degree<span class="op">==</span><span class="st">&quot;HS Diploma&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb738"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb738-1" title="1">(age<span class="op">&gt;=</span><span class="dv">20</span> <span class="op">&amp;</span><span class="st"> </span>age<span class="op">&lt;</span><span class="dv">25</span>) <span class="op">&amp;</span><span class="st"> </span>(high_degree<span class="op">==</span><span class="st">&quot;College&quot;</span> <span class="op">|</span><span class="st"> </span>high_degree<span class="op">==</span><span class="st">&quot;HS Diploma&quot;</span>)</a></code></pre></div>
 <pre><code>## [1] FALSE FALSE FALSE FALSE  TRUE</code></pre>
 <p>Another useful option is the ability to put a <code>!</code> sign in front of a boolean variable to indicate “not”. Lets say I wanted to find all respondents who had NOT eaten breakfast:</p>
-<div class="sourceCode" id="cb712"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb712-1" title="1"><span class="op">!</span>ate_breakfast</a></code></pre></div>
+<div class="sourceCode" id="cb740"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb740-1" title="1"><span class="op">!</span>ate_breakfast</a></code></pre></div>
 <pre><code>## [1] FALSE  TRUE FALSE FALSE  TRUE</code></pre>
 </div>
 <div id="missing-values-1" class="section level3">
 <h3>Missing Values</h3>
 <p>Missing values are a common feature of most real-world data. They can exist for a variety of reasons, but <em>item non-response</em> (i.e. respondent declined to answer a specific question) is one of the most common reasons. In R, missing values are represented with the <code>NA</code> value. missing values can exist for any of the modes we have discussed.</p>
 <p>Lets insert a missing value into the age vector that we have been using:</p>
-<div class="sourceCode" id="cb714"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb714-1" title="1">age[<span class="dv">4</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
-<a class="sourceLine" id="cb714-2" title="2">age</a></code></pre></div>
+<div class="sourceCode" id="cb742"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb742-1" title="1">age[<span class="dv">4</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb742-2" title="2">age</a></code></pre></div>
 <pre><code>## [1] 15 25 19 NA 21</code></pre>
 <p>Watch what happens now when we try to calculate the mean of age:</p>
-<div class="sourceCode" id="cb716"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb716-1" title="1"><span class="kw">mean</span>(age)</a></code></pre></div>
+<div class="sourceCode" id="cb744"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb744-1" title="1"><span class="kw">mean</span>(age)</a></code></pre></div>
 <pre><code>## [1] NA</code></pre>
 <p>The mean is missing! This is the default behavior for many functions in R. If the values you feed in have missing values, R will return a missing value. R wants to be sure that you explicitly decide how to treat missing values. In Soc 513, we will learn about other ways of dealing with missing values, but our approach this term will be to simply remove observations that have missing values (i.e. <em>casewise deletion</em>) and then calculate the appropriate statistics. In many of the functions in R, this can be accomplished by setting the argument <code>na.rm</code> to TRUE:</p>
-<div class="sourceCode" id="cb718"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb718-1" title="1"><span class="kw">mean</span>(age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb746"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb746-1" title="1"><span class="kw">mean</span>(age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## [1] 20</code></pre>
 <p>Another useful function to know is the <code>is.na</code> function. If you feed in a vector of values, this function will return a logical vector that evaluates to TRUE if a value is missing.</p>
-<div class="sourceCode" id="cb720"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb720-1" title="1"><span class="kw">is.na</span>(age)</a></code></pre></div>
+<div class="sourceCode" id="cb748"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb748-1" title="1"><span class="kw">is.na</span>(age)</a></code></pre></div>
 <pre><code>## [1] FALSE FALSE FALSE  TRUE FALSE</code></pre>
 <p>Combining this with the <code>!</code> from the previous section, we can easily create a function that tells us which observations have non-missing values:</p>
-<div class="sourceCode" id="cb722"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb722-1" title="1"><span class="op">!</span><span class="kw">is.na</span>(age)</a></code></pre></div>
+<div class="sourceCode" id="cb750"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb750-1" title="1"><span class="op">!</span><span class="kw">is.na</span>(age)</a></code></pre></div>
 <pre><code>## [1]  TRUE  TRUE  TRUE FALSE  TRUE</code></pre>
 </div>
 <div id="lists" class="section level3">
 <h3>Lists</h3>
 <p>Lists are one of the most flexible types of standard objects. Lists are just collections of different objects and the objects can be of different types and dimensions. You can even put lists into lists and end up with lists of lists.</p>
 <p>Lets put our four variables into a list:</p>
-<div class="sourceCode" id="cb724"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb724-1" title="1">my_list &lt;-<span class="st"> </span><span class="kw">list</span>(name, age, ate_breakfast, high_degree_fctr)</a>
-<a class="sourceLine" id="cb724-2" title="2">my_list</a></code></pre></div>
+<div class="sourceCode" id="cb752"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb752-1" title="1">my_list &lt;-<span class="st"> </span><span class="kw">list</span>(name, age, ate_breakfast, high_degree_fctr)</a>
+<a class="sourceLine" id="cb752-2" title="2">my_list</a></code></pre></div>
 <pre><code>## [[1]]
 ## [1] &quot;Bob&quot;   &quot;Juan&quot;  &quot;Maria&quot; &quot;Jane&quot;  &quot;Howie&quot;
 ## 
@@ -681,40 +681,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## [[4]]
 ## [1] Less than HS College      HS Diploma   HS Diploma   College     
 ## Levels: Less than HS HS Diploma College</code></pre>
-<div class="sourceCode" id="cb726"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb726-1" title="1"><span class="kw">mode</span>(my_list)</a></code></pre></div>
+<div class="sourceCode" id="cb754"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb754-1" title="1"><span class="kw">mode</span>(my_list)</a></code></pre></div>
 <pre><code>## [1] &quot;list&quot;</code></pre>
-<div class="sourceCode" id="cb728"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb728-1" title="1"><span class="kw">class</span>(my_list)</a></code></pre></div>
+<div class="sourceCode" id="cb756"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb756-1" title="1"><span class="kw">class</span>(my_list)</a></code></pre></div>
 <pre><code>## [1] &quot;list&quot;</code></pre>
 <p>In this case, each item in the list is a vector of the same length but they don’t need to be.</p>
 <div id="accessing-elements-of-the-list" class="section level4">
 <h4>Accessing elements of the list</h4>
 <p>You will notice a lot of brackets in the list output above. To access an object at a specific index of the list, I need to use double square brackets. Lets say, I wanted to access the third object (ate_breakfast):</p>
-<div class="sourceCode" id="cb730"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb730-1" title="1">my_list[[<span class="dv">3</span>]]</a></code></pre></div>
+<div class="sourceCode" id="cb758"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb758-1" title="1">my_list[[<span class="dv">3</span>]]</a></code></pre></div>
 <pre><code>## [1]  TRUE FALSE  TRUE  TRUE FALSE</code></pre>
 <p>If I want to access a specific element of that vector, I can follow up that double bracket indexing with single indexing:</p>
-<div class="sourceCode" id="cb732"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb732-1" title="1">my_list[[<span class="dv">3</span>]][<span class="dv">4</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb760"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb760-1" title="1">my_list[[<span class="dv">3</span>]][<span class="dv">4</span>]</a></code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 <p>My fourth respondent did eat breakfast. Good to know.</p>
 <p>There is another way to access objects within the list but to do this, I need to provide a name for each object in the list. I can do this within the initial list command by using a <code>name=value</code> syntax for each object:</p>
-<div class="sourceCode" id="cb734"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb734-1" title="1">my_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">name=</span>name, <span class="dt">age=</span>age, <span class="dt">ate_breakfast=</span>ate_breakfast, <span class="dt">high_degree=</span>high_degree_fctr)</a></code></pre></div>
+<div class="sourceCode" id="cb762"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb762-1" title="1">my_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">name=</span>name, <span class="dt">age=</span>age, <span class="dt">ate_breakfast=</span>ate_breakfast, <span class="dt">high_degree=</span>high_degree_fctr)</a></code></pre></div>
 <p>Now, I can call up any object by its name with the basic syntax <code>list_name$object_name</code>. Lets do that for age:</p>
-<div class="sourceCode" id="cb735"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb735-1" title="1">my_list<span class="op">$</span>age</a></code></pre></div>
+<div class="sourceCode" id="cb763"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb763-1" title="1">my_list<span class="op">$</span>age</a></code></pre></div>
 <pre><code>## [1] 15 25 19 NA 21</code></pre>
-<div class="sourceCode" id="cb737"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb737-1" title="1"><span class="kw">mean</span>(my_list<span class="op">$</span>age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb765"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb765-1" title="1"><span class="kw">mean</span>(my_list<span class="op">$</span>age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## [1] 20</code></pre>
 <p>You will notice in RStudio that when you type the “$”, it brings up a list of all the names you could want. You can select the one you want and tab to complete. Thanks, RStudio!</p>
 </div>
 <div id="the-lapply-command-is-awesome" class="section level4">
 <h4>The <code>lapply</code> command is awesome</h4>
 <p>Lets say that I just want to get a summary of each object in my list:</p>
-<div class="sourceCode" id="cb739"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb739-1" title="1"><span class="kw">summary</span>(my_list)</a></code></pre></div>
+<div class="sourceCode" id="cb767"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb767-1" title="1"><span class="kw">summary</span>(my_list)</a></code></pre></div>
 <pre><code>##               Length Class  Mode     
 ## name          5      -none- character
 ## age           5      -none- numeric  
 ## ate_breakfast 5      -none- logical  
 ## high_degree   5      factor numeric</code></pre>
 <p>Well, that was not super helpful. R is giving me a summary of the list itself rather than a summary of each object in the list. What if I want to apply the same function to every object in the list? This is exactly what the <code>lapply</code> command does. Feed in a list and a function (even a custom function) and it will sequentally apply that function to each object in the list:</p>
-<div class="sourceCode" id="cb741"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb741-1" title="1"><span class="kw">lapply</span>(my_list, summary)</a></code></pre></div>
+<div class="sourceCode" id="cb769"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb769-1" title="1"><span class="kw">lapply</span>(my_list, summary)</a></code></pre></div>
 <pre><code>## $name
 ##    Length     Class      Mode 
 ##         5 character character 
@@ -738,8 +738,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The list was a nice way to organize my data, but it wasn’t ideal because it didn’t represent data in the two-dimensional observations-on-the-row and variables-on-the-columns way we expect most datasets to be typical organized. This is where the <code>data.frame</code> object comes in. This is the object that we will mostly work directly with in this class and the one you are most likely to work with in real projects.</p>
 <p>The <code>data.frame</code> object is basically a special form of a list in which each object in the list is required to be a vector of the same length, but not necessarily the same mode and class. The results can be displayed like a matrix and the same kinds of options for indexing that are available for matrices can be used on data.frames.</p>
 <p>Lets put the variables into a data.frame:</p>
-<div class="sourceCode" id="cb743"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb743-1" title="1">my_data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(name, age, ate_breakfast, <span class="dt">high_degree=</span>high_degree_fctr)</a>
-<a class="sourceLine" id="cb743-2" title="2">my_data</a></code></pre></div>
+<div class="sourceCode" id="cb771"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb771-1" title="1">my_data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(name, age, ate_breakfast, <span class="dt">high_degree=</span>high_degree_fctr)</a>
+<a class="sourceLine" id="cb771-2" title="2">my_data</a></code></pre></div>
 <pre><code>##    name age ate_breakfast  high_degree
 ## 1   Bob  15          TRUE Less than HS
 ## 2  Juan  25         FALSE      College
@@ -748,7 +748,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 5 Howie  21         FALSE      College</code></pre>
 <p>Now that looks like a dataset. Note that by default it just used the name of the object as the column name. However, I specifically changed this behavior for high_degree.</p>
 <p>We can run a summary on the whole dataset now:</p>
-<div class="sourceCode" id="cb745"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb745-1" title="1"><span class="kw">summary</span>(my_data)</a></code></pre></div>
+<div class="sourceCode" id="cb773"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb773-1" title="1"><span class="kw">summary</span>(my_data)</a></code></pre></div>
 <pre><code>##     name        age     ate_breakfast         high_degree
 ##  Bob  :1   Min.   :15   Mode :logical   Less than HS:1   
 ##  Howie:1   1st Qu.:18   FALSE:2         HS Diploma  :2   
@@ -759,20 +759,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ##            NA&#39;s   :1</code></pre>
 <p>It is now treating the name variable like a factor. By default, R will convert all character variables into factors when including them in a <code>data.frame</code>.</p>
 <p>I can also access any specific variable with the same “$” syntax as for lists:</p>
-<div class="sourceCode" id="cb747"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb747-1" title="1"><span class="kw">mean</span>(my_data<span class="op">$</span>age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb775"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb775-1" title="1"><span class="kw">mean</span>(my_data<span class="op">$</span>age, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## [1] 20</code></pre>
 <p>I can also use the same indexing as for matrices to retrieve particular values:</p>
-<div class="sourceCode" id="cb749"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb749-1" title="1">my_data[<span class="dv">3</span>,<span class="dv">2</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb777"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb777-1" title="1">my_data[<span class="dv">3</span>,<span class="dv">2</span>]</a></code></pre></div>
 <pre><code>## [1] 19</code></pre>
 <div id="renaming-variables-in-a-data.frame" class="section level4">
 <h4>Renaming Variables in a <code>data.frame</code></h4>
 <p>Vectors, matrices, lists, and data.frames can all have names associated with their elements. You have already seen an example of specifying names in the creation of the list and data.frame objects. But you can also change names of elements after creation. We will focus here specifically on the case of data frames, but much of this is generalizable to other objects as well.</p>
 <p>the <code>rownames</code> and <code>colnames</code> command can be used to both retrieve and set the row and column names, respectively for a data frame. The <code>colnames</code> command is generally more useful because we typically care more about variable names than observation names.</p>
-<div class="sourceCode" id="cb751"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb751-1" title="1"><span class="kw">colnames</span>(my_data)</a></code></pre></div>
+<div class="sourceCode" id="cb779"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb779-1" title="1"><span class="kw">colnames</span>(my_data)</a></code></pre></div>
 <pre><code>## [1] &quot;name&quot;          &quot;age&quot;           &quot;ate_breakfast&quot; &quot;high_degree&quot;</code></pre>
 <p>Lets say I decided that I wanted to have all my variable names capitalized. I can easily change this by just assigning a new character vector to this colnames command:</p>
-<div class="sourceCode" id="cb753"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb753-1" title="1"><span class="kw">colnames</span>(my_data) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Name&quot;</span>,<span class="st">&quot;Age&quot;</span>,<span class="st">&quot;Ate_breakfast&quot;</span>,<span class="st">&quot;High_degree&quot;</span>)</a>
-<a class="sourceLine" id="cb753-2" title="2">my_data</a></code></pre></div>
+<div class="sourceCode" id="cb781"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb781-1" title="1"><span class="kw">colnames</span>(my_data) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Name&quot;</span>,<span class="st">&quot;Age&quot;</span>,<span class="st">&quot;Ate_breakfast&quot;</span>,<span class="st">&quot;High_degree&quot;</span>)</a>
+<a class="sourceLine" id="cb781-2" title="2">my_data</a></code></pre></div>
 <pre><code>##    Name Age Ate_breakfast  High_degree
 ## 1   Bob  15          TRUE Less than HS
 ## 2  Juan  25         FALSE      College
@@ -780,8 +780,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 4  Jane  NA          TRUE   HS Diploma
 ## 5 Howie  21         FALSE      College</code></pre>
 <p>I can also use indexing of the colnames to just change specific variable names. Lets say I decided that “Ate_breakfast” was too long:</p>
-<div class="sourceCode" id="cb755"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb755-1" title="1"><span class="kw">colnames</span>(my_data)[<span class="dv">3</span>] &lt;-<span class="st"> &quot;Breakfast&quot;</span></a>
-<a class="sourceLine" id="cb755-2" title="2">my_data</a></code></pre></div>
+<div class="sourceCode" id="cb783"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb783-1" title="1"><span class="kw">colnames</span>(my_data)[<span class="dv">3</span>] &lt;-<span class="st"> &quot;Breakfast&quot;</span></a>
+<a class="sourceLine" id="cb783-2" title="2">my_data</a></code></pre></div>
 <pre><code>##    Name Age Breakfast  High_degree
 ## 1   Bob  15      TRUE Less than HS
 ## 2  Juan  25     FALSE      College
@@ -796,25 +796,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="subsetting-observations" class="section level4">
 <h4>Subsetting Observations</h4>
 <p>You may want only a subset of observations by some logical characteristics (e.g. only women, people born after 1975, people who grew up in Lake Geneva WI, member-states of the OECD). One nice feature of R is that you can use the same indexing of rows as I discussed above but instead of specific index numbers, you can provide a boolean statement and only observations that evaluate to TRUE will be kept. Lets say that you want limit the dataset we have been using to only those who completed college:</p>
-<div class="sourceCode" id="cb757"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb757-1" title="1">my_data[my_data<span class="op">$</span>High_degree<span class="op">==</span><span class="st">&quot;College&quot;</span>,]</a></code></pre></div>
+<div class="sourceCode" id="cb785"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb785-1" title="1">my_data[my_data<span class="op">$</span>High_degree<span class="op">==</span><span class="st">&quot;College&quot;</span>,]</a></code></pre></div>
 <pre><code>##    Name Age Breakfast High_degree
 ## 2  Juan  25     FALSE     College
 ## 5 Howie  21     FALSE     College</code></pre>
 <p>One “gotcha” with this approach is missing values in your boolean statement. Lets try to subset the data to only those respondents 18 years and older:</p>
-<div class="sourceCode" id="cb759"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb759-1" title="1">my_data[my_data<span class="op">$</span>Age<span class="op">&gt;=</span><span class="dv">18</span>,]</a></code></pre></div>
+<div class="sourceCode" id="cb787"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb787-1" title="1">my_data[my_data<span class="op">$</span>Age<span class="op">&gt;=</span><span class="dv">18</span>,]</a></code></pre></div>
 <pre><code>##     Name Age Breakfast High_degree
 ## 2   Juan  25     FALSE     College
 ## 3  Maria  19      TRUE  HS Diploma
 ## NA  &lt;NA&gt;  NA        NA        &lt;NA&gt;
 ## 5  Howie  21     FALSE     College</code></pre>
 <p>Notice we get one full row of NA values. This was because of the one missing value on age. To avoid this, we first need to tell R to only keep cases that do not have missing values on age:</p>
-<div class="sourceCode" id="cb761"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb761-1" title="1">my_data[<span class="op">!</span><span class="kw">is.na</span>(my_data<span class="op">$</span>Age) <span class="op">&amp;</span><span class="st"> </span>my_data<span class="op">$</span>Age<span class="op">&gt;=</span><span class="dv">18</span>,]</a></code></pre></div>
+<div class="sourceCode" id="cb789"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb789-1" title="1">my_data[<span class="op">!</span><span class="kw">is.na</span>(my_data<span class="op">$</span>Age) <span class="op">&amp;</span><span class="st"> </span>my_data<span class="op">$</span>Age<span class="op">&gt;=</span><span class="dv">18</span>,]</a></code></pre></div>
 <pre><code>##    Name Age Breakfast High_degree
 ## 2  Juan  25     FALSE     College
 ## 3 Maria  19      TRUE  HS Diploma
 ## 5 Howie  21     FALSE     College</code></pre>
 <p>Now it works. However, we can also use the <code>subset</code> command to do the same thing and the <code>subset</code> command will be more robust to this missing value problem. The first argument to the <code>subset</code> command is the data frame you want to subset and the second is a boolean statement about the variables in that data frame. When this boolean statement evaluates to true for an observation it will be kept in the subset.</p>
-<div class="sourceCode" id="cb763"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb763-1" title="1"><span class="kw">subset</span>(my_data, Age<span class="op">&gt;=</span><span class="dv">18</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb791"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb791-1" title="1"><span class="kw">subset</span>(my_data, Age<span class="op">&gt;=</span><span class="dv">18</span>)</a></code></pre></div>
 <pre><code>##    Name Age Breakfast High_degree
 ## 2  Juan  25     FALSE     College
 ## 3 Maria  19      TRUE  HS Diploma
@@ -825,7 +825,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h4>Subsetting by variables</h4>
 <p>Sometimes you want to drop variables. This may be because you have used those variables to construct another variable and you don’t need them any longer or maybe your data source just contains a lot more variables than you need. I am a big proponent of dropping irrelevant variables. It keeps your dataset cleaner and easier to read for others.</p>
 <p>You can use indexing of columns in your data frame to choose variables that you want to keep. Lets say that I only wanted to keep age and highest degree in the dataset that we have been looking at:</p>
-<div class="sourceCode" id="cb765"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb765-1" title="1">my_data[,<span class="kw">c</span>(<span class="st">&quot;Age&quot;</span>,<span class="st">&quot;High_degree&quot;</span>)]</a></code></pre></div>
+<div class="sourceCode" id="cb793"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb793-1" title="1">my_data[,<span class="kw">c</span>(<span class="st">&quot;Age&quot;</span>,<span class="st">&quot;High_degree&quot;</span>)]</a></code></pre></div>
 <pre><code>##   Age  High_degree
 ## 1  15 Less than HS
 ## 2  25      College
@@ -833,7 +833,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 4  NA   HS Diploma
 ## 5  21      College</code></pre>
 <p>You can also use the negative sign in front of a number index to remove it rather than keep it.</p>
-<div class="sourceCode" id="cb767"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb767-1" title="1">my_data[,<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="op">-</span><span class="dv">3</span>)]</a></code></pre></div>
+<div class="sourceCode" id="cb795"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb795-1" title="1">my_data[,<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="op">-</span><span class="dv">3</span>)]</a></code></pre></div>
 <pre><code>##   Age  High_degree
 ## 1  15 Less than HS
 ## 2  25      College
@@ -841,7 +841,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 4  NA   HS Diploma
 ## 5  21      College</code></pre>
 <p>You can also use the <code>select</code> argument in the <code>subset</code> command to keep only certain variables.</p>
-<div class="sourceCode" id="cb769"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb769-1" title="1"><span class="kw">subset</span>(my_data, <span class="dt">select=</span><span class="kw">c</span>(<span class="st">&quot;Age&quot;</span>,<span class="st">&quot;High_degree&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb797"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb797-1" title="1"><span class="kw">subset</span>(my_data, <span class="dt">select=</span><span class="kw">c</span>(<span class="st">&quot;Age&quot;</span>,<span class="st">&quot;High_degree&quot;</span>))</a></code></pre></div>
 <pre><code>##   Age  High_degree
 ## 1  15 Less than HS
 ## 2  25      College
@@ -849,10 +849,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 4  NA   HS Diploma
 ## 5  21      College</code></pre>
 <p>You can even use the subset command to simultaneously subset observations and drop variables. Lets say that I wanted to use my <code>Name</code> variable as row names for my dataset and I also want to drop any cases that are missing on age:</p>
-<div class="sourceCode" id="cb771"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb771-1" title="1"><span class="kw">rownames</span>(my_data) &lt;-<span class="st"> </span>my_data<span class="op">$</span>Name</a>
-<a class="sourceLine" id="cb771-2" title="2">my_data2 &lt;-<span class="st"> </span><span class="kw">subset</span>(my_data, <span class="op">!</span><span class="kw">is.na</span>(Age),</a>
-<a class="sourceLine" id="cb771-3" title="3">                   <span class="dt">select=</span><span class="kw">c</span>(<span class="st">&quot;Age&quot;</span>,<span class="st">&quot;Breakfast&quot;</span>,<span class="st">&quot;High_degree&quot;</span>))</a>
-<a class="sourceLine" id="cb771-4" title="4">my_data2</a></code></pre></div>
+<div class="sourceCode" id="cb799"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb799-1" title="1"><span class="kw">rownames</span>(my_data) &lt;-<span class="st"> </span>my_data<span class="op">$</span>Name</a>
+<a class="sourceLine" id="cb799-2" title="2">my_data2 &lt;-<span class="st"> </span><span class="kw">subset</span>(my_data, <span class="op">!</span><span class="kw">is.na</span>(Age),</a>
+<a class="sourceLine" id="cb799-3" title="3">                   <span class="dt">select=</span><span class="kw">c</span>(<span class="st">&quot;Age&quot;</span>,<span class="st">&quot;Breakfast&quot;</span>,<span class="st">&quot;High_degree&quot;</span>))</a>
+<a class="sourceLine" id="cb799-4" title="4">my_data2</a></code></pre></div>
 <pre><code>##       Age Breakfast  High_degree
 ## Bob    15      TRUE Less than HS
 ## Juan   25     FALSE      College

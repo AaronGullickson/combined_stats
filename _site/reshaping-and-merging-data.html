@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-01" />
+<meta name="date" content="2020-05-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -408,7 +408,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="reshaping-and-merging-data" class="section level2">
 <h2>Reshaping and Merging Data</h2>
-<p>In this lab, I want to cover two important components of data wrangling, reshaping data from one format to one another and merging two diffent datasets together. As an example for this section, we are going to use some data from The <a href="http://databank.worldbank.org/data/reports.aspx?source=world-development-indicators#">World Bank Development Indicators</a> and the <a href="http://www.ilo.org/ilostat/faces/wcnav_defaultSelection?_afrLoop=107076059659881&amp;_afrWindowMode=0&amp;_afrWindowId=kaen3qrnf_51#!%40%40%3F_afrWindowId%3Dkaen3qrnf_51%26_afrLoop%3D107076059659881%26_afrWindowMode%3D0%26_adf.ctrl-state%3Dkaen3qrnf_71">International Labour Organization</a>. Both of these sites have nice designs that allow users to filter an extract of their choosing by country, year, and variable type. They also allow download of the data in a variety of formats including CSV. The labor data provides information on unemployment rates by age and sex and I have limited the years to 2014 or later. I then pulled an extract of the world bank data from 2014 on all countries for the variables of GDP per capita, life expectancy at birth, and population size. You can download the World Bank extract <a href="/stat_book/resources/worldbank.csv">here</a> and the ILO data <a href="/stat_book/resources/ilostat.csv">here</a>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>In this lab, I want to cover two important components of data wrangling, reshaping data from one format to one another and merging two diffent datasets together. As an example for this section, we are going to use some data from The <a href="http://databank.worldbank.org/data/reports.aspx?source=world-development-indicators#">World Bank Development Indicators</a> and the <a href="http://www.ilo.org/ilostat/faces/wcnav_defaultSelection?_afrLoop=107076059659881&amp;_afrWindowMode=0&amp;_afrWindowId=kaen3qrnf_51#!%40%40%3F_afrWindowId%3Dkaen3qrnf_51%26_afrLoop%3D107076059659881%26_afrWindowMode%3D0%26_adf.ctrl-state%3Dkaen3qrnf_71">International Labour Organization</a>. Both of these sites have nice designs that allow users to filter an extract of their choosing by country, year, and variable type. They also allow download of the data in a variety of formats including CSV. The labor data provides information on unemployment rates by age and sex and I have limited the years to 2014 or later. I then pulled an extract of the world bank data from 2014 on all countries for the variables of GDP per capita, life expectancy at birth, and population size. You can download the World Bank extract <a href="/stat_book/resources/worldbank.csv">here</a> and the ILO data <a href="/stat_book/resources/ilostat.csv">here</a>.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
 <p>Ultimately, I want to create a final dataset which combined these sources. The final dataset should have an observation for each country with the variables of GDP per capita, life expectancy at birth, population size, and unemployment rates. In order to get there though, I am going to have to deal with some data issues.</p>
 <div id="reshaping" class="section level3">
 <h3>Reshaping</h3>
@@ -484,12 +484,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </table>
 <p>Notice that in the long format each person shows up once for each variable from the wide dataset. In this case, the “name” variable is my <em>id</em> variable that identified unique observations. Its possible to have more than one id variable in the long format. For example, I might also have a year variable which identifies an observation-year case.</p>
 <p>Lets take a look at the world bank data that I have and you will see another example of the long format.</p>
-<div class="sourceCode" id="cb884"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb884-1" title="1"><span class="kw">library</span>(readr)</a>
-<a class="sourceLine" id="cb884-2" title="2">worldbank &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;resources/worldbank.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb884-3" title="3"><span class="co">#better variable names</span></a>
-<a class="sourceLine" id="cb884-4" title="4"><span class="kw">colnames</span>(worldbank) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;country_name&quot;</span>,<span class="st">&quot;country_code&quot;</span>,<span class="st">&quot;series_name&quot;</span>,<span class="st">&quot;series_code&quot;</span>,</a>
-<a class="sourceLine" id="cb884-5" title="5">                         <span class="st">&quot;time&quot;</span>,<span class="st">&quot;time_code&quot;</span>,<span class="st">&quot;value&quot;</span>)</a>
-<a class="sourceLine" id="cb884-6" title="6"><span class="kw">head</span>(worldbank)</a></code></pre></div>
+<div class="sourceCode" id="cb912"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb912-1" title="1"><span class="kw">library</span>(readr)</a>
+<a class="sourceLine" id="cb912-2" title="2">worldbank &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;resources/worldbank.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb912-3" title="3"><span class="co">#better variable names</span></a>
+<a class="sourceLine" id="cb912-4" title="4"><span class="kw">colnames</span>(worldbank) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;country_name&quot;</span>,<span class="st">&quot;country_code&quot;</span>,<span class="st">&quot;series_name&quot;</span>,<span class="st">&quot;series_code&quot;</span>,</a>
+<a class="sourceLine" id="cb912-5" title="5">                         <span class="st">&quot;time&quot;</span>,<span class="st">&quot;time_code&quot;</span>,<span class="st">&quot;value&quot;</span>)</a>
+<a class="sourceLine" id="cb912-6" title="6"><span class="kw">head</span>(worldbank)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 7
 ##   country_name country_code series_name      series_code   time time_code  value
 ##   &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;            &lt;chr&gt;        &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;
@@ -510,10 +510,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>A <code>values.var</code> variable that identifies which variable contains the actual values.</li>
 </ol>
 <p>In my case, it should look like:</p>
-<div class="sourceCode" id="cb886"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb886-1" title="1"><span class="kw">library</span>(reshape2)</a>
-<a class="sourceLine" id="cb886-2" title="2">worldbank_wide &lt;-<span class="st"> </span><span class="kw">dcast</span>(worldbank, country_code <span class="op">+</span><span class="st"> </span>country_name <span class="op">+</span><span class="st"> </span>time <span class="op">~</span><span class="st"> </span>series_code, </a>
-<a class="sourceLine" id="cb886-3" title="3">                        <span class="dt">value.var =</span> <span class="st">&quot;value&quot;</span>)</a>
-<a class="sourceLine" id="cb886-4" title="4"><span class="kw">head</span>(worldbank_wide)</a></code></pre></div>
+<div class="sourceCode" id="cb914"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb914-1" title="1"><span class="kw">library</span>(reshape2)</a>
+<a class="sourceLine" id="cb914-2" title="2">worldbank_wide &lt;-<span class="st"> </span><span class="kw">dcast</span>(worldbank, country_code <span class="op">+</span><span class="st"> </span>country_name <span class="op">+</span><span class="st"> </span>time <span class="op">~</span><span class="st"> </span>series_code, </a>
+<a class="sourceLine" id="cb914-3" title="3">                        <span class="dt">value.var =</span> <span class="st">&quot;value&quot;</span>)</a>
+<a class="sourceLine" id="cb914-4" title="4"><span class="kw">head</span>(worldbank_wide)</a></code></pre></div>
 <pre><code>##   country_code         country_name time NY.GDP.PCAP.CD SP.DYN.LE00.IN
 ## 1          ABW                Aruba 2014             NA       75.45110
 ## 2          ADO              Andorra 2014             NA             NA
@@ -530,9 +530,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 6     9086139</code></pre>
 <p>Just like that we have data in wide format. Notice how the formula works here. My id variable(s) go to the left of the tilde. In this case, I didn’t really need to specify “time” because I only have one year, but I wanted to show you how this can work with multiple id variables. I also didn’t need both “country_code” and “country_name” but by doing it this way, I will get both variables in my wide data format, which can be useful if I need to look up which country is which code. The series_code that identifies variable names for the wide dataset goes to the right of the tilde.</p>
 <p>My only problem now is that the variable names are ugly, but I can fix that up pretty easily:</p>
-<div class="sourceCode" id="cb888"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb888-1" title="1"><span class="kw">colnames</span>(worldbank_wide) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;country_code&quot;</span>,<span class="st">&quot;country_name&quot;</span>,<span class="st">&quot;year&quot;</span>,</a>
-<a class="sourceLine" id="cb888-2" title="2">                              <span class="st">&quot;gdp_cap&quot;</span>,<span class="st">&quot;life_exp&quot;</span>,<span class="st">&quot;pop&quot;</span>)</a>
-<a class="sourceLine" id="cb888-3" title="3"><span class="kw">head</span>(worldbank_wide)</a></code></pre></div>
+<div class="sourceCode" id="cb916"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb916-1" title="1"><span class="kw">colnames</span>(worldbank_wide) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;country_code&quot;</span>,<span class="st">&quot;country_name&quot;</span>,<span class="st">&quot;year&quot;</span>,</a>
+<a class="sourceLine" id="cb916-2" title="2">                              <span class="st">&quot;gdp_cap&quot;</span>,<span class="st">&quot;life_exp&quot;</span>,<span class="st">&quot;pop&quot;</span>)</a>
+<a class="sourceLine" id="cb916-3" title="3"><span class="kw">head</span>(worldbank_wide)</a></code></pre></div>
 <pre><code>##   country_code         country_name year    gdp_cap life_exp      pop
 ## 1          ABW                Aruba 2014         NA 75.45110   103441
 ## 2          ADO              Andorra 2014         NA       NA    72786
@@ -541,10 +541,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 5          ALB              Albania 2014  4568.5688 77.83046  2893654
 ## 6          ARE United Arab Emirates 2014 44238.5998 77.36817  9086139</code></pre>
 <p>Now lets take a look at the ILO data and see what needs to be done with it. Note that I needed to specify a few column types that were giving <code>readr</code> parsing problems, although we don’t really care about those variables anyway. I also recast the <code>tibble</code> to a standard <code>data.frame</code> for the <code>head</code> command so you can see all of the variables.</p>
-<div class="sourceCode" id="cb890"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb890-1" title="1">ilo &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;resources/ilostat.csv&quot;</span>,</a>
-<a class="sourceLine" id="cb890-2" title="2">                <span class="dt">col_types=</span><span class="kw">cols</span>(<span class="dt">obs_status=</span><span class="kw">col_character</span>(),</a>
-<a class="sourceLine" id="cb890-3" title="3">                               <span class="dt">obs_status.label=</span><span class="kw">col_character</span>()))</a>
-<a class="sourceLine" id="cb890-4" title="4"><span class="kw">head</span>(<span class="kw">as.data.frame</span>(ilo))</a></code></pre></div>
+<div class="sourceCode" id="cb918"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb918-1" title="1">ilo &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;resources/ilostat.csv&quot;</span>,</a>
+<a class="sourceLine" id="cb918-2" title="2">                <span class="dt">col_types=</span><span class="kw">cols</span>(<span class="dt">obs_status=</span><span class="kw">col_character</span>(),</a>
+<a class="sourceLine" id="cb918-3" title="3">                               <span class="dt">obs_status.label=</span><span class="kw">col_character</span>()))</a>
+<a class="sourceLine" id="cb918-4" title="4"><span class="kw">head</span>(<span class="kw">as.data.frame</span>(ilo))</a></code></pre></div>
 <pre><code>##   collection  collection.label ref_area ref_area.label source
 ## 1         YI Yearly indicators      ALB        Albania BA:480
 ## 2         YI Yearly indicators      ALB        Albania BA:480
@@ -595,11 +595,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 5 Data reference period: Annual or annual average | Age coverage - maximum age: 74 years old
 ## 6 Data reference period: Annual or annual average | Age coverage - maximum age: 74 years old</code></pre>
 <p>This data is also in a long format but there is a lot going on here. ILO is breaking down unemployment rates by sex and age within each country over time, with detailed notes on data quality and sources. This is all interesting data, but I don’t need all of it, so let me use a subset command to pull out just what I need which is the total unemployment rate across both sexes and all ages in 2014.</p>
-<div class="sourceCode" id="cb892"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb892-1" title="1">ilo &lt;-<span class="st"> </span><span class="kw">subset</span>(ilo, sex<span class="op">==</span><span class="st">&quot;SEX_T&quot;</span> <span class="op">&amp;</span><span class="st"> </span>classif1<span class="op">==</span><span class="st">&quot;AGE_AGGREGATE_TOTAL&quot;</span> <span class="op">&amp;</span><span class="st"> </span>time<span class="op">==</span><span class="dv">2014</span>,</a>
-<a class="sourceLine" id="cb892-2" title="2">              <span class="dt">select=</span><span class="kw">c</span>(<span class="st">&quot;ref_area&quot;</span>, <span class="st">&quot;ref_area.label&quot;</span>,<span class="st">&quot;source&quot;</span>,<span class="st">&quot;source.label&quot;</span>,</a>
-<a class="sourceLine" id="cb892-3" title="3">                       <span class="st">&quot;time&quot;</span>,<span class="st">&quot;obs_value&quot;</span>,<span class="st">&quot;note_classif&quot;</span>,<span class="st">&quot;note_classif.label&quot;</span>,</a>
-<a class="sourceLine" id="cb892-4" title="4">                       <span class="st">&quot;notes_source&quot;</span>,<span class="st">&quot;notes_source.label&quot;</span>))</a>
-<a class="sourceLine" id="cb892-5" title="5"><span class="kw">head</span>(ilo)</a></code></pre></div>
+<div class="sourceCode" id="cb920"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb920-1" title="1">ilo &lt;-<span class="st"> </span><span class="kw">subset</span>(ilo, sex<span class="op">==</span><span class="st">&quot;SEX_T&quot;</span> <span class="op">&amp;</span><span class="st"> </span>classif1<span class="op">==</span><span class="st">&quot;AGE_AGGREGATE_TOTAL&quot;</span> <span class="op">&amp;</span><span class="st"> </span>time<span class="op">==</span><span class="dv">2014</span>,</a>
+<a class="sourceLine" id="cb920-2" title="2">              <span class="dt">select=</span><span class="kw">c</span>(<span class="st">&quot;ref_area&quot;</span>, <span class="st">&quot;ref_area.label&quot;</span>,<span class="st">&quot;source&quot;</span>,<span class="st">&quot;source.label&quot;</span>,</a>
+<a class="sourceLine" id="cb920-3" title="3">                       <span class="st">&quot;time&quot;</span>,<span class="st">&quot;obs_value&quot;</span>,<span class="st">&quot;note_classif&quot;</span>,<span class="st">&quot;note_classif.label&quot;</span>,</a>
+<a class="sourceLine" id="cb920-4" title="4">                       <span class="st">&quot;notes_source&quot;</span>,<span class="st">&quot;notes_source.label&quot;</span>))</a>
+<a class="sourceLine" id="cb920-5" title="5"><span class="kw">head</span>(ilo)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 10
 ##   ref_area ref_area.label source source.label  time obs_value note_classif
 ##   &lt;chr&gt;    &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;       
@@ -612,13 +612,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## # … with 3 more variables: note_classif.label &lt;chr&gt;, notes_source &lt;chr&gt;,
 ## #   notes_source.label &lt;chr&gt;</code></pre>
 <p>You will notice right away that we have multiple entries for at least one country (Argentina). We can check this more formally by running a table command on <code>ref_area.label</code> or <code>ref_area</code>.</p>
-<div class="sourceCode" id="cb894"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb894-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">table</span>(ilo<span class="op">$</span>ref_area.label)</a>
-<a class="sourceLine" id="cb894-2" title="2">temp[temp<span class="op">&gt;</span><span class="dv">1</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb922"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb922-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">table</span>(ilo<span class="op">$</span>ref_area.label)</a>
+<a class="sourceLine" id="cb922-2" title="2">temp[temp<span class="op">&gt;</span><span class="dv">1</span>]</a></code></pre></div>
 <pre><code>## 
 ##  Argentina    Belarus     Brazil      China Kazakhstan  Singapore 
 ##          2          2          3          2          2          2</code></pre>
 <p>A few cases have more than one entry. Lets check out Brazil more closely as it has three entries:</p>
-<div class="sourceCode" id="cb896"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb896-1" title="1"><span class="kw">head</span>(<span class="kw">as.data.frame</span>(<span class="kw">subset</span>(ilo, ref_area.label<span class="op">==</span><span class="st">&quot;Brazil&quot;</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb924"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb924-1" title="1"><span class="kw">head</span>(<span class="kw">as.data.frame</span>(<span class="kw">subset</span>(ilo, ref_area.label<span class="op">==</span><span class="st">&quot;Brazil&quot;</span>)))</a></code></pre></div>
 <pre><code>##   ref_area ref_area.label  source        source.label time obs_value
 ## 1      BRA         Brazil BA:3047 Labour force survey 2014      4.85
 ## 2      BRA         Brazil  BA:356 Labour force survey 2014      6.91
@@ -632,9 +632,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 2                         Data reference period: September | Age coverage - minimum age: 10 years old
 ## 3                                                            Age coverage - minimum age: 14 years old</code></pre>
 <p>It seems that there are multiple sources for each unemployment rate. The notes provide some indication of how these different numbers were developed. There is no easy programmatic way to make a decision about which source to choose. If I were doing a real research project, I would carefully study the documentation here and reach a decision about each country separately. For our purposes, it seems like the broadest scope measure is generally in the first source listed for a country, so I will just take the first row for countries with multiple rows. I can do this easily in R using the duplicated command to remove repeat country entries. The duplicated command will return a TRUE for values in a vector that duplicate earlier entries. I will also restrict this data to the variable that I actually care about, along with the country names and codes.</p>
-<div class="sourceCode" id="cb898"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb898-1" title="1">ilo &lt;-<span class="st"> </span><span class="kw">subset</span>(ilo, <span class="op">!</span><span class="kw">duplicated</span>(ref_area),</a>
-<a class="sourceLine" id="cb898-2" title="2">                  <span class="dt">select=</span><span class="kw">c</span>(<span class="st">&quot;ref_area&quot;</span>,<span class="st">&quot;ref_area.label&quot;</span>,<span class="st">&quot;obs_value&quot;</span>))</a>
-<a class="sourceLine" id="cb898-3" title="3"><span class="kw">head</span>(ilo)</a></code></pre></div>
+<div class="sourceCode" id="cb926"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb926-1" title="1">ilo &lt;-<span class="st"> </span><span class="kw">subset</span>(ilo, <span class="op">!</span><span class="kw">duplicated</span>(ref_area),</a>
+<a class="sourceLine" id="cb926-2" title="2">                  <span class="dt">select=</span><span class="kw">c</span>(<span class="st">&quot;ref_area&quot;</span>,<span class="st">&quot;ref_area.label&quot;</span>,<span class="st">&quot;obs_value&quot;</span>))</a>
+<a class="sourceLine" id="cb926-3" title="3"><span class="kw">head</span>(ilo)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 3
 ##   ref_area ref_area.label obs_value
 ##   &lt;chr&gt;    &lt;chr&gt;              &lt;dbl&gt;
@@ -644,7 +644,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 4 AUS      Australia           6.07
 ## 5 AUT      Austria             5.62
 ## 6 AZE      Azerbaijan          4.91</code></pre>
-<div class="sourceCode" id="cb900"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb900-1" title="1"><span class="kw">table</span>(ilo<span class="op">$</span>ref_area)</a></code></pre></div>
+<div class="sourceCode" id="cb928"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb928-1" title="1"><span class="kw">table</span>(ilo<span class="op">$</span>ref_area)</a></code></pre></div>
 <pre><code>## 
 ## ALB ARG ARM AUS AUT AZE BEL BGR BIH BLR BMU BOL BRA BRB BTN CAN CHE CHL CHN COL 
 ##   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1 
@@ -659,8 +659,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## SVN SWE THA TTO TUR TWN TZA UKR URY USA VEN VNM WSM ZAF ZWE 
 ##   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1</code></pre>
 <p>Now, everything looks good. This dataset is still technically in a long format, but since I only have one variable (total unemployment rate), the difference between a long and a wide format is now just in the variable names. Changing the variable names gives me the format I want:</p>
-<div class="sourceCode" id="cb902"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb902-1" title="1"><span class="kw">colnames</span>(ilo) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;country_code&quot;</span>,<span class="st">&quot;country_name&quot;</span>,<span class="st">&quot;unemployment&quot;</span>)</a>
-<a class="sourceLine" id="cb902-2" title="2"><span class="kw">head</span>(ilo)</a></code></pre></div>
+<div class="sourceCode" id="cb930"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb930-1" title="1"><span class="kw">colnames</span>(ilo) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;country_code&quot;</span>,<span class="st">&quot;country_name&quot;</span>,<span class="st">&quot;unemployment&quot;</span>)</a>
+<a class="sourceLine" id="cb930-2" title="2"><span class="kw">head</span>(ilo)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 3
 ##   country_code country_name unemployment
 ##   &lt;chr&gt;        &lt;chr&gt;               &lt;dbl&gt;
@@ -676,27 +676,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3>Merging data</h3>
 <p>In order to merge datasets, you need some kind of id variable(s) that can be used to link observations across datasets. In my data here, both sources use a three letter capitalized code to identify countries. I am crossing my fingers that they are using the same coding system and that I can use this code to link countries across the two datasets.</p>
 <p>Generally speaking, there are two different kinds of merges one can perform. In a <strong>one-to-one</strong> merge, each observation in one dataset should be linked to one and only one observation in the other dataset. In this case, the identifier used to link the two datasets should be unique (not be repeated) within each dataset. In this example, I am performing a one-to-one merge. I can check that my identifiers are unique by running the <code>duplicated</code> command:</p>
-<div class="sourceCode" id="cb904"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb904-1" title="1"><span class="kw">sum</span>(<span class="kw">duplicated</span>(worldbank_wide<span class="op">$</span>country_code))</a></code></pre></div>
+<div class="sourceCode" id="cb932"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb932-1" title="1"><span class="kw">sum</span>(<span class="kw">duplicated</span>(worldbank_wide<span class="op">$</span>country_code))</a></code></pre></div>
 <pre><code>## [1] 0</code></pre>
-<div class="sourceCode" id="cb906"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb906-1" title="1"><span class="kw">sum</span>(<span class="kw">duplicated</span>(ilo<span class="op">$</span>country_code))</a></code></pre></div>
+<div class="sourceCode" id="cb934"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb934-1" title="1"><span class="kw">sum</span>(<span class="kw">duplicated</span>(ilo<span class="op">$</span>country_code))</a></code></pre></div>
 <pre><code>## [1] 0</code></pre>
 <p>No duplicates, so we are of to a good start.</p>
 <p>The other kind of merge that can be performed is a <strong>many to one</strong> merge. In this case, multiple observations in one dataset would all be linked to a single observation in the other dataset. This is most common for <em>multilevel</em> data in which you are linking lower-level observations to the higher level unit they are nested within. For example, I might want to link the academic records of elementary school students to information about their teachers. In this case, multiple students would be linked to the same teacher data. We will see more examples of this kind of merging next term, when we delve into multilevel models. In practice, R handles both of these merge types with the same basic syntax.</p>
 <p>The <code>merge</code> command in R will take two different data.frame objects and merge them together by matching the columns identified in the <code>by</code>,<code>by.x</code>, or <code>by.y</code> option. Notice that I renamed the country codes in my datasets to both be <code>country_code</code> in order to simplify my merging by allowing me to use the <code>by</code> option rather than separate <code>by.x</code> and <code>by.y</code> options. It is also better to match on these three letter codes than the <code>country_name</code> variable which is more likely to vary between the two datasets (one dataset may refer to “Ivory Coast” while another refers to “Cote d’Ivoire”, for example). You can also not specificy any id variable for the matching, and <code>merge</code> will then try to match on every variable with the same name in the two datasets - this is not recommended.</p>
 <p>Here is the basic <code>merge</code> command.</p>
-<div class="sourceCode" id="cb908"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb908-1" title="1">test &lt;-<span class="st"> </span><span class="kw">merge</span>(worldbank_wide, ilo, <span class="dt">by=</span><span class="st">&quot;country_code&quot;</span>, <span class="dt">all.x=</span><span class="ot">TRUE</span>, <span class="dt">all.y=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb936"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb936-1" title="1">test &lt;-<span class="st"> </span><span class="kw">merge</span>(worldbank_wide, ilo, <span class="dt">by=</span><span class="st">&quot;country_code&quot;</span>, <span class="dt">all.x=</span><span class="ot">TRUE</span>, <span class="dt">all.y=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 <p>Merging can be tricky and you should always check and double-check your results to make sure the merge worked properly. In this case, I have saved my merged data.frame as a new object named <code>test</code>. The <code>all.x</code> and <code>all.y</code> option indicates that the final merged object should include rows for both the first and second data.frame even if they didn’t find a match in the other data.frame.</p>
 <p>Lets begin our checks by examining the number of observations in our datasets.</p>
-<div class="sourceCode" id="cb909"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb909-1" title="1"><span class="kw">nrow</span>(worldbank_wide)</a></code></pre></div>
+<div class="sourceCode" id="cb937"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb937-1" title="1"><span class="kw">nrow</span>(worldbank_wide)</a></code></pre></div>
 <pre><code>## [1] 217</code></pre>
-<div class="sourceCode" id="cb911"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb911-1" title="1"><span class="kw">nrow</span>(ilo)</a></code></pre></div>
+<div class="sourceCode" id="cb939"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb939-1" title="1"><span class="kw">nrow</span>(ilo)</a></code></pre></div>
 <pre><code>## [1] 115</code></pre>
-<div class="sourceCode" id="cb913"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb913-1" title="1"><span class="kw">nrow</span>(test)</a></code></pre></div>
+<div class="sourceCode" id="cb941"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb941-1" title="1"><span class="kw">nrow</span>(test)</a></code></pre></div>
 <pre><code>## [1] 223</code></pre>
 <p>There is something odd going on here. The World Bank data included 217 countries, while the ILO data only had 115 countries. So the ILO data is presumably missing a lot of countries that are in the World Bank data. We expect this because the world bank data has more coverage than the ILO data. However when we merge the data together, we now get 223 total countries which is six more than the number of countries in the World Bank data. How did we end up with six more countries in total than the world bank data?</p>
 <p>There are three possible outomes for each observation in our merged test dataset. In some cases, a match was made and there should be valid data for that observation. In other cases, an observation from the World Bank data failed to find a match in the ILO data. As I noted above, this is not problematic because we know the ILO data has lower coverage than the World Bank data. Finally, an observation from the ILO data may fail to find a match with the World Bank data. This last case is the problematic one and the one where the extra six cases are coming from.</p>
 <p>How can we find out what these extra six cases are? R has a very nice operator called <code>%in%</code> which can be used to identify cases of overlap and non-overlap between two variables. It will return a TRUE/FALSE value which we can use in this case to identify the cases in the ILO data that were not matched to World Bank data.</p>
-<div class="sourceCode" id="cb915"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb915-1" title="1"><span class="kw">subset</span>(ilo, <span class="op">!</span>(ilo<span class="op">$</span>country_code <span class="op">%in%</span><span class="st"> </span>worldbank_wide<span class="op">$</span>country_code))</a></code></pre></div>
+<div class="sourceCode" id="cb943"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb943-1" title="1"><span class="kw">subset</span>(ilo, <span class="op">!</span>(ilo<span class="op">$</span>country_code <span class="op">%in%</span><span class="st"> </span>worldbank_wide<span class="op">$</span>country_code))</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 3
 ##   country_code country_name                   unemployment
 ##   &lt;chr&gt;        &lt;chr&gt;                                 &lt;dbl&gt;
@@ -709,15 +709,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Notice that by wrapping the entire <code>%in%</code> statement in a <code>!</code>, I basically turned this into “not in.” In colluquial terms, we are identifying all country codes in the ILO data that are not in the World Bank country codes.</p>
 <p>Why did these six countries fail to find a match? If I look for the corresponding countries in the World Bank data, I can see that three of these cases (Isle of Man, Kosovo, and Romania) have different codes in the two datasets. The three remaining cases don’t exist in the World Bank data (Taiwan and Palestine for political reasons).</p>
 <p>I can fix the code for Isle of Man, Kosovo, and Romania by changing these codes in the ILO dataset.</p>
-<div class="sourceCode" id="cb917"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb917-1" title="1">ilo<span class="op">$</span>country_code[ilo<span class="op">$</span>country_code<span class="op">==</span><span class="st">&quot;IMN&quot;</span>] &lt;-<span class="st"> &quot;IMY&quot;</span></a>
-<a class="sourceLine" id="cb917-2" title="2">ilo<span class="op">$</span>country_code[ilo<span class="op">$</span>country_code<span class="op">==</span><span class="st">&quot;KOS&quot;</span>] &lt;-<span class="st"> &quot;KSV&quot;</span></a>
-<a class="sourceLine" id="cb917-3" title="3">ilo<span class="op">$</span>country_code[ilo<span class="op">$</span>country_code<span class="op">==</span><span class="st">&quot;ROU&quot;</span>] &lt;-<span class="st"> &quot;ROM&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb945"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb945-1" title="1">ilo<span class="op">$</span>country_code[ilo<span class="op">$</span>country_code<span class="op">==</span><span class="st">&quot;IMN&quot;</span>] &lt;-<span class="st"> &quot;IMY&quot;</span></a>
+<a class="sourceLine" id="cb945-2" title="2">ilo<span class="op">$</span>country_code[ilo<span class="op">$</span>country_code<span class="op">==</span><span class="st">&quot;KOS&quot;</span>] &lt;-<span class="st"> &quot;KSV&quot;</span></a>
+<a class="sourceLine" id="cb945-3" title="3">ilo<span class="op">$</span>country_code[ilo<span class="op">$</span>country_code<span class="op">==</span><span class="st">&quot;ROU&quot;</span>] &lt;-<span class="st"> &quot;ROM&quot;</span></a></code></pre></div>
 <p>Now, I should be able to re-run my merge command and pick up those three matches. Note that I am setting <code>all.y=FALSE</code> because I can’t do anything about the last three cases of Palestine, Taiwan, and Jersey, so I might as well drop them.</p>
-<div class="sourceCode" id="cb918"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb918-1" title="1">combined &lt;-<span class="st"> </span><span class="kw">merge</span>(worldbank_wide, ilo, <span class="dt">by=</span><span class="st">&quot;country_code&quot;</span>, <span class="dt">all.x=</span><span class="ot">TRUE</span>, <span class="dt">all.y=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb918-2" title="2"><span class="kw">nrow</span>(combined)</a></code></pre></div>
+<div class="sourceCode" id="cb946"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb946-1" title="1">combined &lt;-<span class="st"> </span><span class="kw">merge</span>(worldbank_wide, ilo, <span class="dt">by=</span><span class="st">&quot;country_code&quot;</span>, <span class="dt">all.x=</span><span class="ot">TRUE</span>, <span class="dt">all.y=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb946-2" title="2"><span class="kw">nrow</span>(combined)</a></code></pre></div>
 <pre><code>## [1] 217</code></pre>
 <p>The total size is now what I expected. I can do a last <code>summary</code> command to check that everything looks as expected.</p>
-<div class="sourceCode" id="cb920"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb920-1" title="1"><span class="kw">summary</span>(combined)</a></code></pre></div>
+<div class="sourceCode" id="cb948"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb948-1" title="1"><span class="kw">summary</span>(combined)</a></code></pre></div>
 <pre><code>##  country_code       country_name.x          year         gdp_cap      
 ##  Length:217         Length:217         Min.   :2014   Min.   :   286  
 ##  Class :character   Class :character   1st Qu.:2014   1st Qu.:  1827  
@@ -735,11 +735,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ##  Max.   :83.98   Max.   :1.364e+09                      Max.   :35.150  
 ##  NA&#39;s   :18      NA&#39;s   :1                              NA&#39;s   :105</code></pre>
 <p>Note that I now have a <code>country_name.x</code> and a <code>country_name.y</code> variable. This is because there was a <code>country_name</code> variable in both datasets. Rather than overwrite them, R has put them both in the final dataset with a subscript identifying which original dataset they came from. Sometimes this can be useful in testing out whether the merge worked correctly. To clean things up, I can remove one of these variables with a <code>subset</code> command and then rename the other one.</p>
-<div class="sourceCode" id="cb922"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb922-1" title="1">combined &lt;-<span class="st"> </span><span class="kw">subset</span>(combined,</a>
-<a class="sourceLine" id="cb922-2" title="2">                   <span class="dt">select=</span><span class="kw">c</span>(<span class="st">&quot;country_code&quot;</span>,<span class="st">&quot;country_name.x&quot;</span>,<span class="st">&quot;gdp_cap&quot;</span>,</a>
-<a class="sourceLine" id="cb922-3" title="3">                            <span class="st">&quot;life_exp&quot;</span>,<span class="st">&quot;pop&quot;</span>,<span class="st">&quot;unemployment&quot;</span>))</a>
-<a class="sourceLine" id="cb922-4" title="4"><span class="kw">colnames</span>(combined)[<span class="dv">2</span>] &lt;-<span class="st"> &quot;country_name&quot;</span></a>
-<a class="sourceLine" id="cb922-5" title="5"><span class="kw">head</span>(combined)</a></code></pre></div>
+<div class="sourceCode" id="cb950"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb950-1" title="1">combined &lt;-<span class="st"> </span><span class="kw">subset</span>(combined,</a>
+<a class="sourceLine" id="cb950-2" title="2">                   <span class="dt">select=</span><span class="kw">c</span>(<span class="st">&quot;country_code&quot;</span>,<span class="st">&quot;country_name.x&quot;</span>,<span class="st">&quot;gdp_cap&quot;</span>,</a>
+<a class="sourceLine" id="cb950-3" title="3">                            <span class="st">&quot;life_exp&quot;</span>,<span class="st">&quot;pop&quot;</span>,<span class="st">&quot;unemployment&quot;</span>))</a>
+<a class="sourceLine" id="cb950-4" title="4"><span class="kw">colnames</span>(combined)[<span class="dv">2</span>] &lt;-<span class="st"> &quot;country_name&quot;</span></a>
+<a class="sourceLine" id="cb950-5" title="5"><span class="kw">head</span>(combined)</a></code></pre></div>
 <pre><code>##   country_code         country_name    gdp_cap life_exp      pop unemployment
 ## 1          ABW                Aruba         NA 75.45110   103441           NA
 ## 2          ADO              Andorra         NA       NA    72786           NA
@@ -751,8 +751,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="footnotes">
 <hr />
-<ol start="1">
-<li id="fn1"><p>I should note that the World Bank CSV file had notes at the bottom that weren’t part of the data. I had to open up the CSV file in Excel in order to remove this junk, and then re-save it to get data that would be machine-readable by R. This is a Very Bad but Unfortunately Common Practice.<a href="reshaping-and-merging-data.html#fnref1" class="footnote-back">↩</a></p></li>
+<ol start="2">
+<li id="fn2"><p>I should note that the World Bank CSV file had notes at the bottom that weren’t part of the data. I had to open up the CSV file in Excel in order to remove this junk, and then re-save it to get data that would be machine-readable by R. This is a Very Bad but Unfortunately Common Practice.<a href="reshaping-and-merging-data.html#fnref2" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
             </section>

@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-01" />
+<meta name="date" content="2020-05-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -437,9 +437,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>You can install git on your system by downloading the appropriate files <a href="https://git-scm.com/downloads">here</a> and installing them on your computer. On most computers, this will not give you a graphical client to open, but it will install git “under the hood” of your computer and make it accessible to RStudio.</p>
 <p>In order to use git properly, you will need to tell it your name and email address. This information will be attached to any commit you make. You can do this from the command line, but since that is intimidating to most people, we can also do it from within RStudio.</p>
 <p>In RStudio, you will need to install the <strong>usethis</strong> package:</p>
-<div class="sourceCode" id="cb808"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb808-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;usethis&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb836"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb836-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;usethis&quot;</span>)</a></code></pre></div>
 <p>You can then run the <strong>use_git_config</strong> command to specify your user name and email:</p>
-<div class="sourceCode" id="cb809"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb809-1" title="1"><span class="kw">use_git_config</span>(<span class="dt">user.name =</span> <span class="st">&quot;Your Name Here&quot;</span>, <span class="dt">user.email =</span> <span class="st">&quot;myemail@uoregon.edu&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb837"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb837-1" title="1"><span class="kw">use_git_config</span>(<span class="dt">user.name =</span> <span class="st">&quot;Your Name Here&quot;</span>, <span class="dt">user.email =</span> <span class="st">&quot;myemail@uoregon.edu&quot;</span>)</a></code></pre></div>
 <p>Ideally, your email should be the same one that you provided as your primary email to GitHub. You should only have to setup this configuration once. You should now be ready to go.</p>
 </div>
 <div id="setting-up-a-repository" class="section level4">
@@ -465,22 +465,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><strong>commit</strong>: This will commit all changes from the files in the “staging area” to the repository. Typically, you will also include a text message here that gives some indication of what the changes do.</li>
 </ol>
 <p>Now, lets make some substantive changes to the project. I am going to do two things. I am going to add in the movies RData file and a script that does some basic analysis:</p>
-<div class="sourceCode" id="cb810"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb810-1" title="1"><span class="co">#######################################################</span></a>
-<a class="sourceLine" id="cb810-2" title="2"><span class="co"># movie_analysis.R</span></a>
-<a class="sourceLine" id="cb810-3" title="3"><span class="co"># Aaron Gullickson</span></a>
-<a class="sourceLine" id="cb810-4" title="4"><span class="co"># Read in movie data and perform some basic analysis</span></a>
-<a class="sourceLine" id="cb810-5" title="5"><span class="co">#######################################################</span></a>
-<a class="sourceLine" id="cb810-6" title="6"></a>
-<a class="sourceLine" id="cb810-7" title="7"></a>
-<a class="sourceLine" id="cb810-8" title="8"><span class="co">#read in movie data</span></a>
-<a class="sourceLine" id="cb810-9" title="9"><span class="kw">load</span>(<span class="st">&quot;movies.RData&quot;</span>)</a>
-<a class="sourceLine" id="cb810-10" title="10"></a>
-<a class="sourceLine" id="cb810-11" title="11"><span class="kw">summary</span>(movies)</a>
-<a class="sourceLine" id="cb810-12" title="12"></a>
-<a class="sourceLine" id="cb810-13" title="13"><span class="kw">ggplot</span>(movies, <span class="kw">aes</span>(<span class="dt">x=</span>runtime, <span class="dt">y=</span>BoxOffice))<span class="op">+</span></a>
-<a class="sourceLine" id="cb810-14" title="14"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha=</span><span class="fl">0.2</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb810-15" title="15"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;runtime in minutes&quot;</span>, <span class="dt">y=</span><span class="st">&quot;box office returns in millions of USD&quot;</span>,</a>
-<a class="sourceLine" id="cb810-16" title="16">       <span class="dt">title=</span><span class="st">&quot;Scatterplot of runtime by box office returns&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb838"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb838-1" title="1"><span class="co">#######################################################</span></a>
+<a class="sourceLine" id="cb838-2" title="2"><span class="co"># movie_analysis.R</span></a>
+<a class="sourceLine" id="cb838-3" title="3"><span class="co"># Aaron Gullickson</span></a>
+<a class="sourceLine" id="cb838-4" title="4"><span class="co"># Read in movie data and perform some basic analysis</span></a>
+<a class="sourceLine" id="cb838-5" title="5"><span class="co">#######################################################</span></a>
+<a class="sourceLine" id="cb838-6" title="6"></a>
+<a class="sourceLine" id="cb838-7" title="7"></a>
+<a class="sourceLine" id="cb838-8" title="8"><span class="co">#read in movie data</span></a>
+<a class="sourceLine" id="cb838-9" title="9"><span class="kw">load</span>(<span class="st">&quot;movies.RData&quot;</span>)</a>
+<a class="sourceLine" id="cb838-10" title="10"></a>
+<a class="sourceLine" id="cb838-11" title="11"><span class="kw">summary</span>(movies)</a>
+<a class="sourceLine" id="cb838-12" title="12"></a>
+<a class="sourceLine" id="cb838-13" title="13"><span class="kw">ggplot</span>(movies, <span class="kw">aes</span>(<span class="dt">x=</span>runtime, <span class="dt">y=</span>BoxOffice))<span class="op">+</span></a>
+<a class="sourceLine" id="cb838-14" title="14"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha=</span><span class="fl">0.2</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb838-15" title="15"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;runtime in minutes&quot;</span>, <span class="dt">y=</span><span class="st">&quot;box office returns in millions of USD&quot;</span>,</a>
+<a class="sourceLine" id="cb838-16" title="16">       <span class="dt">title=</span><span class="st">&quot;Scatterplot of runtime by box office returns&quot;</span>)</a></code></pre></div>
 <p>Once I add these things to my directory, I will see that the git tab in RStudio is showing me changed files for both the movies.RData file and the movie_analysis.R script. I can click the “Staged” button to add these files to my staging area and then hit the “Commit” button.</p>
 <div class="figure">
 <img src="resources/using_git_screenshots/git_changed_files.png" alt="Changed files in Git" />
@@ -556,43 +556,43 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>You should be able to access a command line interface with the “Terminal” tab in the main window of RStudio. This will probably show up by default in MacOSX. If not, you should be able to bring up a new one with Tools &gt; Terminal &gt; New Terminal. It may not show up in Windows, but you can also get a command line interface in Windows using the “git-bash” application that came with Git.</p>
 <p>The terminal will look very similar to the command line interface of R, but this command line is actually interfacing directly with the command line of your computer, not R. Like R, it expects the commands to be executed in the correct working directory. You can change working directories with the <em>cd</em> command (short for “change directory”).</p>
 <p>Once in the correct directory, you can run git commands. All git commands are two words with the first word being “git”. The first and most useful git command is <strong>git status</strong>.</p>
-<div class="sourceCode" id="cb812"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb812-1" title="1"><span class="fu">git</span> status</a></code></pre></div>
-<div class="sourceCode" id="cb813"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb813-1" title="1"><span class="ex">On</span> branch master</a>
-<a class="sourceLine" id="cb813-2" title="2"></a>
-<a class="sourceLine" id="cb813-3" title="3"><span class="ex">No</span> commits yet</a>
-<a class="sourceLine" id="cb813-4" title="4"></a>
-<a class="sourceLine" id="cb813-5" title="5"><span class="ex">Untracked</span> files:</a>
-<a class="sourceLine" id="cb813-6" title="6">  <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git add &lt;file&gt;...&quot;</span> to include in what will be committed<span class="kw">)</span></a>
-<a class="sourceLine" id="cb813-7" title="7"></a>
-<a class="sourceLine" id="cb813-8" title="8">        <span class="ex">.gitignore</span></a>
-<a class="sourceLine" id="cb813-9" title="9">        <span class="ex">test_project.Rproj</span></a>
-<a class="sourceLine" id="cb813-10" title="10"></a>
-<a class="sourceLine" id="cb813-11" title="11"><span class="ex">nothing</span> added to commit but untracked files present (use <span class="st">&quot;git add&quot;</span> to track)</a></code></pre></div>
+<div class="sourceCode" id="cb840"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb840-1" title="1"><span class="fu">git</span> status</a></code></pre></div>
+<div class="sourceCode" id="cb841"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb841-1" title="1"><span class="ex">On</span> branch master</a>
+<a class="sourceLine" id="cb841-2" title="2"></a>
+<a class="sourceLine" id="cb841-3" title="3"><span class="ex">No</span> commits yet</a>
+<a class="sourceLine" id="cb841-4" title="4"></a>
+<a class="sourceLine" id="cb841-5" title="5"><span class="ex">Untracked</span> files:</a>
+<a class="sourceLine" id="cb841-6" title="6">  <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git add &lt;file&gt;...&quot;</span> to include in what will be committed<span class="kw">)</span></a>
+<a class="sourceLine" id="cb841-7" title="7"></a>
+<a class="sourceLine" id="cb841-8" title="8">        <span class="ex">.gitignore</span></a>
+<a class="sourceLine" id="cb841-9" title="9">        <span class="ex">test_project.Rproj</span></a>
+<a class="sourceLine" id="cb841-10" title="10"></a>
+<a class="sourceLine" id="cb841-11" title="11"><span class="ex">nothing</span> added to commit but untracked files present (use <span class="st">&quot;git add&quot;</span> to track)</a></code></pre></div>
 <p>This command tells me the current state of my repository. It shows here that I have two untracked files that have not been committed to the repository. Committing these files is a two-step process. First I need to use the <strong>git add</strong> command followed by the file names (and paths if in sub-directories) to the staging area:</p>
-<div class="sourceCode" id="cb814"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb814-1" title="1"><span class="fu">git</span> add .gitignore test_project.Rproj</a>
-<a class="sourceLine" id="cb814-2" title="2"><span class="fu">git</span> status</a></code></pre></div>
-<div class="sourceCode" id="cb815"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb815-1" title="1"><span class="ex">On</span> branch master</a>
-<a class="sourceLine" id="cb815-2" title="2"></a>
-<a class="sourceLine" id="cb815-3" title="3"><span class="ex">No</span> commits yet</a>
-<a class="sourceLine" id="cb815-4" title="4"></a>
-<a class="sourceLine" id="cb815-5" title="5"><span class="ex">Changes</span> to be committed:</a>
-<a class="sourceLine" id="cb815-6" title="6">  <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git rm --cached &lt;file&gt;...&quot;</span> to unstage<span class="kw">)</span></a>
-<a class="sourceLine" id="cb815-7" title="7"></a>
-<a class="sourceLine" id="cb815-8" title="8">        <span class="ex">new</span> file:   .gitignore</a>
-<a class="sourceLine" id="cb815-9" title="9">        <span class="ex">new</span> file:   test_project.Rproj</a></code></pre></div>
+<div class="sourceCode" id="cb842"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb842-1" title="1"><span class="fu">git</span> add .gitignore test_project.Rproj</a>
+<a class="sourceLine" id="cb842-2" title="2"><span class="fu">git</span> status</a></code></pre></div>
+<div class="sourceCode" id="cb843"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb843-1" title="1"><span class="ex">On</span> branch master</a>
+<a class="sourceLine" id="cb843-2" title="2"></a>
+<a class="sourceLine" id="cb843-3" title="3"><span class="ex">No</span> commits yet</a>
+<a class="sourceLine" id="cb843-4" title="4"></a>
+<a class="sourceLine" id="cb843-5" title="5"><span class="ex">Changes</span> to be committed:</a>
+<a class="sourceLine" id="cb843-6" title="6">  <span class="kw">(</span><span class="ex">use</span> <span class="st">&quot;git rm --cached &lt;file&gt;...&quot;</span> to unstage<span class="kw">)</span></a>
+<a class="sourceLine" id="cb843-7" title="7"></a>
+<a class="sourceLine" id="cb843-8" title="8">        <span class="ex">new</span> file:   .gitignore</a>
+<a class="sourceLine" id="cb843-9" title="9">        <span class="ex">new</span> file:   test_project.Rproj</a></code></pre></div>
 <p>The status command now shows the files are staged and ready to be committed. I can now commit them with the <strong>git commit</strong> command. I will use the “-m” option to specify a log message.</p>
-<div class="sourceCode" id="cb816"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb816-1" title="1"><span class="fu">git</span> commit -m <span class="st">&quot;initial commit of project files&quot;</span></a>
-<a class="sourceLine" id="cb816-2" title="2"><span class="fu">git</span> status</a></code></pre></div>
-<div class="sourceCode" id="cb817"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb817-1" title="1"><span class="ex">On</span> branch master</a>
-<a class="sourceLine" id="cb817-2" title="2"><span class="ex">nothing</span> to commit, working tree clean</a></code></pre></div>
+<div class="sourceCode" id="cb844"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb844-1" title="1"><span class="fu">git</span> commit -m <span class="st">&quot;initial commit of project files&quot;</span></a>
+<a class="sourceLine" id="cb844-2" title="2"><span class="fu">git</span> status</a></code></pre></div>
+<div class="sourceCode" id="cb845"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb845-1" title="1"><span class="ex">On</span> branch master</a>
+<a class="sourceLine" id="cb845-2" title="2"><span class="ex">nothing</span> to commit, working tree clean</a></code></pre></div>
 <p>Git is now telling me that everything looks good. I have no other uncommitted changes in my repository. If I make new files or edit existing files, I can then repeat this two step process of adding and committing files.</p>
 <p>I can also use <strong>git log</strong> to show the history of all my commits:</p>
-<div class="sourceCode" id="cb818"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb818-1" title="1"><span class="fu">git</span> log</a></code></pre></div>
-<div class="sourceCode" id="cb819"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb819-1" title="1"><span class="ex">commit</span> 35a0940b190dab64a08a5cad5025eb045ac7d353 (HEAD -<span class="op">&gt;</span> master)</a>
-<a class="sourceLine" id="cb819-2" title="2"><span class="ex">Author</span>: Aaron Gullickson <span class="op">&lt;</span>aarong@uoregon.edu<span class="op">&gt;</span></a>
-<a class="sourceLine" id="cb819-3" title="3"><span class="ex">Date</span>:   Mon Jan 27 10:17:40 2020 -0800</a>
-<a class="sourceLine" id="cb819-4" title="4"></a>
-<a class="sourceLine" id="cb819-5" title="5">    <span class="ex">initial</span> commit of project files</a></code></pre></div>
+<div class="sourceCode" id="cb846"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb846-1" title="1"><span class="fu">git</span> log</a></code></pre></div>
+<div class="sourceCode" id="cb847"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb847-1" title="1"><span class="ex">commit</span> 35a0940b190dab64a08a5cad5025eb045ac7d353 (HEAD -<span class="op">&gt;</span> master)</a>
+<a class="sourceLine" id="cb847-2" title="2"><span class="ex">Author</span>: Aaron Gullickson <span class="op">&lt;</span>aarong@uoregon.edu<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb847-3" title="3"><span class="ex">Date</span>:   Mon Jan 27 10:17:40 2020 -0800</a>
+<a class="sourceLine" id="cb847-4" title="4"></a>
+<a class="sourceLine" id="cb847-5" title="5">    <span class="ex">initial</span> commit of project files</a></code></pre></div>
 <p>In this case its showing me the only commit that I made, when I made it and the commit message that I included. It also gives a unique ID for the commit.</p>
 <p>I can also push and pull my changes but first I need a remote repository. You can set up a new empty repository on GitHub through the GitHub web interface. GitHub will then nicely give you information on how to get your local repository up the remote one:</p>
 <div class="figure">
@@ -600,18 +600,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p class="caption">Creating project from GitHub</p>
 </div>
 <p>The first thing we have to do is create a new “origin” remote repository. We can do this with the <strong>git remote</strong> command:</p>
-<div class="sourceCode" id="cb820"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb820-1" title="1"><span class="fu">git</span> remote add origin https://github.com/AaronGullickson/test_project.git</a></code></pre></div>
+<div class="sourceCode" id="cb848"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb848-1" title="1"><span class="fu">git</span> remote add origin https://github.com/AaronGullickson/test_project.git</a></code></pre></div>
 <p>Note that I could have called this anything I wanted, but “origin” is the general practice. Now that I have the remote repository’s address set up, I can use the <strong>git push</strong> command to upload the contents of my local repository to GitHub:</p>
-<div class="sourceCode" id="cb821"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb821-1" title="1"><span class="fu">git</span> push -u origin master</a></code></pre></div>
-<div class="sourceCode" id="cb822"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb822-1" title="1"><span class="ex">Enumerating</span> objects: 4, done.</a>
-<a class="sourceLine" id="cb822-2" title="2"><span class="ex">Counting</span> objects: 100% (4/4), <span class="kw">done</span><span class="ex">.</span></a>
-<a class="sourceLine" id="cb822-3" title="3"><span class="ex">Delta</span> compression using up to 12 threads</a>
-<a class="sourceLine" id="cb822-4" title="4"><span class="ex">Compressing</span> objects: 100% (3/3), <span class="kw">done</span><span class="ex">.</span></a>
-<a class="sourceLine" id="cb822-5" title="5"><span class="ex">Writing</span> objects: 100% (4/4), <span class="ex">457</span> bytes <span class="kw">|</span> <span class="ex">457.00</span> KiB/s, done.</a>
-<a class="sourceLine" id="cb822-6" title="6"><span class="ex">Total</span> 4 (delta 0), <span class="ex">reused</span> 0 (delta 0)</a>
-<a class="sourceLine" id="cb822-7" title="7"><span class="ex">To</span> https://github.com/AaronGullickson/test_project.git</a>
-<a class="sourceLine" id="cb822-8" title="8"> <span class="ex">*</span> [new branch]      master -<span class="op">&gt;</span> master</a>
-<a class="sourceLine" id="cb822-9" title="9"><span class="ex">Branch</span> <span class="st">&#39;master&#39;</span> set up to track remote branch <span class="st">&#39;master&#39;</span> from <span class="st">&#39;origin&#39;</span>.</a></code></pre></div>
+<div class="sourceCode" id="cb849"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb849-1" title="1"><span class="fu">git</span> push -u origin master</a></code></pre></div>
+<div class="sourceCode" id="cb850"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb850-1" title="1"><span class="ex">Enumerating</span> objects: 4, done.</a>
+<a class="sourceLine" id="cb850-2" title="2"><span class="ex">Counting</span> objects: 100% (4/4), <span class="kw">done</span><span class="ex">.</span></a>
+<a class="sourceLine" id="cb850-3" title="3"><span class="ex">Delta</span> compression using up to 12 threads</a>
+<a class="sourceLine" id="cb850-4" title="4"><span class="ex">Compressing</span> objects: 100% (3/3), <span class="kw">done</span><span class="ex">.</span></a>
+<a class="sourceLine" id="cb850-5" title="5"><span class="ex">Writing</span> objects: 100% (4/4), <span class="ex">457</span> bytes <span class="kw">|</span> <span class="ex">457.00</span> KiB/s, done.</a>
+<a class="sourceLine" id="cb850-6" title="6"><span class="ex">Total</span> 4 (delta 0), <span class="ex">reused</span> 0 (delta 0)</a>
+<a class="sourceLine" id="cb850-7" title="7"><span class="ex">To</span> https://github.com/AaronGullickson/test_project.git</a>
+<a class="sourceLine" id="cb850-8" title="8"> <span class="ex">*</span> [new branch]      master -<span class="op">&gt;</span> master</a>
+<a class="sourceLine" id="cb850-9" title="9"><span class="ex">Branch</span> <span class="st">&#39;master&#39;</span> set up to track remote branch <span class="st">&#39;master&#39;</span> from <span class="st">&#39;origin&#39;</span>.</a></code></pre></div>
 <p>It looks like everything worked. The first time I do this I need to specify the names of the repositories involved (“origin master”), but I also include the “-u” command which will tell git to treat the origin remote repository as my default “upstream” repository in the future. In the future, I will then just need to type “git push” to do the same operation.</p>
 <p>If someone else were to make changes to the remote repository, I could then use the <em>git pull</em> command to integrate them into my local repository.</p>
 </div>
