@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'/>
+  <script async src="https://cdn.datacamp.com/dcl-react-dev.js.gz"></script>
+</head>
+
+<body>
+<div data-datacamp-exercise data-lang="r" data-show-run-button data-height="400">
+  <code data-type="pre-exercise-code">
+  	# This will get executed each time the exercise gets initialized
+	  load(url("https://github.com/AaronGullickson/combined_stats/blob/master/example_datasets/movies/movies.RData?raw=true"))
+  </code>
+  <code data-type="sample-code">
+	# create a two-way table of movie genre by movie maturity rating and save as tab
+  tab <- 
+
+	# calculate the distribution of movie maturity rating conditional on genre
+  
+  </code>
+  <code data-type="solution">
+	# create a two-way table of movie genre by movie maturity rating and save as tab
+  tab <- table(movies$Genre, movies$Rating)
+
+	# calculate the distribution of movie maturity rating conditional on genre
+  round(prop.table(tab, 1), 3)
+  </code>
+  <code data-type="sct">
+  ex() %>% check_function("table") %>% check_arg('..1') %>% check_equal(incorrect_msg="It would be preferable to specify Genre as your row variable since it has more categories.", append=FALSE)
+  test_object("tab", incorrect_msg="The contents of your tab object are not correct. Check to be sure that you are using the right variables.")
+  ex() %>% check_function("prop.table") %>% check_arg("margin") %>%  check_equal(incorrect_msg="You are running the conditional distributions the wrong direction! The rows need to add to up to 1.", append=FALSE)
+  success_msg("Great Job!")
+  </code>
+</div>
+</body>
+</html>

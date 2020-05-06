@@ -16,3 +16,29 @@ caption {
   color: #696969;
   text-align: left;
 }
+
+/* class for DataCamp Light interactive div */
+.dcl {
+ border-radius: 10px 10px 10px 10px;
+ background-color: #013220;
+ border-color: #013220;
+ color: white;
+ margin: 15px 0 20px 0;
+ padding-left: 15px;
+ padding-right: 15px;
+ padding-top: 0;
+ padding-bottom: 5px;
+}
+
+.dcl strong {
+  color:white !important;
+}
+
+.dcl h4 {
+  color:white !important;
+}
+
+.dcl a:link { color: white !important; }
+.dcl a:visited { color: white !important; }
+.dcl a:hover { color: white !important; }
+.dcl a:active { color: white !important; }
