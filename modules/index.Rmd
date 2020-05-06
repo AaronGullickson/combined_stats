@@ -10,15 +10,16 @@ output:
     split_by: "section+number"
     number_section: false
     css: my_styles.css
+url: https\://stat-analysis.netlify.app/
+github-repo: AaronGullickson/combined_stats
 site: bookdown::bookdown_site
+description: Statistical Analysis in Sociology, an entry level textbook for practical statistics in R
 lot: yes
 lof: yes
 documentclass: book
 #bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
-#github-repo: rstudio/bookdown-demo
-description: "Textbook for Statistical Analysis for University of Oregon Sociology"
 ---
 
 ```{r setup, include=FALSE}
