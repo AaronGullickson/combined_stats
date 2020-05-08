@@ -702,8 +702,224 @@ We get the exact same values from the `glm` command.
 
 ## Logit Model
 
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/xuUI7AV3K1w")
+```
+
+Now that we have developed the logic behind generalized linear models and the maximum likelihood estimation procedure, we can focus more concretely on the GLM we used to predict survival in the previous section. This GLM is the **logit model** (also called the logistic regression model) and it can be used to predict dichotomous outcomes. Formally: 
+
+$$y_i \sim binom(1, \hat{p}_i)$$
+
+$$log(\frac{\hat{p}_i}{1-\hat{p}_i}) = \beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}$$
+
+These two functions define the error distribution and link function, respectively. Each outcome $y_i$ (success or failure) is the result of a binomial distribution with a single trial and an estimated $\hat{p}_i$ probability of success for the $i$th observation. The linear function of the independent variables is related to the log-odds of success, which is a transformation of those $\hat{p}_i$. We use MLE to then estimate the $\beta$ values by selecting the $\beta$ values that produce $\hat{p}_i$ that maximize the likelihood of actually observing the success and failures $(y_i)$ that we actually have.
+
+### Interpreting results
+
+Because of the transformation in the link function, we have to be careful about interpreting the results from our model. We have already seen something like this before in the previous module in which we log-transformed the dependent variable. The effect here is similiar, but is also compounded by the use of odds rather than probabilities in the link function. In short, we have to consider two things:
+
+1. We are modeling differences or effects on the odds of success rather than on the probability of success. Because of the non-linear connection between these two concepts, it is no easy matter to go between them. We will take this more up below in a discussion of the "marginal effects" from logit models.
+2. Because of the natural log in the logit transformation, the actual model we care about is multiplicative rather than additive. In other words, our ultimate interpretations will be about relative change (e.g. 7% lower, twice as large) on the odds of success.
+
+#### A simple example
+
+Lets try out a simple example. I want to use my new logit model framework to predict survival on the Titanic by gender. 
+
+```{r logit-gender-titanic}
+model.gender <- glm((survival=="Survived")~(sex=="Female"), 
+                    data=titanic, family=binomial(logit))
+round(summary(model.gender)$coef,3)
+```
+
+My model is given by:
+
+$$log(\frac{\hat{p}_i}{1-\hat{p}_i}) = -1.444+2.425(female_i)$$
+
+But what do the values for the intercept and the slope really mean? These are literally given me predicted changes in the log odds of survival, but log odds is not very intuitive. Lets use our usual trick of exponentiating both sides to convert the left-hand side to and odds. 
+
+$$\begin{align*}
+e^{log(\frac{\hat{p}_i}{1-\hat{p}_i})} & =  e^{-1.444+2.425(female_i)}\\
+\frac{\hat{p}_i}{1-\hat{p}_i} &= (e^{-1.444})(e^{2.425(female_i)})\\
+\frac{\hat{p}_i}{1-\hat{p}_i} &= (0.236)(11.30)^{(female_i)}
+\end{align*}$$
+
+As you can see, this equation became a multiplicative equation rather than an additive equation, just as it did for log-transformed quantitative variables in the previous module. In this case, we can figure out what these numbers mean very easily by plugging in values for $female_i$ for our two cases. For men, $female_i=0$, so: 
+
+$$\frac{\hat{p}_i}{1-\hat{p}_i} = (0.236)(11.30)^{0}=0.236(1)=0.236$$
+
+So the exponential of the intercept value $(e^{-1.444}=0.236)$ gives us the odds of survival for men. This value is often called the **baseline odds** and represents the odds of success for an observation when all values of the independent variable are zero. 
+
+For women, $female_i=1$, so:
+
+$$\frac{\hat{p}_i}{1-\hat{p}_i} = (0.236)(11.30)^{1}=0.236(11.30)$$
+
+We could work out the final number here, but this formulation is more important because it gives us the **odds ratio** of 11.3. This is the value we multiply the baseline odds by in order to get the odds for women. In this case, we can see that women had odds of surviving the Titanic that were 11.3 times higher than men's odds. In general the exponential of the slopes gives us an odds ratio, although interpreting it correctly depends on whether you have a categorical or quantitative independent variable.
+
+Before discussing the quantitative case, lets revisit a method we already knew for calculating this odds ratio. We can do this by a two-way table.
+
+```{r two-way-table-logit-compare}
+table(titanic$sex, titanic$survival)
+```
+
+The odds of survival for men are given by the number of survivals over the number of deaths:
+
+```{r men-odds-survival}
+161/682
+```
+
+You can see that this number matches the baseline odds we just calculated from the logit model. We can also calculate the odds ratio by taking the cross-product of the table:
+
+```{r cross-product-logit}
+339*682/(161*127)
+```
+
+The odds ratio between men and women is the same as what we just estimated from the logit model. The logit model and the two-way table both agree on the relevant odds and odds ratios. So why use the logit model? The logit model will allow us to estimate much more complex models by including quantitative variables, controlling for other variables, adding interaction terms, non-linear effects, and all of the other fun techniques we have been developing for the right-hand side of a linear function. Before turning to a more complex model, lets look at how to interpret logit models with a quantitative independent variable.
+
+#### Interpreting results with quantitative independent variables
+
+Lets return to the example of predicting survival by fare paid:
+
+
+```{r logit-model-fare}
+model.fare <- glm((survival=="Survived")~fare, 
+                  data=titanic, family=binomial(logit))
+coef(model.fare)
+```
+
+So our model is:
+
+$$log(\frac{\hat{p}_i}{1-\hat{p}_i}) = -0.884+0.012(fare_i)$$
+
+We can follow the same process as before and convert this to the odds scale by exponentiating both sides:
+
+$$\begin{align*}
+e^{log(\frac{\hat{p}_i}{1-\hat{p}_i})} & =  e^{-0.884+0.012(fare_i)}\\
+\frac{\hat{p}_i}{1-\hat{p}_i} &= (e^{-0.884})(e^{0.012(fare_i)})\\
+\frac{\hat{p}_i}{1-\hat{p}_i} &= (0.413)(1.012)^{(fare_i)}
+\end{align*}$$
+
+Again we have a multiplicative model. To see how we can interpret this multiplicative effect, lets consider the predicted odds for three passengers who respectivly paid 0,1, and 2 pound(s) in fare:
+
+$$\begin{align*}
+\frac{\hat{p}_i}{1-\hat{p}_i}&=(0.413)(1.012)^{0}=0.413\\
+\frac{\hat{p}_i}{1-\hat{p}_i}&=(0.413)(1.012)^{1}=0.413(1.012)\\
+\frac{\hat{p}_i}{1-\hat{p}_i}&=(0.413)(1.012)^{2}=0.413(1.012)(1.012)\\
+\end{align*}$$
+
+Each time we increase a pound in fare, we multiply the odds we had before by 1.012. In other words, the odds increase by 1.2% for every one pount increase in fare. So, for a quantitative variable, we can also talk about the percentage or multiplicative change in the odds, but this time for a one unit increase in $x$ rather than comparing a one category to a reference category. 
+
+Also note that because our slope of 0.012 was small, the exponential of this value followed the approximation of $e^x\approx1+x$, and was simply 1.012. Therefore, in this case, we could have just looked directly at the log odds ratio of 0.012 and concluded that every one pound increase in fare paid is associated with a 1.2% increase in the odds of survival.
+
+#### Graphing predicted probabilities
+
+We can look at how fare changes the predicted probability of survival by using the `predict` command. In this case, we will feed in a fake dataset of passengers paying every fare between 0 and 512 (the maximum actual value) in one unit increments. We just have to remember that the predicted values from `predict` will be log-odds which need to be converted to probabilities.
+
+```{r predict-logit}
+predict_df <- data.frame(fare=0:512)
+lodds <- predict(model.fare, newdata=predict_df)
+predict_df$probs <- exp(lodds)/(1+exp(lodds))
+ggplot(predict_df,
+       aes(x=fare, y=probs))+
+  geom_line()+
+  labs(x="fare paid", y="probability of survival")+
+  theme_bw()
+```
+
+We could also plot a more complicated example for a model that looks at both gender and fare. The trick here is we can use a handy function called `expand.grid` to set up our prediction dataframe. The `expand.grid` function will create a dataframe that includes an observation for every possible combination of the variables that you feed in.
+
+```{r predict-gender-fare}
+model.both <- update(model.fare, .~.+sex)
+predict_df <- expand.grid(fare=0:512, sex=c("Female","Male"))
+lodds <- predict(model.both, newdata=predict_df)
+predict_df$probs <- exp(lodds)/(1+exp(lodds))
+ggplot(predict_df,
+       aes(x=fare, y=probs, color=sex))+
+  geom_line()+
+  labs(x="fare paid", y="probability of survival")+
+  theme_bw()
+```
+
+#### A more complex example
+
+Now lets try a more complex example that can take advantage of several of the features of linear models we have already developed.
+
+```{r logit-comple-example}
+model.smoking <- glm(smoker~I(pseudoGPA-2)+I(grade-10)+I((grade-10)^2)+sex*honorsociety, 
+                     data=popularity, family=binomial(logit))
+round(summary(model.smoking)$coef, 3)
+```
+
+What all am I doing in this model. I am predicting whether an adolescent is a frequent smoker by:
+
+* GPA in school. I have centered this on a C average. 
+* Grade (e.g. 8th, 9th) in school. I have centered this on 10th grade and allowed for a non-linear trend by including a polynomial squared term.
+* gender and honor society membership. I have interacted these two variables so that honor society can have a different effect for boys and girls.
+
+In order to interpret the results, I need to exponentiate my coefficients:
+
+```{r exponentiate-coefs}
+exp(coef(model.smoking))
+```
+
+The baseline odds of frequent smoking for a 10th grade girl who earned a C average and is not a member of honor society is about 0.34. So roughly, I expect to see 3 non-frequent smokers for every frequent smokers among this group. 
+
+Holding constant gender, grade in school, and honor society membership, each letter grade increase in GPA is associated with nearly a halving (47% decline) in the odds of frequent smoking. 
+
+The grade effects are a little harder to directly interpret because of the squared term applied in a multiplicative fashion. The basic trend is that increases in grade are associated with fairly large increases in the odds of frequent smoking. The negative effect on the squared term suggests a slightly diminishing effect at higher grade levels, but this is not statistically significant, so we are probably better off estimating a model without the squared term. 
+
+To see how this complex age effect works, its probably easiest to calculate odds ratios at each of the grades from 7th through 12th:
+
+```{r grades-odds}
+grades <- 7:12
+odds <- exp(-1.086+0.299*(grades-10)-0.013*((grades-10)^2))
+odds[2:6]/odds[1:5]
+```
+
+We can see that the biggest odds ratio increase is from 7th to 8th grade at 43.9% and the smallest estimated odds ratio increase is from 11th to 12th at 29.6%. Although the magnitudes vary in size, the risk of smoking increases substantially in size with increases in grade at all grade levels.
+
+The effects of gender and honor society are also somewhat more complex to interpret because of the interaction term. The main effects give us the effect when the other variable is held at the reference. So, among students who are not in honor society, and controlling for grade and GPA, boys have 12.5% lower odds $(100*(1-0.875))$ of frequently smoking than girls. Among girls, honor society membership reduces the odds of smoking by about 52% $(100*(1-0.48))$. 
+
+To interpret the interaction term, lets go ahead and calculate the honor society effect for boys:
+
+```{r interaction-logit}
+exp(-0.741+0.845)
+```
+
+Among boys, those in honor society have 11% higher odds of smoking frequently than those not in honor society. So we see a very different effect of honor society here by gender.
+
+Notice that I could have gotten this same value by multiplying the exponentiated values of the main effect and interaction term:
+
+```{r}
+0.4765042*2.3275203 
+```
+
+### Marginal effects
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/en9RsgkKfUA")
+```
+
+
+### The probit link
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/nBUk_Q58aDI")
+```
+
+### Assessing model fit
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/jGx6fQzuBAg")
+```
+
+### Separation
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/XidkUBrgu7Y")
+```
+
 ---
 
-## Models Polytomous Outcomes
+## Models for Polytomous Outcomes
 
 ---
