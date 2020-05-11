@@ -857,7 +857,7 @@ What all am I doing in this model. I am predicting whether an adolescent is a fr
 
 In order to interpret the results, I need to exponentiate my coefficients:
 
-```{r exponentiate-coefs}
+```{r exponentiate-coefs-logit}
 exp(coef(model.smoking))
 ```
 
