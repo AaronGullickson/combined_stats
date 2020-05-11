@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-05-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -302,8 +302,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#a-glm-for-dichotomous-outcomes"><i class="fa fa-check"></i>A GLM for dichotomous outcomes</a></li>
 <li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum likelihood estimation</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a></li>
-<li class="chapter" data-level="" data-path="models-polytomous-outcomes.html"><a href="models-polytomous-outcomes.html"><i class="fa fa-check"></i>Models Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a><ul>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#interpreting-results"><i class="fa fa-check"></i>Interpreting results</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#marginal-effects-1"><i class="fa fa-check"></i>Marginal effects</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#the-probit-link"><i class="fa fa-check"></i>The probit link</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#assessing-model-fit"><i class="fa fa-check"></i>Assessing model fit</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#separation"><i class="fa fa-check"></i>Separation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="models-for-polytomous-outcomes.html"><a href="models-for-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Polytomous Outcomes</a></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
@@ -462,16 +468,16 @@ is the probability of any particular sequence of <span class="math inline">\(k\)
 <p>When we put these two parts together, we get the full binomial formula:</p>
 <p><span class="math display">\[P(X=k)={n \choose k}p^k(1-p)^{n-k}\]</span></p>
 <p>Lets try it out for all the possible values in our Shadowrun dice pool:</p>
-<div class="sourceCode" id="cb504"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb504-1" title="1">n &lt;-<span class="st"> </span><span class="dv">5</span></a>
-<a class="sourceLine" id="cb504-2" title="2">k &lt;-<span class="st"> </span><span class="dv">0</span><span class="op">:</span>n</a>
-<a class="sourceLine" id="cb504-3" title="3">p &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">/</span><span class="dv">3</span></a>
-<a class="sourceLine" id="cb504-4" title="4">prob &lt;-<span class="st"> </span><span class="kw">choose</span>(n,k)<span class="op">*</span>p<span class="op">^</span>k<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)<span class="op">^</span>(n<span class="op">-</span>k)</a>
-<a class="sourceLine" id="cb504-5" title="5"><span class="kw">ggplot</span>(<span class="kw">data.frame</span>(k,prob), <span class="kw">aes</span>(<span class="dt">x=</span>k, <span class="dt">y=</span>prob))<span class="op">+</span></a>
-<a class="sourceLine" id="cb504-6" title="6"><span class="st">  </span><span class="kw">geom_col</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb504-7" title="7"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels=</span>scales<span class="op">::</span>percent)<span class="op">+</span></a>
-<a class="sourceLine" id="cb504-8" title="8"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;hits (number of fives or sixes) in five dice rolls&quot;</span>,</a>
-<a class="sourceLine" id="cb504-9" title="9">       <span class="dt">y=</span><span class="st">&quot;probability&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb504-10" title="10"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb503"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb503-1" title="1">n &lt;-<span class="st"> </span><span class="dv">5</span></a>
+<a class="sourceLine" id="cb503-2" title="2">k &lt;-<span class="st"> </span><span class="dv">0</span><span class="op">:</span>n</a>
+<a class="sourceLine" id="cb503-3" title="3">p &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">/</span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb503-4" title="4">prob &lt;-<span class="st"> </span><span class="kw">choose</span>(n,k)<span class="op">*</span>p<span class="op">^</span>k<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)<span class="op">^</span>(n<span class="op">-</span>k)</a>
+<a class="sourceLine" id="cb503-5" title="5"><span class="kw">ggplot</span>(<span class="kw">data.frame</span>(k,prob), <span class="kw">aes</span>(<span class="dt">x=</span>k, <span class="dt">y=</span>prob))<span class="op">+</span></a>
+<a class="sourceLine" id="cb503-6" title="6"><span class="st">  </span><span class="kw">geom_col</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb503-7" title="7"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels=</span>scales<span class="op">::</span>percent)<span class="op">+</span></a>
+<a class="sourceLine" id="cb503-8" title="8"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;hits (number of fives or sixes) in five dice rolls&quot;</span>,</a>
+<a class="sourceLine" id="cb503-9" title="9">       <span class="dt">y=</span><span class="st">&quot;probability&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb503-10" title="10"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:dice-pool"></span>
 <img src="stat_book_files/figure-html/dice-pool-1.png" alt="Probabilities of the number of hits (rolling a five or six) in a five dice pool" width="672" />
 <p class="caption">
@@ -480,16 +486,16 @@ Figure 91: Probabilities of the number of hits (rolling a five or six) in a five
 </div>
 <p>We have about a one in three chance of rolling either one or two successes and about a 12% chance of getting no successes. At the other end of the spectrum, it is very unlikely to get five successes in five trials. Go ahead and pause here and play this game for yourself if you like to see how your results stack up. Al you need is five dice. Go ahead, I will wait.</p>
 <p>What would happen if we had a dice pool of twenty dice? Lets try it:</p>
-<div class="sourceCode" id="cb505"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb505-1" title="1">n &lt;-<span class="st"> </span><span class="dv">20</span></a>
-<a class="sourceLine" id="cb505-2" title="2">k &lt;-<span class="st"> </span><span class="dv">0</span><span class="op">:</span>n</a>
-<a class="sourceLine" id="cb505-3" title="3">p &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">/</span><span class="dv">3</span></a>
-<a class="sourceLine" id="cb505-4" title="4">prob &lt;-<span class="st"> </span><span class="kw">choose</span>(n,k)<span class="op">*</span>p<span class="op">^</span>k<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)<span class="op">^</span>(n<span class="op">-</span>k)</a>
-<a class="sourceLine" id="cb505-5" title="5"><span class="kw">ggplot</span>(<span class="kw">data.frame</span>(k,prob), <span class="kw">aes</span>(<span class="dt">x=</span>k, <span class="dt">y=</span>prob))<span class="op">+</span></a>
-<a class="sourceLine" id="cb505-6" title="6"><span class="st">  </span><span class="kw">geom_col</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb505-7" title="7"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels=</span>scales<span class="op">::</span>percent)<span class="op">+</span></a>
-<a class="sourceLine" id="cb505-8" title="8"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;hits (number of fives or sixes) in twenty dice rolls&quot;</span>,</a>
-<a class="sourceLine" id="cb505-9" title="9">       <span class="dt">y=</span><span class="st">&quot;probability&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb505-10" title="10"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb504"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb504-1" title="1">n &lt;-<span class="st"> </span><span class="dv">20</span></a>
+<a class="sourceLine" id="cb504-2" title="2">k &lt;-<span class="st"> </span><span class="dv">0</span><span class="op">:</span>n</a>
+<a class="sourceLine" id="cb504-3" title="3">p &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">/</span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb504-4" title="4">prob &lt;-<span class="st"> </span><span class="kw">choose</span>(n,k)<span class="op">*</span>p<span class="op">^</span>k<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)<span class="op">^</span>(n<span class="op">-</span>k)</a>
+<a class="sourceLine" id="cb504-5" title="5"><span class="kw">ggplot</span>(<span class="kw">data.frame</span>(k,prob), <span class="kw">aes</span>(<span class="dt">x=</span>k, <span class="dt">y=</span>prob))<span class="op">+</span></a>
+<a class="sourceLine" id="cb504-6" title="6"><span class="st">  </span><span class="kw">geom_col</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb504-7" title="7"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels=</span>scales<span class="op">::</span>percent)<span class="op">+</span></a>
+<a class="sourceLine" id="cb504-8" title="8"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;hits (number of fives or sixes) in twenty dice rolls&quot;</span>,</a>
+<a class="sourceLine" id="cb504-9" title="9">       <span class="dt">y=</span><span class="st">&quot;probability&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb504-10" title="10"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:dice-pool-gib"></span>
 <img src="stat_book_files/figure-html/dice-pool-gib-1.png" alt="Probabilities of the number of hits (rolling a five or six) in a twenty dice pool" width="672" />
 <p class="caption">
@@ -505,13 +511,13 @@ Figure 92: Probabilities of the number of hits (rolling a five or six) in a twen
 <p>We can also calculate the variance of the random variable <span class="math inline">\(V(X)\)</span>. For the binomial distribution, this is given by:</p>
 <p><span class="math display">\[V(X)=np(1-p)\]</span></p>
 <p>This formula has an important implication. First, the variance depends on the underlying probability of success. Second, for a given <span class="math inline">\(n\)</span>, this probability will be maximized at a certain value of <span class="math inline">\(p\)</span>. To see what value of <span class="math inline">\(p\)</span> that is, lets go ahead and calculate the variance for our example with <span class="math inline">\(n=5\)</span> for every possible <span class="math inline">\(p\)</span> at 0.01 intervals:</p>
-<div class="sourceCode" id="cb506"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb506-1" title="1">p &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dt">from=</span><span class="fl">0.001</span>,<span class="dt">to=</span><span class="fl">0.999</span>, <span class="dt">by=</span>.<span class="dv">001</span>)</a>
-<a class="sourceLine" id="cb506-2" title="2">v &lt;-<span class="st"> </span><span class="dv">5</span><span class="op">*</span>p<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)</a>
-<a class="sourceLine" id="cb506-3" title="3"><span class="kw">ggplot</span>(<span class="kw">data.frame</span>(p,v), <span class="kw">aes</span>(<span class="dt">x=</span>p, <span class="dt">y=</span><span class="kw">sqrt</span>(v)))<span class="op">+</span></a>
-<a class="sourceLine" id="cb506-4" title="4"><span class="st">  </span><span class="kw">geom_line</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb506-5" title="5"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;probability of success&quot;</span>,</a>
-<a class="sourceLine" id="cb506-6" title="6">       <span class="dt">y=</span><span class="st">&quot;standard deviation in number of successes for n=5&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb506-7" title="7"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb505"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb505-1" title="1">p &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dt">from=</span><span class="fl">0.001</span>,<span class="dt">to=</span><span class="fl">0.999</span>, <span class="dt">by=</span>.<span class="dv">001</span>)</a>
+<a class="sourceLine" id="cb505-2" title="2">v &lt;-<span class="st"> </span><span class="dv">5</span><span class="op">*</span>p<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)</a>
+<a class="sourceLine" id="cb505-3" title="3"><span class="kw">ggplot</span>(<span class="kw">data.frame</span>(p,v), <span class="kw">aes</span>(<span class="dt">x=</span>p, <span class="dt">y=</span><span class="kw">sqrt</span>(v)))<span class="op">+</span></a>
+<a class="sourceLine" id="cb505-4" title="4"><span class="st">  </span><span class="kw">geom_line</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb505-5" title="5"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;probability of success&quot;</span>,</a>
+<a class="sourceLine" id="cb505-6" title="6">       <span class="dt">y=</span><span class="st">&quot;standard deviation in number of successes for n=5&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb505-7" title="7"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:varbinom"></span>
 <img src="stat_book_files/figure-html/varbinom-1.png" alt="Standard deviation for binomial distribution with five trials by different probabilities of success" width="672" />
 <p class="caption">

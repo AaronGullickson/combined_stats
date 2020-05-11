@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-05-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -302,8 +302,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#a-glm-for-dichotomous-outcomes"><i class="fa fa-check"></i>A GLM for dichotomous outcomes</a></li>
 <li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum likelihood estimation</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a></li>
-<li class="chapter" data-level="" data-path="models-polytomous-outcomes.html"><a href="models-polytomous-outcomes.html"><i class="fa fa-check"></i>Models Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a><ul>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#interpreting-results"><i class="fa fa-check"></i>Interpreting results</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#marginal-effects-1"><i class="fa fa-check"></i>Marginal effects</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#the-probit-link"><i class="fa fa-check"></i>The probit link</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#assessing-model-fit"><i class="fa fa-check"></i>Assessing model fit</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#separation"><i class="fa fa-check"></i>Separation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="models-for-polytomous-outcomes.html"><a href="models-for-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Polytomous Outcomes</a></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
@@ -416,13 +422,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>A missing value occurs when a value is missing for an observation on a particular value. Its important to distinguish in your data between situations in which a missing value is actually a valid response, from situations in which it is invalid and must be addressed.</p>
 <p>It may seem unusual to think of some missing values as valid, but based on the structure of survey questionnaires is not unusual to run into valid missing values. In particular, <strong>valid skips</strong> are a common form of missing data. Valid skips occur when only a subset of respondents are asked a question that is a follow-up to a previous question. Typically to be asked the follow up question, respondents have to respond to the original question in a certain way. All respondents who weren’t asked the follow up question then have <strong>valid skips</strong> for their response.</p>
 <p>As an example, lets look at how the General Social Survey asks about a person’s religious affiliation. The GSS asks this using a set of three questions. First, all respondents are asked “What is your religious preference? Is it Protestant, Catholic, Jewish, some other religion, or no religion?” After 1996, the GSS also started recording more specific responses for the “some other religion” category, but for simplicity lets just look at the distribution of this variable in 1996.</p>
-<div class="sourceCode" id="cb380"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb380-1" title="1"><span class="kw">table</span>(gss<span class="op">$</span>relig, <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb379-1" title="1"><span class="kw">table</span>(gss<span class="op">$</span>relig, <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
 <pre><code>## 
 ##   catholic     jewish       none      other protestant       &lt;NA&gt; 
 ##        685         68        339        143       1664          5</code></pre>
 <p>On this variable, we have five cases of <strong>item nonresponse</strong> in which the respondent did not answer the question. They might have refused to answer it or perhaps they just did not know the answer.</p>
 <p>For most of the respondents, this is the only question on religious affiliation. However, those who responded as Protestant are then asked further questions to determine more information about their particular denomination. This <code>denom</code> question includes prompts for most of the large denominations in the US. Here is the distribution of that variable.</p>
-<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb382-1" title="1"><span class="kw">table</span>(gss<span class="op">$</span>denom, <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb381"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb381-1" title="1"><span class="kw">table</span>(gss<span class="op">$</span>denom, <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
 <pre><code>## 
 ##     afr meth ep zion   afr meth episcopal    am bapt ch in usa 
 ##                    8                   11                   28 
@@ -445,7 +451,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ##                 &lt;NA&gt; 
 ##                 1246</code></pre>
 <p>Notice that we seem to have a lot of missing values here (1246). Did a lot of people just not know their denomination? No, in fact there is very little item nonresponse on this measure. The issue is that all of the people who were not asked this question because they didn’t respond as Protestant are listed as missing values here, but they are actually <strong>valid skips</strong>. We can see this more easily by crosstabbing the two variables based on whether the response was <code>NA</code> or not.</p>
-<div class="sourceCode" id="cb384"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb384-1" title="1"><span class="kw">table</span>(gss<span class="op">$</span>relig, <span class="kw">is.na</span>(gss<span class="op">$</span>denom), <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb383"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb383-1" title="1"><span class="kw">table</span>(gss<span class="op">$</span>relig, <span class="kw">is.na</span>(gss<span class="op">$</span>denom), <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
 <pre><code>##             
 ##              FALSE TRUE
 ##   catholic       0  685
@@ -456,7 +462,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ##   &lt;NA&gt;           0    5</code></pre>
 <p>You can see that almost all of the cases of <code>NA</code> here are respondents who did not identify as Protestants and therefore were not asked the <code>denom</code> question, i.e. valid skips. We have only six cases of individuals who were asked the denom question and did not respond.</p>
 <p>For Protestants who did not identify with one of the large denominations prompted in <code>denom</code> were identified as “other”. For this group, a third question (called <code>other</code> in the GSS) was asked in which the respondent’s could provide any response. I won’t show the full table here as the number of denominations is quite large, but we can use the same logic as above to identify all of the valid skips vs. item nonresponses.</p>
-<div class="sourceCode" id="cb386"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb386-1" title="1"><span class="kw">table</span>(gss<span class="op">$</span>denom, <span class="kw">is.na</span>(gss<span class="op">$</span>other), <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb385-1" title="1"><span class="kw">table</span>(gss<span class="op">$</span>denom, <span class="kw">is.na</span>(gss<span class="op">$</span>other), <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
 <pre><code>##                       
 ##                        FALSE TRUE
 ##   afr meth ep zion         0    8
@@ -499,14 +505,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>In practice, although NMAR is probably the norm in most datasets, the number of missing values on a single variable may be small enough that even the incorrect assumption of MAR or MCAR might have little effect on the results. In my previous example, I had only 16 missing values on religious affiliation for 2904 respondents. So, its not likely to have a large effect on the results no matter how I deal with the missing values.</p>
 <p>How exactly does one deal with those missing values? The data analyst typically has two choices. You can either remove cases with missing values or you can do some form of imputation. These two techniques are tied to the assumptions above. Removing cases is equivalent to assuming MCAR while imputation is equivalent to MAR.</p>
 <p>To illustrate these different approaches below, we will look at a new example. We are going to examine the Add Health data again, but this time I am going to use a dataset that does not have imputed values for missing values. In particular, we are going to look at the relationship between parental income and popularity. Lets look at how many missing values we have for income.</p>
-<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb388-1" title="1"><span class="kw">summary</span>(addhealth<span class="op">$</span>parentinc)</a></code></pre></div>
+<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb387-1" title="1"><span class="kw">summary</span>(addhealth<span class="op">$</span>parentinc)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ##    0.00   23.00   40.00   45.37   60.00  200.00    1027</code></pre>
 <p>Yikes! We are missing 1027 cases of parental income. That seems like a lot. Lets go ahead and calculate the percent of missing cases for all of the variables in our data.</p>
-<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb390-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">apply</span>(<span class="kw">is.na</span>(addhealth), <span class="dv">2</span>, mean)<span class="op">*</span><span class="dv">100</span>, <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb390-2" title="2">temp &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">variable=</span><span class="kw">names</span>(temp), <span class="dt">percent_missing=</span>temp)</a>
-<a class="sourceLine" id="cb390-3" title="3"><span class="kw">rownames</span>(temp) &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb390-4" title="4"><span class="kw">pander</span>(<span class="kw">as.data.frame</span>(temp))</a></code></pre></div>
+<div class="sourceCode" id="cb389"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb389-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">apply</span>(<span class="kw">is.na</span>(addhealth), <span class="dv">2</span>, mean)<span class="op">*</span><span class="dv">100</span>, <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb389-2" title="2">temp &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">variable=</span><span class="kw">names</span>(temp), <span class="dt">percent_missing=</span>temp)</a>
+<a class="sourceLine" id="cb389-3" title="3"><span class="kw">rownames</span>(temp) &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb389-4" title="4"><span class="kw">pander</span>(<span class="kw">as.data.frame</span>(temp))</a></code></pre></div>
 <table style="width:46%;">
 <colgroup>
 <col width="20%" />
@@ -584,14 +590,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <iframe src="https://www.youtube.com/embed/rPbB1AD0ndc" width="672" height="400px">
 </iframe>
 <p>The simplest approach to dealing with missing values is to just drop observations (cases) that have missing values. In R, this is what will either happen by default or if you give a function the argument <code>na.rm=TRUE</code>. For example, lets calculate the mean income in the Add Health data:</p>
-<div class="sourceCode" id="cb391"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb391-1" title="1"><span class="kw">mean</span>(addhealth<span class="op">$</span>parentinc)</a></code></pre></div>
+<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb390-1" title="1"><span class="kw">mean</span>(addhealth<span class="op">$</span>parentinc)</a></code></pre></div>
 <pre><code>## [1] NA</code></pre>
 <p>If we don’t specify how R should handle the missing values, R will report back a missing value for many basic calculations like the mean, median, and standard deviation. In order to get the mean for observations with valid values of income, we need to include the <code>na.rm=TRUE</code> option:</p>
-<div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb393-1" title="1"><span class="kw">mean</span>(addhealth<span class="op">$</span>parentinc, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb392"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb392-1" title="1"><span class="kw">mean</span>(addhealth<span class="op">$</span>parentinc, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## [1] 45.37389</code></pre>
 <p>The <code>lm</code> command in R behaves a little differently. It will automatically drop any observations that are missing values on any of the variables in the model. Lets look at this for a model predicting popularity by parental income and number of sports played:</p>
-<div class="sourceCode" id="cb395"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb395-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc<span class="op">+</span>nsports, <span class="dt">data=</span>addhealth)</a>
-<a class="sourceLine" id="cb395-2" title="2"><span class="kw">summary</span>(model)</a></code></pre></div>
+<div class="sourceCode" id="cb394"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb394-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc<span class="op">+</span>nsports, <span class="dt">data=</span>addhealth)</a>
+<a class="sourceLine" id="cb394-2" title="2"><span class="kw">summary</span>(model)</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = indegree ~ parentinc + nsports, data = addhealth)
@@ -623,9 +629,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="available-case-analysis" class="section level4">
 <h4>Available-case analysis</h4>
 <p>In available-case analysis (also called <strong>pairwise deletion</strong>) observations are only removed for each particular component of the analysis (e.g. a model) in which they are used. This is what R will do by default when you run nested models because it will only remove cases if a variable in that particular model is missing.</p>
-<div class="sourceCode" id="cb397"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb397-1" title="1">model1.avail &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>nsports, <span class="dt">data=</span>addhealth)</a>
-<a class="sourceLine" id="cb397-2" title="2">model2.avail &lt;-<span class="st"> </span><span class="kw">update</span>(model1.avail, .<span class="op">~</span>.<span class="op">+</span>alcoholuse<span class="op">+</span>smoker)</a>
-<a class="sourceLine" id="cb397-3" title="3">model3.avail &lt;-<span class="st"> </span><span class="kw">update</span>(model2.avail, .<span class="op">~</span>.<span class="op">+</span>parentinc)</a></code></pre></div>
+<div class="sourceCode" id="cb396"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb396-1" title="1">model1.avail &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>nsports, <span class="dt">data=</span>addhealth)</a>
+<a class="sourceLine" id="cb396-2" title="2">model2.avail &lt;-<span class="st"> </span><span class="kw">update</span>(model1.avail, .<span class="op">~</span>.<span class="op">+</span>alcoholuse<span class="op">+</span>smoker)</a>
+<a class="sourceLine" id="cb396-3" title="3">model3.avail &lt;-<span class="st"> </span><span class="kw">update</span>(model2.avail, .<span class="op">~</span>.<span class="op">+</span>parentinc)</a></code></pre></div>
 <p>As a sidenote, I am introducing a new function here called <code>update</code> that can be very useful for model building. The <code>update</code> function can be used on a model object to make some changes to it and then re-run it. In this case, I am changing the model formula, but you could also use it to change the data (useful for looking at subsets), add weights, etc. When you want to update the model formula, the syntax <code>.~.+</code> will include all of the previous elements of the formula and then you can make additions. I am using it to build nested models without having to repeat the entire model syntax every time.</p>
 <table cellspacing="0" align="center" style="border: none;">
 <caption align="top" style="margin-bottom:0.3em;">
@@ -814,10 +820,10 @@ Num. obs.
 <h4>Complete-case analysis</h4>
 <p>In complete-case analysis (also called <strong>listwise deletion</strong>) you remove observations that are missing on any variables that you will use in the analysis even for some calculations that may not involve those variables. This techniques ensures that you are always working with the same sample throughout your analysis so any comparisons (e.g. across models) are not comparing apples and oranges.</p>
 <p>In our example, I need to restrict my sample to only observations that have valid responses for all five of the variables that will be used in my most complex model. I can do this easily with the <code>na.omit</code> command which will remove any observation that is missing any value in a given dataset:</p>
-<div class="sourceCode" id="cb398"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb398-1" title="1">addhealth.complete &lt;-<span class="st"> </span><span class="kw">na.omit</span>(addhealth[,<span class="kw">c</span>(<span class="st">&quot;indegree&quot;</span>,<span class="st">&quot;nsports&quot;</span>,<span class="st">&quot;alcoholuse&quot;</span>,<span class="st">&quot;smoker&quot;</span>,<span class="st">&quot;parentinc&quot;</span>)])</a>
-<a class="sourceLine" id="cb398-2" title="2">model1.complete &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>nsports, <span class="dt">data=</span>addhealth.complete)</a>
-<a class="sourceLine" id="cb398-3" title="3">model2.complete &lt;-<span class="st"> </span><span class="kw">update</span>(model1.complete, .<span class="op">~</span>.<span class="op">+</span>alcoholuse<span class="op">+</span>smoker)</a>
-<a class="sourceLine" id="cb398-4" title="4">model3.complete &lt;-<span class="st"> </span><span class="kw">update</span>(model2.complete, .<span class="op">~</span>.<span class="op">+</span>parentinc)</a></code></pre></div>
+<div class="sourceCode" id="cb397"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb397-1" title="1">addhealth.complete &lt;-<span class="st"> </span><span class="kw">na.omit</span>(addhealth[,<span class="kw">c</span>(<span class="st">&quot;indegree&quot;</span>,<span class="st">&quot;nsports&quot;</span>,<span class="st">&quot;alcoholuse&quot;</span>,<span class="st">&quot;smoker&quot;</span>,<span class="st">&quot;parentinc&quot;</span>)])</a>
+<a class="sourceLine" id="cb397-2" title="2">model1.complete &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>nsports, <span class="dt">data=</span>addhealth.complete)</a>
+<a class="sourceLine" id="cb397-3" title="3">model2.complete &lt;-<span class="st"> </span><span class="kw">update</span>(model1.complete, .<span class="op">~</span>.<span class="op">+</span>alcoholuse<span class="op">+</span>smoker)</a>
+<a class="sourceLine" id="cb397-4" title="4">model3.complete &lt;-<span class="st"> </span><span class="kw">update</span>(model2.complete, .<span class="op">~</span>.<span class="op">+</span>parentinc)</a></code></pre></div>
 <table cellspacing="0" align="center" style="border: none;">
 <caption align="top" style="margin-bottom:0.3em;">
 <span id="tab:complete-case-table">Table 20: </span> Models predicting number of friend nominations in Add Health data, using complete-case analysis
@@ -1013,9 +1019,9 @@ Num. obs.
 <div id="non-predictive-imputation" class="section level4">
 <h4>Non-predictive imputation</h4>
 <p>The simplest form of imputation is to just replace missing values with a single value. Since the mean is considered the “best guess” for the non-missing cases, it is customary to impute the mean value here and so this technique is generally called <strong>mean imputation</strong>. We can perform mean imputation in R simply by using the bracket-and-boolean approach to identify and replace missing values:</p>
-<div class="sourceCode" id="cb399"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb399-1" title="1">addhealth<span class="op">$</span>parentinc.meani &lt;-<span class="st"> </span>addhealth<span class="op">$</span>parentinc</a>
-<a class="sourceLine" id="cb399-2" title="2">addhealth<span class="op">$</span>incmiss &lt;-<span class="st"> </span><span class="kw">is.na</span>(addhealth<span class="op">$</span>parentinc)</a>
-<a class="sourceLine" id="cb399-3" title="3">addhealth<span class="op">$</span>parentinc.meani[addhealth<span class="op">$</span>incmiss] &lt;-<span class="st"> </span><span class="kw">mean</span>(addhealth<span class="op">$</span>parentinc, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb398"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb398-1" title="1">addhealth<span class="op">$</span>parentinc.meani &lt;-<span class="st"> </span>addhealth<span class="op">$</span>parentinc</a>
+<a class="sourceLine" id="cb398-2" title="2">addhealth<span class="op">$</span>incmiss &lt;-<span class="st"> </span><span class="kw">is.na</span>(addhealth<span class="op">$</span>parentinc)</a>
+<a class="sourceLine" id="cb398-3" title="3">addhealth<span class="op">$</span>parentinc.meani[addhealth<span class="op">$</span>incmiss] &lt;-<span class="st"> </span><span class="kw">mean</span>(addhealth<span class="op">$</span>parentinc, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 <p>I create a separate variable called <code>parentinc.meani</code> for the mean imputation so that I can compare it to other imputation procedures later. I also create an <code>incmiss</code> variable that is just a boolean indicating whether income is missing for a given respondent.</p>
 <div class="figure" style="text-align: center"><span id="fig:fig-mean-impute"></span>
 <img src="stat_book_files/figure-html/fig-mean-impute-1.png" alt="The effect of mean imputation of parental income on the scatterplot between parental income and number of friend nominations" width="672" />
@@ -1024,15 +1030,15 @@ Figure 83: The effect of mean imputation of parental income on the scatterplot b
 </p>
 </div>
 <p>Figure <a href="missing-values.html#fig:fig-mean-impute">83</a> shows the effect of mean imputation on the scatterplot of the relationship between parental income and number of friend nominations. All of the imputed values fall along a vertical line that corresponds to the mean parental income for the non-missing values. The effect on the variance of parental income is clear. Because this imputation procedure fits a single value, its imputation does not match the spread of observations along parental income. We can also see this by comparing the standard deviations of the original variable and the mean imputed one:</p>
-<div class="sourceCode" id="cb400"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb400-1" title="1"><span class="kw">sd</span>(addhealth<span class="op">$</span>parentinc, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb399"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb399-1" title="1"><span class="kw">sd</span>(addhealth<span class="op">$</span>parentinc, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## [1] 33.6985</code></pre>
-<div class="sourceCode" id="cb402"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb402-1" title="1"><span class="kw">sd</span>(addhealth<span class="op">$</span>parentinc.meani)</a></code></pre></div>
+<div class="sourceCode" id="cb401"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb401-1" title="1"><span class="kw">sd</span>(addhealth<span class="op">$</span>parentinc.meani)</a></code></pre></div>
 <pre><code>## [1] 29.50069</code></pre>
 <p>Since the variance of the independent variable is a component of the standard error calculation (see the first section of this chapter for details), underestimating the variance will lead to underestimates of the standard error in the linear model. A similar method that will account for the variance in the independent variable is to just randomly sample values of parental income from the valid responses. I can do this in R using the <code>sample</code> function.</p>
-<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb404-1" title="1">addhealth<span class="op">$</span>parentinc.randi &lt;-<span class="st"> </span>addhealth<span class="op">$</span>parentinc</a>
-<a class="sourceLine" id="cb404-2" title="2">addhealth<span class="op">$</span>parentinc.randi[addhealth<span class="op">$</span>incmiss]&lt;-<span class="kw">sample</span>(addhealth<span class="op">$</span>parentinc[<span class="op">!</span>addhealth<span class="op">$</span>incmiss], </a>
-<a class="sourceLine" id="cb404-3" title="3">                                                     <span class="kw">sum</span>(addhealth<span class="op">$</span>incmiss),</a>
-<a class="sourceLine" id="cb404-4" title="4">                                                     <span class="dt">replace =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb403"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb403-1" title="1">addhealth<span class="op">$</span>parentinc.randi &lt;-<span class="st"> </span>addhealth<span class="op">$</span>parentinc</a>
+<a class="sourceLine" id="cb403-2" title="2">addhealth<span class="op">$</span>parentinc.randi[addhealth<span class="op">$</span>incmiss]&lt;-<span class="kw">sample</span>(addhealth<span class="op">$</span>parentinc[<span class="op">!</span>addhealth<span class="op">$</span>incmiss], </a>
+<a class="sourceLine" id="cb403-3" title="3">                                                     <span class="kw">sum</span>(addhealth<span class="op">$</span>incmiss),</a>
+<a class="sourceLine" id="cb403-4" title="4">                                                     <span class="dt">replace =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p>I create a new variable for this imputation. The <code>sample</code> function will sample from a given data vector (in this case the valid responses to parental income) a specified number of times (in this case the number of missing values). I also specify that I want to sample with replacement, which means that I replace values that I have already sampled before drawing a new value.</p>
 <div class="figure" style="text-align: center"><span id="fig:fig-random-impute"></span>
 <img src="stat_book_files/figure-html/fig-random-impute-1.png" alt="The effect of random imputation of parental income on the scatterplot between parental income and number of friend nominations" width="672" />
@@ -1111,9 +1117,9 @@ Valid cases + random imputed
 <p>In general, because of these issues with downward bias, non-predictive imputation is not and advisable technique. However, in some cases it may be preferable as a “quick and dirty” method that is useful for initial exploratory analysis or because the number of missing cases is moderate. It may also be reasonable if the variable that needs to be imputed is intended to serve primarily as a control variable and inferences are not necessarily going to be drawn for this variable itself.</p>
 <p>In these cases where non-predictive imputation serves as a quick and dirty method, one additional technique, which I call <strong>mean imputation with dummy</strong> is advisable. In this case, the researcher performs mean imputation as above but also includes the missingness boolean variable into the model specification as above. The effect of this dummy is to estimate a slope and intercept for the imputed variable that is unaffected by the imputation, while at the same time producing a measure of how far out mean imputation is off relative to where the model expects the missing cases to fall.</p>
 <p>Since, we already have an <code>incmiss</code> dummy variable, we can implement this model very easily. Lets try it in a model that predicts number of friend nominations by parental income and number of sports played.</p>
-<div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb405-1" title="1">model.valid &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc<span class="op">+</span>nsports, <span class="dt">data=</span>addhealth)</a>
-<a class="sourceLine" id="cb405-2" title="2">model.meani &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc.meani<span class="op">+</span>nsports, <span class="dt">data=</span>addhealth)</a>
-<a class="sourceLine" id="cb405-3" title="3">model.mdummyi &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc.meani<span class="op">+</span>nsports<span class="op">+</span>incmiss, <span class="dt">data=</span>addhealth)</a></code></pre></div>
+<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb404-1" title="1">model.valid &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc<span class="op">+</span>nsports, <span class="dt">data=</span>addhealth)</a>
+<a class="sourceLine" id="cb404-2" title="2">model.meani &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc.meani<span class="op">+</span>nsports, <span class="dt">data=</span>addhealth)</a>
+<a class="sourceLine" id="cb404-3" title="3">model.mdummyi &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc.meani<span class="op">+</span>nsports<span class="op">+</span>incmiss, <span class="dt">data=</span>addhealth)</a></code></pre></div>
 <table cellspacing="0" align="center" style="border: none;">
 <caption align="top" style="margin-bottom:0.3em;">
 <span id="tab:mdummy-table">Table 22: </span> Models predicting number of friend nominations in Add Health data, using different methods of imputation
@@ -1299,12 +1305,12 @@ Num. obs.
 <p>In a predictive imputation, we use other variables in the dataset to get predicted values for cases that are missing. In order to do this, an analyst must specify some sort of model to determine predicted values. A wide variety of models have been developed for this, but for this course, we will only discuss the simple case of using a linear model to predict missing values (sometimes called <strong>regression imputation</strong>).</p>
 <p>In the case of the Add Health data, we have a variety of other variables that we can consider using to predict parental income including race, GPA, alcohol use, smoking, honor society membership, band/choir membership, academic club participation, and number of sports played. We also could consider using the dependent variable (number of friend nominations) here but there is some debate on whether dependent variables should be used to predict missing values, so we will not consider it here.</p>
 <p>There is really no reason not to use as much information as possible here, so I will use all of these variables. However, in order to model this correctly, I want to consider the skewed nature of the my parental income data. To reduce the skewness and produce better predictions, I will transform parental income in my predictive model by square rooting it. I can then fit a model predicting parental income:</p>
-<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb406-1" title="1">addhealth<span class="op">$</span>parentinc.regi &lt;-<span class="st"> </span>addhealth<span class="op">$</span>parentinc</a>
-<a class="sourceLine" id="cb406-2" title="2">model &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">sqrt</span>(parentinc)<span class="op">~</span>race<span class="op">+</span>pseudoGPA<span class="op">+</span>honorsociety<span class="op">+</span>alcoholuse<span class="op">+</span>smoker</a>
-<a class="sourceLine" id="cb406-3" title="3">            <span class="op">+</span>bandchoir<span class="op">+</span>academicclub<span class="op">+</span>nsports, <span class="dt">data=</span>addhealth)</a>
-<a class="sourceLine" id="cb406-4" title="4">predicted &lt;-<span class="st"> </span><span class="kw">predict</span>(model, addhealth)</a>
-<a class="sourceLine" id="cb406-5" title="5">addhealth<span class="op">$</span>parentinc.regi[addhealth<span class="op">$</span>incmiss] &lt;-<span class="st"> </span>predicted[addhealth<span class="op">$</span>incmiss]<span class="op">^</span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb406-6" title="6"><span class="kw">summary</span>(addhealth<span class="op">$</span>parentinc.regi)</a></code></pre></div>
+<div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb405-1" title="1">addhealth<span class="op">$</span>parentinc.regi &lt;-<span class="st"> </span>addhealth<span class="op">$</span>parentinc</a>
+<a class="sourceLine" id="cb405-2" title="2">model &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">sqrt</span>(parentinc)<span class="op">~</span>race<span class="op">+</span>pseudoGPA<span class="op">+</span>honorsociety<span class="op">+</span>alcoholuse<span class="op">+</span>smoker</a>
+<a class="sourceLine" id="cb405-3" title="3">            <span class="op">+</span>bandchoir<span class="op">+</span>academicclub<span class="op">+</span>nsports, <span class="dt">data=</span>addhealth)</a>
+<a class="sourceLine" id="cb405-4" title="4">predicted &lt;-<span class="st"> </span><span class="kw">predict</span>(model, addhealth)</a>
+<a class="sourceLine" id="cb405-5" title="5">addhealth<span class="op">$</span>parentinc.regi[addhealth<span class="op">$</span>incmiss] &lt;-<span class="st"> </span>predicted[addhealth<span class="op">$</span>incmiss]<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb405-6" title="6"><span class="kw">summary</span>(addhealth<span class="op">$</span>parentinc.regi)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ##    0.00   25.19   39.83   43.87   54.20  200.00      39</code></pre>
 <p>After fitting the model, I just use the <code>predict</code> command to get predicted parental income values (square rooted) for all of my observations. I remember to square these predicted values when I impute them back.</p>
@@ -1317,12 +1323,12 @@ Figure 85: The relationship between predicted values of imputed parental income 
 </div>
 <p>This regression imputation only accounts for variability in parental income that is accountable for in the model and ignores residual variation. This can be clearly seen in Figure <a href="missing-values.html#fig:fig-reg-impute">85</a> where the actual values of parental income are widely dispersed around the predicted values, except for cases where missing values were imputed. This imputation procedure therefore underestimates the total variance in parental income with similar consequences as above.</p>
 <p>To address this problem, we can use <strong>random regression imputation</strong> which basically adds a random “tail” onto each predicted value based on the variance of our residual terms. It is also necessary to define a distribution from which to sample our random tails. We will use the normal distribution.</p>
-<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb408-1" title="1">addhealth<span class="op">$</span>parentinc.rregi &lt;-<span class="st"> </span>addhealth<span class="op">$</span>parentinc</a>
-<a class="sourceLine" id="cb408-2" title="2">model &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">sqrt</span>(parentinc)<span class="op">~</span>race<span class="op">+</span>pseudoGPA<span class="op">+</span>honorsociety<span class="op">+</span>alcoholuse<span class="op">+</span>smoker</a>
-<a class="sourceLine" id="cb408-3" title="3">            <span class="op">+</span>bandchoir<span class="op">+</span>academicclub<span class="op">+</span>nsports, <span class="dt">data=</span>addhealth)</a>
-<a class="sourceLine" id="cb408-4" title="4">predicted &lt;-<span class="st"> </span><span class="kw">predict</span>(model, addhealth)</a>
-<a class="sourceLine" id="cb408-5" title="5">addhealth<span class="op">$</span>parentinc.rregi[addhealth<span class="op">$</span>incmiss] &lt;-<span class="st"> </span>(predicted[addhealth<span class="op">$</span>incmiss]<span class="op">+</span></a>
-<a class="sourceLine" id="cb408-6" title="6"><span class="st">                                                   </span><span class="kw">rnorm</span>(<span class="kw">sum</span>(addhealth<span class="op">$</span>incmiss), <span class="dv">0</span>, <span class="kw">sigma</span>(model)))<span class="op">^</span><span class="dv">2</span></a></code></pre></div>
+<div class="sourceCode" id="cb407"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb407-1" title="1">addhealth<span class="op">$</span>parentinc.rregi &lt;-<span class="st"> </span>addhealth<span class="op">$</span>parentinc</a>
+<a class="sourceLine" id="cb407-2" title="2">model &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">sqrt</span>(parentinc)<span class="op">~</span>race<span class="op">+</span>pseudoGPA<span class="op">+</span>honorsociety<span class="op">+</span>alcoholuse<span class="op">+</span>smoker</a>
+<a class="sourceLine" id="cb407-3" title="3">            <span class="op">+</span>bandchoir<span class="op">+</span>academicclub<span class="op">+</span>nsports, <span class="dt">data=</span>addhealth)</a>
+<a class="sourceLine" id="cb407-4" title="4">predicted &lt;-<span class="st"> </span><span class="kw">predict</span>(model, addhealth)</a>
+<a class="sourceLine" id="cb407-5" title="5">addhealth<span class="op">$</span>parentinc.rregi[addhealth<span class="op">$</span>incmiss] &lt;-<span class="st"> </span>(predicted[addhealth<span class="op">$</span>incmiss]<span class="op">+</span></a>
+<a class="sourceLine" id="cb407-6" title="6"><span class="st">                                                   </span><span class="kw">rnorm</span>(<span class="kw">sum</span>(addhealth<span class="op">$</span>incmiss), <span class="dv">0</span>, <span class="kw">sigma</span>(model)))<span class="op">^</span><span class="dv">2</span></a></code></pre></div>
 <p>The <code>rnorm</code> function samples from a normal distribution with a given mean and standard deviation. We use the <code>sigma</code> function to pull the standard deviation of the residuals from our model.</p>
 <div class="figure" style="text-align: center"><span id="fig:fig-rreg-impute"></span>
 <img src="stat_book_files/figure-html/fig-rreg-impute-1.png" alt="The relationship between predicted values of imputed parental income and actual or imputed values, using random regression imputation" width="672" />
@@ -1331,11 +1337,11 @@ Figure 86: The relationship between predicted values of imputed parental income 
 </p>
 </div>
 <p>Figure <a href="missing-values.html#fig:fig-rreg-impute">86</a> shows that the variation of our imputed values now mimics that of the actual values. We can also compare the standard deviations across imputations to see that we have preserved the variation in our valid data:</p>
-<div class="sourceCode" id="cb409"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb409-1" title="1"><span class="kw">sd</span>(addhealth<span class="op">$</span>parentinc, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb408-1" title="1"><span class="kw">sd</span>(addhealth<span class="op">$</span>parentinc, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## [1] 33.6985</code></pre>
-<div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb411-1" title="1"><span class="kw">sd</span>(addhealth<span class="op">$</span>parentinc.regi, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb410-1" title="1"><span class="kw">sd</span>(addhealth<span class="op">$</span>parentinc.regi, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## [1] 30.10024</code></pre>
-<div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb413-1" title="1"><span class="kw">sd</span>(addhealth<span class="op">$</span>parentinc.rregi, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb412-1" title="1"><span class="kw">sd</span>(addhealth<span class="op">$</span>parentinc.rregi, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## [1] 32.99728</code></pre>
 </div>
 <div id="chained-equations" class="section level4">
@@ -1350,10 +1356,10 @@ Figure 86: The relationship between predicted values of imputed parental income 
 <p>The purpose of the iterations is to improve the imputation by moving further and further away from the mean imputation that was used to get an initial fit.</p>
 <p>This procedure is complicated to implement in practice, but luckily the <code>mice</code> library in R already provides an excellent implementation. Furthermore, the <code>mice</code> library has a variety of modeling options that include the ability to handle missing values in both quantitative and categorical models. For quantitative variables, it does not by default use regression imputation, but rather a technique called <a href="https://stefvanbuuren.name/fimd/sec-pmm.html">predictive mean matching</a> that is more flexible and resistant to mis-specification.</p>
 <p>The basic command in the <code>mice</code> library to run MICE is … <code>mice</code>:</p>
-<div class="sourceCode" id="cb415"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb415-1" title="1"><span class="kw">library</span>(mice)</a>
-<a class="sourceLine" id="cb415-2" title="2">addhealth.complete &lt;-<span class="st"> </span><span class="kw">mice</span>(addhealth[,<span class="kw">c</span>(<span class="st">&quot;indegree&quot;</span>,<span class="st">&quot;race&quot;</span>,<span class="st">&quot;sex&quot;</span>,<span class="st">&quot;grade&quot;</span>,<span class="st">&quot;pseudoGPA&quot;</span>,</a>
-<a class="sourceLine" id="cb415-3" title="3">                                        <span class="st">&quot;honorsociety&quot;</span>,<span class="st">&quot;alcoholuse&quot;</span>,<span class="st">&quot;smoker&quot;</span>,<span class="st">&quot;bandchoir&quot;</span>,</a>
-<a class="sourceLine" id="cb415-4" title="4">                                        <span class="st">&quot;academicclub&quot;</span>,<span class="st">&quot;nsports&quot;</span>,<span class="st">&quot;parentinc&quot;</span>)], <span class="dt">m=</span><span class="dv">5</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb414"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb414-1" title="1"><span class="kw">library</span>(mice)</a>
+<a class="sourceLine" id="cb414-2" title="2">addhealth.complete &lt;-<span class="st"> </span><span class="kw">mice</span>(addhealth[,<span class="kw">c</span>(<span class="st">&quot;indegree&quot;</span>,<span class="st">&quot;race&quot;</span>,<span class="st">&quot;sex&quot;</span>,<span class="st">&quot;grade&quot;</span>,<span class="st">&quot;pseudoGPA&quot;</span>,</a>
+<a class="sourceLine" id="cb414-3" title="3">                                        <span class="st">&quot;honorsociety&quot;</span>,<span class="st">&quot;alcoholuse&quot;</span>,<span class="st">&quot;smoker&quot;</span>,<span class="st">&quot;bandchoir&quot;</span>,</a>
+<a class="sourceLine" id="cb414-4" title="4">                                        <span class="st">&quot;academicclub&quot;</span>,<span class="st">&quot;nsports&quot;</span>,<span class="st">&quot;parentinc&quot;</span>)], <span class="dt">m=</span><span class="dv">5</span>)</a></code></pre></div>
 <pre><code>## 
 ##  iter imp variable
 ##   1   1  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
@@ -1382,7 +1388,7 @@ Figure 86: The relationship between predicted values of imputed parental income 
 ##   5   4  race  grade  pseudoGPA  alcoholuse  smoker  parentinc
 ##   5   5  race  grade  pseudoGPA  alcoholuse  smoker  parentinc</code></pre>
 <p>In this case, I specified all of the variables that I wanted to go into my multiple imputation. If you want all of the variables in your dataset to be used, you can just feed in the dataset with no list of variable names. You can see that <code>mice</code> went through five iterations of imputation, with a list of the variables imputed and the order in which they were imputed. You can also see that it cycled through something called “imp.” This value corresponds to the <code>m=5</code> argument I specified. This is the number of times that <code>mice</code> performed the entire imputation procedure. In this case, I now have five <em>complete</em> datasets (datasets with no missing values) in the object <code>addhealth.complete</code>. To access any one of them, I need to use the <code>complete</code> function with an id number:</p>
-<div class="sourceCode" id="cb417"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb417-1" title="1"><span class="kw">summary</span>(<span class="kw">complete</span>(addhealth.complete, <span class="dv">1</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb416"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb416-1" title="1"><span class="kw">summary</span>(<span class="kw">complete</span>(addhealth.complete, <span class="dv">1</span>))</a></code></pre></div>
 <pre><code>##     indegree                                    race          sex           
 ##  Min.   : 0.000    White                          :2638   Length:4397       
 ##  1st Qu.: 2.000    Black/African American         :1145   Class :character  
@@ -1412,8 +1418,8 @@ Figure 86: The relationship between predicted values of imputed parental income 
 ##  3rd Qu.: 60.00  
 ##  Max.   :200.00</code></pre>
 <p>I can run a model on my first complete dataset like so:</p>
-<div class="sourceCode" id="cb419"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb419-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc, <span class="dt">data=</span><span class="kw">complete</span>(addhealth.complete,<span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb419-2" title="2"><span class="kw">summary</span>(model)</a></code></pre></div>
+<div class="sourceCode" id="cb418"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb418-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc, <span class="dt">data=</span><span class="kw">complete</span>(addhealth.complete,<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb418-2" title="2"><span class="kw">summary</span>(model)</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = indegree ~ parentinc, data = complete(addhealth.complete, 
@@ -1437,12 +1443,12 @@ Figure 86: The relationship between predicted values of imputed parental income 
 <div id="addressing-imputation-variability" class="section level4">
 <h4>Addressing imputation variability</h4>
 <p>Why did I run five different imputations using the <code>mice</code> function in the example above? To explore this question, lets first look at the slope predicting the number of friend nominations by parental income across all five complete imputations:</p>
-<div class="sourceCode" id="cb421"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb421-1" title="1">coefs &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb421-2" title="2"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>) {</a>
-<a class="sourceLine" id="cb421-3" title="3">  coefs &lt;-<span class="st"> </span><span class="kw">c</span>(coefs, </a>
-<a class="sourceLine" id="cb421-4" title="4">             <span class="kw">coef</span>(<span class="kw">lm</span>(indegree<span class="op">~</span>parentinc, <span class="dt">data=</span><span class="kw">complete</span>(addhealth.complete,i)))[<span class="dv">2</span>])</a>
-<a class="sourceLine" id="cb421-5" title="5">}</a>
-<a class="sourceLine" id="cb421-6" title="6">coefs</a></code></pre></div>
+<div class="sourceCode" id="cb420"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb420-1" title="1">coefs &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb420-2" title="2"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>) {</a>
+<a class="sourceLine" id="cb420-3" title="3">  coefs &lt;-<span class="st"> </span><span class="kw">c</span>(coefs, </a>
+<a class="sourceLine" id="cb420-4" title="4">             <span class="kw">coef</span>(<span class="kw">lm</span>(indegree<span class="op">~</span>parentinc, <span class="dt">data=</span><span class="kw">complete</span>(addhealth.complete,i)))[<span class="dv">2</span>])</a>
+<a class="sourceLine" id="cb420-5" title="5">}</a>
+<a class="sourceLine" id="cb420-6" title="6">coefs</a></code></pre></div>
 <pre><code>##  parentinc  parentinc  parentinc  parentinc  parentinc 
 ## 0.01402563 0.01459309 0.01415435 0.01400471 0.01483226</code></pre>
 <p>I get different values on each complete imputation. This is because there is an element of randomness in my imputation procedure. That randomness is needed to correctly impute while preserving the variance in the underlying variables, but it adds an additional layer of uncertainty to understanding my results. Which of these values should I use for my results? This additional layer of uncertainty is called <strong>imputation variability</strong>. Imputation variability adds additional uncertainty above and beyond sampling variability when attempting to make statistical inferences.</p>
@@ -1457,15 +1463,15 @@ Figure 86: The relationship between predicted values of imputed parental income 
 Where <span class="math inline">\(W\)</span> is the squared average standard error across all <span class="math inline">\(m\)</span> datasets and <span class="math inline">\(B\)</span> is the variance in coefficient estimates across all <span class="math inline">\(m\)</span> models.</p>
 <p>The <code>mice</code> library provides some nice utilities for accounting for multiple imputation in basic linear models. However, it is worth learning how to to do this procedure by hand, so I will first show you how to do it without using built-in functions.</p>
 <p>The first step is to loop through each imputation, calculate the model and extract the coefficients and standard errors:</p>
-<div class="sourceCode" id="cb423"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb423-1" title="1">b &lt;-<span class="st"> </span>se &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb423-2" title="2"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>) {</a>
-<a class="sourceLine" id="cb423-3" title="3">  model &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc<span class="op">+</span>smoker<span class="op">+</span>alcoholuse<span class="op">+</span>nsports, </a>
-<a class="sourceLine" id="cb423-4" title="4">              <span class="dt">data=</span><span class="kw">complete</span>(addhealth.complete,i))</a>
-<a class="sourceLine" id="cb423-5" title="5">  b &lt;-<span class="st"> </span><span class="kw">cbind</span>(b, <span class="kw">coef</span>(model))</a>
-<a class="sourceLine" id="cb423-6" title="6">  se &lt;-<span class="st"> </span><span class="kw">cbind</span>(se, <span class="kw">summary</span>(model)<span class="op">$</span>coef[,<span class="dv">2</span>])</a>
-<a class="sourceLine" id="cb423-7" title="7">}</a></code></pre></div>
+<div class="sourceCode" id="cb422"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb422-1" title="1">b &lt;-<span class="st"> </span>se &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb422-2" title="2"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>) {</a>
+<a class="sourceLine" id="cb422-3" title="3">  model &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>parentinc<span class="op">+</span>smoker<span class="op">+</span>alcoholuse<span class="op">+</span>nsports, </a>
+<a class="sourceLine" id="cb422-4" title="4">              <span class="dt">data=</span><span class="kw">complete</span>(addhealth.complete,i))</a>
+<a class="sourceLine" id="cb422-5" title="5">  b &lt;-<span class="st"> </span><span class="kw">cbind</span>(b, <span class="kw">coef</span>(model))</a>
+<a class="sourceLine" id="cb422-6" title="6">  se &lt;-<span class="st"> </span><span class="kw">cbind</span>(se, <span class="kw">summary</span>(model)<span class="op">$</span>coef[,<span class="dv">2</span>])</a>
+<a class="sourceLine" id="cb422-7" title="7">}</a></code></pre></div>
 <p>The <code>b</code> and <code>se</code> objects are just matrices of the regression coefficients and standard errors across imputations. For example:</p>
-<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb424-1" title="1"><span class="kw">round</span>(b,<span class="dv">3</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb423"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb423-1" title="1"><span class="kw">round</span>(b,<span class="dv">3</span>)</a></code></pre></div>
 <pre><code>##                    [,1]  [,2]  [,3]  [,4]  [,5]
 ## (Intercept)       3.392 3.365 3.376 3.383 3.360
 ## parentinc         0.011 0.012 0.012 0.011 0.012
@@ -1473,14 +1479,14 @@ Where <span class="math inline">\(W\)</span> is the squared average standard err
 ## alcoholuseDrinker 0.599 0.620 0.640 0.624 0.630
 ## nsports           0.468 0.468 0.469 0.471 0.465</code></pre>
 <p>With the application of the <code>apply</code> command we can estimate averages for these values across imputations as well as the variability in regression coefficients across models.</p>
-<div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb426-1" title="1">b.pool &lt;-<span class="st"> </span><span class="kw">apply</span>(b,<span class="dv">1</span>,mean)</a>
-<a class="sourceLine" id="cb426-2" title="2">between.var &lt;-<span class="st"> </span><span class="kw">apply</span>(b,<span class="dv">1</span>,var)</a>
-<a class="sourceLine" id="cb426-3" title="3">within.var &lt;-<span class="st"> </span><span class="kw">apply</span>(se<span class="op">^</span><span class="dv">2</span>,<span class="dv">1</span>,mean)</a>
-<a class="sourceLine" id="cb426-4" title="4">se.pool &lt;-<span class="st"> </span><span class="kw">sqrt</span>(within.var<span class="op">+</span>between.var<span class="op">+</span>between.var<span class="op">/</span><span class="dv">5</span>)</a>
-<a class="sourceLine" id="cb426-5" title="5">t.pool &lt;-<span class="st"> </span>b.pool<span class="op">/</span>se.pool</a>
-<a class="sourceLine" id="cb426-6" title="6">pvalue.pool &lt;-<span class="st"> </span>(<span class="dv">1</span><span class="op">-</span><span class="kw">pnorm</span>(<span class="kw">abs</span>(t.pool)))<span class="op">*</span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb426-7" title="7">results &lt;-<span class="st"> </span><span class="kw">data.frame</span>(b.pool, se.pool, t.pool, pvalue.pool)</a>
-<a class="sourceLine" id="cb426-8" title="8"><span class="kw">round</span>(results,<span class="dv">4</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb425"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb425-1" title="1">b.pool &lt;-<span class="st"> </span><span class="kw">apply</span>(b,<span class="dv">1</span>,mean)</a>
+<a class="sourceLine" id="cb425-2" title="2">between.var &lt;-<span class="st"> </span><span class="kw">apply</span>(b,<span class="dv">1</span>,var)</a>
+<a class="sourceLine" id="cb425-3" title="3">within.var &lt;-<span class="st"> </span><span class="kw">apply</span>(se<span class="op">^</span><span class="dv">2</span>,<span class="dv">1</span>,mean)</a>
+<a class="sourceLine" id="cb425-4" title="4">se.pool &lt;-<span class="st"> </span><span class="kw">sqrt</span>(within.var<span class="op">+</span>between.var<span class="op">+</span>between.var<span class="op">/</span><span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb425-5" title="5">t.pool &lt;-<span class="st"> </span>b.pool<span class="op">/</span>se.pool</a>
+<a class="sourceLine" id="cb425-6" title="6">pvalue.pool &lt;-<span class="st"> </span>(<span class="dv">1</span><span class="op">-</span><span class="kw">pnorm</span>(<span class="kw">abs</span>(t.pool)))<span class="op">*</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb425-7" title="7">results &lt;-<span class="st"> </span><span class="kw">data.frame</span>(b.pool, se.pool, t.pool, pvalue.pool)</a>
+<a class="sourceLine" id="cb425-8" title="8"><span class="kw">round</span>(results,<span class="dv">4</span>)</a></code></pre></div>
 <pre><code>##                   b.pool se.pool  t.pool pvalue.pool
 ## (Intercept)       3.3751  0.1037 32.5503      0.0000
 ## parentinc         0.0118  0.0017  6.9758      0.0000
@@ -1495,8 +1501,8 @@ Figure 87: Share of variability for each estimated coefficient that comes from b
 </p>
 </div>
 <p>The for-loop approach above is an effective method for pooling results for multiple imputation and is flexible enough that you can utilize a wide variety of techniques within the for-loop, such as adjustments for sample design. However, if you are just running vanilla <code>lm</code> commands, then the <code>mice</code> library also has an easier approach:</p>
-<div class="sourceCode" id="cb428"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb428-1" title="1">model.mi &lt;-<span class="st"> </span><span class="kw">pool</span>(<span class="kw">with</span>(addhealth.complete, <span class="kw">lm</span>(indegree<span class="op">~</span>parentinc<span class="op">+</span>smoker<span class="op">+</span>alcoholuse<span class="op">+</span>nsports)))</a>
-<a class="sourceLine" id="cb428-2" title="2"><span class="kw">summary</span>(model.mi)</a></code></pre></div>
+<div class="sourceCode" id="cb427"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb427-1" title="1">model.mi &lt;-<span class="st"> </span><span class="kw">pool</span>(<span class="kw">with</span>(addhealth.complete, <span class="kw">lm</span>(indegree<span class="op">~</span>parentinc<span class="op">+</span>smoker<span class="op">+</span>alcoholuse<span class="op">+</span>nsports)))</a>
+<a class="sourceLine" id="cb427-2" title="2"><span class="kw">summary</span>(model.mi)</a></code></pre></div>
 <pre><code>##                     estimate   std.error statistic       df      p.value
 ## (Intercept)       3.37512372 0.103689400 32.550325 3182.639 0.000000e+00
 ## parentinc         0.01175002 0.001684391  6.975823 1090.345 5.265122e-12

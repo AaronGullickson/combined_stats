@@ -4,21 +4,21 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Common R Commands | Statistical Analysis in Sociology</title>
-  <meta name="description" content="Common R Commands | Statistical Analysis in Sociology, an entry level textbook for practical statistics in R" />
+  <title>Models for Polytomous Outcomes | Statistical Analysis in Sociology</title>
+  <meta name="description" content="Models for Polytomous Outcomes | Statistical Analysis in Sociology, an entry level textbook for practical statistics in R" />
   <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Common R Commands | Statistical Analysis in Sociology" />
+  <meta property="og:title" content="Models for Polytomous Outcomes | Statistical Analysis in Sociology" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://stat-analysis.netlify.app/" />
   
-  <meta property="og:description" content="Common R Commands | Statistical Analysis in Sociology, an entry level textbook for practical statistics in R" />
+  <meta property="og:description" content="Models for Polytomous Outcomes | Statistical Analysis in Sociology, an entry level textbook for practical statistics in R" />
   <meta name="github-repo" content="AaronGullickson/combined_stats" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Common R Commands | Statistical Analysis in Sociology" />
+  <meta name="twitter:title" content="Models for Polytomous Outcomes | Statistical Analysis in Sociology" />
   
-  <meta name="twitter:description" content="Common R Commands | Statistical Analysis in Sociology, an entry level textbook for practical statistics in R" />
+  <meta name="twitter:description" content="Models for Polytomous Outcomes | Statistical Analysis in Sociology, an entry level textbook for practical statistics in R" />
   
 
 <meta name="author" content="Aaron Gullickson" />
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="example-datasets.html"/>
-<link rel="next" href="plotting-cookbook.html"/>
+<link rel="prev" href="logit-model.html"/>
+<link rel="next" href="useful-references.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -412,267 +412,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="common-r-commands" class="section level2">
-<h2>Common R Commands</h2>
-<p>Below is a list of common commands that we use for the undergraduate class, along with some examples. You can view a help file in RStudio for each command by searching for the command name in the help tab in the lower right panel. You can also just type the name of the command preceded by a “?” into the console. For example, if you wanted to understand how barplot works, type:</p>
-<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb580-1" title="1">?barplot</a></code></pre></div>
-<p>The list here does not contain information about making plots in R. That information is in the Plotting Cookbook appendix.</p>
-<div id="univariate-statistics" class="section level3">
-<h3>Univariate Statistics</h3>
-<div id="mean" class="section level4">
-<h4>mean</h4>
-<p>Calculate the mean of a quantitative variable. Remember that this command will not work for categorical variables.</p>
-<div class="sourceCode" id="cb581"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb581-1" title="1"><span class="kw">mean</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
-<pre><code>## [1] 24.27601</code></pre>
+<div id="models-for-polytomous-outcomes" class="section level2">
+<h2>Models for Polytomous Outcomes</h2>
+<hr />
+
 </div>
-<div id="median" class="section level4">
-<h4>median</h4>
-<p>Calculate the median of a quantitative variable. Remember that this command will not work for categorical variables.</p>
-<div class="sourceCode" id="cb583"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb583-1" title="1"><span class="kw">median</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
-<pre><code>## [1] 19.21667</code></pre>
-</div>
-<div id="sd" class="section level4">
-<h4>sd</h4>
-<p>Calculate the standard deviation of a quantitative variable. Remember that this command will not work for categorical variables.</p>
-<div class="sourceCode" id="cb585"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb585-1" title="1"><span class="kw">sd</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
-<pre><code>## [1] 16.23676</code></pre>
-</div>
-<div id="iqr" class="section level4">
-<h4>IQR</h4>
-<p>Calculate the interquartile range of a quantitative variable. Remember that this command will not work for categorical variables.</p>
-<div class="sourceCode" id="cb587"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb587-1" title="1"><span class="kw">IQR</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
-<pre><code>## [1] 17</code></pre>
-</div>
-<div id="quantile" class="section level4">
-<h4>quantile</h4>
-<p>Calculate percentiles of a distribution. Remember that this command will not work for categorical variables. By default, the quantile command will return the quartiles (0,25,50,75,100 percentiles). If you want different percentiles, you will have to specify the <code>probs</code> argument.</p>
-<div class="sourceCode" id="cb589"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb589-1" title="1"><span class="kw">quantile</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
-<pre><code>##       0%      25%      50%      75%     100% 
-##  1.00000 13.00000 19.21667 30.00000 99.99000</code></pre>
-<div class="sourceCode" id="cb591"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb591-1" title="1"><span class="co">#get the 10th and 90th percentile instead</span></a>
-<a class="sourceLine" id="cb591-2" title="2"><span class="kw">quantile</span>(earnings<span class="op">$</span>wages, <span class="dt">probs =</span> <span class="kw">c</span>(<span class="fl">0.1</span>,<span class="fl">0.9</span>))</a></code></pre></div>
-<pre><code>##    10%    90% 
-## 10.000 47.596</code></pre>
-</div>
-<div id="table" class="section level4">
-<h4>table</h4>
-<p>Calculate the absolute frequencies of the categories a categorical variable.</p>
-<div class="sourceCode" id="cb593"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb593-1" title="1"><span class="kw">table</span>(movies<span class="op">$</span>Genre)</a></code></pre></div>
-<pre><code>## 
-##        Action     Animation        Comedy         Drama        Family 
-##           207           139           781           332           155 
-##        Horror Musical/Music       Mystery       Romance SciFi/Fantasy 
-##           220           103            39           138           258 
-##      Thriller 
-##           181</code></pre>
-</div>
-<div id="prop.table" class="section level4">
-<h4>prop.table</h4>
-<p>Calculate the proportions (i.e. relative frequencies) of the categories of a categorical variable. This command must be run on the output from a <code>table</code> command. You can do that in one command by nesting the <code>table</code> command inside the <code>prop.table</code> command.</p>
-<div class="sourceCode" id="cb595"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb595-1" title="1"><span class="kw">prop.table</span>(<span class="kw">table</span>(movies<span class="op">$</span>Genre))</a></code></pre></div>
-<pre><code>## 
-##        Action     Animation        Comedy         Drama        Family 
-##    0.08108108    0.05444575    0.30591461    0.13004309    0.06071289 
-##        Horror Musical/Music       Mystery       Romance SciFi/Fantasy 
-##    0.08617313    0.04034469    0.01527615    0.05405405    0.10105758 
-##      Thriller 
-##    0.07089698</code></pre>
-</div>
-<div id="summary" class="section level4">
-<h4>summary</h4>
-<p>Provide a summary of a variable, either categorical or quantitative.</p>
-<div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb597-1" title="1"><span class="kw">summary</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
-<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    1.00   13.00   19.22   24.28   30.00   99.99</code></pre>
-<div class="sourceCode" id="cb599"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb599-1" title="1"><span class="kw">summary</span>(movies<span class="op">$</span>Genre)</a></code></pre></div>
-<pre><code>##        Action     Animation        Comedy         Drama        Family 
-##           207           139           781           332           155 
-##        Horror Musical/Music       Mystery       Romance SciFi/Fantasy 
-##           220           103            39           138           258 
-##      Thriller 
-##           181</code></pre>
-</div>
-</div>
-<div id="bivariate-statistics" class="section level3">
-<h3>Bivariate Statistics</h3>
-<div id="table-1" class="section level4">
-<h4>table</h4>
-<p>Can be used to create a two-way table, although further work needs to be done to extract useful information from the two-way table.</p>
-<div class="sourceCode" id="cb601"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb601-1" title="1"><span class="kw">table</span>(movies<span class="op">$</span>Genre, movies<span class="op">$</span>Rating)</a></code></pre></div>
-<pre><code>##                
-##                   G  PG PG-13   R
-##   Action          0   3    98 106
-##   Animation      37  92     6   4
-##   Comedy          1  71   352 357
-##   Drama           2  36   116 178
-##   Family         16 131     8   0
-##   Horror          0   1    60 159
-##   Musical/Music   0   7    57  39
-##   Mystery         0   0     7  32
-##   Romance         0  12    64  62
-##   SciFi/Fantasy   0  10   186  62
-##   Thriller        0   0    37 144</code></pre>
-</div>
-<div id="prop.table-1" class="section level4">
-<h4>prop.table</h4>
-<p>Calculate the conditional distributions from a two-way table. The first argument here must be a two-way table output from the <code>table</code> command. It is very important that you also add a second argument that indicated the way you want the conditional distributions. 1 will give you distributions conditional on the row variable and 2 will give you distributions conditional on the column variable.</p>
-<pre><code>##                
-##                           G          PG       PG-13           R
-##   Action        0.000000000 0.014492754 0.473429952 0.512077295
-##   Animation     0.266187050 0.661870504 0.043165468 0.028776978
-##   Comedy        0.001280410 0.090909091 0.450704225 0.457106274
-##   Drama         0.006024096 0.108433735 0.349397590 0.536144578
-##   Family        0.103225806 0.845161290 0.051612903 0.000000000
-##   Horror        0.000000000 0.004545455 0.272727273 0.722727273
-##   Musical/Music 0.000000000 0.067961165 0.553398058 0.378640777
-##   Mystery       0.000000000 0.000000000 0.179487179 0.820512821
-##   Romance       0.000000000 0.086956522 0.463768116 0.449275362
-##   SciFi/Fantasy 0.000000000 0.038759690 0.720930233 0.240310078
-##   Thriller      0.000000000 0.000000000 0.204419890 0.795580110</code></pre>
-</div>
-<div id="tapply" class="section level4">
-<h4>tapply</h4>
-<p>Calculate a statistic (e.g. mean, median, sd, IQR) for a quantitative variable across the categories of a categorical variable. The first argument should be the quantitative variable. The second argument should be the categorical variable. The third argument should be the name of the command that will calculate the desired statistic.</p>
-<div class="sourceCode" id="cb604"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb604-1" title="1"><span class="kw">tapply</span>(movies<span class="op">$</span>Runtime, movies<span class="op">$</span>Rating, mean)</a></code></pre></div>
-<pre><code>##         G        PG     PG-13         R 
-##  90.80357  99.71901 108.02321 105.25547</code></pre>
-<div class="sourceCode" id="cb606"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb606-1" title="1"><span class="kw">tapply</span>(movies<span class="op">$</span>Runtime, movies<span class="op">$</span>Rating, median)</a></code></pre></div>
-<pre><code>##     G    PG PG-13     R 
-##    90    96   105   102</code></pre>
-<div class="sourceCode" id="cb608"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb608-1" title="1"><span class="kw">tapply</span>(movies<span class="op">$</span>Runtime, movies<span class="op">$</span>Rating, sd)</a></code></pre></div>
-<pre><code>##        G       PG    PG-13        R 
-## 14.63796 13.95487 17.58490 16.07108</code></pre>
-</div>
-<div id="cor" class="section level4">
-<h4>cor</h4>
-<p>Calculate the correlation coefficient between two quantitative variables.</p>
-<div class="sourceCode" id="cb610"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb610-1" title="1"><span class="kw">cor</span>(crimes<span class="op">$</span>Violent, crimes<span class="op">$</span>Gini)</a></code></pre></div>
-<pre><code>## [1] 0.5454737</code></pre>
-</div>
-</div>
-<div id="statistical-inference-1" class="section level3">
-<h3>Statistical Inference</h3>
-<div id="nrow" class="section level4">
-<h4>nrow</h4>
-<p>Return the number of observations in a dataset.</p>
-<div class="sourceCode" id="cb612"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb612-1" title="1"><span class="kw">nrow</span>(crimes)</a></code></pre></div>
-<pre><code>## [1] 51</code></pre>
-</div>
-<div id="qt" class="section level4">
-<h4>qt</h4>
-<p>Calculate the t-value needed for a confidence interval. For a 95% confidence interval, the first argument should always be <code>0.975</code>. The second argument should be the appropriate degrees of freedom for the statistic and dataset.</p>
-<div class="sourceCode" id="cb614"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb614-1" title="1"><span class="kw">qt</span>(<span class="fl">0.975</span>, <span class="kw">nrow</span>(politics)<span class="op">-</span><span class="dv">1</span>)</a></code></pre></div>
-<pre><code>## [1] 1.960524</code></pre>
-</div>
-<div id="pt" class="section level4">
-<h4>pt</h4>
-<p>Calculate the p-value for a hypothesis test. The first argument should always be the negative version of the t-statistic and the second argument should be the appropriate degrees of freedom for the statistic and dataset.</p>
-<div class="sourceCode" id="cb616"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb616-1" title="1"><span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="op">-</span><span class="fl">2.1</span>, <span class="kw">nrow</span>(politics)<span class="op">-</span><span class="dv">1</span>)</a></code></pre></div>
-<pre><code>## [1] 0.03578782</code></pre>
-</div>
-</div>
-<div id="ols-regression-models" class="section level3">
-<h3>OLS Regression Models</h3>
-<div id="lm" class="section level4">
-<h4>lm</h4>
-<p>Run an OLS regression model. The first argument should always be a formula of the form <code>dependent~independent1+independent2+...</code>. To simplify the writing of variable names, it is often useful to specify a second argument <code>data</code> that identifies that dataset being used. Then you don’t have to include <code>dataset_name$</code> in the formula. **Remember to always put the dependent (y) variable on the left hand side of the equation.</p>
-<div class="sourceCode" id="cb618"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb618-1" title="1"><span class="co">#simple model with one independent variable</span></a>
-<a class="sourceLine" id="cb618-2" title="2">model_simple &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span>age, <span class="dt">data=</span>earnings)</a>
-<a class="sourceLine" id="cb618-3" title="3"><span class="co">#same simple model but recenter age on 45 years of age</span></a>
-<a class="sourceLine" id="cb618-4" title="4">model_recenter &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span><span class="kw">I</span>(age<span class="dv">-45</span>), <span class="dt">data=</span>earnings)</a>
-<a class="sourceLine" id="cb618-5" title="5"><span class="co">#a model with multiple independent variables, both quantitative and qualitative</span></a>
-<a class="sourceLine" id="cb618-6" title="6">model_multiple &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span><span class="kw">I</span>(age<span class="dv">-45</span>)<span class="op">+</span>education<span class="op">+</span>race<span class="op">+</span>gender<span class="op">+</span>nchild, <span class="dt">data=</span>earnings)</a>
-<a class="sourceLine" id="cb618-7" title="7"><span class="co">#a model like the previous but also with interaction between gender and nchild</span></a>
-<a class="sourceLine" id="cb618-8" title="8">model_interaction &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span><span class="kw">I</span>(age<span class="dv">-45</span>)<span class="op">+</span>education<span class="op">+</span>race<span class="op">+</span>gender<span class="op">*</span>nchild, <span class="dt">data=</span>earnings)</a></code></pre></div>
-<p>Once a model object is created, information can be extracted with either the <code>coef</code> command which just reports the slopes and intercept, or a full <code>summary</code> command which gives more information.</p>
-<div class="sourceCode" id="cb619"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb619-1" title="1"><span class="kw">coef</span>(model_interaction)</a></code></pre></div>
-<pre><code>##               (Intercept)               I(age - 45)       educationHS Diploma 
-##                17.3568021                 0.2242916                 4.5382688 
-##        educationAA Degree educationBachelors Degree  educationGraduate Degree 
-##                 7.4288321                16.2657784                23.0187910 
-##                 raceBlack                raceLatino                 raceAsian 
-##                -3.4176245                -2.1133582                 0.5641751 
-##            raceIndigenous        raceOther/Multiple              genderFemale 
-##                -1.5198248                -0.4331997                -4.3777137 
-##                    nchild       genderFemale:nchild 
-##                 1.2629571                -0.7490706</code></pre>
-<div class="sourceCode" id="cb621"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb621-1" title="1"><span class="kw">summary</span>(model_interaction)</a></code></pre></div>
-<pre><code>## 
-## Call:
-## lm(formula = wages ~ I(age - 45) + education + race + gender * 
-##     nchild, data = earnings)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -43.638  -7.779  -2.198   4.568  90.578 
-## 
-## Coefficients:
-##                            Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)               17.356802   0.159721 108.669  &lt; 2e-16 ***
-## I(age - 45)                0.224292   0.002858  78.471  &lt; 2e-16 ***
-## educationHS Diploma        4.538269   0.154451  29.383  &lt; 2e-16 ***
-## educationAA Degree         7.428832   0.181143  41.011  &lt; 2e-16 ***
-## educationBachelors Degree 16.265778   0.164396  98.943  &lt; 2e-16 ***
-## educationGraduate Degree  23.018791   0.178161 129.202  &lt; 2e-16 ***
-## raceBlack                 -3.417625   0.123798 -27.607  &lt; 2e-16 ***
-## raceLatino                -2.113358   0.109491 -19.302  &lt; 2e-16 ***
-## raceAsian                  0.564175   0.157602   3.580 0.000344 ***
-## raceIndigenous            -1.519825   0.321284  -4.730 2.24e-06 ***
-## raceOther/Multiple        -0.433200   0.303134  -1.429 0.152987    
-## genderFemale              -4.377714   0.090203 -48.532  &lt; 2e-16 ***
-## nchild                     1.262957   0.043476  29.049  &lt; 2e-16 ***
-## genderFemale:nchild       -0.749071   0.063268 -11.840  &lt; 2e-16 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 13.74 on 145633 degrees of freedom
-## Multiple R-squared:  0.284,  Adjusted R-squared:  0.2839 
-## F-statistic:  4443 on 13 and 145633 DF,  p-value: &lt; 2.2e-16</code></pre>
-</div>
-</div>
-<div id="utility-functions" class="section level3">
-<h3>Utility functions</h3>
-<div id="round" class="section level4">
-<h4>round</h4>
-<p>Used for rounding the results of numbers to a given number of decimal places. By default, it will round to whole numbers, but you can specify the number of decimal places in the second argument.</p>
-<div class="sourceCode" id="cb623"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb623-1" title="1"><span class="dv">100</span><span class="op">*</span><span class="kw">round</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(movies<span class="op">$</span>Genre)), <span class="dv">2</span>)</a></code></pre></div>
-<pre><code>## 
-##        Action     Animation        Comedy         Drama        Family 
-##             8             5            31            13             6 
-##        Horror Musical/Music       Mystery       Romance SciFi/Fantasy 
-##             9             4             2             5            10 
-##      Thriller 
-##             7</code></pre>
-</div>
-<div id="sort" class="section level4">
-<h4>sort</h4>
-<p>Sort a vector of numbers from smallest to largest (default), or largest to smallest (with additional argument <code>decreasing=TRUE</code>).</p>
-<div class="sourceCode" id="cb625"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb625-1" title="1"><span class="kw">sort</span>(<span class="dv">100</span><span class="op">*</span><span class="kw">round</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(movies<span class="op">$</span>Genre)), <span class="dv">2</span>), <span class="dt">decreasing =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
-<pre><code>## 
-##        Comedy         Drama SciFi/Fantasy        Horror        Action 
-##            31            13            10             9             8 
-##      Thriller        Family     Animation       Romance Musical/Music 
-##             7             6             5             5             4 
-##       Mystery 
-##             2</code></pre>
-<div class="sourceCode" id="cb627"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb627-1" title="1"><span class="kw">sort</span>(<span class="dv">100</span><span class="op">*</span><span class="kw">round</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(movies<span class="op">$</span>Genre)), <span class="dv">2</span>))</a></code></pre></div>
-<pre><code>## 
-##       Mystery Musical/Music     Animation       Romance        Family 
-##             2             4             5             5             6 
-##      Thriller        Action        Horror SciFi/Fantasy         Drama 
-##             7             8             9            10            13 
-##        Comedy 
-##            31</code></pre>
-</div>
-</div>
-</div>
+<!-- </div> -->
+
+
+
             </section>
 
           </div>
         </div>
       </div>
-<a href="example-datasets.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="plotting-cookbook.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="logit-model.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="useful-references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

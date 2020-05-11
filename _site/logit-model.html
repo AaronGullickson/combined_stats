@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-05-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="generalized-linear-model.html"/>
-<link rel="next" href="models-polytomous-outcomes.html"/>
+<link rel="next" href="models-for-polytomous-outcomes.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -302,8 +302,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#a-glm-for-dichotomous-outcomes"><i class="fa fa-check"></i>A GLM for dichotomous outcomes</a></li>
 <li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum likelihood estimation</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a></li>
-<li class="chapter" data-level="" data-path="models-polytomous-outcomes.html"><a href="models-polytomous-outcomes.html"><i class="fa fa-check"></i>Models Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a><ul>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#interpreting-results"><i class="fa fa-check"></i>Interpreting results</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#marginal-effects-1"><i class="fa fa-check"></i>Marginal effects</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#the-probit-link"><i class="fa fa-check"></i>The probit link</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#assessing-model-fit"><i class="fa fa-check"></i>Assessing model fit</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#separation"><i class="fa fa-check"></i>Separation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="models-for-polytomous-outcomes.html"><a href="models-for-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Polytomous Outcomes</a></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
@@ -408,7 +414,173 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="logit-model" class="section level2">
 <h2>Logit Model</h2>
+<iframe src="https://www.youtube.com/embed/xuUI7AV3K1w" width="672" height="400px">
+</iframe>
+<p>Now that we have developed the logic behind generalized linear models and the maximum likelihood estimation procedure, we can focus more concretely on the GLM we used to predict survival in the previous section. This GLM is the <strong>logit model</strong> (also called the logistic regression model) and it can be used to predict dichotomous outcomes. Formally:</p>
+<p><span class="math display">\[y_i \sim binom(1, \hat{p}_i)\]</span></p>
+<p><span class="math display">\[log(\frac{\hat{p}_i}{1-\hat{p}_i}) = \beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\ldots+\beta_px_{ip}\]</span></p>
+<p>These two functions define the error distribution and link function, respectively. Each outcome <span class="math inline">\(y_i\)</span> (success or failure) is the result of a binomial distribution with a single trial and an estimated <span class="math inline">\(\hat{p}_i\)</span> probability of success for the <span class="math inline">\(i\)</span>th observation. The linear function of the independent variables is related to the log-odds of success, which is a transformation of those <span class="math inline">\(\hat{p}_i\)</span>. We use MLE to then estimate the <span class="math inline">\(\beta\)</span> values by selecting the <span class="math inline">\(\beta\)</span> values that produce <span class="math inline">\(\hat{p}_i\)</span> that maximize the likelihood of actually observing the success and failures <span class="math inline">\((y_i)\)</span> that we actually have.</p>
+<div id="interpreting-results" class="section level3">
+<h3>Interpreting results</h3>
+<p>Because of the transformation in the link function, we have to be careful about interpreting the results from our model. We have already seen something like this before in the previous module in which we log-transformed the dependent variable. The effect here is similiar, but is also compounded by the use of odds rather than probabilities in the link function. In short, we have to consider two things:</p>
+<ol style="list-style-type: decimal">
+<li>We are modeling differences or effects on the odds of success rather than on the probability of success. Because of the non-linear connection between these two concepts, it is no easy matter to go between them. We will take this more up below in a discussion of the “marginal effects” from logit models.</li>
+<li>Because of the natural log in the logit transformation, the actual model we care about is multiplicative rather than additive. In other words, our ultimate interpretations will be about relative change (e.g. 7% lower, twice as large) on the odds of success.</li>
+</ol>
+<div id="a-simple-example" class="section level4">
+<h4>A simple example</h4>
+<p>Lets try out a simple example. I want to use my new logit model framework to predict survival on the Titanic by gender.</p>
+<div class="sourceCode" id="cb558"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb558-1" title="1">model.gender &lt;-<span class="st"> </span><span class="kw">glm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>(sex<span class="op">==</span><span class="st">&quot;Female&quot;</span>), </a>
+<a class="sourceLine" id="cb558-2" title="2">                    <span class="dt">data=</span>titanic, <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
+<a class="sourceLine" id="cb558-3" title="3"><span class="kw">round</span>(<span class="kw">summary</span>(model.gender)<span class="op">$</span>coef,<span class="dv">3</span>)</a></code></pre></div>
+<pre><code>##                     Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)           -1.444      0.088 -16.476        0
+## sex == &quot;Female&quot;TRUE    2.425      0.136  17.832        0</code></pre>
+<p>My model is given by:</p>
+<p><span class="math display">\[log(\frac{\hat{p}_i}{1-\hat{p}_i}) = -1.444+2.425(female_i)\]</span></p>
+<p>But what do the values for the intercept and the slope really mean? These are literally given me predicted changes in the log odds of survival, but log odds is not very intuitive. Lets use our usual trick of exponentiating both sides to convert the left-hand side to and odds.</p>
+<p><span class="math display">\[\begin{align*}
+e^{log(\frac{\hat{p}_i}{1-\hat{p}_i})} &amp; =  e^{-1.444+2.425(female_i)}\\
+\frac{\hat{p}_i}{1-\hat{p}_i} &amp;= (e^{-1.444})(e^{2.425(female_i)})\\
+\frac{\hat{p}_i}{1-\hat{p}_i} &amp;= (0.236)(11.30)^{(female_i)}
+\end{align*}\]</span></p>
+<p>As you can see, this equation became a multiplicative equation rather than an additive equation, just as it did for log-transformed quantitative variables in the previous module. In this case, we can figure out what these numbers mean very easily by plugging in values for <span class="math inline">\(female_i\)</span> for our two cases. For men, <span class="math inline">\(female_i=0\)</span>, so:</p>
+<p><span class="math display">\[\frac{\hat{p}_i}{1-\hat{p}_i} = (0.236)(11.30)^{0}=0.236(1)=0.236\]</span></p>
+<p>So the exponential of the intercept value <span class="math inline">\((e^{-1.444}=0.236)\)</span> gives us the odds of survival for men. This value is often called the <strong>baseline odds</strong> and represents the odds of success for an observation when all values of the independent variable are zero.</p>
+<p>For women, <span class="math inline">\(female_i=1\)</span>, so:</p>
+<p><span class="math display">\[\frac{\hat{p}_i}{1-\hat{p}_i} = (0.236)(11.30)^{1}=0.236(11.30)\]</span></p>
+<p>We could work out the final number here, but this formulation is more important because it gives us the <strong>odds ratio</strong> of 11.3. This is the value we multiply the baseline odds by in order to get the odds for women. In this case, we can see that women had odds of surviving the Titanic that were 11.3 times higher than men’s odds. In general the exponential of the slopes gives us an odds ratio, although interpreting it correctly depends on whether you have a categorical or quantitative independent variable.</p>
+<p>Before discussing the quantitative case, lets revisit a method we already knew for calculating this odds ratio. We can do this by a two-way table.</p>
+<div class="sourceCode" id="cb560"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb560-1" title="1"><span class="kw">table</span>(titanic<span class="op">$</span>sex, titanic<span class="op">$</span>survival)</a></code></pre></div>
+<pre><code>##         
+##          Survived Died
+##   Female      339  127
+##   Male        161  682</code></pre>
+<p>The odds of survival for men are given by the number of survivals over the number of deaths:</p>
+<div class="sourceCode" id="cb562"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb562-1" title="1"><span class="dv">161</span><span class="op">/</span><span class="dv">682</span></a></code></pre></div>
+<pre><code>## [1] 0.2360704</code></pre>
+<p>You can see that this number matches the baseline odds we just calculated from the logit model. We can also calculate the odds ratio by taking the cross-product of the table:</p>
+<div class="sourceCode" id="cb564"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb564-1" title="1"><span class="dv">339</span><span class="op">*</span><span class="dv">682</span><span class="op">/</span>(<span class="dv">161</span><span class="op">*</span><span class="dv">127</span>)</a></code></pre></div>
+<pre><code>## [1] 11.30718</code></pre>
+<p>The odds ratio between men and women is the same as what we just estimated from the logit model. The logit model and the two-way table both agree on the relevant odds and odds ratios. So why use the logit model? The logit model will allow us to estimate much more complex models by including quantitative variables, controlling for other variables, adding interaction terms, non-linear effects, and all of the other fun techniques we have been developing for the right-hand side of a linear function. Before turning to a more complex model, lets look at how to interpret logit models with a quantitative independent variable.</p>
+</div>
+<div id="interpreting-results-with-quantitative-independent-variables" class="section level4">
+<h4>Interpreting results with quantitative independent variables</h4>
+<p>Lets return to the example of predicting survival by fare paid:</p>
+<div class="sourceCode" id="cb566"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb566-1" title="1">model.fare &lt;-<span class="st"> </span><span class="kw">glm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>fare, </a>
+<a class="sourceLine" id="cb566-2" title="2">                  <span class="dt">data=</span>titanic, <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
+<a class="sourceLine" id="cb566-3" title="3"><span class="kw">coef</span>(model.fare)</a></code></pre></div>
+<pre><code>## (Intercept)        fare 
+## -0.88402354  0.01247006</code></pre>
+<p>So our model is:</p>
+<p><span class="math display">\[log(\frac{\hat{p}_i}{1-\hat{p}_i}) = -0.884+0.012(fare_i)\]</span></p>
+<p>We can follow the same process as before and convert this to the odds scale by exponentiating both sides:</p>
+<p><span class="math display">\[\begin{align*}
+e^{log(\frac{\hat{p}_i}{1-\hat{p}_i})} &amp; =  e^{-0.884+0.012(fare_i)}\\
+\frac{\hat{p}_i}{1-\hat{p}_i} &amp;= (e^{-0.884})(e^{0.012(fare_i)})\\
+\frac{\hat{p}_i}{1-\hat{p}_i} &amp;= (0.413)(1.012)^{(fare_i)}
+\end{align*}\]</span></p>
+<p>Again we have a multiplicative model. To see how we can interpret this multiplicative effect, lets consider the predicted odds for three passengers who respectivly paid 0,1, and 2 pound(s) in fare:</p>
+<p><span class="math display">\[\begin{align*}
+\frac{\hat{p}_i}{1-\hat{p}_i}&amp;=(0.413)(1.012)^{0}=0.413\\
+\frac{\hat{p}_i}{1-\hat{p}_i}&amp;=(0.413)(1.012)^{1}=0.413(1.012)\\
+\frac{\hat{p}_i}{1-\hat{p}_i}&amp;=(0.413)(1.012)^{2}=0.413(1.012)(1.012)\\
+\end{align*}\]</span></p>
+<p>Each time we increase a pound in fare, we multiply the odds we had before by 1.012. In other words, the odds increase by 1.2% for every one pount increase in fare. So, for a quantitative variable, we can also talk about the percentage or multiplicative change in the odds, but this time for a one unit increase in <span class="math inline">\(x\)</span> rather than comparing a one category to a reference category.</p>
+<p>Also note that because our slope of 0.012 was small, the exponential of this value followed the approximation of <span class="math inline">\(e^x\approx1+x\)</span>, and was simply 1.012. Therefore, in this case, we could have just looked directly at the log odds ratio of 0.012 and concluded that every one pound increase in fare paid is associated with a 1.2% increase in the odds of survival.</p>
+</div>
+<div id="graphing-predicted-probabilities" class="section level4">
+<h4>Graphing predicted probabilities</h4>
+<p>We can look at how fare changes the predicted probability of survival by using the <code>predict</code> command. In this case, we will feed in a fake dataset of passengers paying every fare between 0 and 512 (the maximum actual value) in one unit increments. We just have to remember that the predicted values from <code>predict</code> will be log-odds which need to be converted to probabilities.</p>
+<div class="sourceCode" id="cb568"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb568-1" title="1">predict_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">fare=</span><span class="dv">0</span><span class="op">:</span><span class="dv">512</span>)</a>
+<a class="sourceLine" id="cb568-2" title="2">lodds &lt;-<span class="st"> </span><span class="kw">predict</span>(model.fare, <span class="dt">newdata=</span>predict_df)</a>
+<a class="sourceLine" id="cb568-3" title="3">predict_df<span class="op">$</span>probs &lt;-<span class="st"> </span><span class="kw">exp</span>(lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(lodds))</a>
+<a class="sourceLine" id="cb568-4" title="4"><span class="kw">ggplot</span>(predict_df,</a>
+<a class="sourceLine" id="cb568-5" title="5">       <span class="kw">aes</span>(<span class="dt">x=</span>fare, <span class="dt">y=</span>probs))<span class="op">+</span></a>
+<a class="sourceLine" id="cb568-6" title="6"><span class="st">  </span><span class="kw">geom_line</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb568-7" title="7"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;fare paid&quot;</span>, <span class="dt">y=</span><span class="st">&quot;probability of survival&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb568-8" title="8"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<p><img src="stat_book_files/figure-html/predict-logit-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>We could also plot a more complicated example for a model that looks at both gender and fare. The trick here is we can use a handy function called <code>expand.grid</code> to set up our prediction dataframe. The <code>expand.grid</code> function will create a dataframe that includes an observation for every possible combination of the variables that you feed in.</p>
+<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb569-1" title="1">model.both &lt;-<span class="st"> </span><span class="kw">update</span>(model.fare, .<span class="op">~</span>.<span class="op">+</span>sex)</a>
+<a class="sourceLine" id="cb569-2" title="2">predict_df &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(<span class="dt">fare=</span><span class="dv">0</span><span class="op">:</span><span class="dv">512</span>, <span class="dt">sex=</span><span class="kw">c</span>(<span class="st">&quot;Female&quot;</span>,<span class="st">&quot;Male&quot;</span>))</a>
+<a class="sourceLine" id="cb569-3" title="3">lodds &lt;-<span class="st"> </span><span class="kw">predict</span>(model.both, <span class="dt">newdata=</span>predict_df)</a>
+<a class="sourceLine" id="cb569-4" title="4">predict_df<span class="op">$</span>probs &lt;-<span class="st"> </span><span class="kw">exp</span>(lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(lodds))</a>
+<a class="sourceLine" id="cb569-5" title="5"><span class="kw">ggplot</span>(predict_df,</a>
+<a class="sourceLine" id="cb569-6" title="6">       <span class="kw">aes</span>(<span class="dt">x=</span>fare, <span class="dt">y=</span>probs, <span class="dt">color=</span>sex))<span class="op">+</span></a>
+<a class="sourceLine" id="cb569-7" title="7"><span class="st">  </span><span class="kw">geom_line</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb569-8" title="8"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;fare paid&quot;</span>, <span class="dt">y=</span><span class="st">&quot;probability of survival&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb569-9" title="9"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<p><img src="stat_book_files/figure-html/predict-gender-fare-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="a-more-complex-example" class="section level4">
+<h4>A more complex example</h4>
+<p>Now lets try a more complex example that can take advantage of several of the features of linear models we have already developed.</p>
+<div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb570-1" title="1">model.smoking &lt;-<span class="st"> </span><span class="kw">glm</span>(smoker<span class="op">~</span><span class="kw">I</span>(pseudoGPA<span class="dv">-2</span>)<span class="op">+</span><span class="kw">I</span>(grade<span class="dv">-10</span>)<span class="op">+</span><span class="kw">I</span>((grade<span class="dv">-10</span>)<span class="op">^</span><span class="dv">2</span>)<span class="op">+</span>sex<span class="op">*</span>honorsociety, </a>
+<a class="sourceLine" id="cb570-2" title="2">                     <span class="dt">data=</span>popularity, <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
+<a class="sourceLine" id="cb570-3" title="3"><span class="kw">round</span>(<span class="kw">summary</span>(model.smoking)<span class="op">$</span>coef, <span class="dv">3</span>)</a></code></pre></div>
+<pre><code>##                           Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)                 -1.086      0.086 -12.697    0.000
+## I(pseudoGPA - 2)            -0.631      0.062 -10.173    0.000
+## I(grade - 10)                0.299      0.030   9.914    0.000
+## I((grade - 10)^2)           -0.013      0.019  -0.715    0.475
+## sex Male                    -0.133      0.091  -1.471    0.141
+## honorsocietyTRUE            -0.741      0.265  -2.801    0.005
+## sex Male:honorsocietyTRUE    0.845      0.372   2.272    0.023</code></pre>
+<p>What all am I doing in this model. I am predicting whether an adolescent is a frequent smoker by:</p>
+<ul>
+<li>GPA in school. I have centered this on a C average.</li>
+<li>Grade (e.g. 8th, 9th) in school. I have centered this on 10th grade and allowed for a non-linear trend by including a polynomial squared term.</li>
+<li>gender and honor society membership. I have interacted these two variables so that honor society can have a different effect for boys and girls.</li>
+</ul>
+<p>In order to interpret the results, I need to exponentiate my coefficients:</p>
+<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb572-1" title="1"><span class="kw">exp</span>(<span class="kw">coef</span>(model.smoking))</a></code></pre></div>
+<pre><code>##               (Intercept)          I(pseudoGPA - 2)             I(grade - 10) 
+##                 0.3376500                 0.5321197                 1.3490978 
+##         I((grade - 10)^2)                  sex Male          honorsocietyTRUE 
+##                 0.9867364                 0.8752565                 0.4765042 
+## sex Male:honorsocietyTRUE 
+##                 2.3275203</code></pre>
+<p>The baseline odds of frequent smoking for a 10th grade girl who earned a C average and is not a member of honor society is about 0.34. So roughly, I expect to see 3 non-frequent smokers for every frequent smokers among this group.</p>
+<p>Holding constant gender, grade in school, and honor society membership, each letter grade increase in GPA is associated with nearly a halving (47% decline) in the odds of frequent smoking.</p>
+<p>The grade effects are a little harder to directly interpret because of the squared term applied in a multiplicative fashion. The basic trend is that increases in grade are associated with fairly large increases in the odds of frequent smoking. The negative effect on the squared term suggests a slightly diminishing effect at higher grade levels, but this is not statistically significant, so we are probably better off estimating a model without the squared term.</p>
+<p>To see how this complex age effect works, its probably easiest to calculate odds ratios at each of the grades from 7th through 12th:</p>
+<div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb574-1" title="1">grades &lt;-<span class="st"> </span><span class="dv">7</span><span class="op">:</span><span class="dv">12</span></a>
+<a class="sourceLine" id="cb574-2" title="2">odds &lt;-<span class="st"> </span><span class="kw">exp</span>(<span class="op">-</span><span class="fl">1.086+0.299</span><span class="op">*</span>(grades<span class="dv">-10</span>)<span class="op">-</span><span class="fl">0.013</span><span class="op">*</span>((grades<span class="dv">-10</span>)<span class="op">^</span><span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb574-3" title="3">odds[<span class="dv">2</span><span class="op">:</span><span class="dv">6</span>]<span class="op">/</span>odds[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+<pre><code>## [1] 1.439074 1.402141 1.366155 1.331092 1.296930</code></pre>
+<p>We can see that the biggest odds ratio increase is from 7th to 8th grade at 43.9% and the smallest estimated odds ratio increase is from 11th to 12th at 29.6%. Although the magnitudes vary in size, the risk of smoking increases substantially in size with increases in grade at all grade levels.</p>
+<p>The effects of gender and honor society are also somewhat more complex to interpret because of the interaction term. The main effects give us the effect when the other variable is held at the reference. So, among students who are not in honor society, and controlling for grade and GPA, boys have 12.5% lower odds <span class="math inline">\((100*(1-0.875))\)</span> of frequently smoking than girls. Among girls, honor society membership reduces the odds of smoking by about 52% <span class="math inline">\((100*(1-0.48))\)</span>.</p>
+<p>To interpret the interaction term, lets go ahead and calculate the honor society effect for boys:</p>
+<div class="sourceCode" id="cb576"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb576-1" title="1"><span class="kw">exp</span>(<span class="op">-</span><span class="fl">0.741+0.845</span>)</a></code></pre></div>
+<pre><code>## [1] 1.1096</code></pre>
+<p>Among boys, those in honor society have 11% higher odds of smoking frequently than those not in honor society. So we see a very different effect of honor society here by gender.</p>
+<p>Notice that I could have gotten this same value by multiplying the exponentiated values of the main effect and interaction term:</p>
+<div class="sourceCode" id="cb578"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb578-1" title="1"><span class="fl">0.4765042</span><span class="op">*</span><span class="fl">2.3275203</span> </a></code></pre></div>
+<pre><code>## [1] 1.109073</code></pre>
+</div>
+</div>
+<div id="marginal-effects-1" class="section level3">
+<h3>Marginal effects</h3>
+<iframe src="https://www.youtube.com/embed/en9RsgkKfUA" width="672" height="400px">
+</iframe>
+</div>
+<div id="the-probit-link" class="section level3">
+<h3>The probit link</h3>
+<iframe src="https://www.youtube.com/embed/nBUk_Q58aDI" width="672" height="400px">
+</iframe>
+</div>
+<div id="assessing-model-fit" class="section level3">
+<h3>Assessing model fit</h3>
+<iframe src="https://www.youtube.com/embed/jGx6fQzuBAg" width="672" height="400px">
+</iframe>
+</div>
+<div id="separation" class="section level3">
+<h3>Separation</h3>
+<iframe src="https://www.youtube.com/embed/XidkUBrgu7Y" width="672" height="400px">
+</iframe>
 <hr />
+</div>
 </div>
             </section>
 
@@ -416,7 +588,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         </div>
       </div>
 <a href="generalized-linear-model.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="models-polytomous-outcomes.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="models-for-polytomous-outcomes.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

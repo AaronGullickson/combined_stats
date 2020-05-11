@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-05-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -302,8 +302,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#a-glm-for-dichotomous-outcomes"><i class="fa fa-check"></i>A GLM for dichotomous outcomes</a></li>
 <li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum likelihood estimation</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a></li>
-<li class="chapter" data-level="" data-path="models-polytomous-outcomes.html"><a href="models-polytomous-outcomes.html"><i class="fa fa-check"></i>Models Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a><ul>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#interpreting-results"><i class="fa fa-check"></i>Interpreting results</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#marginal-effects-1"><i class="fa fa-check"></i>Marginal effects</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#the-probit-link"><i class="fa fa-check"></i>The probit link</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#assessing-model-fit"><i class="fa fa-check"></i>Assessing model fit</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#separation"><i class="fa fa-check"></i>Separation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="models-for-polytomous-outcomes.html"><a href="models-for-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Polytomous Outcomes</a></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
@@ -460,11 +466,11 @@ Figure 44: Scatterplot with best-fitting line shown in blue and residuals shown 
 <p><span class="math display">\[b_1=r\frac{s_y}{s_x}\]</span></p>
 <p><span class="math display">\[b_0=\bar{y}-b_1*\bar{x}\]</span></p>
 <p>The <em>r</em> here is the correlation coefficient. The slope is really just a re-scaled version of the correlation coefficient. We can calculate this with the example above like so:</p>
-<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb173-1" title="1">slope &lt;-<span class="st"> </span><span class="kw">cor</span>(crimes<span class="op">$</span>MedianAge, crimes<span class="op">$</span>Violent)<span class="op">*</span><span class="kw">sd</span>(crimes<span class="op">$</span>Violent)<span class="op">/</span><span class="kw">sd</span>(crimes<span class="op">$</span>MedianAge)</a>
-<a class="sourceLine" id="cb173-2" title="2">slope</a></code></pre></div>
+<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb172-1" title="1">slope &lt;-<span class="st"> </span><span class="kw">cor</span>(crimes<span class="op">$</span>MedianAge, crimes<span class="op">$</span>Violent)<span class="op">*</span><span class="kw">sd</span>(crimes<span class="op">$</span>Violent)<span class="op">/</span><span class="kw">sd</span>(crimes<span class="op">$</span>MedianAge)</a>
+<a class="sourceLine" id="cb172-2" title="2">slope</a></code></pre></div>
 <pre><code>## [1] -25.5795</code></pre>
 <p>I can then use that slope value to get the y-intercept:</p>
-<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb175-1" title="1"><span class="kw">mean</span>(crimes<span class="op">$</span>Violent)<span class="op">-</span>slope<span class="op">*</span><span class="kw">mean</span>(crimes<span class="op">$</span>MedianAge)</a></code></pre></div>
+<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb174-1" title="1"><span class="kw">mean</span>(crimes<span class="op">$</span>Violent)<span class="op">-</span>slope<span class="op">*</span><span class="kw">mean</span>(crimes<span class="op">$</span>MedianAge)</a></code></pre></div>
 <pre><code>## [1] 1343.936</code></pre>
 </div>
 <div id="using-the-lm-command-to-calculate-ols-regression-lines-in-r" class="section level3">
@@ -473,13 +479,13 @@ Figure 44: Scatterplot with best-fitting line shown in blue and residuals shown 
 </iframe>
 <p>We could just use the given formulas to calculate the slope and intercept in <em>R</em>, as I showed above. However, the <code>lm</code> command will become particularly useful later in the term when we extend this basic OLS regression line to more advanced techniques.</p>
 <p>In order to run the <code>lm</code> command, you need to input a formula. The structure of this formula looks like “dependent~independent” where “dependent” and “independent” should be replaced by your specific variables. The tilde (~) sign indicates the relationship. So, if we wanted to use <code>lm</code> to calculate the OLS regression line we just looked at above, I would do the following:</p>
-<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb177-1" title="1">model1 &lt;-<span class="st"> </span><span class="kw">lm</span>(crimes<span class="op">$</span>Violent<span class="op">~</span>crimes<span class="op">$</span>MedianAge)</a></code></pre></div>
+<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb176-1" title="1">model1 &lt;-<span class="st"> </span><span class="kw">lm</span>(crimes<span class="op">$</span>Violent<span class="op">~</span>crimes<span class="op">$</span>MedianAge)</a></code></pre></div>
 <p>Please keep in mind that <strong>the dependent variable always goes on the left-hand side of this equation.</strong> You will get very different answers if you reverse the ordering.</p>
 <p>In this case, I have entered in the variable names using the <code>data$variable</code> syntax, but <code>lm</code> also offers you a more streamlined way of specifying variables, by including a <code>data</code> option separately so that you only have to put the variable names in the formula, like so:</p>
-<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb178-1" title="1">model1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>MedianAge, <span class="dt">data=</span>crimes)</a></code></pre></div>
+<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb177-1" title="1">model1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>MedianAge, <span class="dt">data=</span>crimes)</a></code></pre></div>
 <p>Because I have specified <code>data=crimes</code>, <em>R</em> knows that the variables “Violent” and “MedianAge” refer to variables within this dataset. The result will be the same as the previous command, but this approach makes it easier to read the formula itself.</p>
 <p>I have saved the output of the <code>lm</code> command into a new object that I have called “model1”. You can call this object whatever you like. This is out first real example of the “object-oriented” nature of <em>R</em>. I can apply a variety of functions to this object in order to extract information about the relationship. If I want to get the most information, I can run a <code>summary</code> on this model.</p>
-<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb179-1" title="1"><span class="kw">summary</span>(model1)</a></code></pre></div>
+<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb178-1" title="1"><span class="kw">summary</span>(model1)</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = Violent ~ MedianAge, data = crimes)
@@ -500,7 +506,7 @@ Figure 44: Scatterplot with best-fitting line shown in blue and residuals shown 
 ## F-statistic:   4.9 on 1 and 49 DF,  p-value: 0.03154</code></pre>
 <p>There is a lot information here and we actually don’t know what most of it means yet. All we want is the intercept and slope. These numbers are given by the two numbers in the “Estimate” column of the “Coefficients” section. The intercept is 1343.94 and the slope is -25.58.</p>
 <p>We could also run the <code>coef</code> command which will give us just the slope and intercept of the model.</p>
-<div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb181-1" title="1"><span class="kw">coef</span>(model1)</a></code></pre></div>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb180-1" title="1"><span class="kw">coef</span>(model1)</a></code></pre></div>
 <pre><code>## (Intercept)   MedianAge 
 ##   1343.9360    -25.5795</code></pre>
 <p>This result is much more compact and will do for our purposes at the moment.</p>
@@ -540,7 +546,7 @@ Figure 45: Use geom_smooth to plot an OLS regression line with or without a conf
 <p>Fourth, “25.6 fewer violent crimes per 100,000 population” is the expected change in <span class="math inline">\(y\)</span>. Again, you always have to consider the unit scale of your variables. In this case, <span class="math inline">\(y\)</span> is measured as the number of crimes per 100,000 population, so a decrease of 25.6 means 25.6 fewer violent crimes per 100,000 population.</p>
 <p>Fifth, I append the term “on average” to the end of my interpretation. This is because we know that our points don’t fall on a straight line and so we don’t expect a deterministic relationship between median age and violent crime. Rather, we think that if we were to take a group of states that had one year higher median age than another group of states, the average difference between the groups would be -25.6.</p>
 <p>Lets try a couple of other examples to see how this works. I will use the lm command in R to calculate the slopes and intercepts, which I explain in the section below. First, lets look at the association between age and sexual frequency (I will explain the code I use here later in this section).</p>
-<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb183-1" title="1"><span class="kw">coef</span>(<span class="kw">lm</span>(sexf<span class="op">~</span>educ, <span class="dt">data=</span>sex))</a></code></pre></div>
+<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb182-1" title="1"><span class="kw">coef</span>(<span class="kw">lm</span>(sexf<span class="op">~</span>educ, <span class="dt">data=</span>sex))</a></code></pre></div>
 <pre><code>## (Intercept)        educ 
 ##  49.7295901   0.0266939</code></pre>
 <p>The slope here is 0.03. Education is measured in years and sexual frequency is measured as the number of sexual encounters per year. So, the interpretation of the slope should be:</p>
@@ -549,7 +555,7 @@ Figure 45: Use geom_smooth to plot an OLS regression line with or without a conf
 </blockquote>
 <p>There is a tiny positive effect here, but in real terms the relationship is basically zero. It would take you about 100 years more education to get laid 3 more times. Just think of the student loan debt.</p>
 <p>Now, lets take the relationship between movie runtimes and tomato meter ratings:</p>
-<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb185-1" title="1"><span class="kw">coef</span>(<span class="kw">lm</span>(TomatoMeter<span class="op">~</span>Runtime, <span class="dt">data=</span>movies))</a></code></pre></div>
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb184-1" title="1"><span class="kw">coef</span>(<span class="kw">lm</span>(TomatoMeter<span class="op">~</span>Runtime, <span class="dt">data=</span>movies))</a></code></pre></div>
 <pre><code>## (Intercept)     Runtime 
 ##   5.1074601   0.4054953</code></pre>
 <p>The slope is 0.41. Runtime is measured in minutes. The tomato meter is the percent of reviews that were judged to be positive.</p>
@@ -573,8 +579,8 @@ Figure 45: Use geom_smooth to plot an OLS regression line with or without a conf
 <p><span class="math display">\[x^*=x-a\]</span>
 The zero value on our new variable <span class="math inline">\(x^*\)</span> will indicates that we are at the value of <span class="math inline">\(a\)</span> on the original variable <span class="math inline">\(x\)</span>. If we then use <span class="math inline">\(x^*\)</span> in the OLS regression line rather than <span class="math inline">\(x\)</span>, the intercept will give us the predicted value of <span class="math inline">\(y\)</span> when <span class="math inline">\(x\)</span> is equal to <span class="math inline">\(a\)</span>.</p>
 <p>Lets try this out on the model predicting violent crimes by median age. We will create a new variable where we subtract 35 from the median age variable and use that in the regression model.</p>
-<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb187-1" title="1">crimes<span class="op">$</span>MedianAge.ctr &lt;-<span class="st"> </span>crimes<span class="op">$</span>MedianAge<span class="dv">-35</span></a>
-<a class="sourceLine" id="cb187-2" title="2"><span class="kw">coef</span>(<span class="kw">lm</span>(Violent<span class="op">~</span>MedianAge.ctr, <span class="dt">data=</span>crimes))</a></code></pre></div>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb186-1" title="1">crimes<span class="op">$</span>MedianAge.ctr &lt;-<span class="st"> </span>crimes<span class="op">$</span>MedianAge<span class="dv">-35</span></a>
+<a class="sourceLine" id="cb186-2" title="2"><span class="kw">coef</span>(<span class="kw">lm</span>(Violent<span class="op">~</span>MedianAge.ctr, <span class="dt">data=</span>crimes))</a></code></pre></div>
 <pre><code>##   (Intercept) MedianAge.ctr 
 ##      448.6533      -25.5795</code></pre>
 <p>The intercept now gives me the predicted violent crime rate in a state with a median age of 35. In effect, I have moved my y-intercept from zero to thirty-five as is shown in Figure <a href="the-ols-regression-line.html#fig:ols-move-intercept">46</a> below.</p>
@@ -585,7 +591,7 @@ Figure 46: Re-centering the independent variable moves the intercept but does no
 </p>
 </div>
 <p>Its also possible to re-center an independent variable in the <code>lm</code> command without creating a whole new variable. If you surround the re-centering in the <code>I()</code> function within the formula, R will interpret the result of whatever is inside the <code>I()</code> function as a new variable. Here is an example based on the previous example:</p>
-<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb189-1" title="1"><span class="kw">coef</span>(<span class="kw">lm</span>(Violent<span class="op">~</span><span class="kw">I</span>(MedianAge<span class="dv">-35</span>), <span class="dt">data=</span>crimes))</a></code></pre></div>
+<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb188-1" title="1"><span class="kw">coef</span>(<span class="kw">lm</span>(Violent<span class="op">~</span><span class="kw">I</span>(MedianAge<span class="dv">-35</span>), <span class="dt">data=</span>crimes))</a></code></pre></div>
 <pre><code>##       (Intercept) I(MedianAge - 35) 
 ##          448.6533          -25.5795</code></pre>
 </div>
@@ -614,7 +620,7 @@ Figure 47: We can parition the total distance (in red) between an observation’
 <p>The proportion of the variation in <span class="math inline">\(y\)</span> that is explainable or accountable by variation in <span class="math inline">\(x\)</span> is given by <span class="math inline">\(SSM/SSY\)</span>.</p>
 <p>This looks like a kind of nasty calculation, but it turns out there is a much simpler way to calculate this proportion. If we just take our correlation coefficient <span class="math inline">\(r\)</span> and square it. We will get this proportion. This measure is often called “r squared” and can be interpreted as the proportion of the variation in <span class="math inline">\(y\)</span> that is explainable or accountable by variation in <span class="math inline">\(x\)</span>.</p>
 <p>In the example above, we can calculate R squared:</p>
-<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb191-1" title="1"><span class="kw">cor</span>(crimes<span class="op">$</span>MedianAge, crimes<span class="op">$</span>Violent)<span class="op">^</span><span class="dv">2</span></a></code></pre></div>
+<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb190-1" title="1"><span class="kw">cor</span>(crimes<span class="op">$</span>MedianAge, crimes<span class="op">$</span>Violent)<span class="op">^</span><span class="dv">2</span></a></code></pre></div>
 <pre><code>## [1] 0.09091622</code></pre>
 <p>About 9% of the variation in violent crime rates across states can be accounted for by variation in the median age across states.</p>
 </div>
@@ -628,8 +634,8 @@ Figure 47: We can parition the total distance (in red) between an observation’
 <p><span class="math display">\[H_0:\beta_1=0\]</span></p>
 <p>In our sample, we have a sample slope <span class="math inline">\(b_1\)</span> that is an estimate of <span class="math inline">\(\beta_1\)</span>. We can apply the same logic of hypothesis testing and ask whether our <span class="math inline">\(b_1\)</span> is different enough from zero to reject the null hypothesis. We just need to find the standard error for this sample slope and the degrees of freedom to use for the test and we can do this manually.</p>
 <p>However, I have good news for you. You don’t have to do any of this by hand because the <code>lm</code> function does it for you automatically. Lets look at the full output of the model predicting violent crime rates from median age again using the <code>summary</code> command:</p>
-<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb193-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>MedianAge, <span class="dt">data=</span>crimes)</a>
-<a class="sourceLine" id="cb193-2" title="2"><span class="kw">summary</span>(model)</a></code></pre></div>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb192-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>MedianAge, <span class="dt">data=</span>crimes)</a>
+<a class="sourceLine" id="cb192-2" title="2"><span class="kw">summary</span>(model)</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = Violent ~ MedianAge, data = crimes)

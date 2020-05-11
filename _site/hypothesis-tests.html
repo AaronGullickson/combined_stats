@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-05-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -302,8 +302,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#a-glm-for-dichotomous-outcomes"><i class="fa fa-check"></i>A GLM for dichotomous outcomes</a></li>
 <li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum likelihood estimation</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a></li>
-<li class="chapter" data-level="" data-path="models-polytomous-outcomes.html"><a href="models-polytomous-outcomes.html"><i class="fa fa-check"></i>Models Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a><ul>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#interpreting-results"><i class="fa fa-check"></i>Interpreting results</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#marginal-effects-1"><i class="fa fa-check"></i>Marginal effects</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#the-probit-link"><i class="fa fa-check"></i>The probit link</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#assessing-model-fit"><i class="fa fa-check"></i>Assessing model fit</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#separation"><i class="fa fa-check"></i>Separation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="models-for-polytomous-outcomes.html"><a href="models-for-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Polytomous Outcomes</a></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
@@ -437,7 +443,7 @@ Figure 40: A game of make believe, or the sampling distribution for sample propo
 <p><span class="math display">\[\frac{0.05-0.083}{0.028}=\frac{-0.033}{0.028}=-1.18\]</span></p>
 <p>My sample proportion is 1.18 standard errors below the center of the sampling distribution. Is this an unlikely distance? To figure this out, we need to calculate the area in the lower tail of the sampling distribution past my red line. This number will tell us the proportion of all sample proportions that would be 0.05 or lower, assuming the null hypothesis is true. This standardized measure of how far is sometimes called the <strong>test statistic</strong> for a given hypothesis test.</p>
 <p>Calculating this area is not a trivial exercise, but <em>R</em> provides a straightforward command called <code>pt</code> which is somewhat similar to the <code>qt</code> command above. We just need to feed in how many standard errors our estimate is away from the center (-1.18) and the degrees of freedom. These degrees of freedom are identical to the ones used in confidence intervals (in this case, <span class="math inline">\(n-1\)</span>, so 99).</p>
-<div class="sourceCode" id="cb141"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb141-1" title="1"><span class="kw">pt</span>(<span class="op">-</span><span class="fl">1.18</span>, <span class="dv">99</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb140-1" title="1"><span class="kw">pt</span>(<span class="op">-</span><span class="fl">1.18</span>, <span class="dv">99</span>)</a></code></pre></div>
 <pre><code>## [1] 0.1204139</code></pre>
 <p>There is one catch with this command. It always gives you the area in the lower tail, so if your sample statistic is above the center, you should still put in a negative value in the first command. We will see an example of this below.</p>
 <p>Our output indicates that 12% of all samples would produce a sample proportion of 0.05 or less when the true population proportion is 0.083. Graphically it looks like this:</p>
@@ -486,7 +492,7 @@ Figure 42: We have to also consider the possibility of getting a sample proporti
 <iframe src="https://www.youtube.com/embed/kE_53FNEyBA" width="672" height="400px">
 </iframe>
 <p>Lets look at differences in mean income (measured in $1000) by religion in the politics dataset.</p>
-<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb143-1" title="1"><span class="kw">tapply</span>(politics<span class="op">$</span>income, politics<span class="op">$</span>relig, mean)</a></code></pre></div>
+<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb142-1" title="1"><span class="kw">tapply</span>(politics<span class="op">$</span>income, politics<span class="op">$</span>relig, mean)</a></code></pre></div>
 <pre><code>##    Mainline Protestant Evangelical Protestant               Catholic 
 ##               81.83439               58.32606               77.53498 
 ##                 Jewish          Non-religious                  Other 
@@ -499,22 +505,22 @@ Figure 42: We have to also consider the possibility of getting a sample proporti
 <p>Where <span class="math inline">\(\mu_c\)</span> is the population mean income of evangelical Protestants and <span class="math inline">\(\mu_o\)</span> is the population mean income of members of other religions. In order to figure out how far my sample mean difference of -2.427 is from 0, I need to find the standard error of the mean difference. The formula for this number is:</p>
 <p><span class="math display">\[\sqrt{\frac{s_c^2}{n_c}+\frac{s_o^2}{n_o}}\]</span></p>
 <p>I can calculate this in <em>R</em>:</p>
-<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb145-1" title="1"><span class="kw">tapply</span>(politics<span class="op">$</span>income, politics<span class="op">$</span>relig, sd)</a></code></pre></div>
+<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb144-1" title="1"><span class="kw">tapply</span>(politics<span class="op">$</span>income, politics<span class="op">$</span>relig, sd)</a></code></pre></div>
 <pre><code>##    Mainline Protestant Evangelical Protestant               Catholic 
 ##               62.90763               51.23396               66.59281 
 ##                 Jewish          Non-religious                  Other 
 ##               89.84166               71.46392               56.37886</code></pre>
-<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb147-1" title="1"><span class="kw">table</span>(politics<span class="op">$</span>relig)</a></code></pre></div>
+<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb146-1" title="1"><span class="kw">table</span>(politics<span class="op">$</span>relig)</a></code></pre></div>
 <pre><code>## 
 ##    Mainline Protestant Evangelical Protestant               Catholic 
 ##                    785                    917                   1015 
 ##                 Jewish          Non-religious                  Other 
 ##                     71                    567                    883</code></pre>
-<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb149-1" title="1">se &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="fl">51.23396</span><span class="op">^</span><span class="dv">2</span><span class="op">/</span><span class="dv">917</span><span class="fl">+56.37886</span><span class="op">^</span><span class="dv">2</span><span class="op">/</span><span class="dv">883</span>)</a>
-<a class="sourceLine" id="cb149-2" title="2"><span class="fl">-2.42705</span><span class="op">/</span>se</a></code></pre></div>
+<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb148-1" title="1">se &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="fl">51.23396</span><span class="op">^</span><span class="dv">2</span><span class="op">/</span><span class="dv">917</span><span class="fl">+56.37886</span><span class="op">^</span><span class="dv">2</span><span class="op">/</span><span class="dv">883</span>)</a>
+<a class="sourceLine" id="cb148-2" title="2"><span class="fl">-2.42705</span><span class="op">/</span>se</a></code></pre></div>
 <pre><code>## [1] -0.9547436</code></pre>
 <p>The t-statistic of -0.95 here is not very large. I am only 0.44 standard errors below 0 on the sampling distribution, assuming the null hypothesis is true. Lets go ahead and calculate the p-value for this t-statistic. Remember that I need to put in the negative version of this number to the <code>pt</code> command. I also need to use the smaller of the two sample sizes for my degrees of freedom:</p>
-<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb151-1" title="1"><span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="op">-</span><span class="fl">0.95</span>, <span class="dv">883-1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb150-1" title="1"><span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="op">-</span><span class="fl">0.95</span>, <span class="dv">883-1</span>)</a></code></pre></div>
 <pre><code>## [1] 0.3423725</code></pre>
 <p>In a sample of this size, there is an 34% chance of observing a mean income difference of $2,427 or more between evangelical Protestants and members of other religions, just by sampling error, assuming that there is no difference in income in the population. Therefore, I <strong>fail to reject the null hypothesis</strong> that evangelical Protestants and members of other religions make the same income.</p>
 </div>
@@ -525,7 +531,7 @@ Figure 42: We have to also consider the possibility of getting a sample proporti
 <p>Lets look at the difference in smoking behavior between white and black students in the Add Health data. Our null hypothesis is:</p>
 <p><span class="math display">\[H_0: \rho_w-\rho_c=0\]</span>
 In simple terms, our null hypothesis is that the same proportion of white and black adolescents smoke frequently. Lets look at the actual numbers from our sample:</p>
-<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb153-1" title="1"><span class="kw">prop.table</span>(<span class="kw">table</span>(popularity<span class="op">$</span>smoker, popularity<span class="op">$</span>race),<span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb152-1" title="1"><span class="kw">prop.table</span>(<span class="kw">table</span>(popularity<span class="op">$</span>smoker, popularity<span class="op">$</span>race),<span class="dv">2</span>)</a></code></pre></div>
 <pre><code>##             
 ##                   White  Black/African American     Latino
 ##   Non-smoker 0.79560106              0.94847162 0.89000000
@@ -538,13 +544,13 @@ In simple terms, our null hypothesis is that the same proportion of white and bl
 ##               American Indian/Native American
 ##   Non-smoker                       0.80769231
 ##   Smoker                           0.19230769</code></pre>
-<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb155-1" title="1">p_w &lt;-<span class="st"> </span><span class="fl">0.20439894</span></a>
-<a class="sourceLine" id="cb155-2" title="2">p_b &lt;-<span class="st"> </span><span class="fl">0.05152838</span></a>
-<a class="sourceLine" id="cb155-3" title="3">p_diff &lt;-<span class="st"> </span>p_w<span class="op">-</span>p_b</a>
-<a class="sourceLine" id="cb155-4" title="4">p_diff</a></code></pre></div>
+<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb154-1" title="1">p_w &lt;-<span class="st"> </span><span class="fl">0.20439894</span></a>
+<a class="sourceLine" id="cb154-2" title="2">p_b &lt;-<span class="st"> </span><span class="fl">0.05152838</span></a>
+<a class="sourceLine" id="cb154-3" title="3">p_diff &lt;-<span class="st"> </span>p_w<span class="op">-</span>p_b</a>
+<a class="sourceLine" id="cb154-4" title="4">p_diff</a></code></pre></div>
 <pre><code>## [1] 0.1528706</code></pre>
 <p>About 20.4% of white students smoked frequently, compared to only 5.2% of black students. The difference in proportion is a large 15.3% in the sample. This would seem to contradict our null hypothesis. However, we need to confirm that a difference this large in a sample of our size is unlikely to happen by random chance. To do that we need to calculate the standard error, just as we learned to do it for proportion differences in the confidence interval section:</p>
-<div class="sourceCode" id="cb157"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb157-1" title="1"><span class="kw">table</span>(popularity<span class="op">$</span>race)</a></code></pre></div>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb156-1" title="1"><span class="kw">table</span>(popularity<span class="op">$</span>race)</a></code></pre></div>
 <pre><code>## 
 ##                            White           Black/African American 
 ##                             2637                             1145 
@@ -552,17 +558,17 @@ In simple terms, our null hypothesis is that the same proportion of white and bl
 ##                              400                              162 
 ##                            Other  American Indian/Native American 
 ##                               27                               26</code></pre>
-<div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb159-1" title="1">n_w &lt;-<span class="st"> </span><span class="dv">2637</span></a>
-<a class="sourceLine" id="cb159-2" title="2">n_b &lt;-<span class="st"> </span><span class="dv">1145</span></a>
-<a class="sourceLine" id="cb159-3" title="3">se &lt;-<span class="st"> </span><span class="kw">sqrt</span>((p_w<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p_w)<span class="op">/</span>n_w)<span class="op">+</span>(p_b<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p_b)<span class="op">/</span>n_b))</a>
-<a class="sourceLine" id="cb159-4" title="4">se</a></code></pre></div>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb158-1" title="1">n_w &lt;-<span class="st"> </span><span class="dv">2637</span></a>
+<a class="sourceLine" id="cb158-2" title="2">n_b &lt;-<span class="st"> </span><span class="dv">1145</span></a>
+<a class="sourceLine" id="cb158-3" title="3">se &lt;-<span class="st"> </span><span class="kw">sqrt</span>((p_w<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p_w)<span class="op">/</span>n_w)<span class="op">+</span>(p_b<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p_b)<span class="op">/</span>n_b))</a>
+<a class="sourceLine" id="cb158-4" title="4">se</a></code></pre></div>
 <pre><code>## [1] 0.01021531</code></pre>
 <p>Now many standard errors is our observed difference in proportion from zero?</p>
-<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb161-1" title="1">t_stat &lt;-<span class="st"> </span>p_diff<span class="op">/</span>se</a>
-<a class="sourceLine" id="cb161-2" title="2">t_stat</a></code></pre></div>
+<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb160-1" title="1">t_stat &lt;-<span class="st"> </span>p_diff<span class="op">/</span>se</a>
+<a class="sourceLine" id="cb160-2" title="2">t_stat</a></code></pre></div>
 <pre><code>## [1] 14.96485</code></pre>
 <p>Wow, thats a lot. We can be pretty confident already without the final step of the p-value, but lets calculate it anyway. Remember ot always take the negative version of the t-statistic you calculated:</p>
-<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb163-1" title="1"><span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="op">-</span><span class="fl">14.96485</span>, n_b<span class="dv">-1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb162-1" title="1"><span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="op">-</span><span class="fl">14.96485</span>, n_b<span class="dv">-1</span>)</a></code></pre></div>
 <pre><code>## [1] 2.247969e-46</code></pre>
 <p>The p-value is astronomically small. In a sample of this size, the probability of observing a difference in the proportion frequent smokers between whites and blacks of 15.3% or larger if there is no difference in the population is less than 0.0000001%. Therefore, I <strong>reject the null hypothesis</strong> and conclude that white students are more likely to be frequent smokers than are black students.</p>
 </div>
@@ -571,20 +577,20 @@ In simple terms, our null hypothesis is that the same proportion of white and bl
 <iframe src="https://www.youtube.com/embed/8xbHhe3PgSc" width="672" height="400px">
 </iframe>
 <p>Lets look at the correlation between the parental income of a student and the number of friend nominations they receive. Our null hypothesis will be that there is no relationship between parental income and student popularity in the population of US adolescents. Lets look at the data in our sample:</p>
-<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb165-1" title="1">r &lt;-<span class="st"> </span><span class="kw">cor</span>(popularity<span class="op">$</span>parentinc, popularity<span class="op">$</span>indegree)</a>
-<a class="sourceLine" id="cb165-2" title="2">r</a></code></pre></div>
+<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb164-1" title="1">r &lt;-<span class="st"> </span><span class="kw">cor</span>(popularity<span class="op">$</span>parentinc, popularity<span class="op">$</span>indegree)</a>
+<a class="sourceLine" id="cb164-2" title="2">r</a></code></pre></div>
 <pre><code>## [1] 0.1247392</code></pre>
 <p>In the sample we observe a moderately positive correlation between a student’s parental income and the number of friend nominations they receive. How confident are we that we wouldn’t observe such a large correlation coefficient in our sample by random chance if the null hypothesis is true?</p>
 <p>First, we need to calculate the standard error:</p>
-<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb167-1" title="1">n &lt;-<span class="st"> </span><span class="kw">nrow</span>(popularity)</a>
-<a class="sourceLine" id="cb167-2" title="2">se &lt;-<span class="st"> </span><span class="kw">sqrt</span>((<span class="dv">1</span><span class="op">-</span>r<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>(n<span class="dv">-2</span>))</a>
-<a class="sourceLine" id="cb167-3" title="3">se</a></code></pre></div>
+<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb166-1" title="1">n &lt;-<span class="st"> </span><span class="kw">nrow</span>(popularity)</a>
+<a class="sourceLine" id="cb166-2" title="2">se &lt;-<span class="st"> </span><span class="kw">sqrt</span>((<span class="dv">1</span><span class="op">-</span>r<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>(n<span class="dv">-2</span>))</a>
+<a class="sourceLine" id="cb166-3" title="3">se</a></code></pre></div>
 <pre><code>## [1] 0.01496633</code></pre>
 <p>How many standard errors are we away from the assumption of zero correlation?</p>
-<div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb169-1" title="1">r<span class="op">/</span>se</a></code></pre></div>
+<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb168-1" title="1">r<span class="op">/</span>se</a></code></pre></div>
 <pre><code>## [1] 8.334658</code></pre>
 <p>What is the probability of being that far away from zero for a sample of this size?</p>
-<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb171-1" title="1"><span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="op">-</span><span class="fl">8.334658</span>, n<span class="dv">-2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb170-1" title="1"><span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="op">-</span><span class="fl">8.334658</span>, n<span class="dv">-2</span>)</a></code></pre></div>
 <pre><code>## [1] 1.027779e-16</code></pre>
 <p>The probability is very small. In a sample of this size, the probability is less than 0.00000001% of observing a correlation coefficient between parental income and friend nominations received of an absolute magnitude of 0.125 or higher when the true correlation is zero in the population. Therefore, we <strong>reject the null hypothesis</strong> and conclude that there is a positive correlation between parental income and popularity among US adolescents.</p>
 </div>

@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-05-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -302,8 +302,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#a-glm-for-dichotomous-outcomes"><i class="fa fa-check"></i>A GLM for dichotomous outcomes</a></li>
 <li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum likelihood estimation</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a></li>
-<li class="chapter" data-level="" data-path="models-polytomous-outcomes.html"><a href="models-polytomous-outcomes.html"><i class="fa fa-check"></i>Models Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a><ul>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#interpreting-results"><i class="fa fa-check"></i>Interpreting results</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#marginal-effects-1"><i class="fa fa-check"></i>Marginal effects</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#the-probit-link"><i class="fa fa-check"></i>The probit link</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#assessing-model-fit"><i class="fa fa-check"></i>Assessing model fit</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#separation"><i class="fa fa-check"></i>Separation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="models-for-polytomous-outcomes.html"><a href="models-for-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Polytomous Outcomes</a></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
@@ -446,8 +452,8 @@ In this formulation, <span class="math inline">\(\hat{y}_i\)</span> is the predi
 <div id="marginal-effect-interaction-example" class="section level4">
 <h4>Marginal effect interaction example</h4>
 <p>Lets try this with a concrete example. For this case, I will look at the effect on wages of the interaction between number of children in the household and gender:</p>
-<div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb242-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span>nchild<span class="op">*</span>gender, <span class="dt">data=</span>earnings)</a>
-<a class="sourceLine" id="cb242-2" title="2"><span class="kw">round</span>(<span class="kw">coef</span>(model), <span class="dv">3</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb241"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb241-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span>nchild<span class="op">*</span>gender, <span class="dt">data=</span>earnings)</a>
+<a class="sourceLine" id="cb241-2" title="2"><span class="kw">round</span>(<span class="kw">coef</span>(model), <span class="dv">3</span>)</a></code></pre></div>
 <pre><code>##         (Intercept)              nchild        genderFemale nchild:genderFemale 
 ##              24.720               1.779              -2.839              -1.335</code></pre>
 <p>So, my full model is given by:</p>
@@ -459,16 +465,16 @@ In this formulation, <span class="math inline">\(\hat{y}_i\)</span> is the predi
 <p><span class="math display">\[-2.839-1.335(\text{nchildren}_i)\]</span></p>
 <p>So the gender gap starts at 2.839 with no children in the household and grows by 1.335 for each additional child.</p>
 <p>We can also plot up a <strong>marginal effects graph</strong> that shows us how the gender gap changes by number of children in the household.</p>
-<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb244-1" title="1">nchild &lt;-<span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">6</span></a>
-<a class="sourceLine" id="cb244-2" title="2">gender_gap &lt;-<span class="st"> </span><span class="fl">-2.839-1.335</span><span class="op">*</span>nchild</a>
-<a class="sourceLine" id="cb244-3" title="3">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(nchild, gender_gap)</a>
-<a class="sourceLine" id="cb244-4" title="4"><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">x=</span>nchild, <span class="dt">y=</span>gender_gap))<span class="op">+</span></a>
-<a class="sourceLine" id="cb244-5" title="5"><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">linetype=</span><span class="dv">2</span>, <span class="dt">color=</span><span class="st">&quot;grey&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb244-6" title="6"><span class="st">  </span><span class="kw">geom_point</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb244-7" title="7"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;number of children in household&quot;</span>,</a>
-<a class="sourceLine" id="cb244-8" title="8">       <span class="dt">y=</span><span class="st">&quot;predicted gender gap in hourly wages&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb244-9" title="9"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> scales<span class="op">::</span>dollar)<span class="op">+</span></a>
-<a class="sourceLine" id="cb244-10" title="10"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb243"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb243-1" title="1">nchild &lt;-<span class="st"> </span><span class="dv">0</span><span class="op">:</span><span class="dv">6</span></a>
+<a class="sourceLine" id="cb243-2" title="2">gender_gap &lt;-<span class="st"> </span><span class="fl">-2.839-1.335</span><span class="op">*</span>nchild</a>
+<a class="sourceLine" id="cb243-3" title="3">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(nchild, gender_gap)</a>
+<a class="sourceLine" id="cb243-4" title="4"><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">x=</span>nchild, <span class="dt">y=</span>gender_gap))<span class="op">+</span></a>
+<a class="sourceLine" id="cb243-5" title="5"><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">linetype=</span><span class="dv">2</span>, <span class="dt">color=</span><span class="st">&quot;grey&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb243-6" title="6"><span class="st">  </span><span class="kw">geom_point</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb243-7" title="7"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;number of children in household&quot;</span>,</a>
+<a class="sourceLine" id="cb243-8" title="8">       <span class="dt">y=</span><span class="st">&quot;predicted gender gap in hourly wages&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb243-9" title="9"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> scales<span class="op">::</span>dollar)<span class="op">+</span></a>
+<a class="sourceLine" id="cb243-10" title="10"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:marginal-fx-graph"></span>
 <img src="stat_book_files/figure-html/marginal-fx-graph-1.png" alt="Marginal effect of number of children on the gender gap in wages" width="672" />
 <p class="caption">
@@ -565,42 +571,42 @@ In this section, we will learn the formal math that underlies how this estimatio
 \end{eqnarray*}
 \]</span></p>
 <p>R can help us with these calculations. the <code>t</code> command will transpose a matrix or vector and the <code>%*%</code> operator will to matrix algebra multiplication.</p>
-<div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb245-1" title="1">y &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb245-2" title="2">X &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">7</span>,<span class="dv">4</span>),<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">2</span>),<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">6</span>))</a>
-<a class="sourceLine" id="cb245-3" title="3">X</a></code></pre></div>
+<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb244-1" title="1">y &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb244-2" title="2">X &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">7</span>,<span class="dv">4</span>),<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">2</span>),<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">6</span>))</a>
+<a class="sourceLine" id="cb244-3" title="3">X</a></code></pre></div>
 <pre><code>##      [,1] [,2] [,3]
 ## [1,]    1    7    4
 ## [2,]    1    3    2
 ## [3,]    1    1    6</code></pre>
-<div class="sourceCode" id="cb247"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb247-1" title="1"><span class="kw">t</span>(X)</a></code></pre></div>
+<div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb246-1" title="1"><span class="kw">t</span>(X)</a></code></pre></div>
 <pre><code>##      [,1] [,2] [,3]
 ## [1,]    1    1    1
 ## [2,]    7    3    1
 ## [3,]    4    2    6</code></pre>
-<div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb249-1" title="1">X<span class="op">%*%</span>y</a></code></pre></div>
+<div class="sourceCode" id="cb248"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb248-1" title="1">X<span class="op">%*%</span>y</a></code></pre></div>
 <pre><code>##      [,1]
 ## [1,]   51
 ## [2,]   25
 ## [3,]   27</code></pre>
-<div class="sourceCode" id="cb251"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb251-1" title="1"><span class="kw">t</span>(X)<span class="op">%*%</span>X</a></code></pre></div>
+<div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb250-1" title="1"><span class="kw">t</span>(X)<span class="op">%*%</span>X</a></code></pre></div>
 <pre><code>##      [,1] [,2] [,3]
 ## [1,]    3   11   12
 ## [2,]   11   59   40
 ## [3,]   12   40   56</code></pre>
-<div class="sourceCode" id="cb253"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb253-1" title="1"><span class="co">#a shortcut for squaring a matrix</span></a>
-<a class="sourceLine" id="cb253-2" title="2"><span class="kw">crossprod</span>(X)</a></code></pre></div>
+<div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb252-1" title="1"><span class="co">#a shortcut for squaring a matrix</span></a>
+<a class="sourceLine" id="cb252-2" title="2"><span class="kw">crossprod</span>(X)</a></code></pre></div>
 <pre><code>##      [,1] [,2] [,3]
 ## [1,]    3   11   12
 ## [2,]   11   59   40
 ## [3,]   12   40   56</code></pre>
 <p>We can also calculate the <strong>inverse</strong> of a matrix. The inverse of a matrix (<span class="math inline">\(\mathbf{X}^{-1}\)</span>) is the matrix that when multiplied by the original matrix produces the <strong>identity</strong> matrix which is just a matrix of ones along the diagonal cells and zeroes elsewhere. Anything multiplied by the identity matrix is just itself, so the identity matrix is like 1 at the matrix algebra level. Calculating an inverse is a difficult calculation that I won’t go through here, but R can do it for us easily with the <code>solve</code> command:</p>
-<div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb255-1" title="1">inverse.X &lt;-<span class="st"> </span><span class="kw">solve</span>(X)</a>
-<a class="sourceLine" id="cb255-2" title="2">inverse.X</a></code></pre></div>
+<div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb254-1" title="1">inverse.X &lt;-<span class="st"> </span><span class="kw">solve</span>(X)</a>
+<a class="sourceLine" id="cb254-2" title="2">inverse.X</a></code></pre></div>
 <pre><code>##      [,1] [,2] [,3]
 ## [1,] -0.8  1.9 -0.1
 ## [2,]  0.2 -0.1 -0.1
 ## [3,]  0.1 -0.3  0.2</code></pre>
-<div class="sourceCode" id="cb257"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb257-1" title="1"><span class="kw">round</span>(inverse.X <span class="op">%*%</span><span class="st"> </span>X,<span class="dv">0</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb256"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb256-1" title="1"><span class="kw">round</span>(inverse.X <span class="op">%*%</span><span class="st"> </span>X,<span class="dv">0</span>)</a></code></pre></div>
 <pre><code>##      [,1] [,2] [,3]
 ## [1,]    1    0    0
 ## [2,]    0    1    0
@@ -638,8 +644,8 @@ SSR(\beta)&amp;=&amp;(\mathbf{y}-\mathbf{X\beta})&#39;(\mathbf{y}-\mathbf{X\beta
 \mathbf{\beta}&amp;=&amp;(\mathbf{X&#39;X})^{-1}\mathbf{X&#39;y}\\
 \end{eqnarray*}\]</span></p>
 <p>Ta-dah! We have arrived at the matrix algebra solution for the best fitting parameters for a linear model with any number of independent variables. Lets try this formula out in R:</p>
-<div class="sourceCode" id="cb259"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb259-1" title="1">X &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">cbind</span>(<span class="kw">rep</span>(<span class="dv">1</span>, <span class="kw">nrow</span>(movies)), movies[,<span class="kw">c</span>(<span class="st">&quot;Runtime&quot;</span>,<span class="st">&quot;BoxOffice&quot;</span>)]))</a>
-<a class="sourceLine" id="cb259-2" title="2"><span class="kw">head</span>(X)</a></code></pre></div>
+<div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb258-1" title="1">X &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">cbind</span>(<span class="kw">rep</span>(<span class="dv">1</span>, <span class="kw">nrow</span>(movies)), movies[,<span class="kw">c</span>(<span class="st">&quot;Runtime&quot;</span>,<span class="st">&quot;BoxOffice&quot;</span>)]))</a>
+<a class="sourceLine" id="cb258-2" title="2"><span class="kw">head</span>(X)</a></code></pre></div>
 <pre><code>##     rep(1, nrow(movies)) Runtime BoxOffice
 ## 164                    1     118      47.1
 ## 165                    1     104       3.9
@@ -647,15 +653,15 @@ SSR(\beta)&amp;=&amp;(\mathbf{y}-\mathbf{X\beta})&#39;(\mathbf{y}-\mathbf{X\beta
 ## 167                    1     111      11.4
 ## 168                    1     123      39.9
 ## 169                    1     116      32.4</code></pre>
-<div class="sourceCode" id="cb261"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb261-1" title="1">y &lt;-<span class="st"> </span>movies<span class="op">$</span>TomatoMeter </a>
-<a class="sourceLine" id="cb261-2" title="2">beta &lt;-<span class="st"> </span><span class="kw">solve</span>(<span class="kw">crossprod</span>(X))<span class="op">%*%</span><span class="kw">crossprod</span>(X,y) </a>
-<a class="sourceLine" id="cb261-3" title="3">beta</a></code></pre></div>
+<div class="sourceCode" id="cb260"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb260-1" title="1">y &lt;-<span class="st"> </span>movies<span class="op">$</span>TomatoMeter </a>
+<a class="sourceLine" id="cb260-2" title="2">beta &lt;-<span class="st"> </span><span class="kw">solve</span>(<span class="kw">crossprod</span>(X))<span class="op">%*%</span><span class="kw">crossprod</span>(X,y) </a>
+<a class="sourceLine" id="cb260-3" title="3">beta</a></code></pre></div>
 <pre><code>##                             [,1]
 ## rep(1, nrow(movies)) 11.09207358
 ## Runtime               0.32320152
 ## BoxOffice             0.05923506</code></pre>
-<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb263-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(TomatoMeter<span class="op">~</span>Runtime<span class="op">+</span>BoxOffice, <span class="dt">data=</span>movies)</a>
-<a class="sourceLine" id="cb263-2" title="2"><span class="kw">coef</span>(model)</a></code></pre></div>
+<div class="sourceCode" id="cb262"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb262-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(TomatoMeter<span class="op">~</span>Runtime<span class="op">+</span>BoxOffice, <span class="dt">data=</span>movies)</a>
+<a class="sourceLine" id="cb262-2" title="2"><span class="kw">coef</span>(model)</a></code></pre></div>
 <pre><code>## (Intercept)     Runtime   BoxOffice 
 ## 11.09207358  0.32320152  0.05923506</code></pre>
 <p>It works!</p>
@@ -665,26 +671,26 @@ SSR(\beta)&amp;=&amp;(\mathbf{y}-\mathbf{X\beta})&#39;(\mathbf{y}-\mathbf{X\beta
 <p><span class="math display">\[s^2=\frac{\sum(y_i-\hat{y}_i)^2}{n-p-1}\]</span></p>
 <p>based on the fitted values of <span class="math inline">\(\hat{y}_i\)</span> from our linear model. <span class="math inline">\(p\)</span> is the number of independent variables in our model.</p>
 <p>The covariance matrix actually provides us with some interesting information about the correlation of our independent variables. For our purposes we just want the square root of the diagonal elements, which gives us the standard error for our model. Continuing with the example estimating tomato meter ratings by run time and box office returns in our movies dataset, lets calculate all the numbers we need for an inference test:</p>
-<div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb265-1" title="1"><span class="co">#get the predicted values of y</span></a>
-<a class="sourceLine" id="cb265-2" title="2">y.hat &lt;-<span class="st"> </span>X<span class="op">%*%</span>beta </a>
-<a class="sourceLine" id="cb265-3" title="3">df &lt;-<span class="st"> </span><span class="kw">length</span>(y)<span class="op">-</span><span class="kw">ncol</span>(X) </a>
-<a class="sourceLine" id="cb265-4" title="4"><span class="co">#calculate our sample variance of the residual terms</span></a>
-<a class="sourceLine" id="cb265-5" title="5">s.sq &lt;-<span class="st"> </span><span class="kw">sum</span>((y<span class="op">-</span>y.hat)<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>df </a>
-<a class="sourceLine" id="cb265-6" title="6"><span class="co">#calculate the covariance matrix</span></a>
-<a class="sourceLine" id="cb265-7" title="7">covar.matrix &lt;-<span class="st"> </span>s.sq<span class="op">*</span><span class="kw">solve</span>(<span class="kw">crossprod</span>(X)) </a>
-<a class="sourceLine" id="cb265-8" title="8"><span class="co">#extract SEs from the square root of the diagonal</span></a>
-<a class="sourceLine" id="cb265-9" title="9">se &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">diag</span>(covar.matrix)) </a>
-<a class="sourceLine" id="cb265-10" title="10"><span class="co">## calculate t-stats from our betas and SEs</span></a>
-<a class="sourceLine" id="cb265-11" title="11">t.stat &lt;-<span class="st"> </span>beta<span class="op">/</span>se </a>
-<a class="sourceLine" id="cb265-12" title="12"><span class="co">#calculate p-values from the t-stat</span></a>
-<a class="sourceLine" id="cb265-13" title="13">p.value &lt;-<span class="st"> </span><span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="op">-</span><span class="dv">1</span><span class="op">*</span><span class="kw">abs</span>(t.stat), df) </a>
-<a class="sourceLine" id="cb265-14" title="14"><span class="kw">data.frame</span>(beta,se,t.stat,p.value)</a></code></pre></div>
+<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb264-1" title="1"><span class="co">#get the predicted values of y</span></a>
+<a class="sourceLine" id="cb264-2" title="2">y.hat &lt;-<span class="st"> </span>X<span class="op">%*%</span>beta </a>
+<a class="sourceLine" id="cb264-3" title="3">df &lt;-<span class="st"> </span><span class="kw">length</span>(y)<span class="op">-</span><span class="kw">ncol</span>(X) </a>
+<a class="sourceLine" id="cb264-4" title="4"><span class="co">#calculate our sample variance of the residual terms</span></a>
+<a class="sourceLine" id="cb264-5" title="5">s.sq &lt;-<span class="st"> </span><span class="kw">sum</span>((y<span class="op">-</span>y.hat)<span class="op">^</span><span class="dv">2</span>)<span class="op">/</span>df </a>
+<a class="sourceLine" id="cb264-6" title="6"><span class="co">#calculate the covariance matrix</span></a>
+<a class="sourceLine" id="cb264-7" title="7">covar.matrix &lt;-<span class="st"> </span>s.sq<span class="op">*</span><span class="kw">solve</span>(<span class="kw">crossprod</span>(X)) </a>
+<a class="sourceLine" id="cb264-8" title="8"><span class="co">#extract SEs from the square root of the diagonal</span></a>
+<a class="sourceLine" id="cb264-9" title="9">se &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">diag</span>(covar.matrix)) </a>
+<a class="sourceLine" id="cb264-10" title="10"><span class="co">## calculate t-stats from our betas and SEs</span></a>
+<a class="sourceLine" id="cb264-11" title="11">t.stat &lt;-<span class="st"> </span>beta<span class="op">/</span>se </a>
+<a class="sourceLine" id="cb264-12" title="12"><span class="co">#calculate p-values from the t-stat</span></a>
+<a class="sourceLine" id="cb264-13" title="13">p.value &lt;-<span class="st"> </span><span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="op">-</span><span class="dv">1</span><span class="op">*</span><span class="kw">abs</span>(t.stat), df) </a>
+<a class="sourceLine" id="cb264-14" title="14"><span class="kw">data.frame</span>(beta,se,t.stat,p.value)</a></code></pre></div>
 <pre><code>##                             beta          se    t.stat      p.value
 ## rep(1, nrow(movies)) 11.09207358 3.269128357  3.392976 7.019316e-04
 ## Runtime               0.32320152 0.031734307 10.184609 6.617535e-24
 ## BoxOffice             0.05923506 0.007978845  7.424014 1.540215e-13</code></pre>
-<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb267-1" title="1"><span class="co">#compare to the lm command</span></a>
-<a class="sourceLine" id="cb267-2" title="2"><span class="kw">summary</span>(model)<span class="op">$</span>coef</a></code></pre></div>
+<div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb266-1" title="1"><span class="co">#compare to the lm command</span></a>
+<a class="sourceLine" id="cb266-2" title="2"><span class="kw">summary</span>(model)<span class="op">$</span>coef</a></code></pre></div>
 <pre><code>##                Estimate  Std. Error   t value     Pr(&gt;|t|)
 ## (Intercept) 11.09207358 3.269128357  3.392976 7.019316e-04
 ## Runtime      0.32320152 0.031734307 10.184609 6.617535e-24

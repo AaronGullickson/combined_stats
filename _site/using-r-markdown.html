@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-05-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -302,8 +302,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#a-glm-for-dichotomous-outcomes"><i class="fa fa-check"></i>A GLM for dichotomous outcomes</a></li>
 <li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum likelihood estimation</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a></li>
-<li class="chapter" data-level="" data-path="models-polytomous-outcomes.html"><a href="models-polytomous-outcomes.html"><i class="fa fa-check"></i>Models Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a><ul>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#interpreting-results"><i class="fa fa-check"></i>Interpreting results</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#marginal-effects-1"><i class="fa fa-check"></i>Marginal effects</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#the-probit-link"><i class="fa fa-check"></i>The probit link</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#assessing-model-fit"><i class="fa fa-check"></i>Assessing model fit</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#separation"><i class="fa fa-check"></i>Separation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="models-for-polytomous-outcomes.html"><a href="models-for-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Polytomous Outcomes</a></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
@@ -428,38 +434,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The development of <a href="https://daringfireball.net/projects/markdown/syntax">Markdown</a> has made the engineering model considerably easier. Before Markdown, the preferred markup language for typesetting scientific manuscripts was <a href="https://www.latex-project.org/about/">LaTex</a>. Latex is powerful and can produce beautiful documents, but it is also complex and has a steep learning curve. Markdown, on the other hand, is dead simple.</p>
 <p><a href="https://daringfireball.net/projects/markdown/syntax">Markdown</a> is one of many <a href="https://en.wikipedia.org/wiki/Markup_language">“markup” languages</a>. Markup languages provide a way to write a document in which formatting of text is done by using some kind of coding syntax to tag bits of text. The most well-known markup language is, of course, HTML, which stands for hypertext markup language. Markdown was actually originally written as a means for people to write simple documents that were uncluttered by a lot of markup, but could also be easily converted into HTML. With the arrival of a powerful program called <a href="https://pandoc.org/">pandoc</a>, which can convert between a variety of document formats, markdown has now become the default geek choice for writing documents in all kinds of formats. You can even convert from markdown to Word.</p>
 <p>As its tongue-in-cheeck name indicates, the beauty of Markdown is that its syntax is simple and produces text documents that are very readable even before processing. Here is an example of Markdown syntax with most of the basic syntax that you would be likely to need for writing an academic report.</p>
-<div class="sourceCode" id="cb1014"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1014-1" title="1"><span class="fu"># Title</span></a>
-<a class="sourceLine" id="cb1014-2" title="2"></a>
-<a class="sourceLine" id="cb1014-3" title="3">Here is a sentence. This sentence continues the same paragraph.</a>
-<a class="sourceLine" id="cb1014-4" title="4"></a>
-<a class="sourceLine" id="cb1014-5" title="5">Here is a sentence that starts another paragraph.</a>
-<a class="sourceLine" id="cb1014-6" title="6"></a>
-<a class="sourceLine" id="cb1014-7" title="7"><span class="fu">## A subtitle</span></a>
-<a class="sourceLine" id="cb1014-8" title="8"></a>
-<a class="sourceLine" id="cb1014-9" title="9">Here is another sentence, but this time I **bolded** and *italicized* some things.</a>
-<a class="sourceLine" id="cb1014-10" title="10"></a>
-<a class="sourceLine" id="cb1014-11" title="11"><span class="fu">### A sub-subtitle</span></a>
-<a class="sourceLine" id="cb1014-12" title="12"></a>
-<a class="sourceLine" id="cb1014-13" title="13">Here is another sentence but this time, I am going to also create a bulleted list.</a>
-<a class="sourceLine" id="cb1014-14" title="14"></a>
-<a class="sourceLine" id="cb1014-15" title="15">* <span class="fl">First Item</span></a>
-<a class="sourceLine" id="cb1014-16" title="16"><span class="fl">     * First Subitem</span></a>
-<a class="sourceLine" id="cb1014-17" title="17"><span class="fl">     * Second Subitem</span></a>
-<a class="sourceLine" id="cb1014-18" title="18"><span class="fl">* Second Item</span></a>
-<a class="sourceLine" id="cb1014-19" title="19"><span class="fl">* Third Item</span></a>
-<a class="sourceLine" id="cb1014-20" title="20"></a>
-<a class="sourceLine" id="cb1014-21" title="21">How about a numbered list? Why not.</a>
-<a class="sourceLine" id="cb1014-22" title="22"></a>
-<a class="sourceLine" id="cb1014-23" title="23">1. <span class="fl">First Item</span></a>
-<a class="sourceLine" id="cb1014-24" title="24"><span class="fl">      a. Subitem 1</span></a>
-<a class="sourceLine" id="cb1014-25" title="25"><span class="fl">      b. Subitem 3</span></a>
-<a class="sourceLine" id="cb1014-26" title="26"><span class="fl">2. Second Item</span></a>
-<a class="sourceLine" id="cb1014-27" title="27"></a>
-<a class="sourceLine" id="cb1014-28" title="28">What if I want to blockquote somebody? Sure, lets do that:</a>
-<a class="sourceLine" id="cb1014-29" title="29"></a>
-<a class="sourceLine" id="cb1014-30" title="30">&gt;<span class="dt"> I have sworn upon the altar of god eternal hostility against every form of tyranny over the mind of man.</span></a>
-<a class="sourceLine" id="cb1014-31" title="31"></a>
-<a class="sourceLine" id="cb1014-32" title="32">See how easy this is?</a></code></pre></div>
+<div class="sourceCode" id="cb1035"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1035-1" title="1"><span class="fu"># Title</span></a>
+<a class="sourceLine" id="cb1035-2" title="2"></a>
+<a class="sourceLine" id="cb1035-3" title="3">Here is a sentence. This sentence continues the same paragraph.</a>
+<a class="sourceLine" id="cb1035-4" title="4"></a>
+<a class="sourceLine" id="cb1035-5" title="5">Here is a sentence that starts another paragraph.</a>
+<a class="sourceLine" id="cb1035-6" title="6"></a>
+<a class="sourceLine" id="cb1035-7" title="7"><span class="fu">## A subtitle</span></a>
+<a class="sourceLine" id="cb1035-8" title="8"></a>
+<a class="sourceLine" id="cb1035-9" title="9">Here is another sentence, but this time I **bolded** and *italicized* some things.</a>
+<a class="sourceLine" id="cb1035-10" title="10"></a>
+<a class="sourceLine" id="cb1035-11" title="11"><span class="fu">### A sub-subtitle</span></a>
+<a class="sourceLine" id="cb1035-12" title="12"></a>
+<a class="sourceLine" id="cb1035-13" title="13">Here is another sentence but this time, I am going to also create a bulleted list.</a>
+<a class="sourceLine" id="cb1035-14" title="14"></a>
+<a class="sourceLine" id="cb1035-15" title="15">* <span class="fl">First Item</span></a>
+<a class="sourceLine" id="cb1035-16" title="16"><span class="fl">     * First Subitem</span></a>
+<a class="sourceLine" id="cb1035-17" title="17"><span class="fl">     * Second Subitem</span></a>
+<a class="sourceLine" id="cb1035-18" title="18"><span class="fl">* Second Item</span></a>
+<a class="sourceLine" id="cb1035-19" title="19"><span class="fl">* Third Item</span></a>
+<a class="sourceLine" id="cb1035-20" title="20"></a>
+<a class="sourceLine" id="cb1035-21" title="21">How about a numbered list? Why not.</a>
+<a class="sourceLine" id="cb1035-22" title="22"></a>
+<a class="sourceLine" id="cb1035-23" title="23">1. <span class="fl">First Item</span></a>
+<a class="sourceLine" id="cb1035-24" title="24"><span class="fl">      a. Subitem 1</span></a>
+<a class="sourceLine" id="cb1035-25" title="25"><span class="fl">      b. Subitem 3</span></a>
+<a class="sourceLine" id="cb1035-26" title="26"><span class="fl">2. Second Item</span></a>
+<a class="sourceLine" id="cb1035-27" title="27"></a>
+<a class="sourceLine" id="cb1035-28" title="28">What if I want to blockquote somebody? Sure, lets do that:</a>
+<a class="sourceLine" id="cb1035-29" title="29"></a>
+<a class="sourceLine" id="cb1035-30" title="30">&gt;<span class="dt"> I have sworn upon the altar of god eternal hostility against every form of tyranny over the mind of man.</span></a>
+<a class="sourceLine" id="cb1035-31" title="31"></a>
+<a class="sourceLine" id="cb1035-32" title="32">See how easy this is?</a></code></pre></div>
 <p>There is some basic markup syntax here, but it is so subtle that the text is easy to read even without processing into a prettier form. But speaking of processing, how would I turn this into a prettier output form? One of the advantages of markdown is that I have numberous options here. I could process (or “knit”) this text into an HTML, PDF, or MS Word document, among other choices. If you create this markdown file in RStudio with the extension *.md, RStudio will give you the option of converting it to any of those types. You can see what this document looks like knitted to HTML <a href="/stat_book/resources/markdown_example.html">here</a>.</p>
 <p>You can find a variety of markdown cheatsheets online if you want to learn more abou the basic syntax options. <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet">Here</a> is a good one to get you started.</p>
 </div>
@@ -469,10 +475,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>R Markdown has all the basic capabilities of Markdown, but also allows you to run and display R code and output within what are called <em>code chunks</em>.^[Despite the name, you can also use a variety of other code in these code chunks, including Python, C++, SQL, and Bash. Its even possible to <a href="http://www.ssc.wisc.edu/~hemken/Stataworkshops/Stata%20and%20R%20Markdown/Statalinux.html">run Stata code in R Markdown</a>. When the R Markdown document is “knitted” by RStudio, the code inside of the code chunks will be run and the output will be displayed within the document. Any objects created in code chunks can also be used by later code chunks in the same document, so you can use one code chunk to load in dataand then run analyses on that data in subsequent code chunks.</p>
 <p>Code chunks are defined by “code fencing” similar to what we have used on Slack and GitHub. In general, you start a code chunk with a “fence” of three grave accents <code>(`)</code>. You end a code chunk with another “fence” of three grave accents. When you do this, R Markdown will display whats inside the code chunk in a coding format. If we want to make the code inside of that chunk executable when R Markdown is knitted, then we need to include the syntax <code>{r}</code> immediately after the opening code fence. So to put it all together here is an example of an executable code chunk in R Markdown.</p>
 <p>Here is an example of a simple code chunk in an R Markdown document.</p>
-<div class="sourceCode" id="cb1015"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1015-1" title="1"><span class="bn">```{r}</span></a>
-<a class="sourceLine" id="cb1015-2" title="2"><span class="bn">tab &lt;- table(titanic$pclass, titanic$survival)</span></a>
-<a class="sourceLine" id="cb1015-3" title="3"><span class="bn">prop.table(tab, 1)</span></a>
-<a class="sourceLine" id="cb1015-4" title="4"><span class="bn">```</span></a></code></pre></div>
+<div class="sourceCode" id="cb1036"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1036-1" title="1"><span class="bn">```{r}</span></a>
+<a class="sourceLine" id="cb1036-2" title="2"><span class="bn">tab &lt;- table(titanic$pclass, titanic$survival)</span></a>
+<a class="sourceLine" id="cb1036-3" title="3"><span class="bn">prop.table(tab, 1)</span></a>
+<a class="sourceLine" id="cb1036-4" title="4"><span class="bn">```</span></a></code></pre></div>
 <p>Note that this code chunk will only run assuming I have another code chunk that loads in the Titanic data.</p>
 <p>RStudio offers some nice features for working with code chunks interactively. Here is what that same code chunk looks like when embedded in an R Markdown document in RStudio:</p>
 <p><img src="resources/markdown_screenshots/basic_code_chunk.png" /></p>
@@ -485,23 +491,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="resources/markdown_screenshots/knit_document.png" /></p>
 <p>You can choose HTML, PDF, or MS Word as your output. <a href="/stat_book/resources/example.Rmd">Here</a> is an example R Markdown file that includes many additional features I will introduce below. <a href="/stat_book/resources/example.html">Here</a> is that R Markdown file knitted an HTML file and <a href="/stat_book/resources/example.pdf">here</a> it is as a PDF. Although, you can convert to MS word, the quality of figures and tables is usually not as good.</p>
 <p>HTML conversion will work out of the box in RStudio. MS Word conversion will also work out of the box if you have it installed on your computer. Conversion to PDF is trickier. To convert from R Markdown to PDF, RStudio actually goes through a two-step process. First, the R Markdown files are converted to <a href="https://texfaq.org/FAQ-whatTeX">TeX</a> files and then those TeX files are converted to PDF. In order to do the second step, you must have a version of TeX installed on your system. There are a variety of options out there, but many of them are huge and require manual tracking of additional packages. However, there is a lightweight solution called <a href="https://yihui.org/tinytex/">tinytex</a> that you can install directly from within R. To do so, you need to install the tinytex package and then use its commands to install tinytex on your system, like so:</p>
-<div class="sourceCode" id="cb1016"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1016-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;tinytex&quot;</span>)</a>
-<a class="sourceLine" id="cb1016-2" title="2"><span class="kw">library</span>(tinytex)</a>
-<a class="sourceLine" id="cb1016-3" title="3"><span class="cf">if</span>(<span class="op">!</span>tinytex<span class="op">:::</span><span class="kw">is_tinytex</span>()) {</a>
-<a class="sourceLine" id="cb1016-4" title="4">  <span class="kw">install_tinytex</span>(<span class="dt">force=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb1016-5" title="5">}</a></code></pre></div>
+<div class="sourceCode" id="cb1037"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1037-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;tinytex&quot;</span>)</a>
+<a class="sourceLine" id="cb1037-2" title="2"><span class="kw">library</span>(tinytex)</a>
+<a class="sourceLine" id="cb1037-3" title="3"><span class="cf">if</span>(<span class="op">!</span>tinytex<span class="op">:::</span><span class="kw">is_tinytex</span>()) {</a>
+<a class="sourceLine" id="cb1037-4" title="4">  <span class="kw">install_tinytex</span>(<span class="dt">force=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb1037-5" title="5">}</a></code></pre></div>
 <p>If you are on a Mac, there have been <a href="https://github.com/yihui/tinytex/issues/92">some reported issues</a> with this installation due to some file permission issues. If you run into problems, then you should try running the following commands into the <strong>Terminal</strong> tab in RStudio (not the console!):</p>
-<div class="sourceCode" id="cb1017"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb1017-1" title="1"><span class="fu">sudo</span> chown -R <span class="kw">`</span><span class="fu">whoami</span><span class="kw">`</span>:admin /usr/local/bin</a>
-<a class="sourceLine" id="cb1017-2" title="2"><span class="ex">~/Library/TinyTeX/bin/x86_64-darwin/tlmgr</span> path add</a></code></pre></div>
+<div class="sourceCode" id="cb1038"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb1038-1" title="1"><span class="fu">sudo</span> chown -R <span class="kw">`</span><span class="fu">whoami</span><span class="kw">`</span>:admin /usr/local/bin</a>
+<a class="sourceLine" id="cb1038-2" title="2"><span class="ex">~/Library/TinyTeX/bin/x86_64-darwin/tlmgr</span> path add</a></code></pre></div>
 </div>
 <div id="additional-chunk-options" class="section level4">
 <h4>Additional Chunk Options</h4>
 <p>In the curly brackets for the code chunk, you can specify a variety of additional options that define how your code chunk and its output will be displayed.</p>
 <p>Generally, you should name each code chunk. You can name a code chunk by feeding in a single name (no spaces!) right after the “r” declaration. For example, I could name my code chunk “tab-pclass” like so:</p>
-<div class="sourceCode" id="cb1018"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1018-1" title="1"><span class="bn">```{r tab-pclass}</span></a>
-<a class="sourceLine" id="cb1018-2" title="2"><span class="bn">tab &lt;- table(titanic$pclass, titanic$survival)</span></a>
-<a class="sourceLine" id="cb1018-3" title="3"><span class="bn">prop.table(tab, 1)</span></a>
-<a class="sourceLine" id="cb1018-4" title="4"><span class="bn">```</span></a></code></pre></div>
+<div class="sourceCode" id="cb1039"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1039-1" title="1"><span class="bn">```{r tab-pclass}</span></a>
+<a class="sourceLine" id="cb1039-2" title="2"><span class="bn">tab &lt;- table(titanic$pclass, titanic$survival)</span></a>
+<a class="sourceLine" id="cb1039-3" title="3"><span class="bn">prop.table(tab, 1)</span></a>
+<a class="sourceLine" id="cb1039-4" title="4"><span class="bn">```</span></a></code></pre></div>
 <p>Naming is not required, but it does provide some benefits. RStudio will show you all code chunks in your outline and naming them helps you to easily find which code chunk you are looking for. If you get an error while processing your R Markdown document, it will be easier to diagnose which code chunk has the error if you have them named as well.</p>
 <p>Naming does have one drawback. R Markdown will not process a document if two code chunks have the same name. Instead if will give you a “duplicate label” error. Be careful when copying and pasting code chunks to rename new code chunks with a different name.</p>
 <p>In addition to names, you can specify a variety of other arguments in the curly brackets in a fashion very similar to R function arguments. Arguments are separated by commas and have a syntax of <code>argument=value</code>.</p>
@@ -512,22 +518,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><code>eval=FALSE</code> - If you set <code>eval</code> to <code>FALSE</code> then the code chunk will not be processed and nothing will be shown. This can be useful if you want to temporarily “turn off” a code chunk without actually removing the code.</li>
 </ul>
 <p>Lets say that I only wanted my output to show for my example code chunk. I would then change my code chunk as follows:</p>
-<div class="sourceCode" id="cb1019"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1019-1" title="1"><span class="bn">```{r tab-pclass, echo=FALSE}</span></a>
-<a class="sourceLine" id="cb1019-2" title="2"><span class="bn">tab &lt;- table(titanic$pclass, titanic$survival)</span></a>
-<a class="sourceLine" id="cb1019-3" title="3"><span class="bn">prop.table(tab, 1)</span></a>
-<a class="sourceLine" id="cb1019-4" title="4"><span class="bn">```</span></a></code></pre></div>
+<div class="sourceCode" id="cb1040"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1040-1" title="1"><span class="bn">```{r tab-pclass, echo=FALSE}</span></a>
+<a class="sourceLine" id="cb1040-2" title="2"><span class="bn">tab &lt;- table(titanic$pclass, titanic$survival)</span></a>
+<a class="sourceLine" id="cb1040-3" title="3"><span class="bn">prop.table(tab, 1)</span></a>
+<a class="sourceLine" id="cb1040-4" title="4"><span class="bn">```</span></a></code></pre></div>
 </div>
 </div>
 <div id="figures-in-r-markdown" class="section level3">
 <h3>Figures in R Markdown</h3>
 <p>You can use R code chunks to directly produce nice figures within your document. You can also put captions on these figures with the <code>fig.cap</code> argument. Lets make a barplot of the conditional distribution of survival on the Titanic using a code chunk:</p>
-<div class="sourceCode" id="cb1020"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1020-1" title="1"><span class="bn">```{r fig-pclass, echo=FALSE, fig.cap=&#39;Distribution of Titanic survival by gender&#39;}</span></a>
-<a class="sourceLine" id="cb1020-2" title="2"><span class="bn">ggplot(titanic, aes(x=survival, y=..prop.., group=sex, fill=sex))+</span></a>
-<a class="sourceLine" id="cb1020-3" title="3"><span class="bn">  geom_bar(position=&quot;dodge&quot;)+</span></a>
-<a class="sourceLine" id="cb1020-4" title="4"><span class="bn">  scale_y_continuous(label=scales::percent)+</span></a>
-<a class="sourceLine" id="cb1020-5" title="5"><span class="bn">  labs(y=&quot;percent surviving&quot;, x=NULL, fill=&quot;gender&quot;)+</span></a>
-<a class="sourceLine" id="cb1020-6" title="6"><span class="bn">  theme_bw()</span></a>
-<a class="sourceLine" id="cb1020-7" title="7"><span class="bn">```</span></a></code></pre></div>
+<div class="sourceCode" id="cb1041"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1041-1" title="1"><span class="bn">```{r fig-pclass, echo=FALSE, fig.cap=&#39;Distribution of Titanic survival by gender&#39;}</span></a>
+<a class="sourceLine" id="cb1041-2" title="2"><span class="bn">ggplot(titanic, aes(x=survival, y=..prop.., group=sex, fill=sex))+</span></a>
+<a class="sourceLine" id="cb1041-3" title="3"><span class="bn">  geom_bar(position=&quot;dodge&quot;)+</span></a>
+<a class="sourceLine" id="cb1041-4" title="4"><span class="bn">  scale_y_continuous(label=scales::percent)+</span></a>
+<a class="sourceLine" id="cb1041-5" title="5"><span class="bn">  labs(y=&quot;percent surviving&quot;, x=NULL, fill=&quot;gender&quot;)+</span></a>
+<a class="sourceLine" id="cb1041-6" title="6"><span class="bn">  theme_bw()</span></a>
+<a class="sourceLine" id="cb1041-7" title="7"><span class="bn">```</span></a></code></pre></div>
 <p>Notice that I am using the <code>fig.cap</code> argument in the code chunk header to specify a figure caption rathe than the title label from within ggplot. Generally, I recommend that you create captions for R Markdown documents in this way, because they will be able to take advantage of additional layout options in many of the output documents.</p>
 <p>If I run this code chunk, I will get a nice inline display of the figure:</p>
 <p><img src="resources/markdown_screenshots/code_chunk_figure.png" /></p>
@@ -546,10 +552,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="using-kable-and-pandoc.table" class="section level4">
 <h4>Using <code>kable</code> and <code>pandoc.table</code></h4>
 <p>Lets look at a passenger class by survival crosstab in the Titanic data using <code>kable</code> and <code>pandoc.table</code>. The <code>kable</code> command has one special advantage. Because this command comes from the same library that “knits” together our document, RStudio knows that the output should be displayed as a real table rather than as simple R output. Here is the code chunk to produce the table in <code>kable</code>:</p>
-<div class="sourceCode" id="cb1021"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1021-1" title="1"><span class="bn">```{r kable-table, echo=FALSE}</span></a>
-<a class="sourceLine" id="cb1021-2" title="2"><span class="bn">kable(tab, </span></a>
-<a class="sourceLine" id="cb1021-3" title="3"><span class="bn">      caption = &quot;Cross-tabulation of passenger class by survival on the Titanic&quot;)</span></a>
-<a class="sourceLine" id="cb1021-4" title="4"><span class="bn">```</span></a></code></pre></div>
+<div class="sourceCode" id="cb1042"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1042-1" title="1"><span class="bn">```{r kable-table, echo=FALSE}</span></a>
+<a class="sourceLine" id="cb1042-2" title="2"><span class="bn">kable(tab, </span></a>
+<a class="sourceLine" id="cb1042-3" title="3"><span class="bn">      caption = &quot;Cross-tabulation of passenger class by survival on the Titanic&quot;)</span></a>
+<a class="sourceLine" id="cb1042-4" title="4"><span class="bn">```</span></a></code></pre></div>
 <p>And the output:</p>
 <table>
 <caption>
@@ -605,10 +611,10 @@ Third
 </table>
 <p>The table looks pretty decent. My major complaints are that the variables themselves are not labeled directly and that the table stretches out across the whole width. Some of this can be adjusted by settings, but if you really want to make the table nicer, you can try the <a href="https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html">kableExtra</a> package which a variety of nice formatting features to a kable table.</p>
 <p>To produce the table using <code>pandoc.table</code>, we use almost the exact same syntax except for one important change. We will need to add the argument <code>results='asis'</code> in the code chunk to tell R to treat the output as regular markdown text that can be further processed.</p>
-<div class="sourceCode" id="cb1022"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1022-1" title="1"><span class="bn">```{r pandoc-table, echo=FALSE, results=&#39;asis&#39;}</span></a>
-<a class="sourceLine" id="cb1022-2" title="2"><span class="bn">pandoc.table(tab, </span></a>
-<a class="sourceLine" id="cb1022-3" title="3"><span class="bn">             caption = &quot;Cross-tabulation of passenger class by survival on the Titanic&quot;)</span></a>
-<a class="sourceLine" id="cb1022-4" title="4"><span class="bn">```</span></a></code></pre></div>
+<div class="sourceCode" id="cb1043"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1043-1" title="1"><span class="bn">```{r pandoc-table, echo=FALSE, results=&#39;asis&#39;}</span></a>
+<a class="sourceLine" id="cb1043-2" title="2"><span class="bn">pandoc.table(tab, </span></a>
+<a class="sourceLine" id="cb1043-3" title="3"><span class="bn">             caption = &quot;Cross-tabulation of passenger class by survival on the Titanic&quot;)</span></a>
+<a class="sourceLine" id="cb1043-4" title="4"><span class="bn">```</span></a></code></pre></div>
 <p>And the output:</p>
 <table style="width:43%;">
 <caption>Cross-tabulation of passenger class by survival on the Titanic</caption>
@@ -648,15 +654,15 @@ Third
 <h4>Using <code>texreg</code></h4>
 <p>The <code>texreg</code> package is an extremely useful package for producing regression tables in the style that is common in journal articles. It is not the only package of this sort. The other major package that is used for this purpose is called <code>stargazer</code> but I think <code>texreg</code> has a few advantages so it is the only I use for our course.</p>
 <p>I would recommend that you use the development version of the <code>texreg</code> package that is available on GitHub because it has many features for playing nice with R Markdown that are not available in the default package. To install the GitHub development version, you will need to install the <code>devtools</code> package and then use the <code>install_github</code> function:</p>
-<div class="sourceCode" id="cb1023"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1023-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</a>
-<a class="sourceLine" id="cb1023-2" title="2"><span class="kw">library</span>(devtools)</a>
-<a class="sourceLine" id="cb1023-3" title="3"><span class="kw">install_github</span>(<span class="st">&quot;leifeld/texreg&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1044"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1044-1" title="1"><span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</a>
+<a class="sourceLine" id="cb1044-2" title="2"><span class="kw">library</span>(devtools)</a>
+<a class="sourceLine" id="cb1044-3" title="3"><span class="kw">install_github</span>(<span class="st">&quot;leifeld/texreg&quot;</span>)</a></code></pre></div>
 <p>The <code>texreg</code> package is highly customizable. We will focus on only a few of its customization options here in order to get up and running.</p>
 <p>To get started lets create a sequence of nested models in R predicing Tomato Meter ratings of movies:</p>
-<div class="sourceCode" id="cb1024"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1024-1" title="1">model1 &lt;-<span class="st"> </span><span class="kw">lm</span>(TomatoMeter<span class="op">~</span><span class="kw">I</span>(Runtime<span class="dv">-90</span>), <span class="dt">data=</span>movies)</a>
-<a class="sourceLine" id="cb1024-2" title="2">model2 &lt;-<span class="st"> </span><span class="kw">update</span>(model1,.<span class="op">~</span>.<span class="op">+</span>Rating)</a>
-<a class="sourceLine" id="cb1024-3" title="3">model3 &lt;-<span class="st"> </span><span class="kw">update</span>(model2,.<span class="op">~</span>.<span class="op">+</span><span class="kw">I</span>(Runtime<span class="dv">-90</span>)<span class="op">*</span>Rating)</a>
-<a class="sourceLine" id="cb1024-4" title="4">model4 &lt;-<span class="st"> </span><span class="kw">update</span>(model3,.<span class="op">~</span>.<span class="op">+</span><span class="kw">I</span>(Year<span class="dv">-2001</span>)<span class="op">+</span>Genre<span class="op">+</span><span class="kw">I</span>(BoxOffice<span class="op">-</span><span class="kw">mean</span>(BoxOffice)))</a></code></pre></div>
+<div class="sourceCode" id="cb1045"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1045-1" title="1">model1 &lt;-<span class="st"> </span><span class="kw">lm</span>(TomatoMeter<span class="op">~</span><span class="kw">I</span>(Runtime<span class="dv">-90</span>), <span class="dt">data=</span>movies)</a>
+<a class="sourceLine" id="cb1045-2" title="2">model2 &lt;-<span class="st"> </span><span class="kw">update</span>(model1,.<span class="op">~</span>.<span class="op">+</span>Rating)</a>
+<a class="sourceLine" id="cb1045-3" title="3">model3 &lt;-<span class="st"> </span><span class="kw">update</span>(model2,.<span class="op">~</span>.<span class="op">+</span><span class="kw">I</span>(Runtime<span class="dv">-90</span>)<span class="op">*</span>Rating)</a>
+<a class="sourceLine" id="cb1045-4" title="4">model4 &lt;-<span class="st"> </span><span class="kw">update</span>(model3,.<span class="op">~</span>.<span class="op">+</span><span class="kw">I</span>(Year<span class="dv">-2001</span>)<span class="op">+</span>Genre<span class="op">+</span><span class="kw">I</span>(BoxOffice<span class="op">-</span><span class="kw">mean</span>(BoxOffice)))</a></code></pre></div>
 <p>The <code>texreg</code> package comes with several different commands that will give the model results in different formats depending on the output that the user wants, but we will only need to use two of these commands directly.</p>
 <ul>
 <li><code>screenreg</code> - This command will print the results out as nicely formatted plain text. This is useful when interactively testing out models in an R Markdown document but is not recommended for a “final product.”</li>
@@ -664,9 +670,9 @@ Third
 </ul>
 <p>Regardless of which command you use, the basic syntax is the same Therefore, you just need to switch the command name to switch the output.</p>
 <p>The most important required argument for the <code>texreg</code> commands is a <code>list</code> of the model objects that should go into the table. So, if I want to print my results to the screen, I would use the following basic syntax:</p>
-<div class="sourceCode" id="cb1025"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1025-1" title="1"><span class="bn">```{r tab-screenreg, echo=FALSE}</span></a>
-<a class="sourceLine" id="cb1025-2" title="2"><span class="bn">screenreg(list(model1, model2, model3, model4))</span></a>
-<a class="sourceLine" id="cb1025-3" title="3"><span class="bn">```</span></a></code></pre></div>
+<div class="sourceCode" id="cb1046"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1046-1" title="1"><span class="bn">```{r tab-screenreg, echo=FALSE}</span></a>
+<a class="sourceLine" id="cb1046-2" title="2"><span class="bn">screenreg(list(model1, model2, model3, model4))</span></a>
+<a class="sourceLine" id="cb1046-3" title="3"><span class="bn">```</span></a></code></pre></div>
 <p>The output will look as follows:</p>
 <pre><code>## 
 ## ===============================================================================
@@ -719,23 +725,23 @@ Third
 ## ===============================================================================
 ## *** p &lt; 0.001; ** p &lt; 0.01; * p &lt; 0.05</code></pre>
 <p>You can see that this table has the same structure that people expect to see for tables of regression models. The <code>texreg</code> functions come with a variety of optional commands, however, that will allow me to make this look even nicer. Below, I show off some <code>texreg</code> options that will allow me to produce a nicer table.</p>
-<div class="sourceCode" id="cb1027"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1027-1" title="1"><span class="bn">```{r tab-screenreg-better, echo=FALSE, results=&#39;asis&#39;}</span></a>
-<a class="sourceLine" id="cb1027-2" title="2"><span class="bn">knitreg(list(model1, model2, model3, model4),</span></a>
-<a class="sourceLine" id="cb1027-3" title="3"><span class="bn">        caption=&quot;Linear models predicting a movie&#39;s tomato meter rating&quot;,</span></a>
-<a class="sourceLine" id="cb1027-4" title="4"><span class="bn">        custom.coef.names = c(&quot;Intercept&quot;, &quot;Movie runtime in minutes&quot;,</span></a>
-<a class="sourceLine" id="cb1027-5" title="5"><span class="bn">                              &quot;PG&quot;, &quot;PG-13&quot;,&quot;R&quot;,</span></a>
-<a class="sourceLine" id="cb1027-6" title="6"><span class="bn">                              &quot;Runtime*PG&quot;, &quot;Runtime*PG-13&quot;, &quot;Runtime*R&quot;,</span></a>
-<a class="sourceLine" id="cb1027-7" title="7"><span class="bn">                              &quot;Year of release&quot;,</span></a>
-<a class="sourceLine" id="cb1027-8" title="8"><span class="bn">                              &quot;Animation&quot;,&quot;Comedy&quot;,&quot;Drama&quot;,&quot;Family&quot;,&quot;Horror&quot;,</span></a>
-<a class="sourceLine" id="cb1027-9" title="9"><span class="bn">                              &quot;Musical&quot;,&quot;Mystery&quot;,&quot;Romance&quot;,&quot;Sci-Fi/Fantasy&quot;,</span></a>
-<a class="sourceLine" id="cb1027-10" title="10"><span class="bn">                              &quot;Thriller&quot;,&quot;Box office returns (millions USD)&quot;),</span></a>
-<a class="sourceLine" id="cb1027-11" title="11"><span class="bn">        digits = 3,</span></a>
-<a class="sourceLine" id="cb1027-12" title="12"><span class="bn">        caption.above=TRUE, </span></a>
-<a class="sourceLine" id="cb1027-13" title="13"><span class="bn">        include.rsquared=TRUE,</span></a>
-<a class="sourceLine" id="cb1027-14" title="14"><span class="bn">        include.adjrs=FALSE,</span></a>
-<a class="sourceLine" id="cb1027-15" title="15"><span class="bn">        include.nobs=TRUE,</span></a>
-<a class="sourceLine" id="cb1027-16" title="16"><span class="bn">        include.rmse=FALSE)</span></a>
-<a class="sourceLine" id="cb1027-17" title="17"><span class="bn">```</span></a></code></pre></div>
+<div class="sourceCode" id="cb1048"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1048-1" title="1"><span class="bn">```{r tab-screenreg-better, echo=FALSE, results=&#39;asis&#39;}</span></a>
+<a class="sourceLine" id="cb1048-2" title="2"><span class="bn">knitreg(list(model1, model2, model3, model4),</span></a>
+<a class="sourceLine" id="cb1048-3" title="3"><span class="bn">        caption=&quot;Linear models predicting a movie&#39;s tomato meter rating&quot;,</span></a>
+<a class="sourceLine" id="cb1048-4" title="4"><span class="bn">        custom.coef.names = c(&quot;Intercept&quot;, &quot;Movie runtime in minutes&quot;,</span></a>
+<a class="sourceLine" id="cb1048-5" title="5"><span class="bn">                              &quot;PG&quot;, &quot;PG-13&quot;,&quot;R&quot;,</span></a>
+<a class="sourceLine" id="cb1048-6" title="6"><span class="bn">                              &quot;Runtime*PG&quot;, &quot;Runtime*PG-13&quot;, &quot;Runtime*R&quot;,</span></a>
+<a class="sourceLine" id="cb1048-7" title="7"><span class="bn">                              &quot;Year of release&quot;,</span></a>
+<a class="sourceLine" id="cb1048-8" title="8"><span class="bn">                              &quot;Animation&quot;,&quot;Comedy&quot;,&quot;Drama&quot;,&quot;Family&quot;,&quot;Horror&quot;,</span></a>
+<a class="sourceLine" id="cb1048-9" title="9"><span class="bn">                              &quot;Musical&quot;,&quot;Mystery&quot;,&quot;Romance&quot;,&quot;Sci-Fi/Fantasy&quot;,</span></a>
+<a class="sourceLine" id="cb1048-10" title="10"><span class="bn">                              &quot;Thriller&quot;,&quot;Box office returns (millions USD)&quot;),</span></a>
+<a class="sourceLine" id="cb1048-11" title="11"><span class="bn">        digits = 3,</span></a>
+<a class="sourceLine" id="cb1048-12" title="12"><span class="bn">        caption.above=TRUE, </span></a>
+<a class="sourceLine" id="cb1048-13" title="13"><span class="bn">        include.rsquared=TRUE,</span></a>
+<a class="sourceLine" id="cb1048-14" title="14"><span class="bn">        include.adjrs=FALSE,</span></a>
+<a class="sourceLine" id="cb1048-15" title="15"><span class="bn">        include.nobs=TRUE,</span></a>
+<a class="sourceLine" id="cb1048-16" title="16"><span class="bn">        include.rmse=FALSE)</span></a>
+<a class="sourceLine" id="cb1048-17" title="17"><span class="bn">```</span></a></code></pre></div>
 <p>First, notice that I have switched from <code>screenreg</code> to <code>knitreg</code>. That will allow the results to appear nicely formatted in the HTML document you are reading right now. Note also that I have added the <code>results='asis'</code> to my code chunk header. Without this command, the knitting process won’t know to treat the output directly as HTML code and will instead treat it like plain text.</p>
 <p>What do all of the additional arguments to <code>knitreg</code> do?</p>
 <ul>

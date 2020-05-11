@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-05-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -302,8 +302,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#a-glm-for-dichotomous-outcomes"><i class="fa fa-check"></i>A GLM for dichotomous outcomes</a></li>
 <li class="chapter" data-level="" data-path="generalized-linear-model.html"><a href="generalized-linear-model.html#maximum-likelihood-estimation"><i class="fa fa-check"></i>Maximum likelihood estimation</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a></li>
-<li class="chapter" data-level="" data-path="models-polytomous-outcomes.html"><a href="models-polytomous-outcomes.html"><i class="fa fa-check"></i>Models Polytomous Outcomes</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html"><i class="fa fa-check"></i>Logit Model</a><ul>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#interpreting-results"><i class="fa fa-check"></i>Interpreting results</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#marginal-effects-1"><i class="fa fa-check"></i>Marginal effects</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#the-probit-link"><i class="fa fa-check"></i>The probit link</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#assessing-model-fit"><i class="fa fa-check"></i>Assessing model fit</a></li>
+<li class="chapter" data-level="" data-path="logit-model.html"><a href="logit-model.html#separation"><i class="fa fa-check"></i>Separation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="models-for-polytomous-outcomes.html"><a href="models-for-polytomous-outcomes.html"><i class="fa fa-check"></i>Models for Polytomous Outcomes</a></li>
 </ul></li>
 <li class="appendix"><span><b>Appendices</b></span></li>
 <li class="chapter" data-level="" data-path="useful-references.html"><a href="useful-references.html"><i class="fa fa-check"></i>Useful References</a><ul>
@@ -607,8 +613,6 @@ Other
 </tbody>
 </table>
 <p>Note that each row gets divided by its row marginal. If we do the math here, we will come out with the following proportions:</p>
-<pre><code>## Warning in base::cbind(...): number of rows of result is not a multiple of
-## vector length (arg 2)</code></pre>
 <table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>
 <span id="tab:cond-dist-table">Table 10: </span>Distribution of belief conditional on party affiliation
@@ -690,7 +694,7 @@ Other
 <p>Note that the proportions should add up to 1 within each row because we are basically calculating the share of each row that belongs to each column category. <strong>To understand these conditional distributions, you need to look at the numbers within each row.</strong> For example, the first row tells us that 15.7% of Democrats are deniers and 84.3% of Democrats are believers. The second row tells us that 46.5% of Republicans are deniers and 53.5% of Republicans are believers.</p>
 <p>We can tell if there is an association between the row and column variable if these conditional distributions are different across rows. In this case, they are clearly very different. About 84.3% of Democrats are believers while only about half (53.5%) of Republicans are believers. About 76.4% of Independents are believers, while about 68.9% of members of other parties are believers.</p>
 <p>We can use the <code>prop.table</code> command we saw in the last module to estimate these conditional distributions. In order to do that we feed in the crosstab we calculated with tab and one additional argument that indicates which dimension (row or column ) we want to condition across. Like <code>margin.table</code> a value of <code>1</code> will condition on rows (rows sum to 1) and a value of <code>2</code> will condition on columns (columns sum to 1). If we condition on rows here, we will get the same table as above.</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1"><span class="kw">prop.table</span>(tab,<span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" title="1"><span class="kw">prop.table</span>(tab,<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>##              
 ##                      No       Yes
 ##   Democrat    0.1569966 0.8430034
@@ -698,7 +702,7 @@ Other
 ##   Independent 0.2360608 0.7639392
 ##   Other       0.3112583 0.6887417</code></pre>
 <p>Its important to remember which way you did the conditional distribution and get the interpretation correct. If you are not sure, just note which way the proportions add up to one - this is the direction you should be looking (i.e. within row or column). In this case, I am looking at the distribution of variables within rows, so the proportions refer to the proportion of respondents from a given political party who hold a given belief. But, I could have done my conditional distribution the other way:</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" title="1"><span class="kw">prop.table</span>(tab,<span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1"><span class="kw">prop.table</span>(tab,<span class="dv">2</span>)</a></code></pre></div>
 <pre><code>##              
 ##                       No        Yes
 ##   Democrat    0.19491525 0.40385873
@@ -706,15 +710,27 @@ Other
 ##   Independent 0.27627119 0.34499673
 ##   Other       0.03983051 0.03400916</code></pre>
 <p>Note that this table looks deceptively similar to the table above. But look again. The numbers now don’t add up to one within each row. They do however add up to one within each column. In order to read this table properly, we have to understand that it is giving us the distribution within each column: the proportion of respondents who have a given belief who belong to a given political party. So we can see in the first number that 19.5% of deniers are Democrats, 48.2% are Republicans, 27.9% are Independents, and 4.1% belong to other parties. This distribution is very different from the party affiliation distribution of believers in the second column which tells us that there is an association. However, the large party cleavages on the issue are not as immediately obvious here as they were with the previous conditional distribution. Always think carefully about which conditional distribution is more sensible to interpret and always make sure that you are interpreting them in the correct way.</p>
+<div class="dcl">
+<h4 id="try-it-out">Try it out</h4>
+<p>In the interactive <em>R</em> session below, try to calculate the distribution of movie maturity ratings (e.g. PG, PG-13) by movie genre. Keep the following in mind:</p>
+<ol style="list-style-type: decimal">
+<li>For easier display, its usually better to put the variable with more categories on the rows. In this case, <tt>Genre</tt> has more categories than <tt>Rating</tt>.</li>
+<li>For a more compact display, you should wrap your <tt>prop.table</tt> command in a <tt>round</tt> command with three decimal places. See the solution if you have trouble.</li>
+<li>Remember to check that your conditional distributions add up to one in the direction that you expect.</li>
+</ol>
+<p>Once you have the correct output, you can explore some interesting questions. Which movie genre is the most likely to be R-rated? Which movie genre is the most likely to be G-rated? Which genre is the least likely to receive a PG-13 rating?</p>
+<iframe src="dcl_interactives/cond_dist.html" frameborder="0" scrolling="no" style="width:100%;height:405px">
+</iframe>
+</div>
 <iframe src="https://www.youtube.com/embed/UYsvfTXXs8w" width="672" height="400px">
 </iframe>
 <p>It is also possible to graph the conditional distribution as a set of barplots. To do that, we will learn a new feature of ggplot called <strong>faceting</strong>. Faceting allows us to make the same plot based on subsets of the data in a series of panels. In this case, we can use the code for a univariate barplot but faceted by First, lets save the output of our prop.table into a new object.</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" title="1"><span class="kw">ggplot</span>(politics, <span class="kw">aes</span>(<span class="dt">x=</span>globalwarm, <span class="dt">y=</span>..prop.., <span class="dt">group=</span><span class="dv">1</span>))<span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb54-2" title="2"><span class="st">  </span><span class="kw">geom_bar</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb54-3" title="3"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>party)<span class="op">+</span></a>
-<a class="sourceLine" id="cb54-4" title="4"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> scales<span class="op">::</span>percent)<span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb54-5" title="5"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;belief in anthropogenic climate change&quot;</span>, <span class="dt">y=</span><span class="ot">NULL</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb54-6" title="6"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1"><span class="kw">ggplot</span>(politics, <span class="kw">aes</span>(<span class="dt">x=</span>globalwarm, <span class="dt">y=</span>..prop.., <span class="dt">group=</span><span class="dv">1</span>))<span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb53-2" title="2"><span class="st">  </span><span class="kw">geom_bar</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb53-3" title="3"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>party)<span class="op">+</span></a>
+<a class="sourceLine" id="cb53-4" title="4"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> scales<span class="op">::</span>percent)<span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb53-5" title="5"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;belief in anthropogenic climate change&quot;</span>, <span class="dt">y=</span><span class="ot">NULL</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb53-6" title="6"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:barplot-climatebelief-party"></span>
 <img src="stat_book_files/figure-html/barplot-climatebelief-party-1.png" alt="Distribution of belief in anthropogenic climate change by party affiliation, ANES 2016" width="672" />
 <p class="caption">
@@ -723,12 +739,12 @@ Figure 16: Distribution of belief in anthropogenic climate change by party affil
 </div>
 <p>Figure <a href="the-two-way-table.html#fig:barplot-climatebelief-party">16</a> is a <strong>comparative barplot</strong>. This is our first example of a graph that looks at a relationship. Each panel shows the distribution of climate change beliefs for respondents with that particular party affiliation. What we are interested in is whether the distribution looks different across each panel. In this case, because there were only two categories of the response variable, we only really need to look at the heights of the bar for one category to see the variation across party affiliation, which is substantial.</p>
 <p>Lets try an example with more than two categories. For this example, I want to know whether there was a difference in passenger class by gender on the Titanic. I start with a comparative barplot:</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1"><span class="kw">ggplot</span>(titanic, <span class="kw">aes</span>(<span class="dt">x=</span>pclass, <span class="dt">y=</span>..prop.., <span class="dt">group=</span><span class="dv">1</span>))<span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb55-2" title="2"><span class="st">  </span><span class="kw">geom_bar</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb55-3" title="3"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>sex)<span class="op">+</span></a>
-<a class="sourceLine" id="cb55-4" title="4"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> scales<span class="op">::</span>percent)<span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb55-5" title="5"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;passenger class&quot;</span>, <span class="dt">y=</span><span class="ot">NULL</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb55-6" title="6"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" title="1"><span class="kw">ggplot</span>(titanic, <span class="kw">aes</span>(<span class="dt">x=</span>pclass, <span class="dt">y=</span>..prop.., <span class="dt">group=</span><span class="dv">1</span>))<span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb54-2" title="2"><span class="st">  </span><span class="kw">geom_bar</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb54-3" title="3"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>sex)<span class="op">+</span></a>
+<a class="sourceLine" id="cb54-4" title="4"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> scales<span class="op">::</span>percent)<span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb54-5" title="5"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;passenger class&quot;</span>, <span class="dt">y=</span><span class="ot">NULL</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb54-6" title="6"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:comp-bar-pclass-gender"></span>
 <img src="stat_book_files/figure-html/comp-bar-pclass-gender-1.png" alt="Distribution of passenger class by gender" width="672" />
 <p class="caption">
@@ -736,7 +752,7 @@ Figure 17: Distribution of passenger class by gender
 </p>
 </div>
 <p>I can also calculate the conditional distributions by hand using <code>prop.table</code>:</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" title="1"><span class="kw">round</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(titanic<span class="op">$</span>sex, titanic<span class="op">$</span>pclass),<span class="dv">1</span>),<span class="dv">3</span>)<span class="op">*</span><span class="dv">100</span></a></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1"><span class="kw">round</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(titanic<span class="op">$</span>sex, titanic<span class="op">$</span>pclass),<span class="dv">1</span>),<span class="dv">3</span>)<span class="op">*</span><span class="dv">100</span></a></code></pre></div>
 <pre><code>##         
 ##          First Second Third
 ##   Female  30.9   22.7  46.4
