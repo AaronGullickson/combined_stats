@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-11" />
+<meta name="date" content="2020-05-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -415,49 +415,49 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="common-r-commands" class="section level2">
 <h2>Common R Commands</h2>
 <p>Below is a list of common commands that we use for the undergraduate class, along with some examples. You can view a help file in RStudio for each command by searching for the command name in the help tab in the lower right panel. You can also just type the name of the command preceded by a “?” into the console. For example, if you wanted to understand how barplot works, type:</p>
-<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb580-1" title="1">?barplot</a></code></pre></div>
+<div class="sourceCode" id="cb593"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb593-1" title="1">?barplot</a></code></pre></div>
 <p>The list here does not contain information about making plots in R. That information is in the Plotting Cookbook appendix.</p>
 <div id="univariate-statistics" class="section level3">
 <h3>Univariate Statistics</h3>
 <div id="mean" class="section level4">
 <h4>mean</h4>
 <p>Calculate the mean of a quantitative variable. Remember that this command will not work for categorical variables.</p>
-<div class="sourceCode" id="cb581"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb581-1" title="1"><span class="kw">mean</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
+<div class="sourceCode" id="cb594"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb594-1" title="1"><span class="kw">mean</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
 <pre><code>## [1] 24.27601</code></pre>
 </div>
 <div id="median" class="section level4">
 <h4>median</h4>
 <p>Calculate the median of a quantitative variable. Remember that this command will not work for categorical variables.</p>
-<div class="sourceCode" id="cb583"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb583-1" title="1"><span class="kw">median</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
+<div class="sourceCode" id="cb596"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb596-1" title="1"><span class="kw">median</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
 <pre><code>## [1] 19.21667</code></pre>
 </div>
 <div id="sd" class="section level4">
 <h4>sd</h4>
 <p>Calculate the standard deviation of a quantitative variable. Remember that this command will not work for categorical variables.</p>
-<div class="sourceCode" id="cb585"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb585-1" title="1"><span class="kw">sd</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
+<div class="sourceCode" id="cb598"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb598-1" title="1"><span class="kw">sd</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
 <pre><code>## [1] 16.23676</code></pre>
 </div>
 <div id="iqr" class="section level4">
 <h4>IQR</h4>
 <p>Calculate the interquartile range of a quantitative variable. Remember that this command will not work for categorical variables.</p>
-<div class="sourceCode" id="cb587"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb587-1" title="1"><span class="kw">IQR</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
+<div class="sourceCode" id="cb600"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb600-1" title="1"><span class="kw">IQR</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
 <pre><code>## [1] 17</code></pre>
 </div>
 <div id="quantile" class="section level4">
 <h4>quantile</h4>
 <p>Calculate percentiles of a distribution. Remember that this command will not work for categorical variables. By default, the quantile command will return the quartiles (0,25,50,75,100 percentiles). If you want different percentiles, you will have to specify the <code>probs</code> argument.</p>
-<div class="sourceCode" id="cb589"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb589-1" title="1"><span class="kw">quantile</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
+<div class="sourceCode" id="cb602"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb602-1" title="1"><span class="kw">quantile</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
 <pre><code>##       0%      25%      50%      75%     100% 
 ##  1.00000 13.00000 19.21667 30.00000 99.99000</code></pre>
-<div class="sourceCode" id="cb591"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb591-1" title="1"><span class="co">#get the 10th and 90th percentile instead</span></a>
-<a class="sourceLine" id="cb591-2" title="2"><span class="kw">quantile</span>(earnings<span class="op">$</span>wages, <span class="dt">probs =</span> <span class="kw">c</span>(<span class="fl">0.1</span>,<span class="fl">0.9</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb604"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb604-1" title="1"><span class="co">#get the 10th and 90th percentile instead</span></a>
+<a class="sourceLine" id="cb604-2" title="2"><span class="kw">quantile</span>(earnings<span class="op">$</span>wages, <span class="dt">probs =</span> <span class="kw">c</span>(<span class="fl">0.1</span>,<span class="fl">0.9</span>))</a></code></pre></div>
 <pre><code>##    10%    90% 
 ## 10.000 47.596</code></pre>
 </div>
 <div id="table" class="section level4">
 <h4>table</h4>
 <p>Calculate the absolute frequencies of the categories a categorical variable.</p>
-<div class="sourceCode" id="cb593"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb593-1" title="1"><span class="kw">table</span>(movies<span class="op">$</span>Genre)</a></code></pre></div>
+<div class="sourceCode" id="cb606"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb606-1" title="1"><span class="kw">table</span>(movies<span class="op">$</span>Genre)</a></code></pre></div>
 <pre><code>## 
 ##        Action     Animation        Comedy         Drama        Family 
 ##           207           139           781           332           155 
@@ -469,7 +469,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="prop.table" class="section level4">
 <h4>prop.table</h4>
 <p>Calculate the proportions (i.e. relative frequencies) of the categories of a categorical variable. This command must be run on the output from a <code>table</code> command. You can do that in one command by nesting the <code>table</code> command inside the <code>prop.table</code> command.</p>
-<div class="sourceCode" id="cb595"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb595-1" title="1"><span class="kw">prop.table</span>(<span class="kw">table</span>(movies<span class="op">$</span>Genre))</a></code></pre></div>
+<div class="sourceCode" id="cb608"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb608-1" title="1"><span class="kw">prop.table</span>(<span class="kw">table</span>(movies<span class="op">$</span>Genre))</a></code></pre></div>
 <pre><code>## 
 ##        Action     Animation        Comedy         Drama        Family 
 ##    0.08108108    0.05444575    0.30591461    0.13004309    0.06071289 
@@ -481,10 +481,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="summary" class="section level4">
 <h4>summary</h4>
 <p>Provide a summary of a variable, either categorical or quantitative.</p>
-<div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb597-1" title="1"><span class="kw">summary</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
+<div class="sourceCode" id="cb610"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb610-1" title="1"><span class="kw">summary</span>(earnings<span class="op">$</span>wages)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##    1.00   13.00   19.22   24.28   30.00   99.99</code></pre>
-<div class="sourceCode" id="cb599"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb599-1" title="1"><span class="kw">summary</span>(movies<span class="op">$</span>Genre)</a></code></pre></div>
+<div class="sourceCode" id="cb612"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb612-1" title="1"><span class="kw">summary</span>(movies<span class="op">$</span>Genre)</a></code></pre></div>
 <pre><code>##        Action     Animation        Comedy         Drama        Family 
 ##           207           139           781           332           155 
 ##        Horror Musical/Music       Mystery       Romance SciFi/Fantasy 
@@ -498,7 +498,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="table-1" class="section level4">
 <h4>table</h4>
 <p>Can be used to create a two-way table, although further work needs to be done to extract useful information from the two-way table.</p>
-<div class="sourceCode" id="cb601"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb601-1" title="1"><span class="kw">table</span>(movies<span class="op">$</span>Genre, movies<span class="op">$</span>Rating)</a></code></pre></div>
+<div class="sourceCode" id="cb614"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb614-1" title="1"><span class="kw">table</span>(movies<span class="op">$</span>Genre, movies<span class="op">$</span>Rating)</a></code></pre></div>
 <pre><code>##                
 ##                   G  PG PG-13   R
 ##   Action          0   3    98 106
@@ -533,20 +533,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="tapply" class="section level4">
 <h4>tapply</h4>
 <p>Calculate a statistic (e.g. mean, median, sd, IQR) for a quantitative variable across the categories of a categorical variable. The first argument should be the quantitative variable. The second argument should be the categorical variable. The third argument should be the name of the command that will calculate the desired statistic.</p>
-<div class="sourceCode" id="cb604"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb604-1" title="1"><span class="kw">tapply</span>(movies<span class="op">$</span>Runtime, movies<span class="op">$</span>Rating, mean)</a></code></pre></div>
+<div class="sourceCode" id="cb617"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb617-1" title="1"><span class="kw">tapply</span>(movies<span class="op">$</span>Runtime, movies<span class="op">$</span>Rating, mean)</a></code></pre></div>
 <pre><code>##         G        PG     PG-13         R 
 ##  90.80357  99.71901 108.02321 105.25547</code></pre>
-<div class="sourceCode" id="cb606"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb606-1" title="1"><span class="kw">tapply</span>(movies<span class="op">$</span>Runtime, movies<span class="op">$</span>Rating, median)</a></code></pre></div>
+<div class="sourceCode" id="cb619"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb619-1" title="1"><span class="kw">tapply</span>(movies<span class="op">$</span>Runtime, movies<span class="op">$</span>Rating, median)</a></code></pre></div>
 <pre><code>##     G    PG PG-13     R 
 ##    90    96   105   102</code></pre>
-<div class="sourceCode" id="cb608"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb608-1" title="1"><span class="kw">tapply</span>(movies<span class="op">$</span>Runtime, movies<span class="op">$</span>Rating, sd)</a></code></pre></div>
+<div class="sourceCode" id="cb621"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb621-1" title="1"><span class="kw">tapply</span>(movies<span class="op">$</span>Runtime, movies<span class="op">$</span>Rating, sd)</a></code></pre></div>
 <pre><code>##        G       PG    PG-13        R 
 ## 14.63796 13.95487 17.58490 16.07108</code></pre>
 </div>
 <div id="cor" class="section level4">
 <h4>cor</h4>
 <p>Calculate the correlation coefficient between two quantitative variables.</p>
-<div class="sourceCode" id="cb610"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb610-1" title="1"><span class="kw">cor</span>(crimes<span class="op">$</span>Violent, crimes<span class="op">$</span>Gini)</a></code></pre></div>
+<div class="sourceCode" id="cb623"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb623-1" title="1"><span class="kw">cor</span>(crimes<span class="op">$</span>Violent, crimes<span class="op">$</span>Gini)</a></code></pre></div>
 <pre><code>## [1] 0.5454737</code></pre>
 </div>
 </div>
@@ -555,19 +555,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="nrow" class="section level4">
 <h4>nrow</h4>
 <p>Return the number of observations in a dataset.</p>
-<div class="sourceCode" id="cb612"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb612-1" title="1"><span class="kw">nrow</span>(crimes)</a></code></pre></div>
+<div class="sourceCode" id="cb625"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb625-1" title="1"><span class="kw">nrow</span>(crimes)</a></code></pre></div>
 <pre><code>## [1] 51</code></pre>
 </div>
 <div id="qt" class="section level4">
 <h4>qt</h4>
 <p>Calculate the t-value needed for a confidence interval. For a 95% confidence interval, the first argument should always be <code>0.975</code>. The second argument should be the appropriate degrees of freedom for the statistic and dataset.</p>
-<div class="sourceCode" id="cb614"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb614-1" title="1"><span class="kw">qt</span>(<span class="fl">0.975</span>, <span class="kw">nrow</span>(politics)<span class="op">-</span><span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb627"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb627-1" title="1"><span class="kw">qt</span>(<span class="fl">0.975</span>, <span class="kw">nrow</span>(politics)<span class="op">-</span><span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## [1] 1.960524</code></pre>
 </div>
 <div id="pt" class="section level4">
 <h4>pt</h4>
 <p>Calculate the p-value for a hypothesis test. The first argument should always be the negative version of the t-statistic and the second argument should be the appropriate degrees of freedom for the statistic and dataset.</p>
-<div class="sourceCode" id="cb616"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb616-1" title="1"><span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="op">-</span><span class="fl">2.1</span>, <span class="kw">nrow</span>(politics)<span class="op">-</span><span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb629"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb629-1" title="1"><span class="dv">2</span><span class="op">*</span><span class="kw">pt</span>(<span class="op">-</span><span class="fl">2.1</span>, <span class="kw">nrow</span>(politics)<span class="op">-</span><span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## [1] 0.03578782</code></pre>
 </div>
 </div>
@@ -576,16 +576,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="lm" class="section level4">
 <h4>lm</h4>
 <p>Run an OLS regression model. The first argument should always be a formula of the form <code>dependent~independent1+independent2+...</code>. To simplify the writing of variable names, it is often useful to specify a second argument <code>data</code> that identifies that dataset being used. Then you don’t have to include <code>dataset_name$</code> in the formula. **Remember to always put the dependent (y) variable on the left hand side of the equation.</p>
-<div class="sourceCode" id="cb618"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb618-1" title="1"><span class="co">#simple model with one independent variable</span></a>
-<a class="sourceLine" id="cb618-2" title="2">model_simple &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span>age, <span class="dt">data=</span>earnings)</a>
-<a class="sourceLine" id="cb618-3" title="3"><span class="co">#same simple model but recenter age on 45 years of age</span></a>
-<a class="sourceLine" id="cb618-4" title="4">model_recenter &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span><span class="kw">I</span>(age<span class="dv">-45</span>), <span class="dt">data=</span>earnings)</a>
-<a class="sourceLine" id="cb618-5" title="5"><span class="co">#a model with multiple independent variables, both quantitative and qualitative</span></a>
-<a class="sourceLine" id="cb618-6" title="6">model_multiple &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span><span class="kw">I</span>(age<span class="dv">-45</span>)<span class="op">+</span>education<span class="op">+</span>race<span class="op">+</span>gender<span class="op">+</span>nchild, <span class="dt">data=</span>earnings)</a>
-<a class="sourceLine" id="cb618-7" title="7"><span class="co">#a model like the previous but also with interaction between gender and nchild</span></a>
-<a class="sourceLine" id="cb618-8" title="8">model_interaction &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span><span class="kw">I</span>(age<span class="dv">-45</span>)<span class="op">+</span>education<span class="op">+</span>race<span class="op">+</span>gender<span class="op">*</span>nchild, <span class="dt">data=</span>earnings)</a></code></pre></div>
+<div class="sourceCode" id="cb631"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb631-1" title="1"><span class="co">#simple model with one independent variable</span></a>
+<a class="sourceLine" id="cb631-2" title="2">model_simple &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span>age, <span class="dt">data=</span>earnings)</a>
+<a class="sourceLine" id="cb631-3" title="3"><span class="co">#same simple model but recenter age on 45 years of age</span></a>
+<a class="sourceLine" id="cb631-4" title="4">model_recenter &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span><span class="kw">I</span>(age<span class="dv">-45</span>), <span class="dt">data=</span>earnings)</a>
+<a class="sourceLine" id="cb631-5" title="5"><span class="co">#a model with multiple independent variables, both quantitative and qualitative</span></a>
+<a class="sourceLine" id="cb631-6" title="6">model_multiple &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span><span class="kw">I</span>(age<span class="dv">-45</span>)<span class="op">+</span>education<span class="op">+</span>race<span class="op">+</span>gender<span class="op">+</span>nchild, <span class="dt">data=</span>earnings)</a>
+<a class="sourceLine" id="cb631-7" title="7"><span class="co">#a model like the previous but also with interaction between gender and nchild</span></a>
+<a class="sourceLine" id="cb631-8" title="8">model_interaction &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span><span class="kw">I</span>(age<span class="dv">-45</span>)<span class="op">+</span>education<span class="op">+</span>race<span class="op">+</span>gender<span class="op">*</span>nchild, <span class="dt">data=</span>earnings)</a></code></pre></div>
 <p>Once a model object is created, information can be extracted with either the <code>coef</code> command which just reports the slopes and intercept, or a full <code>summary</code> command which gives more information.</p>
-<div class="sourceCode" id="cb619"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb619-1" title="1"><span class="kw">coef</span>(model_interaction)</a></code></pre></div>
+<div class="sourceCode" id="cb632"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb632-1" title="1"><span class="kw">coef</span>(model_interaction)</a></code></pre></div>
 <pre><code>##               (Intercept)               I(age - 45)       educationHS Diploma 
 ##                17.3568021                 0.2242916                 4.5382688 
 ##        educationAA Degree educationBachelors Degree  educationGraduate Degree 
@@ -596,7 +596,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ##                -1.5198248                -0.4331997                -4.3777137 
 ##                    nchild       genderFemale:nchild 
 ##                 1.2629571                -0.7490706</code></pre>
-<div class="sourceCode" id="cb621"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb621-1" title="1"><span class="kw">summary</span>(model_interaction)</a></code></pre></div>
+<div class="sourceCode" id="cb634"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb634-1" title="1"><span class="kw">summary</span>(model_interaction)</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = wages ~ I(age - 45) + education + race + gender * 
@@ -635,7 +635,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="round" class="section level4">
 <h4>round</h4>
 <p>Used for rounding the results of numbers to a given number of decimal places. By default, it will round to whole numbers, but you can specify the number of decimal places in the second argument.</p>
-<div class="sourceCode" id="cb623"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb623-1" title="1"><span class="dv">100</span><span class="op">*</span><span class="kw">round</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(movies<span class="op">$</span>Genre)), <span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb636"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb636-1" title="1"><span class="dv">100</span><span class="op">*</span><span class="kw">round</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(movies<span class="op">$</span>Genre)), <span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## 
 ##        Action     Animation        Comedy         Drama        Family 
 ##             8             5            31            13             6 
@@ -647,7 +647,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="sort" class="section level4">
 <h4>sort</h4>
 <p>Sort a vector of numbers from smallest to largest (default), or largest to smallest (with additional argument <code>decreasing=TRUE</code>).</p>
-<div class="sourceCode" id="cb625"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb625-1" title="1"><span class="kw">sort</span>(<span class="dv">100</span><span class="op">*</span><span class="kw">round</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(movies<span class="op">$</span>Genre)), <span class="dv">2</span>), <span class="dt">decreasing =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb638"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb638-1" title="1"><span class="kw">sort</span>(<span class="dv">100</span><span class="op">*</span><span class="kw">round</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(movies<span class="op">$</span>Genre)), <span class="dv">2</span>), <span class="dt">decreasing =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## 
 ##        Comedy         Drama SciFi/Fantasy        Horror        Action 
 ##            31            13            10             9             8 
@@ -655,7 +655,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ##             7             6             5             5             4 
 ##       Mystery 
 ##             2</code></pre>
-<div class="sourceCode" id="cb627"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb627-1" title="1"><span class="kw">sort</span>(<span class="dv">100</span><span class="op">*</span><span class="kw">round</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(movies<span class="op">$</span>Genre)), <span class="dv">2</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb640"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb640-1" title="1"><span class="kw">sort</span>(<span class="dv">100</span><span class="op">*</span><span class="kw">round</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(movies<span class="op">$</span>Genre)), <span class="dv">2</span>))</a></code></pre></div>
 <pre><code>## 
 ##       Mystery Musical/Music     Animation       Romance        Family 
 ##             2             4             5             5             6 

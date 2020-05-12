@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-11" />
+<meta name="date" content="2020-05-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -564,11 +564,113 @@ e^{log(\frac{\hat{p}_i}{1-\hat{p}_i})} &amp; =  e^{-0.884+0.012(fare_i)}\\
 <h3>Marginal effects</h3>
 <iframe src="https://www.youtube.com/embed/en9RsgkKfUA" width="672" height="400px">
 </iframe>
+<p>The coefficients of the logit model give the marginal effect on the log-odds of success, but we rarely want this value. Exponentiated coefficients will give the odds ratio of success for a one unit increase in <span class="math inline">\(x\)</span> for all values of <span class="math inline">\(x\)</span>. Often times, however, what people really want when they refer to the “marginal effects” in a logit model is the marginal effect of <span class="math inline">\(x\)</span> on the probability.</p>
+<p>Before proceeding with such a calculation, it is worth pausing for thought here. We converted to the odds scale because of the fundamental problem of probabilities being bound between zero and one. Because of this, the effect of an independent variable must be smaller when we are close to this bounds. This has the unfortunate effect of mixing up “intecept effects” with relationships between variables when we focus on probabilities. An “intercept effect” is something that affects all the cases and raises or lowers their probability of success. For example, the <a href="https://en.wikipedia.org/wiki/Costa_Concordia">Costa Concordia</a> sinking off the coast of Italy had a much lower death rate than the Titanic for a variety of reasons (e.g. modern safeguards, temperature of the water, proximity to shore). Thes factors raised everyone’s probability of surviving much higher, such that differences between passengers by gender <em>had</em> to be smaller. However, we should not conclude from this that the smaller difference between men and women’s survival was driven by anything to do with gender itself, but rather to the ceiling effect of approaching 100% survival. The odds and odds ratio gets us away from this problem, by removing the “intercept effect” from our estimates of the effect of a given independent variable on the outcome. We can directly compare the odds of survival by gender between the Titanic and Costa Concordia, but not the probabilities.</p>
+<p>Nonetheless, recently many academics have become convinced that the <em>only</em> proper way to report parameters from a logit model is to convert them to marginal effects on the probabilities. I am not a fan of this <a href="https://twitter.com/jeremyfreese/status/1083133505939243009">Logit Panic</a>, but I do think its worthwhile for you to know how to do this procedure. For more information on why I think concerns about the logit model are misplaced, see this <a href="https://journals.sagepub.com/doi/abs/10.1177/0049124117747306?journalCode=smra">excellent article</a>.</p>
+<p>The first problem with calculating marginal effects on the probabilities is the question of where you want to calculate them. Because the relationship between the log-odds and probabilities is a curve (the logic curve, to be precise), the marginal effects vary depending on the predicted probability of success, <span class="math inline">\(\hat{p}_i\)</span> for a given <span class="math inline">\(x\)</span> or vector of <span class="math inline">\(X\)</span> in the case of multiple independent variables.</p>
+<p>Lets take the example of the effect of fare paid on surviving the Titanic. Figure @(fig:plot-marginal) below shows three different marginal effects at fares of 50, 200, and 500 pounds. These marginal effects are given by the tangent line to the curve at each of these values of fare. The tangent line is the line that just “kisses” the curve at each value of fare, and gives us the slope of the curve at that exact moment. We can see that the steepness of the curve changes. As fare increases, the probability of surviving also increases and thus the marginal effect of fare decreases because we are approaching one.</p>
+<div class="figure" style="text-align: center"><span id="fig:plot-marginal"></span>
+<img src="stat_book_files/figure-html/plot-marginal-1.png" alt="Different marginal effects of a one pound increase in fare paid at fares of 50, 200, and 500 pounds. Marginal effects are given by the tangent line to the curve at a given value of fare." width="672" />
+<p class="caption">
+Figure 100: Different marginal effects of a one pound increase in fare paid at fares of 50, 200, and 500 pounds. Marginal effects are given by the tangent line to the curve at a given value of fare.
+</p>
+</div>
+<p>To calculate the marginal effect of a given variable <span class="math inline">\(k\)</span> with a coefficient of <span class="math inline">\(\beta_k\)</span>, you just need to use the formula:</p>
+<p><span class="math display">\[\hat{p}(1-\hat{p})\beta_k\]</span></p>
+<p>where <span class="math inline">\(\hat{p}\)</span> is the predicted probability of success for a given set of values for the independent variables. We can calculate that value by using our formula to get predicted probabilities for a given vector <span class="math inline">\(X\)</span> of values:</p>
+<p><span class="math display">\[\hat{p}=\frac{e^\mathbf{x&#39;\beta}}{1+e^{\mathbf{x&#39;\beta}}}\]</span></p>
+<p>For example, lets calculate the marginal effect of paying an additional pound of fare when we are currently paying fifty pounds. Our model of survival by fare paid is given by:</p>
+<p><span class="math display">\[log(\frac{\hat{p}_i}{1-\hat{p}_i}) = -0.884+0.012(fare_i)\]</span></p>
+<p>First, we plug in 50 for fare to get our predicted log-odds of survival:</p>
+<p><span class="math display">\[-0.884+0.012*50=-0.284\]</span></p>
+<p>Now we convert from log-odds to probabilities:</p>
+<p><span class="math display">\[\hat{p}=\frac{e^{-0.284}}{1+e^{-0.284}}=0.429\]</span></p>
+<p>We can now calculate the marginal effect:</p>
+<p><span class="math display">\[\hat{p}(1-\hat{p})\beta_k=0.429(1-0.429)0.012=0.0029\]</span></p>
+<p>So, an increase in fare paid from fifty to fifty-one pounds is associated with an increase in the probability of survival of 0.29%.</p>
+<p>We can also do this with models that have more than one variable, but now we will have to estimate a <span class="math inline">\(\hat{p}\)</span> for values of more than one variable. The standard approach in these cases is to estimate the marginal effects on ther probability when at the mean for all independent variables. Lets try it out for a model that uses both fare and age to predict survival.</p>
+<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb580-1" title="1">model &lt;-<span class="st"> </span><span class="kw">glm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>fare<span class="op">+</span>age, <span class="dt">data=</span>titanic,</a>
+<a class="sourceLine" id="cb580-2" title="2">             <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
+<a class="sourceLine" id="cb580-3" title="3"><span class="co">#get predicted probabilty at mean fare and age</span></a>
+<a class="sourceLine" id="cb580-4" title="4">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">fare=</span><span class="kw">mean</span>(titanic<span class="op">$</span>fare), <span class="dt">age=</span><span class="kw">mean</span>(titanic<span class="op">$</span>age))</a>
+<a class="sourceLine" id="cb580-5" title="5">lodds &lt;-<span class="st"> </span><span class="kw">predict</span>(model, df)</a>
+<a class="sourceLine" id="cb580-6" title="6">p &lt;-<span class="st"> </span><span class="kw">exp</span>(lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(lodds))</a>
+<a class="sourceLine" id="cb580-7" title="7"><span class="co">#get marginal effects</span></a>
+<a class="sourceLine" id="cb580-8" title="8">p<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)<span class="op">*</span><span class="kw">coef</span>(model)[<span class="kw">c</span>(<span class="st">&quot;fare&quot;</span>,<span class="st">&quot;age&quot;</span>)]</a></code></pre></div>
+<pre><code>##         fare          age 
+##  0.003197334 -0.003233789</code></pre>
+<p>So, holding age at the mean, a one pound increase in fare from the mean is associated with an increase in the the probability of survival of 0.32%. Holding fare at the mean, a one year increase in age is associated with a decrease in the probability of survival of 0.32%. Coincidentally, the marginal effects of fare and age at the mean are about the same but in opposite directions.</p>
+<p>For categorical variables, the marginal effect on the probability is simply given by the difference in probability between the indicated and reference category. Lets add gender to our model and estimate its marginal effect on the probability.</p>
+<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb582-1" title="1">titanic<span class="op">$</span>female &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(titanic<span class="op">$</span>sex<span class="op">==</span><span class="st">&quot;Female&quot;</span>)</a>
+<a class="sourceLine" id="cb582-2" title="2">model &lt;-<span class="st"> </span><span class="kw">glm</span>(survival<span class="op">~</span>fare<span class="op">+</span>age<span class="op">+</span>female, <span class="dt">data=</span>titanic, </a>
+<a class="sourceLine" id="cb582-3" title="3">             <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
+<a class="sourceLine" id="cb582-4" title="4">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">fare=</span><span class="kw">rep</span>(<span class="kw">mean</span>(titanic<span class="op">$</span>fare),<span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb582-5" title="5">                 <span class="dt">age =</span><span class="kw">rep</span>(<span class="kw">mean</span>(titanic<span class="op">$</span>age),<span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb582-6" title="6">                 <span class="dt">female=</span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb582-7" title="7">lodds &lt;-<span class="st"> </span><span class="kw">predict</span>(model, df)</a>
+<a class="sourceLine" id="cb582-8" title="8">p &lt;-<span class="st"> </span><span class="kw">exp</span>(lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(lodds))</a>
+<a class="sourceLine" id="cb582-9" title="9">p</a></code></pre></div>
+<pre><code>##         1         2 
+## 0.8025075 0.2841702</code></pre>
+<div class="sourceCode" id="cb584"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb584-1" title="1"><span class="kw">diff</span>(p)</a></code></pre></div>
+<pre><code>##          2 
+## -0.5183373</code></pre>
+<p>Men had a 52% lower probability of surviving the Titanic than women, holding fare and age at the mean values.</p>
+<p>How do we calculate the marginal effects for fare and age in this last model. Gender is categorical and therefore we can’t just take the mean. Or can we? You may have noticed that I created a new variable called <code>female</code> coded directly as a 0/1 dummy variable. The mean of this variable is the proportion female on the Titanic. Although it would seem odd to do so, I can use this mean to get a predicted value for the probability mathematically. The result just tells me the expected log-odds/probabilities among a set of passengers where the proportion female equals that for the whole dataset. I can then use this approach to calculate the marginal effects for my quantitative variables.</p>
+<div class="sourceCode" id="cb586"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb586-1" title="1">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">fare=</span><span class="kw">mean</span>(titanic<span class="op">$</span>fare), <span class="dt">age=</span><span class="kw">mean</span>(titanic<span class="op">$</span>age),</a>
+<a class="sourceLine" id="cb586-2" title="2">                 <span class="dt">female=</span><span class="kw">mean</span>(titanic<span class="op">$</span>female))</a>
+<a class="sourceLine" id="cb586-3" title="3">lodds &lt;-<span class="st"> </span><span class="kw">predict</span>(model, df)</a>
+<a class="sourceLine" id="cb586-4" title="4">p &lt;-<span class="st"> </span><span class="kw">exp</span>(lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(lodds))</a>
+<a class="sourceLine" id="cb586-5" title="5">p<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)<span class="op">*</span><span class="kw">coef</span>(model)[<span class="kw">c</span>(<span class="st">&quot;fare&quot;</span>,<span class="st">&quot;age&quot;</span>)]</a></code></pre></div>
+<pre><code>##         fare          age 
+## -0.002310890  0.002089346</code></pre>
+<p>If you don’t want to go through the hard work of calculating these marginal effects by hand, you are in luck. The <code>mfx</code> library has a command called <code>logitmfx</code>. This command will run a logit model and report back the marginal effects on the probability.</p>
+<div class="sourceCode" id="cb588"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb588-1" title="1"><span class="kw">library</span>(mfx)</a></code></pre></div>
+<div class="sourceCode" id="cb589"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb589-1" title="1"><span class="kw">logitmfx</span>(survival<span class="op">~</span>fare<span class="op">+</span>age<span class="op">+</span>sex, <span class="dt">data=</span>titanic)</a></code></pre></div>
+<pre><code>## Call:
+## logitmfx(formula = survival ~ fare + age + sex, data = titanic)
+## 
+## Marginal Effects:
+##            dF/dx   Std. Err.       z     P&gt;|z|    
+## fare -0.00231089  0.00039964 -5.7824 7.365e-09 ***
+## age   0.00208935  0.00115590  1.8075   0.07068 .  
+## sex2  0.51833735  0.02577096 20.1132 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## dF/dx is for discrete change for the following variables:
+## 
+## [1] &quot;sex2&quot;</code></pre>
+<p>Notice that this function also reports back inferential statistics in addition to the marginal effects themselves.</p>
 </div>
 <div id="the-probit-link" class="section level3">
 <h3>The probit link</h3>
 <iframe src="https://www.youtube.com/embed/nBUk_Q58aDI" width="672" height="400px">
 </iframe>
+<p>The logit link is the most common link used for generalized linear models with dichotomous outcomes. However, another link option is the <strong>probit link</strong>. Formally the probit link is the inverse of the cumulative normal distribution, but its ok if that doesn’t make a lot of sense to you.</p>
+<p>Just imagine that you had a standard normal distribution with a mean of zero and standard deviation of one. The cumulative normal distribution gives us the density (proportion of the area) of that standard normal distribution for a given value. So imagine you put in a value of one. A value of one would correspond to being one standard deviation above the mean.</p>
+<div class="figure" style="text-align: center"><span id="fig:cumnormal"></span>
+<img src="stat_book_files/figure-html/cumnormal-1.png" alt="Standard normal distribution with area to the right of one standard deviation above the mean shaded." width="672" />
+<p class="caption">
+Figure 101: Standard normal distribution with area to the right of one standard deviation above the mean shaded.
+</p>
+</div>
+<p>Figure <a href="logit-model.html#fig:cumnormal">101</a> shows what that area is in the shaded region. 84% of the area of a standard normal distribution is below that one standard deviation mark. The inverse cumulative normal distribution just reverses which number we are asking about. Instead of feeding in “+1 SD” to get 0.84, I feed in 0.84 to get “+1 SD.” The idea is that we can represent any given probability as an abstract score on a continuous distribution that ranges from negative infinity to infinity. So, just like the logit transformation. the probit transformation stretches the probability across the full number line.</p>
+<p>To use a probit model, just replace the logit link with the probit link in your <code>glm</code> command:</p>
+<div class="sourceCode" id="cb591"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb591-1" title="1">model.probit &lt;-<span class="st"> </span><span class="kw">glm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>fare, <span class="dt">data=</span>titanic,</a>
+<a class="sourceLine" id="cb591-2" title="2">                    <span class="dt">family=</span><span class="kw">binomial</span>(probit))</a>
+<a class="sourceLine" id="cb591-3" title="3"><span class="kw">summary</span>(model.probit)<span class="op">$</span>coef</a></code></pre></div>
+<pre><code>##                 Estimate   Std. Error    z value     Pr(&gt;|z|)
+## (Intercept) -0.538440000 0.0452344872 -11.903307 1.137481e-32
+## fare         0.007202863 0.0009081451   7.931401 2.166876e-15</code></pre>
+<p>The downside of the probit model is that the results are much more difficult to interpret. The direction of the effect can be determined, but the magnitude is often difficult to gauge. For this reason, the logit model is usually preferred.</p>
+<p>The two link functions usually produce very similar results. Figure <a href="logit-model.html#fig:probit-plot">102</a> compares the probabilty fit of the two types of models when predicting survival by fare paired. The results are nearly identical.</p>
+<div class="figure" style="text-align: center"><span id="fig:probit-plot"></span>
+<img src="stat_book_files/figure-html/probit-plot-1.png" alt="Predicted probabilities of survival on the Titanic by fare paid using a logit and a probit model" width="672" />
+<p class="caption">
+Figure 102: Predicted probabilities of survival on the Titanic by fare paid using a logit and a probit model
+</p>
+</div>
 </div>
 <div id="assessing-model-fit" class="section level3">
 <h3>Assessing model fit</h3>
