@@ -899,6 +899,117 @@ Notice that I could have gotten this same value by multiplying the exponentiated
 knitr::include_url("https://www.youtube.com/embed/en9RsgkKfUA")
 ```
 
+The coefficients of the logit model give the marginal effect on the log-odds of success, but we rarely want this value. Exponentiated coefficients will give the odds ratio of success for a one unit increase in $x$ for all values of $x$. Often times, however, what people really want when they refer to the "marginal effects" in a logit model is the marginal effect of $x$ on the probability.
+
+Before proceeding with such a calculation, it is worth pausing for thought here. We converted to the odds scale because of the fundamental problem of probabilities being bound between zero and one. Because of this, the effect of an independent variable must be smaller when we are close to this bounds. This has the unfortunate effect of mixing up "intecept effects" with relationships between variables when we focus on probabilities. An "intercept effect" is something that affects all the cases and raises or lowers their probability of success. For example, the [Costa Concordia](https://en.wikipedia.org/wiki/Costa_Concordia) sinking off the coast of Italy had a much lower death rate than the Titanic for a variety of reasons (e.g. modern safeguards, temperature of the water, proximity to shore). Thes factors raised everyone's probability of surviving much higher, such that differences between passengers by gender *had* to be smaller. However, we should not conclude from this that the smaller difference between men and women's survival was driven by anything to do with gender itself, but rather to the ceiling effect of approaching 100% survival. The odds and odds ratio gets us away from this problem, by removing the "intercept effect" from our estimates of the effect of a given independent variable on the outcome. We can directly compare the odds of survival by gender between the Titanic and Costa Concordia, but not the probabilities. 
+
+Nonetheless, recently many academics have become convinced that the *only* proper way to report parameters from a logit model is to convert them to marginal effects on the probabilities. I am not a fan of this [Logit Panic](https://twitter.com/jeremyfreese/status/1083133505939243009), but I do think its worthwhile for you to know how to do this procedure. For more information on why I think concerns about the logit model are misplaced, see this [excellent article](https://journals.sagepub.com/doi/abs/10.1177/0049124117747306?journalCode=smra).
+
+The first problem with calculating marginal effects on the probabilities is the question of where you want to calculate them. Because the relationship between the log-odds and probabilities is a curve (the logic curve, to be precise), the marginal effects vary depending on the predicted probability of success, $\hat{p}_i$ for a given $x$ or vector of $X$ in the case of multiple independent variables.
+
+Lets take the example of the effect of fare paid on surviving the Titanic. Figure \@(fig:plot-marginal) below shows three different marginal effects at fares of 50, 200, and 500 pounds. These marginal effects are given by the tangent line to the curve at each of these values of fare. The tangent line is the line that just "kisses" the curve at each value of fare, and gives us the slope of the curve at that exact moment. We can see that the steepness of the curve changes. As fare increases, the probability of surviving also increases and thus the marginal effect of fare decreases because we are approaching one.
+
+```{r plot-marginal, echo=FALSE, fig.cap="Different marginal effects of a one pound increase in fare paid at fares of 50, 200, and 500 pounds. Marginal effects are given by the tangent line to the curve at a given value of fare."}
+fare <- 0:512
+odds <- 0.414*(1.012)^fare
+prob <- odds/(1+odds)
+marginals <- prob*(1-prob)*log(1.012)
+intercepts <- prob-fare*marginals
+df <- data.frame(fare, odds, prob, marginals, intercepts)
+ggplot(df, aes(x=fare, y=prob))+
+  geom_line(size=1.5)+
+  geom_abline(data=subset(df, fare==50 | fare==200 | fare==500),
+              aes(intercept=intercepts, slope=marginals, color=as.factor(fare)),
+              alpha=1)+
+  geom_segment(data=subset(df, fare==50 | fare==200 | fare==500),
+               aes(x=fare, xend=fare, yend=prob, 
+                   color=as.factor(fare)), 
+               y=0, linetype=2)+
+  labs(x="fare paid in pounds", y="probability of survival",
+       color="fare in pounds")+
+  theme_bw()
+```
+
+To calculate the marginal effect of a given variable $k$ with a coefficient of $\beta_k$, you just need to use the formula:
+
+$$\hat{p}(1-\hat{p})\beta_k$$
+
+where $\hat{p}$ is the predicted probability of success for a given set of values for the independent variables. We can calculate that value by using our formula to get predicted probabilities for a given vector $X$ of values:
+
+$$\hat{p}=\frac{e^\mathbf{x'\beta}}{1+e^{\mathbf{x'\beta}}}$$
+
+For example, lets calculate the marginal effect of paying an additional pound of fare when we are currently paying fifty pounds. Our model of survival by fare paid is given by:
+
+$$log(\frac{\hat{p}_i}{1-\hat{p}_i}) = -0.884+0.012(fare_i)$$
+
+First, we plug in 50 for fare to get our predicted log-odds of survival:
+
+$$-0.884+0.012*50=-0.284$$
+
+Now we convert from log-odds to probabilities:
+
+$$\hat{p}=\frac{e^{-0.284}}{1+e^{-0.284}}=0.429$$
+
+We can now calculate the marginal effect:
+
+$$\hat{p}(1-\hat{p})\beta_k=0.429(1-0.429)0.012=0.0029$$
+
+So, an increase in fare paid from fifty to fifty-one pounds is associated with an increase in the probability of survival of 0.29%. 
+
+We can also do this with models that have more than one variable, but now we will have to estimate a $\hat{p}$ for values of more than one variable. The standard approach in these cases is to estimate the marginal effects on ther probability when at the mean for all independent variables. Lets try it out for a model that uses both fare and age to predict survival.
+
+```{r marginaleffects}
+model <- glm((survival=="Survived")~fare+age, data=titanic,
+             family=binomial(logit))
+#get predicted probabilty at mean fare and age
+df <- data.frame(fare=mean(titanic$fare), age=mean(titanic$age))
+lodds <- predict(model, df)
+p <- exp(lodds)/(1+exp(lodds))
+#get marginal effects
+p*(1-p)*coef(model)[c("fare","age")]
+```
+
+So, holding age at the mean, a one pound increase in fare from the mean is associated with an increase in the the probability of survival of 0.32%. Holding fare at the mean, a one year increase in age is associated with a decrease in the probability of survival of 0.32%. Coincidentally, the marginal effects of fare and age at the mean are about the same but in opposite directions. 
+
+For categorical variables, the marginal effect on the probability is simply given by the difference in probability between the indicated and reference category. Lets add gender to our model and estimate its marginal effect on the probability.
+
+```{r marginaleffect_categorical}
+titanic$female <- as.numeric(titanic$sex=="Female")
+model <- glm(survival~fare+age+female, data=titanic, 
+             family=binomial(logit))
+df <- data.frame(fare=rep(mean(titanic$fare),2),
+                 age =rep(mean(titanic$age),2),
+                 female=c(0, 1))
+lodds <- predict(model, df)
+p <- exp(lodds)/(1+exp(lodds))
+p
+diff(p)
+
+
+```
+
+Men had a 52% lower probability of surviving the Titanic than women, holding fare and age at the mean values. 
+
+How do we calculate the marginal effects for fare and age in this last model. Gender is categorical and therefore we can't just take the mean. Or can we? You may have noticed that I created a new variable called `female` coded directly as a 0/1 dummy variable. The mean of this variable is the proportion female on the Titanic. Although it would seem odd to do so, I can use this mean to get a predicted value for the probability mathematically. The result just tells me the expected log-odds/probabilities among a set of passengers where the proportion female equals that for the whole dataset. I can then use this approach to calculate the marginal effects for my quantitative variables.
+
+```{r marginal-average-dummy}
+df <- data.frame(fare=mean(titanic$fare), age=mean(titanic$age),
+                 female=mean(titanic$female))
+lodds <- predict(model, df)
+p <- exp(lodds)/(1+exp(lodds))
+p*(1-p)*coef(model)[c("fare","age")]
+```
+
+If you don't want to go through the hard work of calculating these marginal effects by hand, you are in luck. The `mfx` library has a command called `logitmfx`. This command will run a logit model and report back the marginal effects on the probability.
+
+```{r mfxfake, eval=FALSE}
+library(mfx)
+```
+```{r mfx, messages=FALSE, error=FALSE}
+logitmfx(survival~fare+age+sex, data=titanic)
+```
+
+Notice that this function also reports back inferential statistics in addition to the marginal effects themselves.
 
 ### The probit link
 
