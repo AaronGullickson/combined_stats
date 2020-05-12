@@ -1017,11 +1017,68 @@ Notice that this function also reports back inferential statistics in addition t
 knitr::include_url("https://www.youtube.com/embed/nBUk_Q58aDI")
 ```
 
+The logit link is the most common link used for generalized linear models with dichotomous outcomes. However, another link option is the **probit link**. Formally the probit link is the inverse of the cumulative normal distribution, but its ok if that doesn't make a lot of sense to you. 
+
+Just imagine that you had a standard normal distribution with a mean of zero and standard deviation of one. The cumulative normal distribution gives us the density (proportion of the area) of that standard normal distribution for a given value. So imagine you put in a value of one. A value of one would correspond to being one standard deviation above the mean. 
+
+```{r cumnormal, echo=FALSE, fig.cap="Standard normal distribution with area to the right of one standard deviation above the mean shaded."}
+par(mar=c(4,4,0.5,0.5))
+z <- seq(from=-2.75,to=2.75,by=.01)
+y <- dnorm(z)
+plot(z,y,type="l",xlab="probit score",ylab="density", las=1)
+polygon(c(z[1:376],z[376:1]),c(y[1:376],rep(0,376)),col="grey")
+text(0,0.2,"0.84",col="red",cex=2)
+```
+
+Figure \@ref(fig:cumnormal) shows what that area is in the shaded region. 84% of the area of a standard normal distribution is below that one standard deviation mark. The inverse cumulative normal distribution just reverses which number we are asking about. Instead of feeding in "+1 SD" to get 0.84, I feed in 0.84 to get "+1 SD." The idea is that we can represent any given probability as an abstract score on a continuous distribution that ranges from negative infinity to infinity. So, just like the logit transformation. the probit transformation stretches the probability across the full number line. 
+
+To use a probit model, just replace the logit link with the probit link in your `glm` command:
+
+```{r probit-model}
+model.probit <- glm((survival=="Survived")~fare, data=titanic,
+                    family=binomial(probit))
+summary(model.probit)$coef
+```
+
+The downside of the probit model is that the results are much more difficult to interpret. The direction of the effect can be determined, but the magnitude is often difficult to gauge. For this reason, the logit model is usually preferred. 
+
+The two link functions usually produce very similar results. Figure \@ref(fig:probit-plot) compares the probabilty fit of the two types of models when predicting survival by fare paired. The results are nearly identical.
+
+```{r probit-plot, echo=FALSE, fig.cap="Predicted probabilities of survival on the Titanic by fare paid using a logit and a probit model"}
+model_logit <- glm((survival=="Survived")~fare, data=titanic,
+                 family=binomial(logit))
+model_probit <- glm((survival=="Survived")~fare, data=titanic,
+                 family=binomial(probit))
+y_logit <- predict(model_logit, data.frame(fare=0:512))
+prob_logit <- exp(y_logit)/(1+exp(y_logit))
+y_probit <- predict(model_probit, data.frame(fare=0:512))
+prob_probit <- pnorm(y_probit)
+predicted_df <- data.frame(fare=rep(0:512, 2),
+                           prob=c(prob_logit, prob_probit), 
+                           model=c(rep("logit",513),
+                                   rep("probit",513)))
+ggplot(titanic, aes(x=fare, 
+                    y=as.numeric(survival=="Survived")))+
+  annotate("rect",xmin=-Inf, xmax=Inf, ymin=1, ymax=Inf, alpha=0.2,
+           fill="red")+
+  annotate("text", x=250, y=1.2, label="Nonsense region")+
+  annotate("rect",xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=0, alpha=0.2,
+           fill="red")+
+  geom_hline(yintercept = c(0,1), linetype=2)+
+  geom_point(alpha=0.1)+
+  geom_line(data=predicted_df, aes(y=prob, color=model),
+            size=1.5, alpha=0.7)+
+  scale_y_continuous(breaks = c(0,1), labels=c("0","1"))+
+  labs(x="fare paid in pounds", y="Titanic survival as numeric value")
+```
+
 ### Assessing model fit
 
 ```{r echo=FALSE}
 knitr::include_url("https://www.youtube.com/embed/jGx6fQzuBAg")
 ```
+
+
 
 ### Separation
 
