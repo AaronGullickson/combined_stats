@@ -1078,7 +1078,124 @@ ggplot(titanic, aes(x=fare,
 knitr::include_url("https://www.youtube.com/embed/jGx6fQzuBAg")
 ```
 
+For a linear model, we typically assess goodness of fit by the $R^2$ value for the model which gives us the proportion of the variance in the dependent variable that can be accounted for by the independent variables. However, once we move to a logit model, we no longer have an $R^2$ value. This is because we are not actually estimating $\hat{y}_i$, the predicted values of $y_i$, which we use to calculate residuals and $R^2$. Rather, we are calculating the underlying log-odds and probabilities of success for the data-generating process. 
 
+However, the maximum likelihood estimation (MLE) procedure used for GLMs gives us another measure of goodness of fit. Remember that MLE selects the model parameters that maximize the likelihood of observing the data that we actually observe. The likelihood associated with the best-fitting model is itself a measure of goodness of fit. However, we don't typically use the likelihood itself but rather a derived measure called **deviance**. The deviance $(G^2)$ of a generalized linear model is given by:
+
+$$G^2=-2 (logL)$$
+
+Where $logL$ is the log-likelihood of the model. We basically multiply this value by -2. Why we choose -2 is a bit complicated and we won't delve into it here, besides saying that it allows for some other mathematical properties that just work.
+
+Remember that the log-likelihood is the log of a probability. Because probabilities are between zero and one, the log of the likelihood will always be a negative number. The more negative the log-likelihood, the closer the likelihood to zero and therefore the poorer the fit of the best-fitting model. When we multiply this value by a negative value to get the deviance, the directionality reverses. A high deviance indicates worse fit -- think of it like a golf score. Lower numbers are better, which intuitively makes sense of something called "deviance."
+
+The `glm` object in *R* gives us the deviance directly:
+
+```{r deviance}
+model.fare$deviance
+```
+
+The value of the deviance by itself is usually not that interesting. What we are interested in is the value of this deviance in comparison to other models of the same outcome. The implicit comparison is always to the null model. Luckily, the `glm` object also gives us the deviance of this null model, so we can directly compare them.
+
+```{r null-deviance}
+model.fare$null.deviance
+model.fare$null.deviance-model.fare$deviance
+```
+
+Our model using fare as a predictor of survival reduced the deviance from the null model (where everyone had the same probability of survival) by 86.2. Is that a good number? There are several approaches to gauging the magnitude of that value. 
+
+#### Likelihood Ratio Test
+
+The Likelihood Ratio Test (LRT) is analagous to the F-test for linear models. It can be used to compare any two nested models where the null hypothesis is that all additional independent variables in the more complex model have a slope of zero.
+
+The LRT is tested by using the reduction in deviance in the more complex model as the test statistic. If the null hypothesis is true, then this test statistic should come from a chi-squared distribution with degrees of freedom equal to the number of additional variables in the more complex model. The chi-squared distribution has a somewhat similar shape to an F-distribution and won't delve into the details here. We simply look for the area in the right tail of this chi-squared distribution to calculate the p-value. The `pchisq` function in *R* will give us this left-tail area and so we can just subtract this from one to get the right-tail area. Lets try it out by running an LRT of our fare model versus the null model.
+
+```{r chisq-example}
+1-pchisq(86.2,1)
+```
+
+The reduction in deviance is so large that our p-value is very close to zero. We reject the null hypothesis in this case.
+
+You can also use the `anova` command to do an LRT but you have to remember to specify `test="LRT"` as an argument:
+
+```{r anova-lrt}
+anova(model.fare, test="LRT")
+```
+
+Just like the F-test, we can compare any two nested models using the LRT. Lets try a model with passenger class and then one with passenger class and fare.
+
+```{r anova-lr-non-null}
+model.pclass <- glm((survival=="Survived")~pclass, data=titanic,
+                    family=binomial(logit))
+model.complex <- update(model.pclass, .~.+fare)
+anova(model.pclass, model.complex, test="LRT")
+```
+
+The model with fare added reduces deviance by an additional 10.9 over the model just with passenger class. The p-value for this improvement is not quite as good as the last one, but is still very low and we would surely reject the null hypothesis.
+
+Keep in mind, that the LRT has all the same drawbacks as the F-test. It is based on the logic of hypothesis testing and therefore it will prefer more complex models in larger samples.
+
+#### Pseudo-$R^2$
+
+Pseudo-$R^2$, also called **McFadden's D** provides a very simple measure of goodness of fit. It simply calculates the reduction in deviance as a proportion of the null deviance. To calulcate pseudo-$R^2$:
+
+$D=\frac{G^2_0-G^2}{G^2}$$
+
+where $G^2_0$ is the deviance of the null model. Although not the same as $R^2$, the idea is quite similar. The null deviance is as large as your deviance can get, so to ask how much we reduced the deviance, it makes intuitive sense to place it on a scale of how much deviance there was that could be accounted for in the first place.
+
+To calculate the reduction in deviance for our fare model:
+
+```{r pseudo-r-squared}
+(model.fare$null.deviance-model.fare$deviance)/model.fare$deviance
+```
+
+Using fare to predict the likelihood of survival reduces the deviance from the null model by about 5 percent. 
+
+#### BIC for GLMs
+
+We can also calculate a BIC for generalized linear models just as we did for linear models. Because we have no $R^2$ value the calculatioon is different, but the interpretations are the same. 
+
+To calculate BIC for any two models:
+
+$$BIC=(G^2_2-G^2_1)+(p_2-p_1)\log n$$
+
+Where $G^2_1$ and $G^2_2$ are the deviance for model 1 and model 2, respectively, and $p_1$ and $p_2$ are the number of independent variables in models 1 and 2, respectively. The resulting BIC gives you the relative preference for model 2 over model 1. A negative BIC means that model 2 is preferred to model 1 and the more negative this value, the stronger the preference. 
+
+Lets use this formula to compare the BIC of our passenger class model to the passenger class and fare model:
+
+```{r bic-logit}
+p1 <- length(coef(model.pclass))-1
+p2 <- length(coef(model.complex))-1
+(model.complex$deviance-model.pclass$deviance)+(p2-p1)*log(nrow(titanic))
+```
+
+Because the BIC is negative but less than -5, we have a moderate preference for the more complex model.  Note that we could have gotten this same result by just using the `BIC` command on each model (which takes BIC relative to the saturated model) and subtracting them:
+
+```{r bic-by-command}
+BIC(model.complex)-BIC(model.pclass)
+```
+
+Using the formula from above, we can also construct a BIC' value where we compare the model to the null model. We just need to plug in values for the null model as model 1:
+
+$$BIC'=(G^2-G^2_0)+(p)\log n$$
+
+Unfortunately, *R* does not have a built-in function for this calculation, but we can create a custom function pretty easily:
+
+```{r}
+BIC.null.glm <- function(model) {
+    n <- length(model$resid)
+    p <- length(model$coef)-1
+    return((model$deviance-model$null.deviance)+p*log(n))
+}
+BIC.null.glm(model.fare)
+BIC.null.glm(model.pclass)
+BIC.null.glm(model.complex)
+```
+
+By comparing the results, we can see that we strongly prefer all three models to the null model. Of the three models, we get the most negative BIC' for the model that includes both fare and passenger class. Note that the difference between the passenger class model and the complex model is the same as above with the built-in `BIC` function.
+
+```{r compare-bic-null}
+BIC.null.glm(model.complex)-BIC.null.glm(model.pclass)
+```
 
 ### Separation
 
