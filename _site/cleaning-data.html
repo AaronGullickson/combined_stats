@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-12" />
+<meta name="date" content="2020-05-18" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -417,14 +417,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Cleaning data is a major component of any quantitative project. Rarely will data come to you in exactly the form that you want for your research question. In this section, we will focus on three of the most important components of data cleaning: (1) assigning and handling missing values, (2) recoding variables, and (3) aggregating data.</p>
 <p>For this analysis, we will use the same data extract from the <a href="https://www.census.gov/programs-surveys/acs">American Community Survey</a> that we used for the reading and writing data lab. I downloaded this extract from <a href="https://usa.ipums.org/usa/">IPUMS</a>. You can download the file <a href="/stat_book/resources/usa_00084.data.gz">here</a>. You can also <a href="/stat_book/resources/usa_00084.cbk.txt">view the codebook</a> that IPUMS provides</p>
 <p>The data is a sample of individuals in the US. In the <code>read_fwf</code> command below, I am only going to read in a few variables that we will use for our data cleaning examples.</p>
-<div class="sourceCode" id="cb908"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb908-1" title="1">acs &lt;-<span class="st"> </span><span class="kw">read_fwf</span>(<span class="st">&quot;resources/usa_00084.dat.gz&quot;</span>, </a>
-<a class="sourceLine" id="cb908-2" title="2">                <span class="dt">col_positions =</span> <span class="kw">fwf_positions</span>(<span class="dt">start =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">55</span>,<span class="dv">84</span>,<span class="dv">85</span>,<span class="dv">88</span>,<span class="dv">94</span>),</a>
-<a class="sourceLine" id="cb908-3" title="3">                                              <span class="dt">end   =</span> <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">56</span>,<span class="dv">84</span>,<span class="dv">87</span>,<span class="dv">91</span>,<span class="dv">96</span>),</a>
-<a class="sourceLine" id="cb908-4" title="4">                                              <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;year&quot;</span>,<span class="st">&quot;statefip&quot;</span>,<span class="st">&quot;sex&quot;</span>,</a>
-<a class="sourceLine" id="cb908-5" title="5">                                                            <span class="st">&quot;age&quot;</span>,<span class="st">&quot;yrmarr&quot;</span>,<span class="st">&quot;educd&quot;</span>)),</a>
-<a class="sourceLine" id="cb908-6" title="6">                <span class="dt">col_types =</span> <span class="kw">cols</span>(<span class="dt">.default =</span> <span class="st">&quot;i&quot;</span>), </a>
-<a class="sourceLine" id="cb908-7" title="7">                <span class="dt">progress =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb908-8" title="8">acs</a></code></pre></div>
+<div class="sourceCode" id="cb948"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb948-1" title="1">acs &lt;-<span class="st"> </span><span class="kw">read_fwf</span>(<span class="st">&quot;resources/usa_00084.dat.gz&quot;</span>, </a>
+<a class="sourceLine" id="cb948-2" title="2">                <span class="dt">col_positions =</span> <span class="kw">fwf_positions</span>(<span class="dt">start =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">55</span>,<span class="dv">84</span>,<span class="dv">85</span>,<span class="dv">88</span>,<span class="dv">94</span>),</a>
+<a class="sourceLine" id="cb948-3" title="3">                                              <span class="dt">end   =</span> <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">56</span>,<span class="dv">84</span>,<span class="dv">87</span>,<span class="dv">91</span>,<span class="dv">96</span>),</a>
+<a class="sourceLine" id="cb948-4" title="4">                                              <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;year&quot;</span>,<span class="st">&quot;statefip&quot;</span>,<span class="st">&quot;sex&quot;</span>,</a>
+<a class="sourceLine" id="cb948-5" title="5">                                                            <span class="st">&quot;age&quot;</span>,<span class="st">&quot;yrmarr&quot;</span>,<span class="st">&quot;educd&quot;</span>)),</a>
+<a class="sourceLine" id="cb948-6" title="6">                <span class="dt">col_types =</span> <span class="kw">cols</span>(<span class="dt">.default =</span> <span class="st">&quot;i&quot;</span>), </a>
+<a class="sourceLine" id="cb948-7" title="7">                <span class="dt">progress =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb948-8" title="8">acs</a></code></pre></div>
 <pre><code>## # A tibble: 3,214,539 x 6
 ##     year statefip   sex   age yrmarr educd
 ##    &lt;int&gt;    &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;int&gt;
@@ -450,11 +450,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="bracket-and-boolean-approach" class="section level4">
 <h4>Bracket and Boolean Approach</h4>
 <p>In R, we can easily code in missing values by identifying a subset of the variable with a boolean statement and then assigning the special <code>NA</code> value to that subset. I refer to this approach to replacing values in a variabl as the <strong>bracket-and-boolean</strong> approach.</p>
-<div class="sourceCode" id="cb910"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb910-1" title="1"><span class="kw">summary</span>(acs<span class="op">$</span>yrmarr)</a></code></pre></div>
+<div class="sourceCode" id="cb950"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb950-1" title="1"><span class="kw">summary</span>(acs<span class="op">$</span>yrmarr)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##       0       0    1971    1166    1997    2018</code></pre>
-<div class="sourceCode" id="cb912"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb912-1" title="1">acs<span class="op">$</span>yrmarr[acs<span class="op">$</span>yrmarr<span class="op">==</span><span class="dv">0</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
-<a class="sourceLine" id="cb912-2" title="2"><span class="kw">summary</span>(acs<span class="op">$</span>yrmarr)</a></code></pre></div>
+<div class="sourceCode" id="cb952"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb952-1" title="1">acs<span class="op">$</span>yrmarr[acs<span class="op">$</span>yrmarr<span class="op">==</span><span class="dv">0</span>] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb952-2" title="2"><span class="kw">summary</span>(acs<span class="op">$</span>yrmarr)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ##    1937    1979    1993    1992    2006    2018 1332999</code></pre>
 <p>The mean and median change dramatically once I code in all of the missing values because I had a lot of never-married individuals without a proper value for <code>yrmarr</code> who were being reported as zero.</p>
@@ -462,7 +462,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="ifelse-approach" class="section level4">
 <h4>Ifelse approach</h4>
 <p>The bracket-and-boolean approach is one of the standard ways to re-code certain values for a variable in R, but another approach that I prefer for its greater flexibility is the <code>ifelse</code> command. An <code>ifelse</code> command takes three arguments. The first argument is a boolean statement. The second argument is what value should be returned if the first argument evaluates to TRUE and the third argument is what value should be returned if the first argument evaluates to FALSE. Here is how I can use the <code>ifelse</code> command in this example:</p>
-<div class="sourceCode" id="cb914"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb914-1" title="1">acs<span class="op">$</span>yrmarr &lt;-<span class="st"> </span><span class="kw">ifelse</span>(acs<span class="op">$</span>yrmarr<span class="op">==</span><span class="dv">0</span>, <span class="ot">NA</span>, acs<span class="op">$</span>yrmarr)</a></code></pre></div>
+<div class="sourceCode" id="cb954"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb954-1" title="1">acs<span class="op">$</span>yrmarr &lt;-<span class="st"> </span><span class="kw">ifelse</span>(acs<span class="op">$</span>yrmarr<span class="op">==</span><span class="dv">0</span>, <span class="ot">NA</span>, acs<span class="op">$</span>yrmarr)</a></code></pre></div>
 <p>When <code>acs$yrmarr==0</code> is TRUE, the <code>ifelse</code> command returns <code>NA</code> and when <code>acs$yrmarr==0</code> is false, the <code>ifelse</code> command returns the original value of <code>yrmarr</code>. This command accomplishes the same thing as the bracket-and-boolean approach above. Where the <code>ifelse</code> command really shines is when you can string together multiple “cascading” <code>ifelse</code> commands as I will demonstrate below.</p>
 </div>
 </div>
@@ -472,7 +472,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="coding-values-for-categorical-variables" class="section level4">
 <h4>Coding Values for Categorical Variables</h4>
 <p>As I noted above, all of the data from IPUMS come to us in numeric form. For example, lets run a table command on the <code>sex</code> variable.</p>
-<div class="sourceCode" id="cb915"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb915-1" title="1"><span class="kw">table</span>(acs<span class="op">$</span>sex)</a></code></pre></div>
+<div class="sourceCode" id="cb955"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb955-1" title="1"><span class="kw">table</span>(acs<span class="op">$</span>sex)</a></code></pre></div>
 <pre><code>## 
 ##       1       2 
 ## 1574618 1639921</code></pre>
@@ -481,8 +481,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 1       Male
 2       Female</code></pre>
 <p>I can accomplish this re-code using either the <strong>bracket-and-boolean</strong> approach or the <strong>ifelse</strong> approach. I am going to show the ifelse approach here first, because I can demonstrate the use of cascading <code>ifelse</code> statements. In both cases, I will assign my results to a new variable called <code>gender</code>.</p>
-<div class="sourceCode" id="cb918"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb918-1" title="1">acs<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="kw">ifelse</span>(acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">1</span>, <span class="st">&quot;Male&quot;</span>, </a>
-<a class="sourceLine" id="cb918-2" title="2">                     <span class="kw">ifelse</span>(acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">2</span>, <span class="st">&quot;Female&quot;</span>, <span class="ot">NA</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb958"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb958-1" title="1">acs<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="kw">ifelse</span>(acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">1</span>, <span class="st">&quot;Male&quot;</span>, </a>
+<a class="sourceLine" id="cb958-2" title="2">                     <span class="kw">ifelse</span>(acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">2</span>, <span class="st">&quot;Female&quot;</span>, <span class="ot">NA</span>))</a></code></pre></div>
 <p>What exactly is going on here? I have a second <code>ifelse</code> statement embedded inside the first statement for the final argument of that statement. What this approach does is create a cascade of <code>ifelse</code> statements that should pick up all of the possible cases. Anytime the boolean evaluates to TRUE, then I will assign the given value and pop out. Otherwise, I will continue on to the next statement. In simple terms, here is what the process looks like:</p>
 <ol style="list-style-type: decimal">
 <li>Is the value a 1? If yes, then assign a value of “Male” to the <code>gender</code> variable. If no, then continue to (2).</li>
@@ -491,26 +491,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <p>Note that since I don’t actually have any cases other than a 1 or a 2, I could have done this with a single <code>ifelse</code> statement. However, by always making the final category an <code>NA</code> I ensure that pick up any missing values for cases that I don’t explicitly assign. This is good practice and helps us to avoid mistakes.</p>
 <p>Since <code>gender</code> is a categorical variable, I really should make it a factor variable, but the command above did not turn it into a factor variable, but rather a character string variable. To “factor it up” I need to run the factor command and specify my categories:</p>
-<div class="sourceCode" id="cb919"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb919-1" title="1">acs<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="kw">factor</span>(acs<span class="op">$</span>gender,</a>
-<a class="sourceLine" id="cb919-2" title="2">                     <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>,<span class="st">&quot;Female&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb959"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb959-1" title="1">acs<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="kw">factor</span>(acs<span class="op">$</span>gender,</a>
+<a class="sourceLine" id="cb959-2" title="2">                     <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>,<span class="st">&quot;Female&quot;</span>))</a></code></pre></div>
 <p>If I really want to be efficient, I could have wrapped my cascading <code>ifelse</code> statements in a <code>factor</code> command and done it all at once.</p>
-<div class="sourceCode" id="cb920"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb920-1" title="1">acs<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">ifelse</span>(acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">1</span>, <span class="st">&quot;Male&quot;</span>, </a>
-<a class="sourceLine" id="cb920-2" title="2">                            <span class="kw">ifelse</span>(acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">2</span>, <span class="st">&quot;Female&quot;</span>, <span class="ot">NA</span>)),</a>
-<a class="sourceLine" id="cb920-3" title="3">                     <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>,<span class="st">&quot;Female&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb960"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb960-1" title="1">acs<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">ifelse</span>(acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">1</span>, <span class="st">&quot;Male&quot;</span>, </a>
+<a class="sourceLine" id="cb960-2" title="2">                            <span class="kw">ifelse</span>(acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">2</span>, <span class="st">&quot;Female&quot;</span>, <span class="ot">NA</span>)),</a>
+<a class="sourceLine" id="cb960-3" title="3">                     <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>,<span class="st">&quot;Female&quot;</span>))</a></code></pre></div>
 <p>Now we need to <strong>check ourselves before we wreck ourselves</strong>. The most straightforward way to do this is to run a <code>table</code> command on the original and new variable to make sure all of the observations are being coded correctly. When I run this table command, I want to include the argument <code>exclude=NULL</code> so that missing value codes show up in the table.</p>
-<div class="sourceCode" id="cb921"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb921-1" title="1"><span class="kw">table</span>(acs<span class="op">$</span>sex, acs<span class="op">$</span>gender, <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb961"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb961-1" title="1"><span class="kw">table</span>(acs<span class="op">$</span>sex, acs<span class="op">$</span>gender, <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
 <pre><code>##    
 ##        Male  Female
 ##   1 1574618       0
 ##   2       0 1639921</code></pre>
 <p>Everything looks good. All the 1s are “Male” and all the 2s are “Female.”</p>
 <p>What if I wanted to do this the bracket-and-boolean way? Well, typically the first step is to set up a new variable that is all missing values and then plug in the values one by one. Here is what it would look like:</p>
-<div class="sourceCode" id="cb923"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb923-1" title="1">acs<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="ot">NA</span></a>
-<a class="sourceLine" id="cb923-2" title="2">acs<span class="op">$</span>gender[acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">1</span>] &lt;-<span class="st"> &quot;Male&quot;</span></a>
-<a class="sourceLine" id="cb923-3" title="3">acs<span class="op">$</span>gender[acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">2</span>] &lt;-<span class="st"> &quot;Female&quot;</span></a>
-<a class="sourceLine" id="cb923-4" title="4">acs<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="kw">factor</span>(acs<span class="op">$</span>gender,</a>
-<a class="sourceLine" id="cb923-5" title="5">                     <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>,<span class="st">&quot;Female&quot;</span>))</a>
-<a class="sourceLine" id="cb923-6" title="6"><span class="kw">table</span>(acs<span class="op">$</span>sex, acs<span class="op">$</span>gender, <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb963"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb963-1" title="1">acs<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb963-2" title="2">acs<span class="op">$</span>gender[acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">1</span>] &lt;-<span class="st"> &quot;Male&quot;</span></a>
+<a class="sourceLine" id="cb963-3" title="3">acs<span class="op">$</span>gender[acs<span class="op">$</span>sex<span class="op">==</span><span class="dv">2</span>] &lt;-<span class="st"> &quot;Female&quot;</span></a>
+<a class="sourceLine" id="cb963-4" title="4">acs<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="kw">factor</span>(acs<span class="op">$</span>gender,</a>
+<a class="sourceLine" id="cb963-5" title="5">                     <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;Male&quot;</span>,<span class="st">&quot;Female&quot;</span>))</a>
+<a class="sourceLine" id="cb963-6" title="6"><span class="kw">table</span>(acs<span class="op">$</span>sex, acs<span class="op">$</span>gender, <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
 <pre><code>##    
 ##        Male  Female
 ##   1 1574618       0
@@ -565,7 +565,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 116     Doctoral degree
 999     Missing</code></pre>
 <p>There are a a lot of categories here. Its unlikely that this fine level of detail will be helpful in any analyses that we will perform. Lets also take a look at the case counts for these categories:</p>
-<div class="sourceCode" id="cb926"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb926-1" title="1"><span class="kw">table</span>(acs<span class="op">$</span>educd)</a></code></pre></div>
+<div class="sourceCode" id="cb966"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb966-1" title="1"><span class="kw">table</span>(acs<span class="op">$</span>educd)</a></code></pre></div>
 <pre><code>## 
 ##      1      2     11     12     14     15     16     17     22     23     25 
 ##  95147  97571  45463  37691  35302  38104  41690  41318  44435  56815  45653 
@@ -575,13 +575,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 217891  53833  36095</code></pre>
 <p>A lot of categories are not even showing up in our data. The <a href="https://usa.ipums.org/usa-action/variables/EDUC#comparability_section">reason for these zero categories</a> is that the set of categories was created to capture all of the ways that educational attainment was recorded across censuses since 1850, but many of the codes are not used in the particular 2018 data that we have.</p>
 <p>Many scholars use a parsimonious four-category coding of educational attainment: less than high school diploma, high school diploma, some college including associate’s degree, four-year college degree or more. We can collapse our full set of categories into this four-category system fairly easily using cascading <code>ifelse</code> statements:</p>
-<div class="sourceCode" id="cb928"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb928-1" title="1">acs<span class="op">$</span>edattain &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">ifelse</span>(acs<span class="op">$</span>educd<span class="op">&gt;=</span><span class="dv">2</span> <span class="op">&amp;</span><span class="st"> </span>acs<span class="op">$</span>educd<span class="op">&lt;=</span><span class="dv">61</span>, <span class="st">&quot;Less than HS&quot;</span>,</a>
-<a class="sourceLine" id="cb928-2" title="2">                              <span class="kw">ifelse</span>(acs<span class="op">$</span>educd<span class="op">&gt;=</span><span class="dv">62</span> <span class="op">&amp;</span><span class="st"> </span>acs<span class="op">$</span>educd<span class="op">&lt;=</span><span class="dv">64</span>, <span class="st">&quot;HS Diploma&quot;</span>,</a>
-<a class="sourceLine" id="cb928-3" title="3">                                     <span class="kw">ifelse</span>(acs<span class="op">$</span>educd<span class="op">&gt;=</span><span class="dv">65</span> <span class="op">&amp;</span><span class="st"> </span>acs<span class="op">$</span>educd<span class="op">&lt;=</span><span class="dv">100</span>, <span class="st">&quot;Some College&quot;</span>,</a>
-<a class="sourceLine" id="cb928-4" title="4">                                            <span class="kw">ifelse</span>(acs<span class="op">$</span>educd<span class="op">&gt;=</span><span class="dv">101</span> <span class="op">&amp;</span><span class="st"> </span>acs<span class="op">$</span>educd<span class="op">&lt;=</span><span class="dv">116</span>, <span class="st">&quot;College&quot;</span>,</a>
-<a class="sourceLine" id="cb928-5" title="5">                                                   <span class="ot">NA</span>)))),</a>
-<a class="sourceLine" id="cb928-6" title="6">                       <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;Less than HS&quot;</span>,<span class="st">&quot;HS Diploma&quot;</span>,<span class="st">&quot;Some College&quot;</span>,<span class="st">&quot;College&quot;</span>))</a>
-<a class="sourceLine" id="cb928-7" title="7"><span class="kw">table</span>(acs<span class="op">$</span>educd, acs<span class="op">$</span>edattain, <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb968"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb968-1" title="1">acs<span class="op">$</span>edattain &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">ifelse</span>(acs<span class="op">$</span>educd<span class="op">&gt;=</span><span class="dv">2</span> <span class="op">&amp;</span><span class="st"> </span>acs<span class="op">$</span>educd<span class="op">&lt;=</span><span class="dv">61</span>, <span class="st">&quot;Less than HS&quot;</span>,</a>
+<a class="sourceLine" id="cb968-2" title="2">                              <span class="kw">ifelse</span>(acs<span class="op">$</span>educd<span class="op">&gt;=</span><span class="dv">62</span> <span class="op">&amp;</span><span class="st"> </span>acs<span class="op">$</span>educd<span class="op">&lt;=</span><span class="dv">64</span>, <span class="st">&quot;HS Diploma&quot;</span>,</a>
+<a class="sourceLine" id="cb968-3" title="3">                                     <span class="kw">ifelse</span>(acs<span class="op">$</span>educd<span class="op">&gt;=</span><span class="dv">65</span> <span class="op">&amp;</span><span class="st"> </span>acs<span class="op">$</span>educd<span class="op">&lt;=</span><span class="dv">100</span>, <span class="st">&quot;Some College&quot;</span>,</a>
+<a class="sourceLine" id="cb968-4" title="4">                                            <span class="kw">ifelse</span>(acs<span class="op">$</span>educd<span class="op">&gt;=</span><span class="dv">101</span> <span class="op">&amp;</span><span class="st"> </span>acs<span class="op">$</span>educd<span class="op">&lt;=</span><span class="dv">116</span>, <span class="st">&quot;College&quot;</span>,</a>
+<a class="sourceLine" id="cb968-5" title="5">                                                   <span class="ot">NA</span>)))),</a>
+<a class="sourceLine" id="cb968-6" title="6">                       <span class="dt">levels=</span><span class="kw">c</span>(<span class="st">&quot;Less than HS&quot;</span>,<span class="st">&quot;HS Diploma&quot;</span>,<span class="st">&quot;Some College&quot;</span>,<span class="st">&quot;College&quot;</span>))</a>
+<a class="sourceLine" id="cb968-7" title="7"><span class="kw">table</span>(acs<span class="op">$</span>educd, acs<span class="op">$</span>edattain, <span class="dt">exclude=</span><span class="ot">NULL</span>)</a></code></pre></div>
 <pre><code>##      
 ##       Less than HS HS Diploma Some College College   &lt;NA&gt;
 ##   1              0          0            0       0  95147
@@ -616,18 +616,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="transforming-quantitative-variables" class="section level3">
 <h3>Transforming Quantitative Variables</h3>
 <p>Quantitative variables can also be recoded in R and this is typically much easier as you just need to apply the right mathematical equation to it. Lets say for example that I want to create a new variable from <code>yrmarr</code> that is the age of the respondent for the current marriage for all currently married respondents. I can get this information simply by subtracting the <code>yrmarr</code> variable from the <code>year</code> variable to get the duration of marriage and then subtracting this value from the respondent’s dage..</p>
-<div class="sourceCode" id="cb930"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb930-1" title="1">acs<span class="op">$</span>age_marr &lt;-<span class="st"> </span>acs<span class="op">$</span>age <span class="op">-</span><span class="st"> </span>(acs<span class="op">$</span>year<span class="op">-</span>acs<span class="op">$</span>yrmarr)</a>
-<a class="sourceLine" id="cb930-2" title="2"><span class="kw">summary</span>(acs<span class="op">$</span>age_marr)</a></code></pre></div>
+<div class="sourceCode" id="cb970"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb970-1" title="1">acs<span class="op">$</span>age_marr &lt;-<span class="st"> </span>acs<span class="op">$</span>age <span class="op">-</span><span class="st"> </span>(acs<span class="op">$</span>year<span class="op">-</span>acs<span class="op">$</span>yrmarr)</a>
+<a class="sourceLine" id="cb970-2" title="2"><span class="kw">summary</span>(acs<span class="op">$</span>age_marr)</a></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ##    14.0    22.0    26.0    29.5    34.0    95.0 1332999</code></pre>
 <p>Notice that this coding only works correctly because I already assigned missing values to the <code>yrmarr</code> variable above.</p>
 <div id="creating-interval-categories-from-a-quantitative-variable" class="section level4">
 <h4>Creating Interval Categories From a Quantitative Variable</h4>
 <p>In some cases, I may want to turn a quantitative variable into a categorical variable that measures intervals of data. For example, I might want to turn age into ten-year age groups (e.g. 20-29, 30-39). I can do this sort of coding using the same bracket-and-boolean or cascading ifelse appoaches outlined above. However, R also provides a built-in function called <code>cut</code> that makes this pretty easy to do:</p>
-<div class="sourceCode" id="cb932"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb932-1" title="1">acs<span class="op">$</span>age_group &lt;-<span class="st"> </span><span class="kw">cut</span>(acs<span class="op">$</span>age, </a>
-<a class="sourceLine" id="cb932-2" title="2">                     <span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dt">from=</span><span class="dv">0</span>, <span class="dt">to=</span><span class="dv">100</span>, <span class="dt">by=</span><span class="dv">10</span>),</a>
-<a class="sourceLine" id="cb932-3" title="3">                     <span class="dt">right=</span><span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb932-4" title="4"><span class="kw">summary</span>(acs<span class="op">$</span>age_group)</a></code></pre></div>
+<div class="sourceCode" id="cb972"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb972-1" title="1">acs<span class="op">$</span>age_group &lt;-<span class="st"> </span><span class="kw">cut</span>(acs<span class="op">$</span>age, </a>
+<a class="sourceLine" id="cb972-2" title="2">                     <span class="dt">breaks=</span><span class="kw">seq</span>(<span class="dt">from=</span><span class="dv">0</span>, <span class="dt">to=</span><span class="dv">100</span>, <span class="dt">by=</span><span class="dv">10</span>),</a>
+<a class="sourceLine" id="cb972-3" title="3">                     <span class="dt">right=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb972-4" title="4"><span class="kw">summary</span>(acs<span class="op">$</span>age_group)</a></code></pre></div>
 <pre><code>##   [0,10)  [10,20)  [20,30)  [30,40)  [40,50)  [50,60)  [60,70)  [70,80) 
 ##   338958   403401   378691   388612   380621   450316   443250   279682 
 ##  [80,90) [90,100) 
@@ -638,9 +638,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="after-cleaning-you-still-need-to-tidy" class="section level3">
 <h3>After Cleaning You Still Need to Tidy</h3>
 <p>Because you are adding new variables as you recode, the size of your dataset will often grow as you clean, organize, and re-code. This can quickly lead to a lot of clutter and this clutter can have consequences. When you have multiple variables with similar names, it is easy to mistakenly use the wrong one. To avoid confusion, it is always best to limit your final analytical dataset to just the variables that you want. The easiest way to do this in R is to put a <code>subset</code> command at the bottom of your organizational script and use the select argument to add variables you want to keep to it as you clean them. So, for example my command here might look like:</p>
-<div class="sourceCode" id="cb934"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb934-1" title="1">acs &lt;-<span class="st"> </span><span class="kw">subset</span>(acs, </a>
-<a class="sourceLine" id="cb934-2" title="2">              <span class="dt">select=</span><span class="kw">c</span>(<span class="st">&quot;statefip&quot;</span>,<span class="st">&quot;gender&quot;</span>,<span class="st">&quot;edattain&quot;</span>,<span class="st">&quot;age_marr&quot;</span>,<span class="st">&quot;age&quot;</span>))</a>
-<a class="sourceLine" id="cb934-3" title="3">acs</a></code></pre></div>
+<div class="sourceCode" id="cb974"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb974-1" title="1">acs &lt;-<span class="st"> </span><span class="kw">subset</span>(acs, </a>
+<a class="sourceLine" id="cb974-2" title="2">              <span class="dt">select=</span><span class="kw">c</span>(<span class="st">&quot;statefip&quot;</span>,<span class="st">&quot;gender&quot;</span>,<span class="st">&quot;edattain&quot;</span>,<span class="st">&quot;age_marr&quot;</span>,<span class="st">&quot;age&quot;</span>))</a>
+<a class="sourceLine" id="cb974-3" title="3">acs</a></code></pre></div>
 <pre><code>## # A tibble: 3,214,539 x 5
 ##    statefip gender edattain     age_marr   age
 ##       &lt;int&gt; &lt;fct&gt;  &lt;fct&gt;           &lt;int&gt; &lt;int&gt;
@@ -661,8 +661,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3>Aggregating Data</h3>
 <p>It is not uncommon to want to aggregate data at one unit of analysis up to a higher unit of analysis. For example, the individual-level ACS data that we have contains a variable that identifies the state of residence for each respondent (<code>statefip</code>). What if I wanted to aggregate my individual level data up to the state-level? As a simple example, lets say that I wanted to calculate the mean age of marriage of married individuals for each state.</p>
 <p>The <code>aggregate</code> command is the easiest way to perform such tasks and it has the flexibility to do aggregations on multiple variables or multiple indices at the same time. There are two different syntax forms for <code>aggregate</code> but we will focus on the formula syntax. This syntax works like <code>agg_var~by_var1+by_var2</code> where the <code>agg_var</code> is the variable that you want to aggregate on and <code>by_var1</code> and <code>by_var2</code> are the variables that you want to aggregate by. Here is a simple example of getting the mean for marriage duration by state.</p>
-<div class="sourceCode" id="cb936"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb936-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">aggregate</span>(age_marr<span class="op">~</span>statefip, <span class="dt">data=</span>acs, mean, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb936-2" title="2"><span class="kw">head</span>(temp)</a></code></pre></div>
+<div class="sourceCode" id="cb976"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb976-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">aggregate</span>(age_marr<span class="op">~</span>statefip, <span class="dt">data=</span>acs, mean, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb976-2" title="2"><span class="kw">head</span>(temp)</a></code></pre></div>
 <pre><code>##   statefip age_marr
 ## 1        1 29.27548
 ## 2        2 29.92585
@@ -672,8 +672,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 6        8 29.72513</code></pre>
 <p>The results here are output as a <code>data.frame</code> aggregated to the level of states. The dataset contains an id for the state and the mean of <code>age_marr</code> for that state.</p>
 <p>The example above only aggregated one variable, but we can also get the mean of multiple variables at once by using the <code>cbind</code> command within the formula:</p>
-<div class="sourceCode" id="cb938"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb938-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">aggregate</span>(<span class="kw">cbind</span>(age_marr,age)<span class="op">~</span>statefip, <span class="dt">data=</span>acs, mean, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb938-2" title="2"><span class="kw">head</span>(temp)</a></code></pre></div>
+<div class="sourceCode" id="cb978"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb978-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">aggregate</span>(<span class="kw">cbind</span>(age_marr,age)<span class="op">~</span>statefip, <span class="dt">data=</span>acs, mean, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb978-2" title="2"><span class="kw">head</span>(temp)</a></code></pre></div>
 <pre><code>##   statefip age_marr      age
 ## 1        1 29.27548 56.28057
 ## 2        2 29.92585 53.06636
@@ -683,8 +683,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 6        8 29.72513 54.17558</code></pre>
 <p>Now I get two variables for each state, mean age of marriage and mean age.</p>
 <p>We can also aggregate across multiple dimensions at the same time. Lets get mean age of marriage again, but this time by state and educational category.</p>
-<div class="sourceCode" id="cb940"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb940-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">aggregate</span>(age_marr<span class="op">~</span>edattain<span class="op">+</span>statefip, <span class="dt">data=</span>acs, mean, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb940-2" title="2"><span class="kw">head</span>(temp)</a></code></pre></div>
+<div class="sourceCode" id="cb980"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb980-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">aggregate</span>(age_marr<span class="op">~</span>edattain<span class="op">+</span>statefip, <span class="dt">data=</span>acs, mean, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb980-2" title="2"><span class="kw">head</span>(temp)</a></code></pre></div>
 <pre><code>##       edattain statefip age_marr
 ## 1 Less than HS        1 29.63777
 ## 2   HS Diploma        1 29.20512
@@ -694,12 +694,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 6   HS Diploma        2 28.90491</code></pre>
 <p>Now I get four means for each state, one for each educational attainment category. Its worth thinking a little about the structure of the output here. This data structure is a little different than what we are used to. I don’t have a single line for each observation (state) giving me the age of marriage as four separate variables. Instead I have four separate lines for each state. This data format is called the <strong>long</strong> format and we are not used to working with it. We will learn more in our next lab about how we can manipulate this format to get what we want.</p>
 <p>What if we want to aggregate the proportion of respondents in each category of a categorical variable by state? The syntax here is a little messier, but we can do this by creating booleans for each category and then calculating means:</p>
-<div class="sourceCode" id="cb942"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb942-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">aggregate</span>(<span class="kw">cbind</span>(<span class="dt">prop_lhs=</span>edattain<span class="op">==</span><span class="st">&quot;Less than HS&quot;</span>, </a>
-<a class="sourceLine" id="cb942-2" title="2">                        <span class="dt">prop_hs_grad=</span>edattain<span class="op">==</span><span class="st">&quot;HS Diploma&quot;</span>,</a>
-<a class="sourceLine" id="cb942-3" title="3">                        <span class="dt">prop_scollege=</span>edattain<span class="op">==</span><span class="st">&quot;Some College&quot;</span>,</a>
-<a class="sourceLine" id="cb942-4" title="4">                        <span class="dt">prop_college_grad=</span>edattain<span class="op">==</span><span class="st">&quot;College&quot;</span>)<span class="op">~</span>statefip, </a>
-<a class="sourceLine" id="cb942-5" title="5">                  <span class="dt">data=</span>acs, mean, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb942-6" title="6"><span class="kw">head</span>(temp)</a></code></pre></div>
+<div class="sourceCode" id="cb982"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb982-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">aggregate</span>(<span class="kw">cbind</span>(<span class="dt">prop_lhs=</span>edattain<span class="op">==</span><span class="st">&quot;Less than HS&quot;</span>, </a>
+<a class="sourceLine" id="cb982-2" title="2">                        <span class="dt">prop_hs_grad=</span>edattain<span class="op">==</span><span class="st">&quot;HS Diploma&quot;</span>,</a>
+<a class="sourceLine" id="cb982-3" title="3">                        <span class="dt">prop_scollege=</span>edattain<span class="op">==</span><span class="st">&quot;Some College&quot;</span>,</a>
+<a class="sourceLine" id="cb982-4" title="4">                        <span class="dt">prop_college_grad=</span>edattain<span class="op">==</span><span class="st">&quot;College&quot;</span>)<span class="op">~</span>statefip, </a>
+<a class="sourceLine" id="cb982-5" title="5">                  <span class="dt">data=</span>acs, mean, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb982-6" title="6"><span class="kw">head</span>(temp)</a></code></pre></div>
 <pre><code>##   statefip  prop_lhs prop_hs_grad prop_scollege prop_college_grad
 ## 1        1 0.2784240    0.2580242     0.2653052         0.1982465
 ## 2        2 0.2907537    0.2587413     0.2665113         0.1839938
@@ -708,12 +708,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 5        6 0.2980686    0.1712014     0.2549658         0.2757642
 ## 6        8 0.2389480    0.1763708     0.2509729         0.3337083</code></pre>
 <p>Its also important to note that I have been calculating the mean in all of these examples, but I could also easily substitute a different function. For example, I could use <code>sum</code> on the above codes to get counts of individuals by education:</p>
-<div class="sourceCode" id="cb944"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb944-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">aggregate</span>(<span class="kw">cbind</span>(<span class="dt">n_lhs=</span>edattain<span class="op">==</span><span class="st">&quot;Less than HS&quot;</span>, </a>
-<a class="sourceLine" id="cb944-2" title="2">                        <span class="dt">n_hs_grad=</span>edattain<span class="op">==</span><span class="st">&quot;HS Diploma&quot;</span>,</a>
-<a class="sourceLine" id="cb944-3" title="3">                        <span class="dt">n_scollege=</span>edattain<span class="op">==</span><span class="st">&quot;Some College&quot;</span>,</a>
-<a class="sourceLine" id="cb944-4" title="4">                        <span class="dt">n_college_grad=</span>edattain<span class="op">==</span><span class="st">&quot;College&quot;</span>)<span class="op">~</span>statefip, </a>
-<a class="sourceLine" id="cb944-5" title="5">                  <span class="dt">data=</span>acs, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb944-6" title="6"><span class="kw">head</span>(temp)</a></code></pre></div>
+<div class="sourceCode" id="cb984"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb984-1" title="1">temp &lt;-<span class="st"> </span><span class="kw">aggregate</span>(<span class="kw">cbind</span>(<span class="dt">n_lhs=</span>edattain<span class="op">==</span><span class="st">&quot;Less than HS&quot;</span>, </a>
+<a class="sourceLine" id="cb984-2" title="2">                        <span class="dt">n_hs_grad=</span>edattain<span class="op">==</span><span class="st">&quot;HS Diploma&quot;</span>,</a>
+<a class="sourceLine" id="cb984-3" title="3">                        <span class="dt">n_scollege=</span>edattain<span class="op">==</span><span class="st">&quot;Some College&quot;</span>,</a>
+<a class="sourceLine" id="cb984-4" title="4">                        <span class="dt">n_college_grad=</span>edattain<span class="op">==</span><span class="st">&quot;College&quot;</span>)<span class="op">~</span>statefip, </a>
+<a class="sourceLine" id="cb984-5" title="5">                  <span class="dt">data=</span>acs, sum, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb984-6" title="6"><span class="kw">head</span>(temp)</a></code></pre></div>
 <pre><code>##   statefip  n_lhs n_hs_grad n_scollege n_college_grad
 ## 1        1  12925     11978      12316           9203
 ## 2        2   1871      1665       1715           1184

@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-12" />
+<meta name="date" content="2020-05-18" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -425,7 +425,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="https://readxl.tidyverse.org/">readxl</a> for reading in Excel files.</li>
 </ul>
 <p>All three of these packages read data into an object called a <a href="https://tibble.tidyverse.org/">tibble</a>. Tibbles are the tidyverse upgrade to the venerable <code>data.frame</code>. In general, they operate just like data.frames with some nice additional features, so you shouldn’t really need to worry about it. In a pinch, a tibble can be recast as a data.frame with the <code>as.data.frame</code> command:</p>
-<div class="sourceCode" id="cb885"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb885-1" title="1">df &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(df)</a></code></pre></div>
+<div class="sourceCode" id="cb925"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb925-1" title="1">df &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(df)</a></code></pre></div>
 </div>
 <div id="plain-text-files" class="section level3">
 <h3>Plain text files</h3>
@@ -441,9 +441,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 &quot;Mary&quot;,&quot;Oakland,CA&quot;,&quot;White&quot;,&quot;Female&quot;,16</code></pre>
 <p>There are a couple of things to note here about the format. First, the top line is the “header” line that gives the names of the variables. Its important for your statistical program to know whether the data file has a header line or not in order to properly process the file. Second, notice that character strings representing category labels are surrounded by quotes. This is good practice because character strings may sometimes include commas within them, as the location variable does in this case, and the program will treat that as a delimiter if not surrounded by quotation marks.</p>
 <p>We can read this data into R with the <code>read_csv</code> command in the <code>readr</code> library:</p>
-<div class="sourceCode" id="cb887"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb887-1" title="1"><span class="kw">library</span>(readr)</a>
-<a class="sourceLine" id="cb887-2" title="2">mydata &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;resources/data.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb887-3" title="3">mydata</a></code></pre></div>
+<div class="sourceCode" id="cb927"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb927-1" title="1"><span class="kw">library</span>(readr)</a>
+<a class="sourceLine" id="cb927-2" title="2">mydata &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;resources/data.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb927-3" title="3">mydata</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 5
 ##   name  location   race  gender yrsed
 ##   &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt;
@@ -457,8 +457,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 &quot;Jim&quot;   &quot;Seattle,WA&quot;    &quot;White&quot; &quot;Male&quot;  11
 &quot;Mary&quot;  &quot;Oakland,CA&quot;    &quot;White&quot; &quot;Female&quot;    16</code></pre>
 <p>I can read it in using the with the <code>read_delim</code> function:</p>
-<div class="sourceCode" id="cb890"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb890-1" title="1">mydata &lt;-<span class="st"> </span><span class="kw">read_delim</span>(<span class="st">&quot;resources/data_tab.txt&quot;</span>, <span class="dt">delim=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</a>
-<a class="sourceLine" id="cb890-2" title="2">mydata</a></code></pre></div>
+<div class="sourceCode" id="cb930"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb930-1" title="1">mydata &lt;-<span class="st"> </span><span class="kw">read_delim</span>(<span class="st">&quot;resources/data_tab.txt&quot;</span>, <span class="dt">delim=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</a>
+<a class="sourceLine" id="cb930-2" title="2">mydata</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 5
 ##   name  location   race  gender yrsed
 ##   &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt;
@@ -474,9 +474,9 @@ name,location,race,gender,yrsed
 &quot;Jim&quot;,&quot;Seattle,WA&quot;,&quot;na&quot;,&quot;Male&quot;,11
 &quot;Mary&quot;,&quot;Oakland,CA&quot;,&quot;White&quot;,&quot;Female&quot;,16</code></pre>
 <p>There are several complications here. First, there are a couple of comment lines at the top where the comment symbol is "*" that I don’t want to get processed. I could handle this with either the <code>skip</code> argument to skip a certain number of rows before reading the data or the <code>comment</code> argument to define what lines to skip by what character they start with. Second, there is a line above the proper headers with a description of each variable. I could use the <code>skip</code> option here again to skip this line. Finally, the lower-case “na” won’t be recognized by default as a missing value by R, but the option <code>na</code> will allow me to specify additional character strings like “na” that should be interpreted as missing values. All together, I use the command:</p>
-<div class="sourceCode" id="cb893"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb893-1" title="1">mydata &lt;-<span class="st"> </span><span class="kw">read_delim</span>(<span class="st">&quot;resources/data_messy.csv&quot;</span>, <span class="dt">delim=</span><span class="st">&quot;,&quot;</span>,</a>
-<a class="sourceLine" id="cb893-2" title="2">                     <span class="dt">comment=</span><span class="st">&quot;*&quot;</span>, <span class="dt">skip=</span><span class="dv">1</span>, <span class="dt">na=</span><span class="st">&quot;na&quot;</span>)</a>
-<a class="sourceLine" id="cb893-3" title="3">mydata</a></code></pre></div>
+<div class="sourceCode" id="cb933"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb933-1" title="1">mydata &lt;-<span class="st"> </span><span class="kw">read_delim</span>(<span class="st">&quot;resources/data_messy.csv&quot;</span>, <span class="dt">delim=</span><span class="st">&quot;,&quot;</span>,</a>
+<a class="sourceLine" id="cb933-2" title="2">                     <span class="dt">comment=</span><span class="st">&quot;*&quot;</span>, <span class="dt">skip=</span><span class="dv">1</span>, <span class="dt">na=</span><span class="st">&quot;na&quot;</span>)</a>
+<a class="sourceLine" id="cb933-3" title="3">mydata</a></code></pre></div>
 <pre><code>## # A tibble: 4 x 5
 ##   `name of person` `location of pe… `racial categor… `gender of pers…
 ##   &lt;chr&gt;            &lt;chr&gt;            &lt;chr&gt;            &lt;chr&gt;           
@@ -494,12 +494,12 @@ name,location,race,gender,yrsed
 Jim  Seattle,WAWhiteMale  11
 Mary Oakland,CAWhiteFemale16</code></pre>
 <p>Notice that the actual starting location of each variable is the same within each row. If you count the characters up, you will see that the first variable has a width of 5 characters, the second variable has a width of 10 characters, and so on. Note also that this file does not contain headers which is pretty typical of fixed width files. We can use the <code>read_fwf</code> command by feeding in this data, by explicitly specifying the starting and endind positions of each variable:</p>
-<div class="sourceCode" id="cb896"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb896-1" title="1">mydata &lt;-<span class="st"> </span><span class="kw">read_fwf</span>(<span class="st">&quot;resources/data_fw.txt&quot;</span>, </a>
-<a class="sourceLine" id="cb896-2" title="2">                   <span class="dt">col_positions =</span> <span class="kw">fwf_positions</span>(<span class="dt">start=</span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">6</span>,<span class="dv">16</span>,<span class="dv">21</span>,<span class="dv">27</span>),</a>
-<a class="sourceLine" id="cb896-3" title="3">                                                 <span class="dt">end  =</span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">15</span>,<span class="dv">20</span>,<span class="dv">26</span>,<span class="dv">28</span>),</a>
-<a class="sourceLine" id="cb896-4" title="4">                                                 <span class="dt">col_names=</span><span class="kw">c</span>(<span class="st">&quot;name&quot;</span>,<span class="st">&quot;location&quot;</span>,<span class="st">&quot;race&quot;</span>,</a>
-<a class="sourceLine" id="cb896-5" title="5">                                                             <span class="st">&quot;gender&quot;</span>,<span class="st">&quot;yrsed&quot;</span>)))</a>
-<a class="sourceLine" id="cb896-6" title="6">mydata</a></code></pre></div>
+<div class="sourceCode" id="cb936"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb936-1" title="1">mydata &lt;-<span class="st"> </span><span class="kw">read_fwf</span>(<span class="st">&quot;resources/data_fw.txt&quot;</span>, </a>
+<a class="sourceLine" id="cb936-2" title="2">                   <span class="dt">col_positions =</span> <span class="kw">fwf_positions</span>(<span class="dt">start=</span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">6</span>,<span class="dv">16</span>,<span class="dv">21</span>,<span class="dv">27</span>),</a>
+<a class="sourceLine" id="cb936-3" title="3">                                                 <span class="dt">end  =</span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">15</span>,<span class="dv">20</span>,<span class="dv">26</span>,<span class="dv">28</span>),</a>
+<a class="sourceLine" id="cb936-4" title="4">                                                 <span class="dt">col_names=</span><span class="kw">c</span>(<span class="st">&quot;name&quot;</span>,<span class="st">&quot;location&quot;</span>,<span class="st">&quot;race&quot;</span>,</a>
+<a class="sourceLine" id="cb936-5" title="5">                                                             <span class="st">&quot;gender&quot;</span>,<span class="st">&quot;yrsed&quot;</span>)))</a>
+<a class="sourceLine" id="cb936-6" title="6">mydata</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 5
 ##   name  location   race  gender yrsed
 ##   &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt;
@@ -528,14 +528,14 @@ Case Selection:               No
   EDUC               P  92-93           2      X 
   EDUCD              P  94-96           3      X </code></pre>
 <p>I don’t need all of these variables. Some of them are just defaults that come with every IPUMS extract like HHWT, CLUSTER, and STRATA. For my purposes, lets say I only want the variables of STATEFIP, YEAR, SEX, AGE, YRMARR, and EDUCD. Using <code>read_fwf</code>, I can just skip the indices of variables I don’t need. Another nice feature of the <code>readr</code> package is that all of the functions can read directly directly from zipped data, which saves me room on my computer and my git repository (GitHub has a limit of 100MB for files). Here is my command to read in the data:</p>
-<div class="sourceCode" id="cb899"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb899-1" title="1">acs &lt;-<span class="st"> </span><span class="kw">read_fwf</span>(<span class="st">&quot;resources/usa_00084.dat.gz&quot;</span>, </a>
-<a class="sourceLine" id="cb899-2" title="2">                <span class="dt">col_positions =</span> <span class="kw">fwf_positions</span>(<span class="dt">start =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">55</span>,<span class="dv">84</span>,<span class="dv">85</span>,<span class="dv">88</span>,<span class="dv">94</span>),</a>
-<a class="sourceLine" id="cb899-3" title="3">                                              <span class="dt">end   =</span> <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">56</span>,<span class="dv">84</span>,<span class="dv">87</span>,<span class="dv">91</span>,<span class="dv">96</span>),</a>
-<a class="sourceLine" id="cb899-4" title="4">                                              <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;year&quot;</span>,<span class="st">&quot;statefip&quot;</span>,<span class="st">&quot;sex&quot;</span>,</a>
-<a class="sourceLine" id="cb899-5" title="5">                                                            <span class="st">&quot;age&quot;</span>,<span class="st">&quot;yrmarr&quot;</span>,<span class="st">&quot;educd&quot;</span>)),</a>
-<a class="sourceLine" id="cb899-6" title="6">                <span class="dt">col_types =</span> <span class="kw">cols</span>(<span class="dt">.default =</span> <span class="st">&quot;i&quot;</span>), </a>
-<a class="sourceLine" id="cb899-7" title="7">                <span class="dt">progress =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb899-8" title="8">acs</a></code></pre></div>
+<div class="sourceCode" id="cb939"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb939-1" title="1">acs &lt;-<span class="st"> </span><span class="kw">read_fwf</span>(<span class="st">&quot;resources/usa_00084.dat.gz&quot;</span>, </a>
+<a class="sourceLine" id="cb939-2" title="2">                <span class="dt">col_positions =</span> <span class="kw">fwf_positions</span>(<span class="dt">start =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">55</span>,<span class="dv">84</span>,<span class="dv">85</span>,<span class="dv">88</span>,<span class="dv">94</span>),</a>
+<a class="sourceLine" id="cb939-3" title="3">                                              <span class="dt">end   =</span> <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">56</span>,<span class="dv">84</span>,<span class="dv">87</span>,<span class="dv">91</span>,<span class="dv">96</span>),</a>
+<a class="sourceLine" id="cb939-4" title="4">                                              <span class="dt">col_names =</span> <span class="kw">c</span>(<span class="st">&quot;year&quot;</span>,<span class="st">&quot;statefip&quot;</span>,<span class="st">&quot;sex&quot;</span>,</a>
+<a class="sourceLine" id="cb939-5" title="5">                                                            <span class="st">&quot;age&quot;</span>,<span class="st">&quot;yrmarr&quot;</span>,<span class="st">&quot;educd&quot;</span>)),</a>
+<a class="sourceLine" id="cb939-6" title="6">                <span class="dt">col_types =</span> <span class="kw">cols</span>(<span class="dt">.default =</span> <span class="st">&quot;i&quot;</span>), </a>
+<a class="sourceLine" id="cb939-7" title="7">                <span class="dt">progress =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb939-8" title="8">acs</a></code></pre></div>
 <pre><code>## # A tibble: 3,214,539 x 6
 ##     year statefip   sex   age yrmarr educd
 ##    &lt;int&gt;    &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;int&gt;
@@ -558,9 +558,9 @@ Case Selection:               No
 <p>As a result of initiatives to make science more open, data is increasingly becoming available in simple text format, which improves its portability and accessibility. However, there are still many cases where data is available in a binary format that is readable only by a specific statistical software program. For example, the <a href="https://gssdataexplorer.norc.org/pages/show?page=gss%2Fgss_data">quick download</a> page for the General Social Survey provides the comprehensive GSS data files but only in Stata and SPSS formats. Thats fine if you have purchased that software, but you are out of luck if you have not. This approach is Bad For Science, but you will still run into it quite a bit.</p>
 <p>Luckily, R can usually still read those files. For aeons upon aeons, the preferred packages for this was <a href="https://cran.r-project.org/web/packages/foreign/foreign.pdf"><code>foreign</code></a>, but the tidyverse has changed the game. The <code>haven</code> package can easily read in data from Stata, SAS, and SPSS. The <code>readxl</code> package can easily read in data from an Excel file.</p>
 <p>To test these libraries out, I have loaded the data exampleI have been using into Stata and saved it as a binary stata dataset (*.dta). I can use the <code>read_dta</code> function in <code>haven</code> to read in this data.</p>
-<div class="sourceCode" id="cb901"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb901-1" title="1"><span class="kw">library</span>(haven)</a>
-<a class="sourceLine" id="cb901-2" title="2">mydata &lt;-<span class="st"> </span><span class="kw">read_dta</span>(<span class="st">&quot;resources/data.dta&quot;</span>)</a>
-<a class="sourceLine" id="cb901-3" title="3">mydata</a></code></pre></div>
+<div class="sourceCode" id="cb941"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb941-1" title="1"><span class="kw">library</span>(haven)</a>
+<a class="sourceLine" id="cb941-2" title="2">mydata &lt;-<span class="st"> </span><span class="kw">read_dta</span>(<span class="st">&quot;resources/data.dta&quot;</span>)</a>
+<a class="sourceLine" id="cb941-3" title="3">mydata</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 5
 ##   name  location   gender yrsed      race
 ##   &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;  &lt;dbl&gt; &lt;dbl+lbl&gt;
@@ -568,18 +568,18 @@ Case Selection:               No
 ## 2 Jim   Seattle,WA Male      11 2 [White]
 ## 3 Mary  Oakland,CA Female    16 2 [White]</code></pre>
 <p>Everything looks good except that because I didn’t encode location and gender in Stata as categorical variables, those variables show up in R as character strings rather than factor variables. If I wanted to turn my either variable into a proper factor (categorical) variable, I can use the <code>factor</code> command:</p>
-<div class="sourceCode" id="cb903"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb903-1" title="1">mydata<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="kw">factor</span>(mydata<span class="op">$</span>gender)</a>
-<a class="sourceLine" id="cb903-2" title="2"><span class="kw">summary</span>(mydata<span class="op">$</span>gender)</a></code></pre></div>
+<div class="sourceCode" id="cb943"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb943-1" title="1">mydata<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="kw">factor</span>(mydata<span class="op">$</span>gender)</a>
+<a class="sourceLine" id="cb943-2" title="2"><span class="kw">summary</span>(mydata<span class="op">$</span>gender)</a></code></pre></div>
 <pre><code>## Female   Male 
 ##      2      1</code></pre>
 </div>
 <div id="saving-data" class="section level3">
 <h3>Saving data</h3>
 <p>R has its own binary format for keeping track of data. You can save any object or set of objects to your filesystem with the <code>save</code> command. This will save a file in a binary *.RData format. These objects can then be loaded back into R with the <code>load</code> command:</p>
-<div class="sourceCode" id="cb905"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb905-1" title="1"><span class="kw">save</span>(mydata, <span class="dt">file=</span><span class="st">&quot;resources/data.RData&quot;</span>)</a>
-<a class="sourceLine" id="cb905-2" title="2"><span class="kw">load</span>(<span class="st">&quot;resources/data.RData&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb945"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb945-1" title="1"><span class="kw">save</span>(mydata, <span class="dt">file=</span><span class="st">&quot;resources/data.RData&quot;</span>)</a>
+<a class="sourceLine" id="cb945-2" title="2"><span class="kw">load</span>(<span class="st">&quot;resources/data.RData&quot;</span>)</a></code></pre></div>
 <p>I recommend saving your own analytical data as RData files because these files are light-weight and contain all of the added meta-information that you have created for categorical variables and such. However, for sharing data more widely I recommend that you provide data in plain text format. The <code>readr</code> has a variety of <code>write_*</code> functions including <code>write_csv</code>, <code>write_delim</code>, and <code>write_tsv</code> for outputing data as delimited plain text. For example, I could write my data to a csv with:</p>
-<div class="sourceCode" id="cb906"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb906-1" title="1"><span class="kw">write_csv</span>(mydata, <span class="dt">path=</span><span class="st">&quot;resources/mydata_R.csv&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb946"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb946-1" title="1"><span class="kw">write_csv</span>(mydata, <span class="dt">path=</span><span class="st">&quot;resources/mydata_R.csv&quot;</span>)</a></code></pre></div>
 <pre><code>name,location,gender,yrsed,race
 Bobbi,&quot;Eugene,OR&quot;,Female,12,1
 Jim,&quot;Seattle,WA&quot;,Male,11,2

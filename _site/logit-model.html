@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-12" />
+<meta name="date" content="2020-05-18" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -676,11 +676,212 @@ Figure 102: Predicted probabilities of survival on the Titanic by fare paid usin
 <h3>Assessing model fit</h3>
 <iframe src="https://www.youtube.com/embed/jGx6fQzuBAg" width="672" height="400px">
 </iframe>
+<p>For a linear model, we typically assess goodness of fit by the <span class="math inline">\(R^2\)</span> value for the model which gives us the proportion of the variance in the dependent variable that can be accounted for by the independent variables. However, once we move to a logit model, we no longer have an <span class="math inline">\(R^2\)</span> value. This is because we are not actually estimating <span class="math inline">\(\hat{y}_i\)</span>, the predicted values of <span class="math inline">\(y_i\)</span>, which we use to calculate residuals and <span class="math inline">\(R^2\)</span>. Rather, we are calculating the underlying log-odds and probabilities of success for the data-generating process.</p>
+<p>However, the maximum likelihood estimation (MLE) procedure used for GLMs gives us another measure of goodness of fit. Remember that MLE selects the model parameters that maximize the likelihood of observing the data that we actually observe. The likelihood associated with the best-fitting model is itself a measure of goodness of fit. However, we don’t typically use the likelihood itself but rather a derived measure called <strong>deviance</strong>. The deviance <span class="math inline">\((G^2)\)</span> of a generalized linear model is given by:</p>
+<p><span class="math display">\[G^2=-2 (logL)\]</span></p>
+<p>Where <span class="math inline">\(logL\)</span> is the log-likelihood of the model. We basically multiply this value by -2. Why we choose -2 is a bit complicated and we won’t delve into it here, besides saying that it allows for some other mathematical properties that just work.</p>
+<p>Remember that the log-likelihood is the log of a probability. Because probabilities are between zero and one, the log of the likelihood will always be a negative number. The more negative the log-likelihood, the closer the likelihood to zero and therefore the poorer the fit of the best-fitting model. When we multiply this value by a negative value to get the deviance, the directionality reverses. A high deviance indicates worse fit – think of it like a golf score. Lower numbers are better, which intuitively makes sense of something called “deviance.”</p>
+<p>The <code>glm</code> object in <em>R</em> gives us the deviance directly:</p>
+<div class="sourceCode" id="cb593"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb593-1" title="1">model.fare<span class="op">$</span>deviance</a></code></pre></div>
+<pre><code>## [1] 1654.785</code></pre>
+<p>The value of the deviance by itself is usually not that interesting. What we are interested in is the value of this deviance in comparison to other models of the same outcome. The implicit comparison is always to the null model. Luckily, the <code>glm</code> object also gives us the deviance of this null model, so we can directly compare them.</p>
+<div class="sourceCode" id="cb595"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb595-1" title="1">model.fare<span class="op">$</span>null.deviance</a></code></pre></div>
+<pre><code>## [1] 1741.024</code></pre>
+<div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb597-1" title="1">model.fare<span class="op">$</span>null.deviance<span class="op">-</span>model.fare<span class="op">$</span>deviance</a></code></pre></div>
+<pre><code>## [1] 86.23961</code></pre>
+<p>Our model using fare as a predictor of survival reduced the deviance from the null model (where everyone had the same probability of survival) by 86.2. Is that a good number? There are several approaches to gauging the magnitude of that value.</p>
+<div id="likelihood-ratio-test" class="section level4">
+<h4>Likelihood Ratio Test</h4>
+<p>The Likelihood Ratio Test (LRT) is analagous to the F-test for linear models. It can be used to compare any two nested models where the null hypothesis is that all additional independent variables in the more complex model have a slope of zero.</p>
+<p>The LRT is tested by using the reduction in deviance in the more complex model as the test statistic. If the null hypothesis is true, then this test statistic should come from a chi-squared distribution with degrees of freedom equal to the number of additional variables in the more complex model. The chi-squared distribution has a somewhat similar shape to an F-distribution and won’t delve into the details here. We simply look for the area in the right tail of this chi-squared distribution to calculate the p-value. The <code>pchisq</code> function in <em>R</em> will give us this left-tail area and so we can just subtract this from one to get the right-tail area. Lets try it out by running an LRT of our fare model versus the null model.</p>
+<div class="sourceCode" id="cb599"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb599-1" title="1"><span class="dv">1</span><span class="op">-</span><span class="kw">pchisq</span>(<span class="fl">86.2</span>,<span class="dv">1</span>)</a></code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<p>The reduction in deviance is so large that our p-value is very close to zero. We reject the null hypothesis in this case.</p>
+<p>You can also use the <code>anova</code> command to do an LRT but you have to remember to specify <code>test="LRT"</code> as an argument:</p>
+<div class="sourceCode" id="cb601"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb601-1" title="1"><span class="kw">anova</span>(model.fare, <span class="dt">test=</span><span class="st">&quot;LRT&quot;</span>)</a></code></pre></div>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model: binomial, link: logit
+## 
+## Response: (survival == &quot;Survived&quot;)
+## 
+## Terms added sequentially (first to last)
+## 
+## 
+##      Df Deviance Resid. Df Resid. Dev  Pr(&gt;Chi)    
+## NULL                  1308     1741.0              
+## fare  1    86.24      1307     1654.8 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Just like the F-test, we can compare any two nested models using the LRT. Lets try a model with passenger class and then one with passenger class and fare.</p>
+<div class="sourceCode" id="cb603"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb603-1" title="1">model.pclass &lt;-<span class="st"> </span><span class="kw">glm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>pclass, <span class="dt">data=</span>titanic,</a>
+<a class="sourceLine" id="cb603-2" title="2">                    <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
+<a class="sourceLine" id="cb603-3" title="3">model.complex &lt;-<span class="st"> </span><span class="kw">update</span>(model.pclass, .<span class="op">~</span>.<span class="op">+</span>fare)</a>
+<a class="sourceLine" id="cb603-4" title="4"><span class="kw">anova</span>(model.pclass, model.complex, <span class="dt">test=</span><span class="st">&quot;LRT&quot;</span>)</a></code></pre></div>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: (survival == &quot;Survived&quot;) ~ pclass
+## Model 2: (survival == &quot;Survived&quot;) ~ pclass + fare
+##   Resid. Df Resid. Dev Df Deviance  Pr(&gt;Chi)    
+## 1      1306     1613.3                          
+## 2      1305     1602.3  1   10.916 0.0009535 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The model with fare added reduces deviance by an additional 10.9 over the model just with passenger class. The p-value for this improvement is not quite as good as the last one, but is still very low and we would surely reject the null hypothesis.</p>
+<p>Keep in mind, that the LRT has all the same drawbacks as the F-test. It is based on the logic of hypothesis testing and therefore it will prefer more complex models in larger samples.</p>
+</div>
+<div id="pseudo-r2" class="section level4">
+<h4>Pseudo-<span class="math inline">\(R^2\)</span></h4>
+<p>Pseudo-<span class="math inline">\(R^2\)</span>, also called <strong>McFadden’s D</strong> provides a very simple measure of goodness of fit. It simply calculates the reduction in deviance as a proportion of the null deviance. To calulcate pseudo-<span class="math inline">\(R^2\)</span>:</p>
+<p><span class="math inline">\(D=\frac{G^2_0-G^2}{G^2}\)</span>$</p>
+<p>where <span class="math inline">\(G^2_0\)</span> is the deviance of the null model. Although not the same as <span class="math inline">\(R^2\)</span>, the idea is quite similar. The null deviance is as large as your deviance can get, so to ask how much we reduced the deviance, it makes intuitive sense to place it on a scale of how much deviance there was that could be accounted for in the first place.</p>
+<p>To calculate the reduction in deviance for our fare model:</p>
+<div class="sourceCode" id="cb605"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb605-1" title="1">(model.fare<span class="op">$</span>null.deviance<span class="op">-</span>model.fare<span class="op">$</span>deviance)<span class="op">/</span>model.fare<span class="op">$</span>deviance</a></code></pre></div>
+<pre><code>## [1] 0.05211531</code></pre>
+<p>Using fare to predict the likelihood of survival reduces the deviance from the null model by about 5 percent.</p>
+</div>
+<div id="bic-for-glms" class="section level4">
+<h4>BIC for GLMs</h4>
+<p>We can also calculate a BIC for generalized linear models just as we did for linear models. Because we have no <span class="math inline">\(R^2\)</span> value the calculatioon is different, but the interpretations are the same.</p>
+<p>To calculate BIC for any two models:</p>
+<p><span class="math display">\[BIC=(G^2_2-G^2_1)+(p_2-p_1)\log n\]</span></p>
+<p>Where <span class="math inline">\(G^2_1\)</span> and <span class="math inline">\(G^2_2\)</span> are the deviance for model 1 and model 2, respectively, and <span class="math inline">\(p_1\)</span> and <span class="math inline">\(p_2\)</span> are the number of independent variables in models 1 and 2, respectively. The resulting BIC gives you the relative preference for model 2 over model 1. A negative BIC means that model 2 is preferred to model 1 and the more negative this value, the stronger the preference.</p>
+<p>Lets use this formula to compare the BIC of our passenger class model to the passenger class and fare model:</p>
+<div class="sourceCode" id="cb607"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb607-1" title="1">p1 &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">coef</span>(model.pclass))<span class="op">-</span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb607-2" title="2">p2 &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">coef</span>(model.complex))<span class="op">-</span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb607-3" title="3">(model.complex<span class="op">$</span>deviance<span class="op">-</span>model.pclass<span class="op">$</span>deviance)<span class="op">+</span>(p2<span class="op">-</span>p1)<span class="op">*</span><span class="kw">log</span>(<span class="kw">nrow</span>(titanic))</a></code></pre></div>
+<pre><code>## [1] -3.738641</code></pre>
+<p>Because the BIC is negative but less than -5, we have a moderate preference for the more complex model. Note that we could have gotten this same result by just using the <code>BIC</code> command on each model (which takes BIC relative to the saturated model) and subtracting them:</p>
+<div class="sourceCode" id="cb609"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb609-1" title="1"><span class="kw">BIC</span>(model.complex)<span class="op">-</span><span class="kw">BIC</span>(model.pclass)</a></code></pre></div>
+<pre><code>## [1] -3.738641</code></pre>
+<p>Using the formula from above, we can also construct a BIC’ value where we compare the model to the null model. We just need to plug in values for the null model as model 1:</p>
+<p><span class="math display">\[BIC&#39;=(G^2-G^2_0)+(p)\log n\]</span></p>
+<p>Unfortunately, <em>R</em> does not have a built-in function for this calculation, but we can create a custom function pretty easily:</p>
+<div class="sourceCode" id="cb611"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb611-1" title="1">BIC.null.glm &lt;-<span class="st"> </span><span class="cf">function</span>(model) {</a>
+<a class="sourceLine" id="cb611-2" title="2">    n &lt;-<span class="st"> </span><span class="kw">length</span>(model<span class="op">$</span>resid)</a>
+<a class="sourceLine" id="cb611-3" title="3">    p &lt;-<span class="st"> </span><span class="kw">length</span>(model<span class="op">$</span>coef)<span class="op">-</span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb611-4" title="4">    <span class="kw">return</span>((model<span class="op">$</span>deviance<span class="op">-</span>model<span class="op">$</span>null.deviance)<span class="op">+</span>p<span class="op">*</span><span class="kw">log</span>(n))</a>
+<a class="sourceLine" id="cb611-5" title="5">}</a>
+<a class="sourceLine" id="cb611-6" title="6"><span class="kw">BIC.null.glm</span>(model.fare)</a></code></pre></div>
+<pre><code>## [1] -79.06259</code></pre>
+<div class="sourceCode" id="cb613"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb613-1" title="1"><span class="kw">BIC.null.glm</span>(model.pclass)</a></code></pre></div>
+<pre><code>## [1] -113.4114</code></pre>
+<div class="sourceCode" id="cb615"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb615-1" title="1"><span class="kw">BIC.null.glm</span>(model.complex)</a></code></pre></div>
+<pre><code>## [1] -117.1501</code></pre>
+<p>By comparing the results, we can see that we strongly prefer all three models to the null model. Of the three models, we get the most negative BIC’ for the model that includes both fare and passenger class. Note that the difference between the passenger class model and the complex model is the same as above with the built-in <code>BIC</code> function.</p>
+<div class="sourceCode" id="cb617"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb617-1" title="1"><span class="kw">BIC.null.glm</span>(model.complex)<span class="op">-</span><span class="kw">BIC.null.glm</span>(model.pclass)</a></code></pre></div>
+<pre><code>## [1] -3.738641</code></pre>
+</div>
 </div>
 <div id="separation" class="section level3">
 <h3>Separation</h3>
 <iframe src="https://www.youtube.com/embed/XidkUBrgu7Y" width="672" height="400px">
 </iframe>
+<p>Separation can occur in logit models when the categories of the dependent variable separate an independent variable or combination of independent variables into segments. The easiest case to understand would be a two-way table in which all the values of category 1 and category 2 on one variable are identical to the values of another set of categories on another variable.
+Lets imagine a simple example of a yes/no question by gender of respondent for a simple case of six respondents:</p>
+<div class="sourceCode" id="cb619"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb619-1" title="1">y &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;no&quot;</span>,<span class="st">&quot;no&quot;</span>,<span class="st">&quot;no&quot;</span>))</a>
+<a class="sourceLine" id="cb619-2" title="2">x &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;female&quot;</span>,<span class="st">&quot;female&quot;</span>,<span class="st">&quot;female&quot;</span>,<span class="st">&quot;male&quot;</span>,<span class="st">&quot;male&quot;</span>,<span class="st">&quot;male&quot;</span>))</a>
+<a class="sourceLine" id="cb619-3" title="3"><span class="kw">table</span>(x,y)</a></code></pre></div>
+<pre><code>##         y
+## x        no yes
+##   female  0   3
+##   male    3   0</code></pre>
+<p>In this table, gender perfectly predicts a yes or no response. This is called <strong>perfect separation</strong>. If we try to predict yes/no by gender with a logit model, we will get some odd results:</p>
+<div class="sourceCode" id="cb621"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb621-1" title="1">model.sep &lt;-<span class="st"> </span><span class="kw">glm</span>(y<span class="op">~</span>x, <span class="dt">family=</span>binomial)</a>
+<a class="sourceLine" id="cb621-2" title="2"><span class="kw">summary</span>(model.sep)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = y ~ x, family = binomial)
+## 
+## Deviance Residuals: 
+##          1           2           3           4           5           6  
+##  6.547e-06   6.547e-06   6.547e-06  -6.547e-06  -6.547e-06  -6.547e-06  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)     24.57   75639.11       0        1
+## xmale          -49.13  106969.82       0        1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 8.3178e+00  on 5  degrees of freedom
+## Residual deviance: 2.5720e-10  on 4  degrees of freedom
+## AIC: 4
+## 
+## Number of Fisher Scoring iterations: 23</code></pre>
+<p>Notice that the model reports values although it spits out a warning. However, the numbers in the coefficient table are all strange. My coefficient sizes are huge (-49 log-odds ratio), my standard errors are astronimical and my p-value is so close to 1 that it reports as 1. These are all signs of separation. The MLE solution does not exist for this data because the slope on male should be negative infinity!</p>
+<p>Complete separation can also happen for a quantitative independent variable.</p>
+<div class="sourceCode" id="cb623"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb623-1" title="1">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">20</span>,<span class="dv">21</span>,<span class="dv">22</span>,<span class="dv">23</span>,<span class="dv">24</span>,<span class="dv">25</span>)</a>
+<a class="sourceLine" id="cb623-2" title="2">model.sep &lt;-<span class="st"> </span><span class="kw">glm</span>(y<span class="op">~</span>x, <span class="dt">family=</span>binomial)</a></code></pre></div>
+<pre><code>## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+<div class="sourceCode" id="cb625"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb625-1" title="1"><span class="kw">summary</span>(model.sep)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = y ~ x, family = binomial)
+## 
+## Deviance Residuals: 
+##          1           2           3           4           5           6  
+##  2.110e-08   2.110e-08   1.052e-05  -1.052e-05  -2.110e-08  -2.110e-08  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)    1062.76 2594089.60       0        1
+## x               -47.23  115264.41       0        1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 8.3178e+00  on 5  degrees of freedom
+## Residual deviance: 2.2152e-10  on 4  degrees of freedom
+## AIC: 4
+## 
+## Number of Fisher Scoring iterations: 25</code></pre>
+<p>I get a similar problem here because the quantitative variable can be perfectly separated by the dependent variable at age 22. All observations less than or equal to 22 say yes and all those above 22 say no.</p>
+<p>Perfect separation is a fairly rare occurence, except in very small datasets. A more common occurence is <strong>quasi-complete separation</strong> in which the dependent variable partially separates the independent variable. Lets continue with our example from before:</p>
+<div class="sourceCode" id="cb627"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb627-1" title="1">y &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;no&quot;</span>,<span class="st">&quot;no&quot;</span>,<span class="st">&quot;no&quot;</span>))</a>
+<a class="sourceLine" id="cb627-2" title="2">x &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;female&quot;</span>,<span class="st">&quot;female&quot;</span>,<span class="st">&quot;female&quot;</span>,<span class="st">&quot;male&quot;</span>,<span class="st">&quot;female&quot;</span>,<span class="st">&quot;male&quot;</span>))</a>
+<a class="sourceLine" id="cb627-3" title="3"><span class="kw">table</span>(x,y)</a></code></pre></div>
+<pre><code>##         y
+## x        no yes
+##   female  1   3
+##   male    2   0</code></pre>
+<p>In this case, gender does not perfectly predict the yes/no response. However, I get no cases of men who said yes. When you see cases of zero cells in your two-way table, it indicates that you have <strong>sparseness</strong> in the data and also <strong>quasi-complete separation</strong>. The effects of quasi-complete separation will be similar to complete separation.</p>
+<div class="sourceCode" id="cb629"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb629-1" title="1">model.qsep &lt;-<span class="st"> </span><span class="kw">glm</span>(y<span class="op">~</span>x, <span class="dt">family=</span>binomial)</a>
+<a class="sourceLine" id="cb629-2" title="2"><span class="kw">summary</span>(model.qsep)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = y ~ x, family = binomial)
+## 
+## Deviance Residuals: 
+##        1         2         3         4         5         6  
+##  0.75853   0.75853   0.75853  -0.00008  -1.66511  -0.00008  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)    1.099      1.155   0.951    0.341
+## xmale        -20.665   7604.236  -0.003    0.998
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 8.3178  on 5  degrees of freedom
+## Residual deviance: 4.4987  on 4  degrees of freedom
+## AIC: 8.4987
+## 
+## Number of Fisher Scoring iterations: 18</code></pre>
+<p>The effects are not quite as exaggerated as for complete separation, but again I get enormous effect sizes with standard errors that are even larger, producing p-values close to one. If you see a result like this in your model, you have a problem of quasi-complete separation.</p>
+<p>Separation causes problems for model estimation. One way to resolve the issue is to try collapsing categorical variables with lots of categories. If some of these categories are small, then they could lead to sparseness when added to the model. This is particularly true if you start adding interactions between categorical variables. By collapsing some categories you may be able to remove the problem of sparseness.</p>
+<p>In cases where collapsing the variables is not an option, you can consider alernate estimation techniques. The most common is a <strong>penalized likelihood</strong> model. These models apply a penalty to the likelihood for very large coefficient sizes and can be used to pull extreme coefficients resulting from separation back closer to a reasonable value.</p>
+<p>You can implement a penalized likelihood model in <em>R</em> using the <code>logistf</code> package. This package includes a function <code>logistf</code> that can be used to directly estimate a penalized likelihod logit model.</p>
+<div class="sourceCode" id="cb631"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb631-1" title="1"><span class="kw">library</span>(logistf)</a>
+<a class="sourceLine" id="cb631-2" title="2"><span class="kw">logistf</span>(y<span class="op">~</span>x)</a></code></pre></div>
+<pre><code>## logistf(formula = y ~ x)
+## Model fitted by Penalized ML
+## Confidence intervals and p-values by Profile Likelihood 
+## 
+##                  coef se(coef)  lower 0.95 upper 0.95 Chisq p
+## (Intercept)  3.859368 3.790634   0.7979208  12.218743     0 1
+## xmale       -3.124038 4.081161 -11.4834130   5.611449     0 1
+## 
+## Likelihood ratio test=-3.478826 on 1 df, p=1, n=6</code></pre>
 <hr />
 </div>
 </div>
