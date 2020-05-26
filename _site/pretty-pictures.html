@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-18" />
+<meta name="date" content="2020-05-26" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -740,20 +740,20 @@ By just adding in the borough and pop size as aesthetics, the graph was quickly 
 <a class="sourceLine" id="cb905-12" title="12">       <span class="dt">caption=</span><span class="st">&quot;Data from NYC, 2009-2010&quot;</span>,</a>
 <a class="sourceLine" id="cb905-13" title="13">       <span class="dt">color=</span><span class="st">&quot;Borough&quot;</span>,</a>
 <a class="sourceLine" id="cb905-14" title="14">       <span class="dt">size=</span><span class="st">&quot;Population&quot;</span>)</a></code></pre></div>
-<p><img src="stat_book_files/figure-html/unnamed-chunk-246-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="stat_book_files/figure-html/unnamed-chunk-248-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>I did a couple of other things here as well. I added a <code>scale_x_continuous</code> so I could label the x tick mark labels as percents. I also added another <code>theme</code> command that would allow me to change the placement of the legends. I want to keep it on the right, but could have chosen “left”, “right”, “top”, or “bottom.”</p>
 <p>We now have a very nice looking graph. Ggplot can be a little overwhelming at first, but it has quite a few advantages over base plot. It is designed so that we have to fidget around less with things like the size of our labels, the exact placement of our legends, and the margins of our table. All of that just works internally, and we can focus on the “grammar of graphics”, i.e. the logic structure of what we are trying to say with our graph.</p>
 <p>Lets do one more example to show how flexible ggplot is. Lets look at the distribution of popularity by race in the Add Health data. Because we have one categorical and one quantitative variable, we want comparative boxplots. Here is our basic set up:</p>
 <div class="sourceCode" id="cb906"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb906-1" title="1"><span class="kw">ggplot</span>(addhealth, <span class="kw">aes</span>(<span class="dt">x=</span>race, <span class="dt">y=</span>indegree))<span class="op">+</span></a>
 <a class="sourceLine" id="cb906-2" title="2"><span class="st">  </span><span class="kw">geom_boxplot</span>()<span class="op">+</span></a>
 <a class="sourceLine" id="cb906-3" title="3"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
-<p><img src="stat_book_files/figure-html/unnamed-chunk-247-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="stat_book_files/figure-html/unnamed-chunk-249-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>That works pretty well, However, its often better to display these boxplots horizontally so that we don’t have to worry about category labels overlapping. We can do that with ggplot with the <code>coord_flip</code> command (an example of a coordinate layer):</p>
 <div class="sourceCode" id="cb907"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb907-1" title="1"><span class="kw">ggplot</span>(addhealth, <span class="kw">aes</span>(<span class="dt">x=</span>race, <span class="dt">y=</span>indegree))<span class="op">+</span></a>
 <a class="sourceLine" id="cb907-2" title="2"><span class="st">  </span><span class="kw">geom_boxplot</span>()<span class="op">+</span></a>
 <a class="sourceLine" id="cb907-3" title="3"><span class="st">  </span><span class="kw">coord_flip</span>()<span class="op">+</span></a>
 <a class="sourceLine" id="cb907-4" title="4"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
-<p><img src="stat_book_files/figure-html/unnamed-chunk-248-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="stat_book_files/figure-html/unnamed-chunk-250-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>This is already pretty good. Notice that I don’t have to worry about specifying margins to make sure my category labels fit. Ggplot does that for me. I just need to apply labels and maybe a bit of tint to my boxplots.</p>
 <div class="sourceCode" id="cb908"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb908-1" title="1"><span class="kw">ggplot</span>(addhealth, <span class="kw">aes</span>(<span class="dt">x=</span>race, <span class="dt">y=</span>indegree))<span class="op">+</span></a>
 <a class="sourceLine" id="cb908-2" title="2"><span class="st">  </span><span class="kw">geom_boxplot</span>(<span class="dt">fill=</span><span class="st">&quot;grey70&quot;</span>)<span class="op">+</span></a>
@@ -763,7 +763,7 @@ By just adding in the borough and pop size as aesthetics, the graph was quickly 
 <a class="sourceLine" id="cb908-6" title="6">       <span class="dt">y=</span><span class="st">&quot;Number of friend nominations received&quot;</span>,</a>
 <a class="sourceLine" id="cb908-7" title="7">       <span class="dt">title=</span><span class="st">&quot;Comparative boxplots of friend nominations by race&quot;</span>,</a>
 <a class="sourceLine" id="cb908-8" title="8">       <span class="dt">caption=</span><span class="st">&quot;Add Health data, Wave 1&quot;</span>)</a></code></pre></div>
-<p><img src="stat_book_files/figure-html/unnamed-chunk-249-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="stat_book_files/figure-html/unnamed-chunk-251-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Note that the labels for x and y refer to the logic decision of which value is x and y as defined in the aesthetics not the actual placement, which was reversed due to the <code>coord_flip</code>. Note also that I used <code>NULL</code> for the x label because the category labels and title are self-explanatory.</p>
 <p>There are also some more advanced geoms that do something similar to a boxplot. A popular one is the <code>geom_violin</code> which plots a mirror image of the density distribution. With ggplot, its as simple as swapping out my boxplot with the violin:</p>
 <div class="sourceCode" id="cb909"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb909-1" title="1"><span class="kw">ggplot</span>(addhealth, <span class="kw">aes</span>(<span class="dt">x=</span>race, <span class="dt">y=</span>indegree))<span class="op">+</span></a>
@@ -774,7 +774,7 @@ By just adding in the borough and pop size as aesthetics, the graph was quickly 
 <a class="sourceLine" id="cb909-6" title="6">       <span class="dt">y=</span><span class="st">&quot;Number of friend nominations received&quot;</span>,</a>
 <a class="sourceLine" id="cb909-7" title="7">       <span class="dt">title=</span><span class="st">&quot;Comparative boxplots of friend nominations by race&quot;</span>,</a>
 <a class="sourceLine" id="cb909-8" title="8">       <span class="dt">caption=</span><span class="st">&quot;Add Health data, Wave 1&quot;</span>)</a></code></pre></div>
-<p><img src="stat_book_files/figure-html/unnamed-chunk-250-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="stat_book_files/figure-html/unnamed-chunk-252-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>I encourage you to explore the online <a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot documentation</a>. I would also highly recommend Kieran Healy’s new book, <a href="https://kieranhealy.org/publications/dataviz/"><em>Data Visualization</em></a> which uses ggplot extensively if you want to learn more about using ggplot most effectively.</p>
 </div>
 </div>
