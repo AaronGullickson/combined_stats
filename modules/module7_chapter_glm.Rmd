@@ -1203,8 +1203,72 @@ BIC.null.glm(model.complex)-BIC.null.glm(model.pclass)
 knitr::include_url("https://www.youtube.com/embed/XidkUBrgu7Y")
 ```
 
+Separation can occur in logit models when the categories of the dependent variable separate an independent variable or combination of independent variables into segments. The easiest case to understand would be a two-way table in which all the values of category 1 and category 2 on one variable are identical to the values of another set of categories on another variable. 
+Lets imagine a simple example of a yes/no question by gender of respondent for a simple case of six respondents:
+
+```{r}
+y <- factor(c("yes","yes","yes","no","no","no"))
+x <- factor(c("female","female","female","male","male","male"))
+table(x,y)
+```
+
+In this table, gender perfectly predicts a yes or no response. This is called **perfect separation**. If we try to predict yes/no by gender with a logit model, we will get some odd results:
+
+```{r logit-perfect-separation, warning=TRUE}
+model.sep <- glm(y~x, family=binomial)
+summary(model.sep)
+```
+
+Notice that the model reports values although it spits out a warning. However, the numbers in the coefficient table are all strange. My coefficient sizes are huge (-49 log-odds ratio), my standard errors are astronimical and my p-value is so close to 1 that it reports as 1. These are all signs of separation. The MLE solution does not exist for this data because the slope on male should be negative infinity!
+
+Complete separation can also happen for a quantitative independent variable. 
+
+```{r sep-quant, warning=TRUE}
+x <- c(20,21,22,23,24,25)
+model.sep <- glm(y~x, family=binomial)
+summary(model.sep)
+```
+
+I get a similar problem here because the quantitative variable can be perfectly separated by the dependent variable at age 22. All observations less than or equal to 22 say yes and all those above 22 say no. 
+
+Perfect separation is a fairly rare occurence, except in very small datasets.  A more common occurence is **quasi-complete separation** in which the dependent variable partially separates the independent variable. Lets continue with our example from before:
+
+```{r quasi-complete}
+y <- factor(c("yes","yes","yes","no","no","no"))
+x <- factor(c("female","female","female","male","female","male"))
+table(x,y)
+```
+
+In this case, gender does not perfectly predict the yes/no response. However, I get no cases of men who said yes. When you see cases of zero cells in your two-way table, it indicates that you have **sparseness** in the data and also **quasi-complete separation**. The effects of quasi-complete separation will be similar to complete separation.
+
+```{r model-quasi-sep, warning=TRUE}
+model.qsep <- glm(y~x, family=binomial)
+summary(model.qsep)
+```
+
+The effects are not quite as exaggerated as for complete separation, but again I get enormous effect sizes with standard errors that are even larger, producing p-values close to one. If you see a result like this in your model, you have a problem of quasi-complete separation. 
+
+Separation causes problems for model estimation. One way to resolve the issue is to try collapsing categorical variables with lots of categories. If some of these categories are small, then they could lead to sparseness when added to the model. This is particularly true if you start adding interactions between categorical variables. By collapsing some categories you may be able to remove the problem of sparseness.
+
+In cases where collapsing the variables is not an option, you can consider alernate estimation techniques. The most common is a **penalized likelihood** model. These models apply a penalty to the likelihood for very large coefficient sizes and can be used to pull extreme coefficients resulting from separation back closer to a reasonable value. 
+
+You can implement a penalized likelihood model in *R* using the `logistf` package. This package includes a function `logistf` that can be used to directly estimate a penalized likelihod logit model.
+
+```{r logistf-model}
+library(logistf)
+logistf(y~x)
+```
+
 ---
 
 ## Models for Polytomous Outcomes
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/57PTp1vSduQ")
+```
+
+```{r echo=FALSE}
+knitr::include_url("https://www.youtube.com/embed/O3ofSoHmK9M")
+```
 
 ---
