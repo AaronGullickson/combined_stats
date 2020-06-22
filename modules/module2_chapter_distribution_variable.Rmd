@@ -106,6 +106,21 @@ if(is_html) {
 
 24.7% of passengers were first class, 21.2% of passengers were second class, and 54.2% of passengers were third class. Just over half of passengers were third class and the remaining passengers were fairly evenly split between first and second class.
 
+<div class = "dcl">
+
+#### Try it out
+
+In the interactive *R* session below, try to calculate the proportion or percent of the voting age population that voted for each candidate (or didn't vote) in the 21016 election, based on our politics dataset. Keep the following in mind:
+
+1. The <tt>politics</tt> dataset is already loaded. Remember that to access a variable in a dataset, you need to use the <tt>\$</tt> sign. In this case, the variable you want is called <tt>president</tt> so you need to use the syntax <tt>politics$president</tt>.
+2. You need to run the <tt>table</tt> command on your variable *before* you can run <tt>prop.table</tt>.
+
+Is the result surprising to you? Notice that no candidate received even close to 50%. Why is this the case?
+
+<iframe src="dcl_interactives/calculate_props.html" frameborder="0" scrolling="no" style="width:100%;height:405px"></iframe>
+
+</div>
+
 #### Don't make a piechart
 
 Now that we have proportions/percents, we can use these values to construct a graphical display of the distribution. One of the most common techniques for doing this is a **piechart**. Figure \@ref(fig:piechart) shows a piechart of the distribution of passengers on the Titanic. 

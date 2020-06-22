@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'/>
+  <script async src="https://cdn.datacamp.com/dcl-react-dev.js.gz"></script>
+</head>
+
+<body>
+<div data-datacamp-exercise data-lang="r" data-show-run-button data-height="400">
+  <code data-type="pre-exercise-code">
+  	# This will get executed each time the exercise gets initialized
+	  load(url("https://github.com/AaronGullickson/combined_stats/blob/master/example_datasets/politics/politics.RData?raw=true"))
+	  options(digits=3)
+  </code>
+  <code data-type="sample-code">
+	# calculate the proportion/percent of voter choice for president in the politics dataset
+  
+  
+  </code>
+  <code data-type="solution">
+	# calculate the proportion/percent of voter choice for president in the politics dataset
+  prop.table(table(politics$president))
+  
+  </code>
+  <code data-type="sct">
+    ex() %>% check_function("table", not_called_msg="Did you remember to call `table` first?") %>% check_arg(., "..1") %>% check_equal(incorrect_msg="It looks like you are not using the right variable in your `table` command")
+    ex() %>% check_function("prop.table", not_called_msg="Did you remember to call `prop.table`?") %>% check_result() %>% check_equal()
+  success_msg("Great Job!")
+  </code>
+</div>
+</body>
+</html>
