@@ -38,12 +38,12 @@
                                             incorrect_msg="In order for the proportions to sum to one, the `group` aesthetic must be `1`.")
   }
   check_function(., "geom_bar")
-  ex() %>% check_function(., "labs", 
-                          not_called_msg="You should provide labels for your axes with the `labs` command." ) %>% {
+  check_function(., "labs", 
+                 not_called_msg="You should provide labels for your axes with the `labs` command." ) %>% {
     check_arg(., "x", arg_not_specified_msg="You should label the x-axis")
     check_arg(., "y", arg_not_specified_msg="You should label the y-axis")
+    }
   }
-}
   success_msg("Great Job!")
   </code>
 </div>
