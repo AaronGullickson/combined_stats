@@ -19,10 +19,11 @@
   </code>
   <code data-type="solution">
 	# create a barplot of voter choice for president in the politics dataset
-  ggplot(politics, aes(x=president, y=..prop.., group=1))+
+  ggplot(politics, 
+         aes(x=president, y=..prop.., group=1))+
     geom_bar()+
-    labs(x="presidential vote 2016", y="percent")+
-    scale_y_continuous(labels=scales::percent)+
+    labs(x="presidential vote 2016", 
+         y="proportion")+
     coord_flip()+
     theme_bw()
   </code>
