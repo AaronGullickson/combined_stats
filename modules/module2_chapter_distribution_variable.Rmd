@@ -228,16 +228,18 @@ As Figure \@ref(fig:hist-agepol-bin5) shows, I get more or less the same overall
 knitr::include_app("https://aarongullickson.shinyapps.io/histogram/", height="800px")
 ```
 
+<div class = "dcl">
+
 #### Try it out
 
-In the interactive *R* session below, use <tt>ggplot</tt> to construct a histogram of the distrivbution of family income from the politics dataset using the <tt>income</tt> variable. Keep the following in mind:
+In the interactive *R* session below, use <tt>ggplot</tt> to construct a histogram of the distribution of family income from the politics dataset using the <tt>income</tt> variable. Keep the following in mind:
 
 1. You must combine together different elements of ggplot, in this case <tt>ggplot</tt> itself and <tt>geom_histogram</tt> with a plus sign to display correctly.
 2. Play around with the size of bins in your histogram by adding a `binwidth` argument to `geom_histogram`. 
 3. Play around with the border and fill color of your histogram bars with the `col` and `fill` arguments to `geom_histogram`. 
 4. Be sure to add nice labels for your x axis by adding a <tt>labs</tt> command. 
 
-<iframe src="dcl_interactives/barplot.html" frameborder="0" scrolling="no" style="width:100%;height:405px"></iframe>
+<iframe src="dcl_interactives/histogram.html" frameborder="0" scrolling="no" style="width:100%;height:405px"></iframe>
 
 </div>
 
@@ -488,6 +490,21 @@ As a result of this skew, the mean box office returns are about \$45.2 million, 
 Note that neither estimate is in some fundamental way incorrect. They are both correctly estimating what they were intended to estimate. It is up to us to understand and interpret these numbers correctly and to understand their limitations.
 
 In many cases, we are actually more interested in the median as a measure of "average" experience than the mean, even though we think of the mean as the "average." This is, for example, why you see home prices in an area always reported in terms of medians rather than means. Mean home prices tend to be much higher than median home prices because of the relatively few very expensive homes in a given area. 
+
+<div class = "dcl">
+
+#### Try it out
+
+In the interactive *R* session below, Calculate the mean and median of hourly wages from the earnings dataset. Keep the following in mind:
+
+1. To identify the variable you want for the <tt>mean</tt> and <tt>median</tt> you need to follow the syntax of <tt>dataset$variable_name</tt>.
+
+How do the results for the mean and median compare? What does this suggest about the underlying shape of the distribution?
+
+<iframe src="dcl_interactives/histogram.html" frameborder="0" scrolling="no" style="width:100%;height:405px"></iframe>
+
+</div>
+
 
 ---
 
