@@ -165,7 +165,7 @@ Ggplot is a very flexible system that repeats these same basic layer elements in
 In the interactive *R* session below, use <tt>ggplot</tt> to construct a barplot of the percent of respondents in each category of presidential election voting from the <tt>president</tt> variable. Keep the following in mind:
 
 1. You must combine together different elements of ggplot, in this case <tt>ggplot</tt> itself and <tt>geom_bar</tt> with a plus sign to display correctly.
-2. Be sure to add nice labels for your x and y axes by adding a <tt>labs</tt> command. keep in mind that if you use <tt>coord_flip</tt> the axes will be reversed on your graph (i.e. the x-axis will represent the vertical axis).
+2. Be sure to add nice labels for your x and y axes by adding a <tt>labs</tt> command. Keep in mind that if you use <tt>coord_flip</tt> the axes will be reversed on your graph (i.e. the x-axis will represent the vertical axis).
 
 <iframe src="dcl_interactives/barplot.html" frameborder="0" scrolling="no" style="width:100%;height:405px"></iframe>
 
@@ -228,6 +228,18 @@ As Figure \@ref(fig:hist-agepol-bin5) shows, I get more or less the same overall
 knitr::include_app("https://aarongullickson.shinyapps.io/histogram/", height="800px")
 ```
 
+#### Try it out
+
+In the interactive *R* session below, use <tt>ggplot</tt> to construct a histogram of the distrivbution of family income from the politics dataset using the <tt>income</tt> variable. Keep the following in mind:
+
+1. You must combine together different elements of ggplot, in this case <tt>ggplot</tt> itself and <tt>geom_histogram</tt> with a plus sign to display correctly.
+2. Play around with the size of bins in your histogram by adding a `binwidth` argument to `geom_histogram`. 
+3. Play around with the border and fill color of your histogram bars with the `col` and `fill` arguments to `geom_histogram`. 
+4. Be sure to add nice labels for your x axis by adding a <tt>labs</tt> command. 
+
+<iframe src="dcl_interactives/barplot.html" frameborder="0" scrolling="no" style="width:100%;height:405px"></iframe>
+
+</div>
 
 What kinds of things should you be looking for in your histogram? There are four general things to be on the lookout for when you examine a histogram.
 
