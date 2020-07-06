@@ -163,6 +163,22 @@ round(prop.table(table(titanic$sex, titanic$pclass),1),3)*100
 ```
 As these numbers and Figure \@ref(fig:comp-bar-pclass-gender) both show, the distribution of men and women by passenger class is very different. Women were less likely to be in third class and more likely to be in first class than men, while about the same percent of men and women were in second class. 
 
+<div class = "dcl">
+
+#### Try it out
+
+In the interactive *R* session below, Create a barplot showing the conditional distribution of smoking behavior by race in the popularity dataset. Keep the following in mind:
+
+1. You must combine together different elements of ggplot, in this case <tt>ggplot</tt> itself and <tt>geom_histogram</tt> with a plus sign to display correctly.
+2. Use the <tt>facet_wrap</tt> command to make comparisons by race.
+3. Be sure to add nice labels for your x axis by adding a <tt>labs</tt> command. 
+
+How do the results for the mean and median compare? What does this suggest about the underlying shape of the distribution?
+
+<iframe src="dcl_interactives/conditional_barplot.html" frameborder="0" scrolling="no" style="width:100%;height:405px"></iframe>
+
+</div>
+
 ### Odds ratio (advanced)
 
 We can also use the **odds ratio** to measure the association between two categorical variables.  The odds ratio is not a term that is common in everyday speech but it is a critical concept in all kinds of scientific research. 
