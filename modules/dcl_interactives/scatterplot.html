@@ -21,9 +21,11 @@
   <code data-type="solution">
   # create a scatterplot showing the relationship between parental income (independent variable) and number of friend nominations (dependent variable) in the popularity dataset  
   ggplot(popularity, 
-         aes(x=parentinc, y=indegree))+
+         aes(x=parentinc, 
+             y=indegree))+
     geom_jitter(alpha=0.1)+
-    labs(x="parental income in $1000s", y="number of friend nominations")+
+    labs(x="parental income in $1000s", 
+         y="number of friend nominations")+
     theme_bw()
   </code>
   <code data-type="sct">

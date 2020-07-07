@@ -21,9 +21,11 @@
   <code data-type="solution">
 	# create a comparative boxplot of tomato meter values by maturity rating in the movies dataset
   ggplot(movies, 
-         aes(x=Rating, y=TomatoMeter))+
+         aes(x=Rating, 
+             y=TomatoMeter))+
     geom_boxplot()+
-    labs(x="maturity rating", y="tomato meter")+
+    labs(x="maturity rating", 
+         y="tomato meter")+
     theme_bw()
   </code>
   <code data-type="sct">

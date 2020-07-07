@@ -21,10 +21,13 @@
   <code data-type="solution">
 # Create a barplot showing the distribution of smoking behavior conditional on race in the popularity dataset
   ggplot(popularity, 
-         aes(x=smoker, y=..prop.., group=1))+
+         aes(x=smoker, 
+             y=..prop.., 
+             group=1))+
     geom_bar()+
     facet_wrap(~race)+
-    labs(x="smoking behavior", y="proportion")+
+    labs(x="smoking behavior", 
+         y="proportion")+
     theme_bw()
   </code>
   <code data-type="sct">

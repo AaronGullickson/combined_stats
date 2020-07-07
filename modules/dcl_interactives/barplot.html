@@ -20,7 +20,9 @@
   <code data-type="solution">
 	# create a barplot of voter choice for president in the politics dataset
   ggplot(politics, 
-         aes(x=president, y=..prop.., group=1))+
+         aes(x=president, 
+             y=..prop.., 
+             group=1))+
     geom_bar()+
     labs(x="presidential vote 2016", 
          y="proportion")+

@@ -20,7 +20,9 @@
   </code>
   <code data-type="solution">
 	# calculate the mean difference in hourly wages between men and women
-  tapply(earnings$wages, earnings$gender, mean)
+  tapply(earnings$wages, 
+         earnings$gender, 
+         mean)
   26.20302-22.26460
   </code>
   <code data-type="sct">
