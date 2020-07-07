@@ -235,8 +235,8 @@ knitr::include_app("https://aarongullickson.shinyapps.io/histogram/", height="80
 In the interactive *R* session below, use <tt>ggplot</tt> to construct a histogram of the distribution of family income from the politics dataset using the <tt>income</tt> variable. Keep the following in mind:
 
 1. You must combine together different elements of ggplot, in this case <tt>ggplot</tt> itself and <tt>geom_histogram</tt> with a plus sign to display correctly.
-2. Play around with the size of bins in your histogram by adding a `binwidth` argument to `geom_histogram`. 
-3. Play around with the border and fill color of your histogram bars with the `col` and `fill` arguments to `geom_histogram`. 
+2. Play around with the size of bins in your histogram by adding a <tt>binwidth</tt> argument to <tt>geom_histogram</tt>. 
+3. Play around with the border and fill color of your histogram bars with the <tt>col</tt> and <tt>fill</tt> arguments to <tt>geom_histogram</tt>. 
 4. Be sure to add nice labels for your x axis by adding a <tt>labs</tt> command. 
 
 <iframe src="dcl_interactives/histogram.html" frameborder="0" scrolling="no" style="width:100%;height:405px"></iframe>
@@ -501,7 +501,7 @@ In the interactive *R* session below, Calculate the mean and median of hourly wa
 
 How do the results for the mean and median compare? What does this suggest about the underlying shape of the distribution?
 
-<iframe src="dcl_interactives/histogram.html" frameborder="0" scrolling="no" style="width:100%;height:405px"></iframe>
+<iframe src="dcl_interactives/mean_median.html" frameborder="0" scrolling="no" style="width:100%;height:405px"></iframe>
 
 </div>
 
