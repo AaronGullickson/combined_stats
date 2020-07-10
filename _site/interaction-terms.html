@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-26" />
+<meta name="date" content="2020-07-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -420,9 +420,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="the-nature-of-additive-models" class="section level3">
 <h3>The nature of additive models</h3>
 <p>As an example for this section, I am going to look at the relationship between movie genre, runtime, and tomato meter ratings. To simplify things, I am going to only look at these relationships for two genres: action and comedy. I can limit my movies dataset to these two genres with the following command:</p>
-<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb224-1" title="1">movies.short &lt;-<span class="st"> </span><span class="kw">subset</span>(movies, Genre<span class="op">==</span><span class="st">&quot;Comedy&quot;</span> <span class="op">|</span><span class="st"> </span>movies<span class="op">$</span>Genre<span class="op">==</span><span class="st">&quot;Action&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb225-1" title="1">movies.short &lt;-<span class="st"> </span><span class="kw">subset</span>(movies, Genre<span class="op">==</span><span class="st">&quot;Comedy&quot;</span> <span class="op">|</span><span class="st"> </span>movies<span class="op">$</span>Genre<span class="op">==</span><span class="st">&quot;Action&quot;</span>)</a></code></pre></div>
 <p>Now lets look at a simple model where genre and runtime both predict Tomato Meter ratings.</p>
-<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb225-1" title="1"><span class="kw">round</span>(<span class="kw">coef</span>(<span class="kw">lm</span>(TomatoMeter<span class="op">~</span>Genre<span class="op">+</span>Runtime, <span class="dt">data=</span>movies.short)),<span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb226-1" title="1"><span class="kw">round</span>(<span class="kw">coef</span>(<span class="kw">lm</span>(TomatoMeter<span class="op">~</span>Genre<span class="op">+</span>Runtime, <span class="dt">data=</span>movies.short)),<span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## (Intercept) GenreComedy     Runtime 
 ##       -1.75        4.43        0.41</code></pre>
 <p>Genre is a categorical variable and action movies are set as the reference category. In equation form, the model looks like:</p>
@@ -450,11 +450,11 @@ Figure 53: Predicted Tomato Meter by runtime for two genres based on an additive
 <div id="the-interaction-term" class="section level3">
 <h3>The interaction term</h3>
 <p>An interaction term is a variable that is constructed from two other variables by multiplying those two variables together. In our case, we can easily construct an interaction term as follows:</p>
-<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb227-1" title="1">movies.short<span class="op">$</span>comedy &lt;-<span class="st"> </span>movies.short<span class="op">$</span>Genre<span class="op">==</span><span class="st">&quot;Comedy&quot;</span></a>
-<a class="sourceLine" id="cb227-2" title="2">movies.short<span class="op">$</span>interaction &lt;-<span class="st"> </span>movies.short<span class="op">$</span>Runtime<span class="op">*</span>movies.short<span class="op">$</span>comedy</a></code></pre></div>
+<div class="sourceCode" id="cb228"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb228-1" title="1">movies.short<span class="op">$</span>comedy &lt;-<span class="st"> </span>movies.short<span class="op">$</span>Genre<span class="op">==</span><span class="st">&quot;Comedy&quot;</span></a>
+<a class="sourceLine" id="cb228-2" title="2">movies.short<span class="op">$</span>interaction &lt;-<span class="st"> </span>movies.short<span class="op">$</span>Runtime<span class="op">*</span>movies.short<span class="op">$</span>comedy</a></code></pre></div>
 <p>In this case, I had to create a real indicator variable for comedy before I could multiply them, but then I just multiply this indicator variable by movie runtime. Now lets add this interaction term to the model:</p>
-<div class="sourceCode" id="cb228"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb228-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(TomatoMeter<span class="op">~</span>Runtime<span class="op">+</span>comedy<span class="op">+</span>interaction, <span class="dt">data=</span>movies.short)</a>
-<a class="sourceLine" id="cb228-2" title="2"><span class="kw">round</span>(<span class="kw">coef</span>(model), <span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb229-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(TomatoMeter<span class="op">~</span>Runtime<span class="op">+</span>comedy<span class="op">+</span>interaction, <span class="dt">data=</span>movies.short)</a>
+<a class="sourceLine" id="cb229-2" title="2"><span class="kw">round</span>(<span class="kw">coef</span>(model), <span class="dv">2</span>)</a></code></pre></div>
 <pre><code>## (Intercept)     Runtime  comedyTRUE interaction 
 ##      -14.45        0.52       24.36       -0.19</code></pre>
 <p>We now have an additional “slope” for the interaction term. Lets write this model out in equation form to try to figure out what is going on here.</p>
@@ -495,17 +495,27 @@ Another approach is to actually calculate the slope for the indicated category (
 <div id="interaction-terms-in-r" class="section level3">
 <h3>Interaction terms in <em>R</em></h3>
 <p>In the example above, I created the interaction term manually, but I didn’t actually need to do this. <em>R</em> has a shortcut method for calculating interaction terms:</p>
-<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb230-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(TomatoMeter<span class="op">~</span>Runtime<span class="op">*</span>Genre, <span class="dt">data=</span>movies.short) </a>
-<a class="sourceLine" id="cb230-2" title="2"><span class="kw">round</span>(<span class="kw">coef</span>(model),<span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb231-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(TomatoMeter<span class="op">~</span>Runtime<span class="op">*</span>Genre, <span class="dt">data=</span>movies.short) </a>
+<a class="sourceLine" id="cb231-2" title="2"><span class="kw">round</span>(<span class="kw">coef</span>(model),<span class="dv">2</span>)</a></code></pre></div>
 <pre><code>##         (Intercept)             Runtime         GenreComedy Runtime:GenreComedy 
 ##              -14.45                0.52               24.36               -0.19</code></pre>
 <p>The results are exactly the same as before. To include an interaction term between two variables I just have to connect them with a <code>*</code> rather than a <code>+</code> in the <code>lm</code> formula. By default, <em>R</em> will include each variable separately as well as their interaction.</p>
+<div class="dcl">
+<h4 id="try-it-out-12">Try it out</h4>
+<p>In the interactive <em>R</em> session below, lets try a linear model that predicts hourly wages by number of children, gender, and the interaction between the two variables.</p>
+<ol style="list-style-type: decimal">
+<li>You will need to fill in the formula part of the <tt>lm</tt> command below. Remember that your dependent variable (in this case wages) goes on the left side of the <tt>~</tt>.</li>
+<li>Use the <tt>I(x-number)</tt> syntax as shown above to re-center age in the model formula.</li>
+</ol>
+<p>What does the interaction term tell you about different wage returns to children for men and women?
+<iframe src="dcl_interactives/lm_interact.html" frameborder="0" scrolling="no" style="width:100%;height:405px"></iframe></p>
+</div>
 </div>
 <div id="interaction-terms-with-multiple-categories" class="section level3">
 <h3>Interaction terms with multiple categories</h3>
 <p>In the above example, I only compared comedy and action movies in order to keep the comparison simple, but it is possible to run the same analysis on the full movie dataset to see how runtime varies across all genres.</p>
-<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb232-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(TomatoMeter<span class="op">~</span>Runtime<span class="op">*</span>Genre, <span class="dt">data=</span>movies)</a>
-<a class="sourceLine" id="cb232-2" title="2"><span class="kw">round</span>(<span class="kw">coef</span>(model),<span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb233-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(TomatoMeter<span class="op">~</span>Runtime<span class="op">*</span>Genre, <span class="dt">data=</span>movies)</a>
+<a class="sourceLine" id="cb233-2" title="2"><span class="kw">round</span>(<span class="kw">coef</span>(model),<span class="dv">2</span>)</a></code></pre></div>
 <pre><code>##                (Intercept)                    Runtime 
 ##                     -14.45                       0.52 
 ##             GenreAnimation                GenreComedy 
@@ -543,10 +553,10 @@ Figure 55: Interaction terms allow each genre to get a different return from inc
 </iframe>
 <p>The examples so far have involved interacting a quantitative variable with a categorical variable which gives you a different line for each category of your categorical variable. However, we can also create an interaction term between two categorical variables.</p>
 <p>As an example, lets look at differences in wages in the earnings dataset by race and education. To simplify things, I am going to dichotimize race into white/non-white and education into less than Bachelor’s degree/Bachelor’s degree or more, as follows:</p>
-<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb234-1" title="1">earnings<span class="op">$</span>nwhite &lt;-<span class="st"> </span>earnings<span class="op">$</span>race<span class="op">!=</span><span class="st">&quot;White&quot;</span></a>
-<a class="sourceLine" id="cb234-2" title="2">earnings<span class="op">$</span>college &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(earnings<span class="op">$</span>educ)<span class="op">&gt;</span><span class="dv">3</span></a></code></pre></div>
+<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb235-1" title="1">earnings<span class="op">$</span>nwhite &lt;-<span class="st"> </span>earnings<span class="op">$</span>race<span class="op">!=</span><span class="st">&quot;White&quot;</span></a>
+<a class="sourceLine" id="cb235-2" title="2">earnings<span class="op">$</span>college &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(earnings<span class="op">$</span>educ)<span class="op">&gt;</span><span class="dv">3</span></a></code></pre></div>
 <p>Lets look at mean wages across these combination of categories:</p>
-<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb235-1" title="1"><span class="kw">tapply</span>(earnings<span class="op">$</span>wages, earnings[,<span class="kw">c</span>(<span class="st">&quot;nwhite&quot;</span>,<span class="st">&quot;college&quot;</span>)], mean)</a></code></pre></div>
+<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb236-1" title="1"><span class="kw">tapply</span>(earnings<span class="op">$</span>wages, earnings[,<span class="kw">c</span>(<span class="st">&quot;nwhite&quot;</span>,<span class="st">&quot;college&quot;</span>)], mean)</a></code></pre></div>
 <pre><code>##        college
 ## nwhite     FALSE     TRUE
 ##   FALSE 19.99246 33.91417
@@ -620,8 +630,8 @@ Difference
 <p>Now lets look at the difference in the differences. For the racial gap in wages this is given by -3.25-(-2.09)=1.16. For the returns to a college degree this is given by 15.08-13.92=1.16. The difference in the differences is the same! This is because we are looking at the same relationship in two different ways. If non-whites get a better return to college than whites, then the racial gap in wages must get smaller among the college-educated. Similarly, if the racial gap in wages gets smaller at the college level, it tells us that non-whites must get a better return on their college education.</p>
 <p>This 1.16 number is basically an interaction term. We can interpret the number as the difference in returns to wages from a college degree between whites and non-whites. Alternatively, we can interpret the number as the difference in the racial wage gap between those with no degree and those with a college degree. Either way, we have the same information, with the same finding: greater educational attainment reduces racial inequality because minorities get a greater return on their college degrees.</p>
 <p>Lets try modeling this relationship with an OLS regression model. First lets try a model without interaction terms:</p>
-<div class="sourceCode" id="cb237"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb237-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span>nwhite<span class="op">+</span>college, <span class="dt">data=</span>earnings)</a>
-<a class="sourceLine" id="cb237-2" title="2"><span class="kw">coef</span>(model)</a></code></pre></div>
+<div class="sourceCode" id="cb238"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb238-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span>nwhite<span class="op">+</span>college, <span class="dt">data=</span>earnings)</a>
+<a class="sourceLine" id="cb238-2" title="2"><span class="kw">coef</span>(model)</a></code></pre></div>
 <pre><code>## (Intercept)  nwhiteTRUE collegeTRUE 
 ##   19.850655   -2.866436   14.263698</code></pre>
 <p>Lets put this into an equation framework:</p>
@@ -692,8 +702,8 @@ Difference
 </tbody>
 </table>
 <p>The predicted values do not match the exact values above. More importantly, if you look at the differences, you can see that the returns to education are assumed to be identical for whites and non-whites ($14.26) and the racial gap is assumed to be the same for those with no degree and those with a college degree (-$2.87). This is the limitation of the additive model. We assume that the effects of race and college completion are not affected by each other. If we want to determine whether returns to college are different by race, we need to model the interaction term, as follows:</p>
-<div class="sourceCode" id="cb239"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb239-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span>nwhite<span class="op">*</span>college, <span class="dt">data=</span>earnings)</a>
-<a class="sourceLine" id="cb239-2" title="2"><span class="kw">coef</span>(model)</a></code></pre></div>
+<div class="sourceCode" id="cb240"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb240-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(wages<span class="op">~</span>nwhite<span class="op">*</span>college, <span class="dt">data=</span>earnings)</a>
+<a class="sourceLine" id="cb240-2" title="2"><span class="kw">coef</span>(model)</a></code></pre></div>
 <pre><code>##            (Intercept)             nwhiteTRUE            collegeTRUE 
 ##              19.992457              -3.250648              13.921709 
 ## nwhiteTRUE:collegeTRUE 

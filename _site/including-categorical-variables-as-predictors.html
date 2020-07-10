@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-26" />
+<meta name="date" content="2020-07-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -420,13 +420,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="indicator-variables" class="section level3">
 <h3>Indicator variables</h3>
 <p>As an example, I am going to look at the relationship between religious affiliation and sexual frequency. To keep our example simple I am going to <strong>dichotomize</strong> the religious affiliation variable, which means I am going to collapse it into two categories, rather than the six categories in the dataset. I will use a simply dichotomy of “Not Religious/Religious.” In R, I can create this variable like so:</p>
-<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb205-1" title="1">sex<span class="op">$</span>norelig &lt;-<span class="st"> </span>sex<span class="op">$</span>relig<span class="op">==</span><span class="st">&quot;None&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb206-1" title="1">sex<span class="op">$</span>norelig &lt;-<span class="st"> </span>sex<span class="op">$</span>relig<span class="op">==</span><span class="st">&quot;None&quot;</span></a></code></pre></div>
 <p>This is technically a <strong>boolean</strong> variable, which means it takes a TRUE or FALSE value. For our purposes, TRUE is a non-religious person.</p>
 <p>We already know how to look at the relationship between sexual frequency and this dichotomized religious affiliation variable. We can look at the mean differences in sexual frequency across our two categories:</p>
-<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb206-1" title="1"><span class="kw">tapply</span>(sex<span class="op">$</span>sexf, sex<span class="op">$</span>norelig, mean)</a></code></pre></div>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb207-1" title="1"><span class="kw">tapply</span>(sex<span class="op">$</span>sexf, sex<span class="op">$</span>norelig, mean)</a></code></pre></div>
 <pre><code>##    FALSE     TRUE 
 ## 48.33671 59.84862</code></pre>
-<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb208-1" title="1"><span class="fl">59.84862-48.33671</span></a></code></pre></div>
+<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb209-1" title="1"><span class="fl">59.84862-48.33671</span></a></code></pre></div>
 <pre><code>## [1] 11.51191</code></pre>
 <p>The non-religious have sex 11.5 more times per year than the religious, on average. Hallelujah?</p>
 <p>We can represent this same mean difference in a regression model framework by using an indicator variable. An indicator variable is a variable that only takes a value of zero or one. It takes a value of one when the observation is in the indicated category and a zero otherwise. Mathematically, we would say:</p>
@@ -448,7 +448,7 @@ Figure 51: A scatterplot of the religious indicator variable by sexual frequency
 <p>What will the slope of this line be? If we go up “one unit” on the non-religious indicator variable we have gone from a religious person to a non-religious person and the change in predicted sexual frequency is equal to the mean difference of 11.5 between the groups. The intercept is given by the value at zero which is just given by the mean sexual frequency among the religious of 48.3. So, the OLS regression line should look like:</p>
 <p><span class="math display">\[\hat{frequency}_i=48.3+11.5(nonrelig_i)\]</span></p>
 <p>I can calculate these same numbers in <em>R</em> with the <code>lm</code> command:</p>
-<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb210-1" title="1"><span class="kw">coef</span>(<span class="kw">lm</span>(sexf<span class="op">~</span>norelig, <span class="dt">data=</span>sex))</a></code></pre></div>
+<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb211-1" title="1"><span class="kw">coef</span>(<span class="kw">lm</span>(sexf<span class="op">~</span>norelig, <span class="dt">data=</span>sex))</a></code></pre></div>
 <pre><code>## (Intercept) noreligTRUE 
 ##    48.33671    11.51191</code></pre>
 <p>The numbers are the same. More important than the numbers, however, is the interpretation of the numbers. The intercept is the mean of the dependent variable for the reference category. The slope is the mean difference between the reference category and the indicated category. In this case, I would say:</p>
@@ -465,8 +465,8 @@ Figure 51: A scatterplot of the religious indicator variable by sexual frequency
   0 &amp; \text{otherwise}
   \end{cases}\]</span></p>
 <p>Lets try it out in <em>R</em> and see (the <code>!=</code> below is computer lingo for “not equal to”):</p>
-<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb212-1" title="1">sex<span class="op">$</span>religious &lt;-<span class="st"> </span>sex<span class="op">$</span>relig<span class="op">!=</span><span class="st">&quot;None&quot;</span></a>
-<a class="sourceLine" id="cb212-2" title="2"><span class="kw">coef</span>(<span class="kw">lm</span>(sexf<span class="op">~</span>religious, <span class="dt">data=</span>sex))</a></code></pre></div>
+<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb213-1" title="1">sex<span class="op">$</span>religious &lt;-<span class="st"> </span>sex<span class="op">$</span>relig<span class="op">!=</span><span class="st">&quot;None&quot;</span></a>
+<a class="sourceLine" id="cb213-2" title="2"><span class="kw">coef</span>(<span class="kw">lm</span>(sexf<span class="op">~</span>religious, <span class="dt">data=</span>sex))</a></code></pre></div>
 <pre><code>##   (Intercept) religiousTRUE 
 ##      59.84862     -11.51191</code></pre>
 <p>Lets compare the two models:</p>
@@ -480,13 +480,13 @@ Figure 51: A scatterplot of the religious indicator variable by sexual frequency
 <iframe src="https://www.youtube.com/embed/RBgvaGnBLyA" width="672" height="400px">
 </iframe>
 <p>What if I have a categorical variable that has more than two categories? Lets expand the religious variable that I dichotomized back to its original scale. There are six different categories: Fundamentalist Protestant, Mainline Protestant, Catholic, Jewish, Other, and None:</p>
-<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb214-1" title="1"><span class="kw">summary</span>(sex<span class="op">$</span>relig)</a></code></pre></div>
+<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb215-1" title="1"><span class="kw">summary</span>(sex<span class="op">$</span>relig)</a></code></pre></div>
 <pre><code>##     Fund Protestant Mainline Protestant            Catholic              Jewish 
 ##                 556                 529                 507                  39 
 ##               Other                None 
 ##                 145                 327</code></pre>
 <p>Lets look at the mean sexual frequency for each of these groups.</p>
-<div class="sourceCode" id="cb216"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb216-1" title="1"><span class="kw">round</span>(<span class="kw">tapply</span>(sex<span class="op">$</span>sexf, sex<span class="op">$</span>relig, mean),<span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb217-1" title="1"><span class="kw">round</span>(<span class="kw">tapply</span>(sex<span class="op">$</span>sexf, sex<span class="op">$</span>relig, mean),<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>##     Fund Protestant Mainline Protestant            Catholic              Jewish 
 ##                49.6                44.2                49.2                39.8 
 ##               Other                None 
@@ -532,8 +532,8 @@ Figure 52: The mean sexual frequency of each group arrayed on a vertical number 
 <p>The mean difference between Catholics and fundamentalist Protestants is given by <span class="math inline">\(b_2\)</span>.</p>
 <p>In general, each of the “slopes” is the mean difference between the indicated category and the <strong>reference category</strong>. In this case, the reference category is fundamentalist Protestants so each of the slopes gives the mean difference between that religious category and fundamentalist Protestant, just like the graph above.</p>
 <p>R is fairly intelligent about handling all of these indicator variables and you don’t actually have to create these five different variables. If you put a categorical variable into your regression formula, R will know to treat it as a set of indicator categories. The only catch is that R will already have a default category set as the reference. It just so happens that in our GSS data, fundamentalist Protestants are already set as the reference. So I can run this model by:</p>
-<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb218-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(sexf<span class="op">~</span>relig, <span class="dt">data=</span>sex)</a>
-<a class="sourceLine" id="cb218-2" title="2"><span class="kw">round</span>(<span class="kw">coef</span>(model),<span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb219-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(sexf<span class="op">~</span>relig, <span class="dt">data=</span>sex)</a>
+<a class="sourceLine" id="cb219-2" title="2"><span class="kw">round</span>(<span class="kw">coef</span>(model),<span class="dv">2</span>)</a></code></pre></div>
 <pre><code>##              (Intercept) religMainline Protestant            religCatholic 
 ##                    49.60                    -5.44                    -0.36 
 ##              religJewish               religOther                religNone 
@@ -546,15 +546,15 @@ Figure 52: The mean sexual frequency of each group arrayed on a vertical number 
 </iframe>
 <p>If all we are doing is reproducing mean differences between categories, what good is this method? After all, we already know how to do that. The major advantage of putting these mean differences into a regression model framework is that we can <strong>control for other potentially confounding variables</strong>.</p>
 <p>These sexual frequency differences by religious affiliation are a prime example. Lets take a look at the age differences between religious affiliations:</p>
-<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb220-1" title="1"><span class="kw">round</span>(<span class="kw">tapply</span>(sex<span class="op">$</span>age, sex<span class="op">$</span>relig, mean),<span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb221-1" title="1"><span class="kw">round</span>(<span class="kw">tapply</span>(sex<span class="op">$</span>age, sex<span class="op">$</span>relig, mean),<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>##     Fund Protestant Mainline Protestant            Catholic              Jewish 
 ##                45.4                47.3                44.9                53.7 
 ##               Other                None 
 ##                38.6                39.5</code></pre>
 <p>Notice how closely these age differences mirror the differences in sexual frequency. Others and nones are the youngest, while Jews are the oldest. Among Christians, mainline Protestants are older than fundamentalist Protestants and Catholics. We also know from prior work that age has a negative effect on sexual frequency. This should make us suspicious that some (or all) of the observed differences in sexual frequency between religious groups simply reflect age differences between those groups.</p>
 <p>We can easily address this issue by simply including age as a control variable in our model:</p>
-<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb222-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(sexf<span class="op">~</span>relig<span class="op">+</span>age, <span class="dt">data=</span>sex)</a>
-<a class="sourceLine" id="cb222-2" title="2"><span class="kw">round</span>(<span class="kw">coef</span>(model),<span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb223-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(sexf<span class="op">~</span>relig<span class="op">+</span>age, <span class="dt">data=</span>sex)</a>
+<a class="sourceLine" id="cb223-2" title="2"><span class="kw">round</span>(<span class="kw">coef</span>(model),<span class="dv">2</span>)</a></code></pre></div>
 <pre><code>##              (Intercept) religMainline Protestant            religCatholic 
 ##                   107.90                    -3.04                    -0.96 
 ##              religJewish               religOther                religNone 
@@ -759,6 +759,23 @@ N
 </tr>
 </table>
 <p>All of the coefficients (except for Catholic, which was tiny anyway) have declined substantially in size. The mean differences from fundamentalist Protestants for both Jews and other religions have basically disappeared and the “None” effect has been severely reduced. In other words, almost all or all of the observed differences in sexual frequency by religious affiliation were indirectly a product of underlying age differences between religious affiliations. If you were just about ready to convert to a different religion to get laid more often, you may want to hold off for the moment.</p>
+<div class="dcl">
+<h4 id="try-it-out-11">Try it out</h4>
+<p>In the interactive <em>R</em> session below, lets try creating a full linear model. We are going to predict hourly wages by the following independent variables:</p>
+<ol style="list-style-type: decimal">
+<li>Age, re-centered on 40</li>
+<li>Number of children, not re-centered</li>
+<li>Gender</li>
+<li>Highest educational degree</li>
+</ol>
+<p>Keep the following in mind:</p>
+<ol style="list-style-type: decimal">
+<li>You will need to fill in the formula part of the <tt>lm</tt> command below. Remember that your dependent variable (in this case wages) goes on the left side of the <tt>~</tt>.</li>
+<li>Use the <tt>I(x-number)</tt> syntax as shown above to re-center age in the model formula.</li>
+</ol>
+<p>How would you interpret all of the slopes and intercepts in the model output? Are you surprised by any of the results.
+<iframe src="dcl_interactives/lm_categorical.html" frameborder="0" scrolling="no" style="width:100%;height:405px"></iframe></p>
+</div>
 <hr />
 </div>
 </div>

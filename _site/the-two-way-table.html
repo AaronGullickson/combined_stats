@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-26" />
+<meta name="date" content="2020-07-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -711,7 +711,7 @@ Other
 ##   Other       0.03983051 0.03400916</code></pre>
 <p>Note that this table looks deceptively similar to the table above. But look again. The numbers now don’t add up to one within each row. They do however add up to one within each column. In order to read this table properly, we have to understand that it is giving us the distribution within each column: the proportion of respondents who have a given belief who belong to a given political party. So we can see in the first number that 19.5% of deniers are Democrats, 48.2% are Republicans, 27.9% are Independents, and 4.1% belong to other parties. This distribution is very different from the party affiliation distribution of believers in the second column which tells us that there is an association. However, the large party cleavages on the issue are not as immediately obvious here as they were with the previous conditional distribution. Always think carefully about which conditional distribution is more sensible to interpret and always make sure that you are interpreting them in the correct way.</p>
 <div class="dcl">
-<h4 id="try-it-out">Try it out</h4>
+<h4 id="try-it-out-4">Try it out</h4>
 <p>In the interactive <em>R</em> session below, try to calculate the distribution of movie maturity ratings (e.g. PG, PG-13) by movie genre. Keep the following in mind:</p>
 <ol style="list-style-type: decimal">
 <li>For easier display, its usually better to put the variable with more categories on the rows. In this case, <tt>Genre</tt> has more categories than <tt>Rating</tt>.</li>
@@ -758,6 +758,18 @@ Figure 17: Distribution of passenger class by gender
 ##   Female  30.9   22.7  46.4
 ##   Male    21.2   20.3  58.5</code></pre>
 <p>As these numbers and Figure <a href="the-two-way-table.html#fig:comp-bar-pclass-gender">17</a> both show, the distribution of men and women by passenger class is very different. Women were less likely to be in third class and more likely to be in first class than men, while about the same percent of men and women were in second class.</p>
+<div class="dcl">
+<h4 id="try-it-out-5">Try it out</h4>
+<p>In the interactive <em>R</em> session below, Create a barplot showing the conditional distribution of smoking behavior by race in the popularity dataset. Keep the following in mind:</p>
+<ol style="list-style-type: decimal">
+<li>You must combine together different elements of ggplot, in this case <tt>ggplot</tt> itself and <tt>geom_histogram</tt> with a plus sign to display correctly.</li>
+<li>Use the <tt>facet_wrap</tt> command to make comparisons by race.</li>
+<li>Be sure to add nice labels for your x axis by adding a <tt>labs</tt> command.</li>
+</ol>
+<p>How do the results for the mean and median compare? What does this suggest about the underlying shape of the distribution?</p>
+<iframe src="dcl_interactives/conditional_barplot.html" frameborder="0" scrolling="no" style="width:100%;height:405px">
+</iframe>
+</div>
 </div>
 <div id="odds-ratio-advanced" class="section level3">
 <h3>Odds ratio (advanced)</h3>

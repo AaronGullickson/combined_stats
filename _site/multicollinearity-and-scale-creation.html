@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-26" />
+<meta name="date" content="2020-07-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -423,8 +423,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3>Avoid the Singularity</h3>
 <p><strong>Structural multicollinearity</strong> occurs when one variable is perfectly predicted by some combination of other variables. In this situation, a model with all of these variables cannot be estimated unless one variable is dropped.</p>
 <p>To provide a simple example of perfect multicollinearity, I have coded a variable in the crime dataset for the percent female in a state. This term is perfectly collinear with the variable percent male in a state and thus it will cause problems for model estimation if I include them both:</p>
-<div class="sourceCode" id="cb429"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb429-1" title="1">crimes<span class="op">$</span>PctFemale &lt;-<span class="st"> </span><span class="dv">100</span><span class="op">-</span>crimes<span class="op">$</span>PctMale</a>
-<a class="sourceLine" id="cb429-2" title="2"><span class="kw">summary</span>(<span class="kw">lm</span>(Violent<span class="op">~</span>PctMale<span class="op">+</span>PctFemale, <span class="dt">data=</span>crimes))</a></code></pre></div>
+<div class="sourceCode" id="cb430"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb430-1" title="1">crimes<span class="op">$</span>PctFemale &lt;-<span class="st"> </span><span class="dv">100</span><span class="op">-</span>crimes<span class="op">$</span>PctMale</a>
+<a class="sourceLine" id="cb430-2" title="2"><span class="kw">summary</span>(<span class="kw">lm</span>(Violent<span class="op">~</span>PctMale<span class="op">+</span>PctFemale, <span class="dt">data=</span>crimes))</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = Violent ~ PctMale + PctFemale, data = crimes)
@@ -461,16 +461,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="the-correlation-matrix" class="section level4">
 <h4>The correlation matrix</h4>
 <p>A first step to detecting data-based multicollinearity is to examine the correlation matrix between the independent variables. This can be done simply with the <code>cor</code> command:</p>
-<div class="sourceCode" id="cb431"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb431-1" title="1">nyc<span class="op">$</span>lincome &lt;-<span class="st"> </span><span class="kw">log</span>(nyc<span class="op">$</span>income)</a>
-<a class="sourceLine" id="cb431-2" title="2"><span class="kw">cor</span>(nyc[,<span class="kw">c</span>(<span class="st">&quot;poverty&quot;</span>,<span class="st">&quot;unemployed&quot;</span>,<span class="st">&quot;lincome&quot;</span>)])</a></code></pre></div>
+<div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb432-1" title="1">nyc<span class="op">$</span>lincome &lt;-<span class="st"> </span><span class="kw">log</span>(nyc<span class="op">$</span>income)</a>
+<a class="sourceLine" id="cb432-2" title="2"><span class="kw">cor</span>(nyc[,<span class="kw">c</span>(<span class="st">&quot;poverty&quot;</span>,<span class="st">&quot;unemployed&quot;</span>,<span class="st">&quot;lincome&quot;</span>)])</a></code></pre></div>
 <pre><code>##               poverty unemployed    lincome
 ## poverty     1.0000000  0.6982579 -0.9120680
 ## unemployed  0.6982579  1.0000000 -0.7419472
 ## lincome    -0.9120680 -0.7419472  1.0000000</code></pre>
 <p>Another more visual-pleasing approach to looking at these correlations is to graph a correlogram, which is a figure that shows the correlations between a set of variables. The excellent <code>corrgram</code> package in R will do this for us, and it also includes a variety of customizations that allow us to visualize this correlation in different ways.</p>
-<div class="sourceCode" id="cb433"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb433-1" title="1"><span class="kw">library</span>(corrgram)</a>
-<a class="sourceLine" id="cb433-2" title="2"><span class="kw">corrgram</span>(nyc[,<span class="kw">c</span>(<span class="st">&quot;poverty&quot;</span>,<span class="st">&quot;unemployed&quot;</span>,<span class="st">&quot;lincome&quot;</span>)],</a>
-<a class="sourceLine" id="cb433-3" title="3">         <span class="dt">upper.panel=</span><span class="st">&quot;panel.cor&quot;</span>, <span class="dt">lower.panel=</span><span class="st">&quot;panel.pts&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb434-1" title="1"><span class="kw">library</span>(corrgram)</a>
+<a class="sourceLine" id="cb434-2" title="2"><span class="kw">corrgram</span>(nyc[,<span class="kw">c</span>(<span class="st">&quot;poverty&quot;</span>,<span class="st">&quot;unemployed&quot;</span>,<span class="st">&quot;lincome&quot;</span>)],</a>
+<a class="sourceLine" id="cb434-3" title="3">         <span class="dt">upper.panel=</span><span class="st">&quot;panel.cor&quot;</span>, <span class="dt">lower.panel=</span><span class="st">&quot;panel.pts&quot;</span>)</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:corrgram"></span>
 <img src="stat_book_files/figure-html/corrgram-1.png" alt="A correlogram showing the relationship between three measures of neighborhood socioeconomic statsu in NYC contracting out data" width="672" />
 <p class="caption">
@@ -765,14 +765,14 @@ Num. obs.
 <p><span class="math display">\[VIF_i=\frac{1}{1-R_i^2}\]</span></p>
 <p>where <span class="math inline">\(R_i^2\)</span> is the r-squared value from a model in which the <span class="math inline">\(i\)</span> independent variable is predicted by all of the other independent variables in the model.</p>
 <p>For example, if we wanted to calculate the VIF for the poverty rate in a model that also included the unemployment rate and the median household income, we would do the following:</p>
-<div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb434-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(poverty<span class="op">~</span>unemployed<span class="op">+</span>lincome, <span class="dt">data=</span>nyc)</a>
-<a class="sourceLine" id="cb434-2" title="2"><span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span><span class="op">-</span><span class="kw">summary</span>(model)<span class="op">$</span>r.squared)</a></code></pre></div>
+<div class="sourceCode" id="cb435"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb435-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(poverty<span class="op">~</span>unemployed<span class="op">+</span>lincome, <span class="dt">data=</span>nyc)</a>
+<a class="sourceLine" id="cb435-2" title="2"><span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span><span class="op">-</span><span class="kw">summary</span>(model)<span class="op">$</span>r.squared)</a></code></pre></div>
 <pre><code>## [1] 5.984485</code></pre>
 <p>So, the VIF is 5.98. This number is in terms of variance, so if we want to know the inflation in the standard errors, we need to square root it. In this case, the square root produces a value of 2.45 indicating that the standard errors for the poverty rate will be more than double in a model with both unemployment and log income, as a result of multicollinearity.</p>
 <p>The <code>car</code> library has a <code>vif</code> function in which you can feed in a model object and get out the VIF for all independent variables in the model:</p>
-<div class="sourceCode" id="cb436"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb436-1" title="1"><span class="kw">library</span>(car)</a>
-<a class="sourceLine" id="cb436-2" title="2">model.full &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(amtcapita)<span class="op">~</span>poverty<span class="op">+</span>unemployed<span class="op">+</span>lincome, <span class="dt">data=</span>nyc) </a>
-<a class="sourceLine" id="cb436-3" title="3"><span class="kw">vif</span>(model.full)</a></code></pre></div>
+<div class="sourceCode" id="cb437"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb437-1" title="1"><span class="kw">library</span>(car)</a>
+<a class="sourceLine" id="cb437-2" title="2">model.full &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(amtcapita)<span class="op">~</span>poverty<span class="op">+</span>unemployed<span class="op">+</span>lincome, <span class="dt">data=</span>nyc) </a>
+<a class="sourceLine" id="cb437-3" title="3"><span class="kw">vif</span>(model.full)</a></code></pre></div>
 <pre><code>##    poverty unemployed    lincome 
 ##   5.984485   2.238379   6.822173</code></pre>
 <p>Since a VIF of four implies a doubling of the standard error, this is often used as a rule of thumb to identify problematic levels of VIF. However, even a smaller increase in the standard error can produce problems for model estimation, so this rule of thumb should be exercised with care.</p>
@@ -794,20 +794,20 @@ Num. obs.
 <p>Second, we need to consider that some variables might be measured on different unit scales. If we are counting up a score on a set of Likert-scale questions that are all scored 1-5, then this is not usually considered an important issue. However, if we want to combine variables measured in very different units or with different spreads, then these variables will not be represented equally in th scale unless we first <strong>standardize</strong> them. The most common approach to standardization is to take the <strong>z-score</strong> of a variable by subtracting its mean and dividing by its standard deviation:</p>
 <p><span class="math display">\[z_i=\frac{x_i-\bar{x}}{s_x}\]</span></p>
 <p>When variables are re-scaled in this way, they will all have a mean of zero and a standard deviation of one. This re-scaling is easy to do manually in R, but the <code>scale</code> function will also do it for you:</p>
-<div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb438-1" title="1">nyc<span class="op">$</span>poverty.z &lt;-<span class="st"> </span><span class="kw">scale</span>(nyc<span class="op">$</span>poverty)</a>
-<a class="sourceLine" id="cb438-2" title="2">nyc<span class="op">$</span>unemployed.z &lt;-<span class="st"> </span><span class="kw">scale</span>(nyc<span class="op">$</span>unemployed)</a>
-<a class="sourceLine" id="cb438-3" title="3"><span class="kw">mean</span>(nyc<span class="op">$</span>unemployed.z)</a></code></pre></div>
+<div class="sourceCode" id="cb439"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb439-1" title="1">nyc<span class="op">$</span>poverty.z &lt;-<span class="st"> </span><span class="kw">scale</span>(nyc<span class="op">$</span>poverty)</a>
+<a class="sourceLine" id="cb439-2" title="2">nyc<span class="op">$</span>unemployed.z &lt;-<span class="st"> </span><span class="kw">scale</span>(nyc<span class="op">$</span>unemployed)</a>
+<a class="sourceLine" id="cb439-3" title="3"><span class="kw">mean</span>(nyc<span class="op">$</span>unemployed.z)</a></code></pre></div>
 <pre><code>## [1] -1.45899e-16</code></pre>
-<div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb440-1" title="1"><span class="kw">sd</span>(nyc<span class="op">$</span>unemployed.z)</a></code></pre></div>
+<div class="sourceCode" id="cb441"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb441-1" title="1"><span class="kw">sd</span>(nyc<span class="op">$</span>unemployed.z)</a></code></pre></div>
 <pre><code>## [1] 1</code></pre>
 <p>Even when re-scaling is not necessary because variables are all measured on the same scale, I think re-scaling can be useful so that the final summated scale is easier to interpret.</p>
 <p>Third, we need to be careful to make sure that all of the variables are coded in the same direction relative to the underlying concept. In my case, median household income is coded in the opposite direction as poverty and unemployment. Whereas higher poverty and unemployment indicates greater disadvantage, higher household income indicates less disadvantage. in these cases, you need to reverse the coding of some of the variables so that higher values are associated with being higher on the underlying conceptual variable you are trying to measure. In my case, I can do this for income by multiplying by -1 after re-scaling:</p>
-<div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb442-1" title="1">nyc<span class="op">$</span>lincome.z &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span><span class="kw">scale</span>(nyc<span class="op">$</span>lincome)</a></code></pre></div>
+<div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb443-1" title="1">nyc<span class="op">$</span>lincome.z &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span><span class="kw">scale</span>(nyc<span class="op">$</span>lincome)</a></code></pre></div>
 <p>Once all of these considerations are done, I can add up my re-scaled and properly coded variables to create a single scale of “neighborhood deprivation.” It is not necessary but I usually like to re-scale the final summated scale again so that one unit equals a one standard deviation change.</p>
-<div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb443-1" title="1">nyc<span class="op">$</span>deprivation.summated &lt;-<span class="st"> </span><span class="kw">scale</span>(nyc<span class="op">$</span>poverty.z<span class="op">+</span>nyc<span class="op">$</span>unemployed.z<span class="op">+</span>nyc<span class="op">$</span>lincome.z)</a></code></pre></div>
+<div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb444-1" title="1">nyc<span class="op">$</span>deprivation.summated &lt;-<span class="st"> </span><span class="kw">scale</span>(nyc<span class="op">$</span>poverty.z<span class="op">+</span>nyc<span class="op">$</span>unemployed.z<span class="op">+</span>nyc<span class="op">$</span>lincome.z)</a></code></pre></div>
 <p>And now lets use this summated scale in the model:</p>
-<div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb444-1" title="1">model.summated &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(amtcapita)<span class="op">~</span>deprivation.summated, <span class="dt">data=</span>nyc)</a>
-<a class="sourceLine" id="cb444-2" title="2"><span class="kw">pander</span>(<span class="kw">tidy</span>(model.summated))</a></code></pre></div>
+<div class="sourceCode" id="cb445"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb445-1" title="1">model.summated &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(amtcapita)<span class="op">~</span>deprivation.summated, <span class="dt">data=</span>nyc)</a>
+<a class="sourceLine" id="cb445-2" title="2"><span class="kw">pander</span>(<span class="kw">tidy</span>(model.summated))</a></code></pre></div>
 <table style="width:99%;">
 <colgroup>
 <col width="31%" />
@@ -848,8 +848,8 @@ Num. obs.
 <p>One important measure of the quality of a scale composed of multiple variables is the <strong>internal consistency</strong> (also sometimes called <strong>internal reliability</strong>) of the scale. Internal consistency is assessed by the degree to which variables within the scale are correlated with one another. Although examination of the full correlation matrix provides some measure of this internal consistency, the most common single measure used to test for internal consistency is <strong>Cronbach’s alpha</strong>.</p>
 <p>We won’t go into the details of how to calculate Cronbach’s alpha here. It ranges from a value of 0 to 1, with higher values indicating greater internal consistency. Intuitive explanations for what Cronbach’s alpha measures are somewhat lacking, but it gives something like the expected correlation between two items measuring the underlying construct.</p>
 <p>Cronbach’s alpha can be easily in R with the <code>alpha</code> function in the <code>psych</code> library. You can feed all the variables that make up the scale into Cronbach’s alpha or just the correlation matrix between these variables. The variables do not need to be re-scaled but we do not to ensure they are all coded in the same direction.</p>
-<div class="sourceCode" id="cb445"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb445-1" title="1"><span class="kw">library</span>(psych)</a>
-<a class="sourceLine" id="cb445-2" title="2"><span class="kw">alpha</span>(<span class="kw">cor</span>(nyc[,<span class="kw">c</span>(<span class="st">&quot;poverty.z&quot;</span>,<span class="st">&quot;unemployed.z&quot;</span>,<span class="st">&quot;lincome.z&quot;</span>)]))</a></code></pre></div>
+<div class="sourceCode" id="cb446"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb446-1" title="1"><span class="kw">library</span>(psych)</a>
+<a class="sourceLine" id="cb446-2" title="2"><span class="kw">alpha</span>(<span class="kw">cor</span>(nyc[,<span class="kw">c</span>(<span class="st">&quot;poverty.z&quot;</span>,<span class="st">&quot;unemployed.z&quot;</span>,<span class="st">&quot;lincome.z&quot;</span>)]))</a></code></pre></div>
 <pre><code>## [1] &quot;#000000&quot;   &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#000000&quot;   &quot;#FFFFFF00&quot;
 ## [7] &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#000000&quot;</code></pre>
 <p>Cronbach’s alpha ranges from a value of 0 to 1. As a rule of thumb, many people use a value of 0.7 as a benchmark for a good Cronbach’s alpha, although as with all rules of thumb, caution should be taken in interpreting this too literally. In this case, the “raw alpha” of 0.92 is very good and suggests that the internal consistency of this deprivation measure is high. This function also returns a sensitivity analysis telling us how much Cronbach’s alpha would change if we were to remove a given variable from the scale. In this case, the results suggest that we would get even higher internal consistency if we removed the unemployment rate. However, since the alpha on all three was so high, it seems unnecessary to drop it in this case.</p>
@@ -868,8 +868,8 @@ Num. obs.
 <p>Factor analysis solves this system of equations to find factor loadings and factor scores. The factor loadings are particularly important because they provide information about how strongly correlated the individual items are to the underlying factor and thus the validity of the assumption that they are all represented by a single common factor.</p>
 <p>The <code>fa</code> command in the <code>pysch</code> library will conduct a factor analysis. Just as for <code>alpha</code>, you can feed in raw data or just the correlation matrix. However, if you want the factor analysis to estimate factor scores, you need to feed in the raw data.</p>
 <p>Lets do a factor analysis of the three measures of neighborhood deprivation in the NYC data.</p>
-<div class="sourceCode" id="cb447"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb447-1" title="1">factor_nyc &lt;-<span class="st"> </span><span class="kw">fa</span>(nyc[,<span class="kw">c</span>(<span class="st">&quot;poverty.z&quot;</span>,<span class="st">&quot;unemployed.z&quot;</span>,<span class="st">&quot;lincome.z&quot;</span>)], <span class="dt">nfactors=</span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb447-2" title="2"><span class="kw">loadings</span>(factor_nyc)</a></code></pre></div>
+<div class="sourceCode" id="cb448"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb448-1" title="1">factor_nyc &lt;-<span class="st"> </span><span class="kw">fa</span>(nyc[,<span class="kw">c</span>(<span class="st">&quot;poverty.z&quot;</span>,<span class="st">&quot;unemployed.z&quot;</span>,<span class="st">&quot;lincome.z&quot;</span>)], <span class="dt">nfactors=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb448-2" title="2"><span class="kw">loadings</span>(factor_nyc)</a></code></pre></div>
 <pre><code>## 
 ## Loadings:
 ##              MR1  
@@ -882,7 +882,7 @@ Num. obs.
 ## Proportion Var 0.799</code></pre>
 <p>The <code>loadings</code> function lets us extract the factor loadings. We can see that the factor loadings here are all very high, although the correlation for the unemployment rate is lower than the other two. We can also see that this single factor can account for nearly 80% of the variation across the three items.</p>
 <p>We can also display what this factor analysis looks like graphically with the <code>fa.diagram</code> function in the <code>psych</code> library.</p>
-<div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb449-1" title="1"><span class="kw">fa.diagram</span>(factor_nyc)</a></code></pre></div>
+<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb450-1" title="1"><span class="kw">fa.diagram</span>(factor_nyc)</a></code></pre></div>
 <p><img src="stat_book_files/figure-html/fa-diagram-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>In this case its not terribly helpful, because we only had a single factor and the factor loadings were all high. When the factor loadings are below some threshold the lines are typically not drawn which can make this diagrams really useful for sorting out relationships with cases of multiple factors.</p>
 <div id="factor-analysis-with-multiple-common-factors" class="section level4">
@@ -907,16 +907,16 @@ Num. obs.
 </ul>
 <p>I would like to explore to what extent answers to these responses reflect an underlying common factor of “social conservativeness.” In order to do that I need to show that these responses fit well for a single common factor and that they fit better for a single common factor than for multiple factors.</p>
 <p>First, I need to scale my ordinal variables into quantitative variables with a score from 1 to 3. Since they are already ordered correctly, I can just use the <code>as.numeric</code> to cast them to numeric values.</p>
-<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb450-1" title="1">morality &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="dt">moral_divorce=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_divorce),</a>
-<a class="sourceLine" id="cb450-2" title="2">                  <span class="dt">moral_fertility=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_fertility),</a>
-<a class="sourceLine" id="cb450-3" title="3">                  <span class="dt">moral_alcohol=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_alcohol),</a>
-<a class="sourceLine" id="cb450-4" title="4">                  <span class="dt">moral_euthansia=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_euthanasia),</a>
-<a class="sourceLine" id="cb450-5" title="5">                  <span class="dt">moral_suicide=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_suicide),</a>
-<a class="sourceLine" id="cb450-6" title="6">                  <span class="dt">moral_abortion=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_abortion),</a>
-<a class="sourceLine" id="cb450-7" title="7">                  <span class="dt">moral_prostitution=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_prostitution),</a>
-<a class="sourceLine" id="cb450-8" title="8">                  <span class="dt">moral_premar_sex=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_premar_sex),</a>
-<a class="sourceLine" id="cb450-9" title="9">                  <span class="dt">moral_gay=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_gay))</a>
-<a class="sourceLine" id="cb450-10" title="10"><span class="kw">head</span>(morality)</a></code></pre></div>
+<div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb451-1" title="1">morality &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="dt">moral_divorce=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_divorce),</a>
+<a class="sourceLine" id="cb451-2" title="2">                  <span class="dt">moral_fertility=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_fertility),</a>
+<a class="sourceLine" id="cb451-3" title="3">                  <span class="dt">moral_alcohol=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_alcohol),</a>
+<a class="sourceLine" id="cb451-4" title="4">                  <span class="dt">moral_euthansia=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_euthanasia),</a>
+<a class="sourceLine" id="cb451-5" title="5">                  <span class="dt">moral_suicide=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_suicide),</a>
+<a class="sourceLine" id="cb451-6" title="6">                  <span class="dt">moral_abortion=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_abortion),</a>
+<a class="sourceLine" id="cb451-7" title="7">                  <span class="dt">moral_prostitution=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_prostitution),</a>
+<a class="sourceLine" id="cb451-8" title="8">                  <span class="dt">moral_premar_sex=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_premar_sex),</a>
+<a class="sourceLine" id="cb451-9" title="9">                  <span class="dt">moral_gay=</span><span class="kw">as.numeric</span>(pew<span class="op">$</span>moral_gay))</a>
+<a class="sourceLine" id="cb451-10" title="10"><span class="kw">head</span>(morality)</a></code></pre></div>
 <pre><code>##      moral_divorce moral_fertility moral_alcohol moral_euthansia moral_suicide
 ## [1,]             3               2             2               2             3
 ## [2,]             3               1             2               2             3
@@ -932,9 +932,9 @@ Num. obs.
 ## [5,]              3                  3                3         3
 ## [6,]              3                  3                3         3</code></pre>
 <p>Lets start with a look at the correlation matrix:</p>
-<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb452-1" title="1"><span class="kw">library</span>(corrgram)</a>
-<a class="sourceLine" id="cb452-2" title="2"><span class="kw">corrgram</span>(morality,</a>
-<a class="sourceLine" id="cb452-3" title="3">         <span class="dt">upper.panel=</span><span class="st">&quot;panel.cor&quot;</span>, <span class="dt">lower.panel=</span><span class="st">&quot;panel.shade&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb453-1" title="1"><span class="kw">library</span>(corrgram)</a>
+<a class="sourceLine" id="cb453-2" title="2"><span class="kw">corrgram</span>(morality,</a>
+<a class="sourceLine" id="cb453-3" title="3">         <span class="dt">upper.panel=</span><span class="st">&quot;panel.cor&quot;</span>, <span class="dt">lower.panel=</span><span class="st">&quot;panel.shade&quot;</span>)</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:corrgram-morality"></span>
 <img src="stat_book_files/figure-html/corrgram-morality-1.png" alt="A correlogram showing the relationship between measures of morality in Pew data" width="672" />
 <p class="caption">
@@ -943,9 +943,9 @@ Figure 89: A correlogram showing the relationship between measures of morality i
 </div>
 <p>We can already see here that two of these behaviors (divorce and fertility) do not look like the others. Although they are somewhat weakly correlated with one another, they have very weak correlation with the other variables. Among the remaining variables, we do see a fairly substantial pattern of intercorrelation.</p>
 <p>I also want to examine Cronbach’s alpha, but before I do that I want to take advantage of the fact that Cronbach’s alpha and the factor analysis only requires the correlation matrix rather than the dataset itself. My data has missing values and this is one area where available-case analysis is probably preferable to complete-case analysis. For the correlation matrix, I can use all of the valid data for each pairwise comparison. That will lead to different sample sizes on each correlation coefficient, but will allow me to use the data to its fullest. I can do that in R by including the <code>use="pairwise.complete.obs"</code> argument in <code>cor</code>:</p>
-<div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb453-1" title="1">morality_r &lt;-<span class="st"> </span><span class="kw">cor</span>(morality, <span class="dt">use=</span><span class="st">&quot;pairwise.complete.obs&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb454-1" title="1">morality_r &lt;-<span class="st"> </span><span class="kw">cor</span>(morality, <span class="dt">use=</span><span class="st">&quot;pairwise.complete.obs&quot;</span>)</a></code></pre></div>
 <p>Lets look at Cronbach’s alpha before proceeding to full-blown factor analysis.</p>
-<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb454-1" title="1"><span class="kw">alpha</span>(morality_r)</a></code></pre></div>
+<div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb455-1" title="1"><span class="kw">alpha</span>(morality_r)</a></code></pre></div>
 <pre><code>##  [1] &quot;#000000&quot;   &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot;
 ##  [7] &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#000000&quot;   &quot;#FFFFFF00&quot;
 ## [13] &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot;
@@ -962,9 +962,9 @@ Figure 89: A correlogram showing the relationship between measures of morality i
 ## [79] &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#000000&quot;</code></pre>
 <p>A Cronbach’s alpha of 0.71 is decent, but the results also suggest that I would improve Cronbach’s alpha by removing either divorce or fertility from my set of measures.</p>
 <p>For the factor analysis, I will try out a one factor, two factor, and a three factor solution.</p>
-<div class="sourceCode" id="cb456"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb456-1" title="1">morality_fa1 &lt;-<span class="st"> </span><span class="kw">fa</span>(morality_r, <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb456-2" title="2">morality_fa2 &lt;-<span class="st"> </span><span class="kw">fa</span>(morality_r, <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb456-3" title="3">morality_fa3 &lt;-<span class="st"> </span><span class="kw">fa</span>(morality_r, <span class="dv">3</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb457-1" title="1">morality_fa1 &lt;-<span class="st"> </span><span class="kw">fa</span>(morality_r, <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb457-2" title="2">morality_fa2 &lt;-<span class="st"> </span><span class="kw">fa</span>(morality_r, <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb457-3" title="3">morality_fa3 &lt;-<span class="st"> </span><span class="kw">fa</span>(morality_r, <span class="dv">3</span>)</a></code></pre></div>
 <p>Lets compare the diagrams graphically:</p>
 <div class="figure" style="text-align: center"><span id="fig:fa-diag-morality"></span>
 <img src="stat_book_files/figure-html/fa-diag-morality-1.png" alt="Three different factor solutions for the Pew morality data" width="672" />
@@ -975,7 +975,7 @@ Figure 90: Three different factor solutions for the Pew morality data
 <p>As you can see, for the single factor solution, the factor loadings were so low that divorce and fertility are dropped from the common factor. The two factor solution adds them back in as a separate factor, but even here the factor loadings of 0.4 are pretty low. The three factor solution splits my main group into two separate groups where one group seems to measure death in some way (suicide, euthanasia, and abortion) while the first group measures mostly sex with the addition of alcohol - suggesting alcohol use is viewed similarly to stigmatized sexual behavior.</p>
 <p>Although the division in the three factor solution is interesting, this level of detail does not necessarily seem warranted and leads to some low factor loadings. What seems clear above all else, is that the fertility limitation and divorce questions do not belong with the others. Therefore, a summated scale that included all variables except for these two is reasonably justified.</p>
 <p>To check this, lets see how Cronbach’s alpha does if we remove the fertility and divorce questions.</p>
-<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb457-1" title="1"><span class="kw">alpha</span>(<span class="kw">cor</span>(morality[,<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="op">-</span><span class="dv">2</span>)], <span class="dt">use=</span><span class="st">&quot;pairwise.complete.obs&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb458"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb458-1" title="1"><span class="kw">alpha</span>(<span class="kw">cor</span>(morality[,<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="op">-</span><span class="dv">2</span>)], <span class="dt">use=</span><span class="st">&quot;pairwise.complete.obs&quot;</span>))</a></code></pre></div>
 <pre><code>##  [1] &quot;#000000&quot;   &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot;
 ##  [7] &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#000000&quot;   &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot;
 ## [13] &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#FFFFFF00&quot; &quot;#000000&quot;   &quot;#FFFFFF00&quot;

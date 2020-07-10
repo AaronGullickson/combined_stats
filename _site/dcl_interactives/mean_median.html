@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'/>
+  <script async src="https://cdn.datacamp.com/dcl-react-dev.js.gz"></script>
+</head>
+
+<body>
+<div data-datacamp-exercise data-lang="r" data-show-run-button data-height="400">
+  <code data-type="pre-exercise-code">
+  	# This will get executed each time the exercise gets initialized
+	  load(url("https://github.com/AaronGullickson/combined_stats/blob/master/example_datasets/earnings/earnings.RData?raw=true"))
+	  library(ggplot2)
+  </code>
+  <code data-type="sample-code">
+	# calculate the mean and median of hourly wages from the earnings data
+  
+  
+  
+  </code>
+  <code data-type="solution">
+	# calculate the mean and median of hourly wages from the earnings data
+  mean(earnings$wages)
+  median(earnings$wages)
+  </code>
+  <code data-type="sct">
+  ex() %>% {
+    check_function(., "mean") %>% check_result() %>% check_equal()
+    check_function(., "median") %>% check_result() %>% check_equal()
+  }
+  success_msg("Great Job!")
+  </code>
+</div>
+</body>
+</html>

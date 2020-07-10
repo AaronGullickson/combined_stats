@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-26" />
+<meta name="date" content="2020-07-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -763,15 +763,15 @@ Num. obs.
 <p>Two conceptual models illustrate the extreme ends of the accuracy vs. parsimony spectrum. The most parsimonious model that we can ever have is one without any independent variables. In this case, our predicted value for the outcome variable would always equal the mean of the outcome variable. Formally, we would have:</p>
 <p><span class="math display">\[\hat{y}_i=\bar{y}\]</span></p>
 <p>This <strong>null model</strong> has zero accuracy. It doesn’t even pretend to be accurate. We can estimate this model easily enough in R:</p>
-<div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb459-1" title="1">model_null &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span><span class="dv">1</span>, <span class="dt">data=</span>crimes)</a>
-<a class="sourceLine" id="cb459-2" title="2"><span class="kw">coef</span>(model_null)</a></code></pre></div>
+<div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb460-1" title="1">model_null &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span><span class="dv">1</span>, <span class="dt">data=</span>crimes)</a>
+<a class="sourceLine" id="cb460-2" title="2"><span class="kw">coef</span>(model_null)</a></code></pre></div>
 <pre><code>## (Intercept) 
 ##    384.5039</code></pre>
-<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb461-1" title="1"><span class="kw">summary</span>(model_null)<span class="op">$</span>r.squared</a></code></pre></div>
+<div class="sourceCode" id="cb462"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb462-1" title="1"><span class="kw">summary</span>(model_null)<span class="op">$</span>r.squared</a></code></pre></div>
 <pre><code>## [1] 0</code></pre>
 <p>At the other end of the spectrum, we have the <strong>saturated model</strong>. In the saturated model, we have a number of variables equal to the number of observations minus one. The saturated model is not something we typically observe in practice because these independent variables must be uncorrelated enough that we don’t observe perfect collinearity. A simple example would be to simply include a dummy variable for each observation. Since we have the state as a variable in the crimes dataset, we can actually calculate the saturated model here:</p>
-<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb463-1" title="1">model_saturated &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>State, <span class="dt">data=</span>crimes)</a>
-<a class="sourceLine" id="cb463-2" title="2"><span class="kw">summary</span>(model_saturated)<span class="op">$</span>r.squared</a></code></pre></div>
+<div class="sourceCode" id="cb464"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb464-1" title="1">model_saturated &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>State, <span class="dt">data=</span>crimes)</a>
+<a class="sourceLine" id="cb464-2" title="2"><span class="kw">summary</span>(model_saturated)<span class="op">$</span>r.squared</a></code></pre></div>
 <pre><code>## [1] 1</code></pre>
 <p>In practice, all real models fall somewhere between these two extremes. Most of the model selection tools that we discuss below will make use of these two conceptual models theoretically.</p>
 </div>
@@ -785,22 +785,22 @@ Num. obs.
 <p><span class="math display">\[F=\frac{(SSR_1-SSR_2)/g}{SSR_2/(n-g-k-1)}\]</span></p>
 <p>Where <span class="math inline">\(SSR\)</span> is the sum of squared residuals for the given model, <span class="math inline">\(g\)</span> is the number of additional variables in model 2 and <span class="math inline">\(k\)</span> is the number of variables in model 1. Basically we are taking the reduction in SSR per variable added in model 2 divided by the SSR left in model 2 per remaining degree of freedom. If the null hypothesis is correct, we expect this number to be one. The larger the F-statistic gets, the more suspicious we are of the null hypothesis. We can formalize this by calculating the p-value from the right tail of an <em>F-distribution</em> for a given F-statistic. This F-distribution will
 As an example, lets calculat the F-statistic between the null model predicting violent crimes and a model that predicts violent crimes by the median age and percent male in a state.</p>
-<div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb465-1" title="1">model_null &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span><span class="dv">1</span>, <span class="dt">data=</span>crimes)</a>
-<a class="sourceLine" id="cb465-2" title="2">model_demog &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>MedianAge<span class="op">+</span>PctMale, <span class="dt">data=</span>crimes)</a>
-<a class="sourceLine" id="cb465-3" title="3">SSR1 &lt;-<span class="st"> </span><span class="kw">sum</span>(model_null<span class="op">$</span>residuals<span class="op">^</span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb465-4" title="4">SSR2 &lt;-<span class="st"> </span><span class="kw">sum</span>(model_demog<span class="op">$</span>residuals<span class="op">^</span><span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb465-5" title="5">g &lt;-<span class="st"> </span><span class="kw">length</span>(model_demog<span class="op">$</span>coef)<span class="op">-</span><span class="kw">length</span>(model_null<span class="op">$</span>coef)</a>
-<a class="sourceLine" id="cb465-6" title="6">k &lt;-<span class="st"> </span><span class="kw">length</span>(model_null<span class="op">$</span>coef)<span class="op">-</span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb465-7" title="7">n &lt;-<span class="st"> </span><span class="kw">length</span>(model_null<span class="op">$</span>residuals)</a>
-<a class="sourceLine" id="cb465-8" title="8">Fstat &lt;-<span class="st"> </span>((SSR1<span class="op">-</span>SSR2)<span class="op">/</span>g)<span class="op">/</span>(SSR2<span class="op">/</span>(n<span class="op">-</span>g<span class="op">-</span>k<span class="dv">-1</span>))</a>
-<a class="sourceLine" id="cb465-9" title="9">Fstat</a></code></pre></div>
+<div class="sourceCode" id="cb466"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb466-1" title="1">model_null &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span><span class="dv">1</span>, <span class="dt">data=</span>crimes)</a>
+<a class="sourceLine" id="cb466-2" title="2">model_demog &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>MedianAge<span class="op">+</span>PctMale, <span class="dt">data=</span>crimes)</a>
+<a class="sourceLine" id="cb466-3" title="3">SSR1 &lt;-<span class="st"> </span><span class="kw">sum</span>(model_null<span class="op">$</span>residuals<span class="op">^</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb466-4" title="4">SSR2 &lt;-<span class="st"> </span><span class="kw">sum</span>(model_demog<span class="op">$</span>residuals<span class="op">^</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb466-5" title="5">g &lt;-<span class="st"> </span><span class="kw">length</span>(model_demog<span class="op">$</span>coef)<span class="op">-</span><span class="kw">length</span>(model_null<span class="op">$</span>coef)</a>
+<a class="sourceLine" id="cb466-6" title="6">k &lt;-<span class="st"> </span><span class="kw">length</span>(model_null<span class="op">$</span>coef)<span class="op">-</span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb466-7" title="7">n &lt;-<span class="st"> </span><span class="kw">length</span>(model_null<span class="op">$</span>residuals)</a>
+<a class="sourceLine" id="cb466-8" title="8">Fstat &lt;-<span class="st"> </span>((SSR1<span class="op">-</span>SSR2)<span class="op">/</span>g)<span class="op">/</span>(SSR2<span class="op">/</span>(n<span class="op">-</span>g<span class="op">-</span>k<span class="dv">-1</span>))</a>
+<a class="sourceLine" id="cb466-9" title="9">Fstat</a></code></pre></div>
 <pre><code>## [1] 9.869375</code></pre>
 <p>That seems quite a bit bigger than one. We can find out the probability of getting an F-statistic this large or larger if median age and percent male were really uncorrelated with violent crime rates in the population by getting the area of the right tail for a corresponding F-distribution:</p>
-<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb467-1" title="1"><span class="dv">1</span><span class="op">-</span><span class="kw">pf</span>(Fstat, g, n<span class="op">-</span>g<span class="op">-</span>k<span class="dv">-1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb468-1" title="1"><span class="dv">1</span><span class="op">-</span><span class="kw">pf</span>(Fstat, g, n<span class="op">-</span>g<span class="op">-</span>k<span class="dv">-1</span>)</a></code></pre></div>
 <pre><code>## [1] 0.0002568606</code></pre>
 <p>There is a very small probability that we would have gotten an F-statistic this large or larger if the null hypothesis was true. Therefore we reject the null hypothesis and prefer the model with median age and percent male to the null model.</p>
 <p>Rather than doing this by hand, we could have used the <code>anova</code> command in R to make the comparison:</p>
-<div class="sourceCode" id="cb469"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb469-1" title="1"><span class="kw">anova</span>(model_null, model_demog)</a></code></pre></div>
+<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb470-1" title="1"><span class="kw">anova</span>(model_null, model_demog)</a></code></pre></div>
 <pre><code>## Analysis of Variance Table
 ## 
 ## Model 1: Violent ~ 1
@@ -811,9 +811,9 @@ As an example, lets calculat the F-statistic between the null model predicting v
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>ANOVA stands for Analysis of Variance and can be used to conduct F-tests between models. We can also use it to compare more than two models at the same time, so long as they are all nested:</p>
-<div class="sourceCode" id="cb471"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb471-1" title="1">model_gini &lt;-<span class="st"> </span><span class="kw">update</span>(model_demog, .<span class="op">~</span>.<span class="op">+</span>Gini)</a>
-<a class="sourceLine" id="cb471-2" title="2">model_complex &lt;-<span class="st"> </span><span class="kw">update</span>(model_gini, .<span class="op">~</span>.<span class="op">+</span>Poverty<span class="op">+</span>Unemployment)</a>
-<a class="sourceLine" id="cb471-3" title="3"><span class="kw">anova</span>(model_null, model_demog, model_gini, model_complex)</a></code></pre></div>
+<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb472-1" title="1">model_gini &lt;-<span class="st"> </span><span class="kw">update</span>(model_demog, .<span class="op">~</span>.<span class="op">+</span>Gini)</a>
+<a class="sourceLine" id="cb472-2" title="2">model_complex &lt;-<span class="st"> </span><span class="kw">update</span>(model_gini, .<span class="op">~</span>.<span class="op">+</span>Poverty<span class="op">+</span>Unemployment)</a>
+<a class="sourceLine" id="cb472-3" title="3"><span class="kw">anova</span>(model_null, model_demog, model_gini, model_complex)</a></code></pre></div>
 <pre><code>## Analysis of Variance Table
 ## 
 ## Model 1: Violent ~ 1
@@ -829,9 +829,9 @@ As an example, lets calculat the F-statistic between the null model predicting v
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>The F-test prefers model 2 to model 1 and model 3 to model 2, but does not prefer model 4 to 3. The additional reduction in SSR from model 3 to 4 (78179) is not enough higher than what could be expected by chance if these two additional parameters were not correlated with violent crime rates.</p>
 <p>However, you need to be careful about making model selections here because the order in which things are entered can affect the results. Lets say for example that we included unemployment with the gini coefficient and then added poverty rates separately in model 4.</p>
-<div class="sourceCode" id="cb473"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb473-1" title="1">model_giniplus &lt;-<span class="st"> </span><span class="kw">update</span>(model_demog, .<span class="op">~</span>.<span class="op">+</span>Gini<span class="op">+</span>Unemployment)</a>
-<a class="sourceLine" id="cb473-2" title="2">model_complex &lt;-<span class="st"> </span><span class="kw">update</span>(model_gini, .<span class="op">~</span>.<span class="op">+</span>Poverty)</a>
-<a class="sourceLine" id="cb473-3" title="3"><span class="kw">anova</span>(model_null, model_demog, model_giniplus, model_complex)</a></code></pre></div>
+<div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb474-1" title="1">model_giniplus &lt;-<span class="st"> </span><span class="kw">update</span>(model_demog, .<span class="op">~</span>.<span class="op">+</span>Gini<span class="op">+</span>Unemployment)</a>
+<a class="sourceLine" id="cb474-2" title="2">model_complex &lt;-<span class="st"> </span><span class="kw">update</span>(model_gini, .<span class="op">~</span>.<span class="op">+</span>Poverty)</a>
+<a class="sourceLine" id="cb474-3" title="3"><span class="kw">anova</span>(model_null, model_demog, model_giniplus, model_complex)</a></code></pre></div>
 <pre><code>## Analysis of Variance Table
 ## 
 ## Model 1: Violent ~ 1
@@ -846,7 +846,7 @@ As an example, lets calculat the F-statistic between the null model predicting v
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>Now we prefer to have unemployment in the model. However, it gets even worse than this. Lets take a look at the actual results of the third model:</p>
-<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb475-1" title="1"><span class="kw">summary</span>(model_giniplus)</a></code></pre></div>
+<div class="sourceCode" id="cb476"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb476-1" title="1"><span class="kw">summary</span>(model_giniplus)</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = Violent ~ MedianAge + PctMale + Gini + Unemployment, 
@@ -870,8 +870,8 @@ As an example, lets calculat the F-statistic between the null model predicting v
 ## Multiple R-squared:  0.4246, Adjusted R-squared:  0.3745 
 ## F-statistic: 8.485 on 4 and 46 DF,  p-value: 3.249e-05</code></pre>
 <p>Percent male is not statistically significant and has a small substantive effect, because its large negative effect was driven by an indirect association with the gini coefficient. Unemployment has a marginally significnat but also small effect. But we never tested a model with just median age and the gini coefficient. What happens if we try that?</p>
-<div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb477-1" title="1">model_another &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>MedianAge<span class="op">+</span>Gini, <span class="dt">data=</span>crimes)</a>
-<a class="sourceLine" id="cb477-2" title="2"><span class="kw">anova</span>(model_another, model_giniplus)</a></code></pre></div>
+<div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb478-1" title="1">model_another &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>MedianAge<span class="op">+</span>Gini, <span class="dt">data=</span>crimes)</a>
+<a class="sourceLine" id="cb478-2" title="2"><span class="kw">anova</span>(model_another, model_giniplus)</a></code></pre></div>
 <pre><code>## Analysis of Variance Table
 ## 
 ## Model 1: Violent ~ MedianAge + Gini
@@ -881,9 +881,9 @@ As an example, lets calculat the F-statistic between the null model predicting v
 ## 2     46 1097590  2     74240 1.5557 0.2219</code></pre>
 <p>Now we prefer another model that was nested within our more complex model but not nested within the original model structure. F-tests can easily lead you into situations like this.</p>
 <p>If you add in variables one at a time, the F-test will also produce the exact same result as a t-test on the additional variable:</p>
-<div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb479-1" title="1">model_one &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>MedianAge, <span class="dt">data=</span>crimes)</a>
-<a class="sourceLine" id="cb479-2" title="2">model_two &lt;-<span class="st"> </span><span class="kw">update</span>(model_one, .<span class="op">~</span>.<span class="op">+</span>Poverty)</a>
-<a class="sourceLine" id="cb479-3" title="3"><span class="kw">anova</span>(model_one, model_two)</a></code></pre></div>
+<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb480-1" title="1">model_one &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>MedianAge, <span class="dt">data=</span>crimes)</a>
+<a class="sourceLine" id="cb480-2" title="2">model_two &lt;-<span class="st"> </span><span class="kw">update</span>(model_one, .<span class="op">~</span>.<span class="op">+</span>Poverty)</a>
+<a class="sourceLine" id="cb480-3" title="3"><span class="kw">anova</span>(model_one, model_two)</a></code></pre></div>
 <pre><code>## Analysis of Variance Table
 ## 
 ## Model 1: Violent ~ MedianAge
@@ -893,7 +893,7 @@ As an example, lets calculat the F-statistic between the null model predicting v
 ## 2     48 1574243  1    159773 4.8716 0.03212 *
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb481"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb481-1" title="1"><span class="kw">summary</span>(model_two)<span class="op">$</span>coef</a></code></pre></div>
+<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb482-1" title="1"><span class="kw">summary</span>(model_two)<span class="op">$</span>coef</a></code></pre></div>
 <pre><code>##              Estimate Std. Error   t value   Pr(&gt;|t|)
 ## (Intercept) 891.15575 465.632320  1.913861 0.06161074
 ## MedianAge   -20.64100  11.346820 -1.819100 0.07513705
@@ -912,7 +912,7 @@ As an example, lets calculat the F-statistic between the null model predicting v
 <p><span class="math display">\[R^2_{adj}=R^2-(\frac{p}{n-p-1})(1-R^2)\]</span></p>
 <p>The parsimony penalty is based on a scaling of the lack of goodness of fit <span class="math inline">\((1-R^2)\)</span> and the number of variables proportionate to the size of the sample.</p>
 <p>Adjusted <span class="math inline">\(R^2\)</span> is provided by default in the summary of an <code>lm</code> object:</p>
-<div class="sourceCode" id="cb483"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb483-1" title="1"><span class="kw">summary</span>(model_demog)</a></code></pre></div>
+<div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb484-1" title="1"><span class="kw">summary</span>(model_demog)</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = Violent ~ MedianAge + PctMale, data = crimes)
@@ -932,7 +932,7 @@ As an example, lets calculat the F-statistic between the null model predicting v
 ## Residual standard error: 167.8 on 48 degrees of freedom
 ## Multiple R-squared:  0.2914, Adjusted R-squared:  0.2619 
 ## F-statistic: 9.869 on 2 and 48 DF,  p-value: 0.0002569</code></pre>
-<div class="sourceCode" id="cb485"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb485-1" title="1"><span class="kw">summary</span>(model_demog)<span class="op">$</span>adj.r.squared</a></code></pre></div>
+<div class="sourceCode" id="cb486"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb486-1" title="1"><span class="kw">summary</span>(model_demog)<span class="op">$</span>adj.r.squared</a></code></pre></div>
 <pre><code>## [1] 0.26187</code></pre>
 <p>The parsimony penalty in the adjusted <span class="math inline">\(R^2\)</span> will be smaller as <span class="math inline">\(n\)</span> increases. Therefore this tool will tend to prefer more complex models in larger samples. This feature distinguishes its approach from the Bayesian Information Criterion (BIC) below.</p>
 </div>
@@ -949,29 +949,29 @@ As an example, lets calculat the F-statistic between the null model predicting v
 <p>The first term includes <span class="math inline">\(R^2\)</span> and is our measure of accuracy. Because we are actually loggin something less than one, we will get a negative value here. For the BIC, lower scores are better and negative scores are the best. bove, I said that each BIC type was implicitly being compared to either the saturated or the null model. If the respective BIC score is below zero then this model is preferred to the null or saturated model, respectively.</p>
 <p>The second term <span class="math inline">\(p\log(n)\)</span> is the parsimony penalty. In this case, we actually weight the parsimony penalty <strong>higher</strong> in larger samples. As a result, BIC will tend to prefer the same model more consistently in different sample sizes.</p>
 <p>Since, <em>R</em> does not give us a BIC’ calculations, lets go ahead and create our own with a function:</p>
-<div class="sourceCode" id="cb487"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb487-1" title="1">bic_null &lt;-<span class="st"> </span><span class="cf">function</span>(model) {</a>
-<a class="sourceLine" id="cb487-2" title="2">  rsq &lt;-<span class="st"> </span><span class="kw">summary</span>(model)<span class="op">$</span>r.squared</a>
-<a class="sourceLine" id="cb487-3" title="3">  n &lt;-<span class="st"> </span><span class="kw">length</span>(model<span class="op">$</span>resid)</a>
-<a class="sourceLine" id="cb487-4" title="4">  p &lt;-<span class="st"> </span><span class="kw">length</span>(model<span class="op">$</span>coef)<span class="op">-</span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb487-5" title="5">  <span class="kw">return</span>(n<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">-</span>rsq)<span class="op">+</span>p<span class="op">*</span><span class="kw">log</span>(n))</a>
-<a class="sourceLine" id="cb487-6" title="6">}</a>
-<a class="sourceLine" id="cb487-7" title="7"><span class="kw">bic_null</span>(model_demog)</a></code></pre></div>
+<div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb488-1" title="1">bic_null &lt;-<span class="st"> </span><span class="cf">function</span>(model) {</a>
+<a class="sourceLine" id="cb488-2" title="2">  rsq &lt;-<span class="st"> </span><span class="kw">summary</span>(model)<span class="op">$</span>r.squared</a>
+<a class="sourceLine" id="cb488-3" title="3">  n &lt;-<span class="st"> </span><span class="kw">length</span>(model<span class="op">$</span>resid)</a>
+<a class="sourceLine" id="cb488-4" title="4">  p &lt;-<span class="st"> </span><span class="kw">length</span>(model<span class="op">$</span>coef)<span class="op">-</span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb488-5" title="5">  <span class="kw">return</span>(n<span class="op">*</span><span class="kw">log</span>(<span class="dv">1</span><span class="op">-</span>rsq)<span class="op">+</span>p<span class="op">*</span><span class="kw">log</span>(n))</a>
+<a class="sourceLine" id="cb488-6" title="6">}</a>
+<a class="sourceLine" id="cb488-7" title="7"><span class="kw">bic_null</span>(model_demog)</a></code></pre></div>
 <pre><code>## [1] -9.703675</code></pre>
 <p>The negative value for BIC’ tells us that we prefer the model with median age and percent male as predictors to the null model.</p>
 <p>We can also compare two non-null models directly by comparing their BIC or BIC’ scores. Whichever is lower is the preferred model. These models do not have to be nested.</p>
-<div class="sourceCode" id="cb489"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb489-1" title="1"><span class="kw">bic_null</span>(model_demog)</a></code></pre></div>
+<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb490-1" title="1"><span class="kw">bic_null</span>(model_demog)</a></code></pre></div>
 <pre><code>## [1] -9.703675</code></pre>
-<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb491-1" title="1">model_econ &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>Poverty<span class="op">+</span>Unemployment<span class="op">+</span>Gini, <span class="dt">data=</span>crimes)</a>
-<a class="sourceLine" id="cb491-2" title="2"><span class="kw">bic_null</span>(model_econ)</a></code></pre></div>
+<div class="sourceCode" id="cb492"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb492-1" title="1">model_econ &lt;-<span class="st"> </span><span class="kw">lm</span>(Violent<span class="op">~</span>Poverty<span class="op">+</span>Unemployment<span class="op">+</span>Gini, <span class="dt">data=</span>crimes)</a>
+<a class="sourceLine" id="cb492-2" title="2"><span class="kw">bic_null</span>(model_econ)</a></code></pre></div>
 <pre><code>## [1] -9.184312</code></pre>
-<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb493-1" title="1"><span class="kw">BIC</span>(model_demog)</a></code></pre></div>
+<div class="sourceCode" id="cb494"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb494-1" title="1"><span class="kw">BIC</span>(model_demog)</a></code></pre></div>
 <pre><code>## [1] 679.8933</code></pre>
-<div class="sourceCode" id="cb495"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb495-1" title="1"><span class="kw">BIC</span>(model_econ)</a></code></pre></div>
+<div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb496-1" title="1"><span class="kw">BIC</span>(model_econ)</a></code></pre></div>
 <pre><code>## [1] 680.4127</code></pre>
 <p>In this situation, we slightly prefer the demographic explanation to the economic one. Note that although <code>bic_null</code> and <code>BIC</code> give us different values, the differences between them in different models are the same:</p>
-<div class="sourceCode" id="cb497"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb497-1" title="1"><span class="kw">bic_null</span>(model_demog)<span class="op">-</span><span class="kw">bic_null</span>(model_econ)</a></code></pre></div>
+<div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb498-1" title="1"><span class="kw">bic_null</span>(model_demog)<span class="op">-</span><span class="kw">bic_null</span>(model_econ)</a></code></pre></div>
 <pre><code>## [1] -0.5193631</code></pre>
-<div class="sourceCode" id="cb499"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb499-1" title="1"><span class="kw">BIC</span>(model_demog)<span class="op">-</span><span class="kw">BIC</span>(model_econ)</a></code></pre></div>
+<div class="sourceCode" id="cb500"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb500-1" title="1"><span class="kw">BIC</span>(model_demog)<span class="op">-</span><span class="kw">BIC</span>(model_econ)</a></code></pre></div>
 <pre><code>## [1] -0.5193631</code></pre>
 <p>You can use the general rule of thumb to evaluate differences in BIC:</p>
 <table>
@@ -1008,12 +1008,12 @@ As an example, lets calculat the F-statistic between the null model predicting v
 </iframe>
 <p>None of the tools mentioned above can fully address the complexity of model selection. One of the key difficulties is that given a set of potential variables, it includes not only what gets included but the order of inclusion. As we have seen above, percent male seems to have a large negative effect on violent crime rates until we consider a model that includes Gini coefficients. Where and how we include these variables in sequential models might affect our ultimate model selection.</p>
 <p>One way of addressing this is to use a technique of <strong>model averaging</strong>. In the model averaging approach, we use a computer to iteratively fit all of the possible models from a set of candidate variables. We then use some procedure to average results across these models to account more formally for model uncertainty in our final conclusion. There are a variety of ways in which such model averaging can be done. The <code>BMA</code> package in R will use a Bayesian model averaging approach that implicitly uses a Bayesian logic and the BIC to adjudicate between models. Lets try that with our crime data:</p>
-<div class="sourceCode" id="cb501"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb501-1" title="1"><span class="kw">library</span>(BMA)</a>
-<a class="sourceLine" id="cb501-2" title="2">model.bma &lt;-<span class="st"> </span><span class="kw">bic.glm</span>(crimes[,<span class="kw">c</span>(<span class="st">&quot;MedianAge&quot;</span>,<span class="st">&quot;PctMale&quot;</span>,<span class="st">&quot;PctLessHS&quot;</span>,</a>
-<a class="sourceLine" id="cb501-3" title="3">                               <span class="st">&quot;MedianIncomeHH&quot;</span>,<span class="st">&quot;Unemployment&quot;</span>,</a>
-<a class="sourceLine" id="cb501-4" title="4">                               <span class="st">&quot;Poverty&quot;</span>, <span class="st">&quot;Gini&quot;</span>)], </a>
-<a class="sourceLine" id="cb501-5" title="5">                     crimes<span class="op">$</span>Violent, <span class="dt">glm.family=</span>gaussian)</a>
-<a class="sourceLine" id="cb501-6" title="6"><span class="kw">summary</span>(model.bma)</a></code></pre></div>
+<div class="sourceCode" id="cb502"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb502-1" title="1"><span class="kw">library</span>(BMA)</a>
+<a class="sourceLine" id="cb502-2" title="2">model.bma &lt;-<span class="st"> </span><span class="kw">bic.glm</span>(crimes[,<span class="kw">c</span>(<span class="st">&quot;MedianAge&quot;</span>,<span class="st">&quot;PctMale&quot;</span>,<span class="st">&quot;PctLessHS&quot;</span>,</a>
+<a class="sourceLine" id="cb502-3" title="3">                               <span class="st">&quot;MedianIncomeHH&quot;</span>,<span class="st">&quot;Unemployment&quot;</span>,</a>
+<a class="sourceLine" id="cb502-4" title="4">                               <span class="st">&quot;Poverty&quot;</span>, <span class="st">&quot;Gini&quot;</span>)], </a>
+<a class="sourceLine" id="cb502-5" title="5">                     crimes<span class="op">$</span>Violent, <span class="dt">glm.family=</span>gaussian)</a>
+<a class="sourceLine" id="cb502-6" title="6"><span class="kw">summary</span>(model.bma)</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## bic.glm.data.frame(x = crimes[, c(&quot;MedianAge&quot;, &quot;PctMale&quot;, &quot;PctLessHS&quot;,     &quot;MedianIncomeHH&quot;, &quot;Unemployment&quot;, &quot;Poverty&quot;, &quot;Gini&quot;)], y = crimes$Violent,     glm.family = gaussian)

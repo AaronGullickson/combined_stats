@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'/>
+  <script async src="https://cdn.datacamp.com/dcl-react-dev.js.gz"></script>
+</head>
+
+<body>
+<div data-datacamp-exercise data-lang="r" data-show-run-button data-height="400">
+  <code data-type="pre-exercise-code">
+  	# This will get executed each time the exercise gets initialized
+	  load(url("https://github.com/AaronGullickson/combined_stats/blob/master/example_datasets/earnings/earnings.RData?raw=true"))
+	  library(ggplot2)
+  </code>
+  <code data-type="sample-code">
+	# calculate the mean difference in hourly wages between men and women
+  
+  
+  
+  </code>
+  <code data-type="solution">
+	# calculate the mean difference in hourly wages between men and women
+  tapply(earnings$wages, 
+         earnings$gender, 
+         mean)
+  26.20302-22.26460
+  </code>
+  <code data-type="sct">
+  ex() %>% {
+    check_function(., "tapply") %>% {
+      check_arg(., "X", arg_not_specified_msg="You need to specify the variable you want the mean of (in this case `wages`) as the first argument to `tapply`.") %>% check_equal(incorrect_msg="The first argument to `tapply` is the variable you want to calculate the mean of. In this case, it should be `earnings$wages`")
+      check_arg(., "INDEX", arg_not_specified_msg="You need to specify the categorical variable to condition the means by (in this case `gender`) as your second argument to `tapply`.") %>% check_equal(incorrect_msg="The second argument to `tapply` is the categorical variable you want to separate the means by. In this case, it should be `earnings$gender`.")
+      check_arg(., "FUN", arg_not_specified_msg="Don't forget to specify the mean function as the third argument to `tapply`.") %>% check_equal(incorrect_msg="The third argument to `tapply` is the function you want to apply to the first variable. In this case, you want the `mean`.")
+    }
+  }
+  success_msg("Great Job!")
+  </code>
+</div>
+</body>
+</html>

@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-26" />
+<meta name="date" content="2020-07-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -455,6 +455,19 @@ Figure 20: Boxplots of movie runtime by genre, with coordinates flipped
 </p>
 </div>
 <p>Figure <a href="mean-differences.html#fig:compar-box-runtime-genre-reorder">20</a> now contains a lot of information. At a glance, I can see which genres had the longest median runtime and which had the shortest. But I can also see how much variation in runtime there is within movies by comparing the width of the boxes. For example, I can see that there is relatively little variation in runtime for animation movies, and the most variation in runtime among sci-fi/fantasy and action movies. I can also see some of the extreme outliers by genre. Most of these outliers are for extremely long movies, relative to the genre norm, but in a couple of cases, I can see movies that were remarkably short for their genre.</p>
+<div class="dcl">
+<h4 id="try-it-out-6">Try it out</h4>
+<p>In the interactive <em>R</em> session below, Create a comparative boxplot showing the relationship between movie maturity rating and tomato meter score from the movies dataset. Keep the following in mind:</p>
+<ol style="list-style-type: decimal">
+<li>You must combine together different elements of ggplot, in this case <tt>ggplot</tt> itself and <tt>geom_boxplot</tt> with a plus sign to display correctly.</li>
+<li>Be sure to add nice labels for your x axis by adding a <tt>labs</tt> command.</li>
+<li>Because there are only four categories of maturity rating, you probably do not need to use a <tt>coord_flip</tt> command but you are welcome to try it out.</li>
+<li>Because maturity ratings are ordinal, its probably best to not reorder the categories from smallest to largest as above.</li>
+</ol>
+<p>Which maturity ratings get the best tomato meter scores? Which get the worst? Do the results surprise you? Do you have any ideas as to why you observe the pattern that you do?</p>
+<iframe src="dcl_interactives/comp_boxplot.html" frameborder="0" scrolling="no" style="width:100%;height:405px">
+</iframe>
+</div>
 </div>
 <div id="comparing-differences-in-the-mean" class="section level3">
 <h3>Comparing differences in the mean</h3>
@@ -471,6 +484,16 @@ Figure 20: Boxplots of movie runtime by genre, with coordinates flipped
 <p>The <code>tapply</code> command takes three arguments. The first argument is the quantitative variable for which we want means. The second argument is the categorical variable. The third argument is the method we want to run on the quantitative variable, in this case the mean. The output is the mean movie runtime by genre.</p>
 <p>If we want a quantitative measure of how genre and runtime are related we can calculate a <strong>mean difference</strong>. This number is simply the difference in means between any two categories. For example, action movies are 111.9 minutes long, on average, while horror movies are 97.4 minutes long, on average. The difference is <span class="math inline">\(111.9-97.4=14.5\)</span>. Thus, we can say that, on average, action movies are 14.5 minutes longer than horror movies.</p>
 <p>We could have reversed that subtraction to get <span class="math inline">\(97.4-111.9=-14.5\)</span>. In this case, we would say that horror movies are 14.5 minutes <em>shorter</em> than action movies. Either way, we get the same information. However, its important to keep track of which number applies to which category when you take the difference, so that you get the interpretation correct.</p>
+<div class="dcl">
+<h4 id="try-it-out-7">Try it out</h4>
+<p>In the interactive <em>R</em> session below, try to calculate the mean difference in hourly wages between men and women, based on the earnings data. Keep the following in mind:</p>
+<ol style="list-style-type: decimal">
+<li>You need to use the <tt>tapply</tt> command to calculate the mean wages for each group.</li>
+<li>You can use the output of the <tt>tapply</tt> command to calculate the mean difference itself.</li>
+</ol>
+<iframe src="dcl_interactives/mean_differences.html" frameborder="0" scrolling="no" style="width:100%;height:405px">
+</iframe>
+</div>
 <p>We can also display these results graphically using a barplot, although this will take a little more processing for <code>ggplot</code> because <code>ggplot</code> expects data to be in a “data.frame” object and the output of <code>tapply</code> is a single vector of numbers. To make this work, we have to use the <code>as.data.frame.table</code> command to convert our object and then rename the variables. Also, to make this prettier, I am first going to sort the output from largest to smallest mean runtime:</p>
 <div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" title="1">mruntime &lt;-<span class="st"> </span><span class="kw">tapply</span>(movies<span class="op">$</span>Runtime, movies<span class="op">$</span>Genre, mean)</a>
 <a class="sourceLine" id="cb62-2" title="2"><span class="co">#sort highest to lowest</span></a>

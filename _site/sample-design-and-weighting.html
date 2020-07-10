@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-26" />
+<meta name="date" content="2020-07-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -431,16 +431,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>In practice, there may be even more than two stages of sampling. For example, one might sample a counties as the PSU and then within sample counties may sample census tracts or blocks, before then sampling households within those tracts. A sample of schoolchildren might first sample school districts, and then schools within the district before sampling individual students.</p>
 <p>If PSUs are sample with correct probability, then the resulting sample will still be representative because every observation in the population had an equally likely chance of being drawn. However, it will clearly violate the assumption of an SRS. The consequence of cluster sampling is that if the variable of interest is distributed differently across clusters, the resulting standard error for statistical inference will be greater than that calculated in our default formulas.</p>
 <p>To see why this happens, lets take a fairly straightforward example: what percent of the US population is Mormon? The General Social Survey (GSS) collects information on religious affiliation, so this should be a fairly straightforward calculation. To do this I have extracted a subset of GSS data from 1972-2014 that includes religious affiliation. For reasons that will be explained in more detail in the next section, religious affiliation is divided into three categories and the Mormon affiliation is in the “other” variable. Taking account of some missing value issues, I can calculate the percent mormon by year:</p>
-<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb344-1" title="1">relig<span class="op">$</span>mormon &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(relig<span class="op">$</span>relig), <span class="ot">NA</span>, </a>
-<a class="sourceLine" id="cb344-2" title="2">                       <span class="kw">ifelse</span>(<span class="op">!</span><span class="kw">is.na</span>(relig<span class="op">$</span>other) <span class="op">&amp;</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb344-3" title="3"><span class="st">                                </span>relig<span class="op">$</span>other<span class="op">==</span><span class="st">&quot;mormon&quot;</span>, <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb344-4" title="4">                              <span class="ot">FALSE</span>))</a>
-<a class="sourceLine" id="cb344-5" title="5">mormons &lt;-<span class="st"> </span><span class="kw">tapply</span>(relig<span class="op">$</span>mormon, relig<span class="op">$</span>year, mean, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb344-6" title="6">mormons &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">year=</span><span class="kw">as.numeric</span>(<span class="kw">rownames</span>(mormons)), </a>
-<a class="sourceLine" id="cb344-7" title="7">                      <span class="dt">proportion=</span>mormons,</a>
-<a class="sourceLine" id="cb344-8" title="8">                      <span class="dt">n=</span><span class="kw">as.numeric</span>(<span class="kw">table</span>(relig<span class="op">$</span>year)))</a>
-<a class="sourceLine" id="cb344-9" title="9"><span class="kw">rownames</span>(mormons) &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb344-10" title="10"><span class="kw">head</span>(mormons)</a></code></pre></div>
+<div class="sourceCode" id="cb345"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb345-1" title="1">relig<span class="op">$</span>mormon &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(relig<span class="op">$</span>relig), <span class="ot">NA</span>, </a>
+<a class="sourceLine" id="cb345-2" title="2">                       <span class="kw">ifelse</span>(<span class="op">!</span><span class="kw">is.na</span>(relig<span class="op">$</span>other) <span class="op">&amp;</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb345-3" title="3"><span class="st">                                </span>relig<span class="op">$</span>other<span class="op">==</span><span class="st">&quot;mormon&quot;</span>, <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb345-4" title="4">                              <span class="ot">FALSE</span>))</a>
+<a class="sourceLine" id="cb345-5" title="5">mormons &lt;-<span class="st"> </span><span class="kw">tapply</span>(relig<span class="op">$</span>mormon, relig<span class="op">$</span>year, mean, <span class="dt">na.rm=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb345-6" title="6">mormons &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">year=</span><span class="kw">as.numeric</span>(<span class="kw">rownames</span>(mormons)), </a>
+<a class="sourceLine" id="cb345-7" title="7">                      <span class="dt">proportion=</span>mormons,</a>
+<a class="sourceLine" id="cb345-8" title="8">                      <span class="dt">n=</span><span class="kw">as.numeric</span>(<span class="kw">table</span>(relig<span class="op">$</span>year)))</a>
+<a class="sourceLine" id="cb345-9" title="9"><span class="kw">rownames</span>(mormons) &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb345-10" title="10"><span class="kw">head</span>(mormons)</a></code></pre></div>
 <pre><code>##   year  proportion    n
 ## 1 1972 0.009299442 1613
 ## 2 1973 0.003989362 1504
@@ -474,17 +474,17 @@ Figure 80: Sample percent Mormon over time from the General Social Survey, with 
 <p>The use of weights in sample design can get quite complex and we will only scratch the surface here. The basic idea is that if your sample is not representative, you need to adjust all statistical results a <strong>sampling weight</strong> for each observation. The sampling weight for each observation should be equal to the inverse of that observation’s probability of being sampled <span class="math inline">\(p_i\)</span>. So:</p>
 <p><span class="math display">\[w_i=\frac{1}{p_i}\]</span></p>
 <p>To illustrate this, lets create a fictional population and draw a sample from it. For this exercise, I want to sample from the Dr. Seuss town of Sneetchville. There are two kinds of Sneetches in Sneetchville, those with stars on their bellies (Star-Bellied Sneetches) and regular Sneetches. Star-bellied Sneetches are relatively more advantaged and make up only 10% of the population. Lets create our populations by sampling incomes from the normal distribution.</p>
-<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb346-1" title="1">reg_sneetch &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">18000</span>, <span class="dv">10</span>, <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb346-2" title="2">sb_sneetch &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">2000</span>, <span class="dv">15</span>, <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb346-3" title="3">sneetchville &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">type=</span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">&quot;regular&quot;</span>,<span class="dv">18000</span>), <span class="kw">rep</span>(<span class="st">&quot;star-bellied&quot;</span>,<span class="dv">2000</span>))),</a>
-<a class="sourceLine" id="cb346-4" title="4">                           <span class="dt">income=</span><span class="kw">c</span>(reg_sneetch, sb_sneetch))</a>
-<a class="sourceLine" id="cb346-5" title="5"><span class="kw">mean</span>(sneetchville<span class="op">$</span>income)</a></code></pre></div>
+<div class="sourceCode" id="cb347"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb347-1" title="1">reg_sneetch &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">18000</span>, <span class="dv">10</span>, <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb347-2" title="2">sb_sneetch &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">2000</span>, <span class="dv">15</span>, <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb347-3" title="3">sneetchville &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">type=</span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">&quot;regular&quot;</span>,<span class="dv">18000</span>), <span class="kw">rep</span>(<span class="st">&quot;star-bellied&quot;</span>,<span class="dv">2000</span>))),</a>
+<a class="sourceLine" id="cb347-4" title="4">                           <span class="dt">income=</span><span class="kw">c</span>(reg_sneetch, sb_sneetch))</a>
+<a class="sourceLine" id="cb347-5" title="5"><span class="kw">mean</span>(sneetchville<span class="op">$</span>income)</a></code></pre></div>
 <pre><code>## [1] 10.47902</code></pre>
-<div class="sourceCode" id="cb348"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb348-1" title="1"><span class="kw">tapply</span>(sneetchville<span class="op">$</span>income, sneetchville<span class="op">$</span>type, mean)</a></code></pre></div>
+<div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb349-1" title="1"><span class="kw">tapply</span>(sneetchville<span class="op">$</span>income, sneetchville<span class="op">$</span>type, mean)</a></code></pre></div>
 <pre><code>##      regular star-bellied 
 ##     9.973621    15.027597</code></pre>
-<div class="sourceCode" id="cb350"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb350-1" title="1"><span class="kw">ggplot</span>(sneetchville, <span class="kw">aes</span>(<span class="dt">x=</span>type, <span class="dt">y=</span>income))<span class="op">+</span></a>
-<a class="sourceLine" id="cb350-2" title="2"><span class="st">  </span><span class="kw">geom_boxplot</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb351-1" title="1"><span class="kw">ggplot</span>(sneetchville, <span class="kw">aes</span>(<span class="dt">x=</span>type, <span class="dt">y=</span>income))<span class="op">+</span></a>
+<a class="sourceLine" id="cb351-2" title="2"><span class="st">  </span><span class="kw">geom_boxplot</span>()</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:create-sneetchville"></span>
 <img src="stat_book_files/figure-html/create-sneetchville-1.png" alt="Distribution of income in Sneetchville by Sneetch type for the full population" width="672" />
 <p class="caption">
@@ -493,15 +493,15 @@ Figure 81: Distribution of income in Sneetchville by Sneetch type for the full p
 </div>
 <p>We can see that Star-bellied Sneetches make considerably more than regular Sneetches on average. Because there are far more regular Sneetches, the mean income in Sneetchville of 10.5 is very close to the regular Sneetch mean income of 10.</p>
 <p>Those are the population values which we get to see because we are omnipotent in this case. But our poor researcher needs to draw a sample to figure out these numbers. Lets say the researcher decides to draw a stratified sample that includes 100 of each type of Sneetch.</p>
-<div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb351-1" title="1">sneetch_sample &lt;-<span class="st"> </span>sneetchville[<span class="kw">c</span>(<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">18000</span>, <span class="dv">100</span>, <span class="dt">replace=</span><span class="ot">FALSE</span>),</a>
-<a class="sourceLine" id="cb351-2" title="2">                                 <span class="kw">sample</span>(<span class="dv">18001</span><span class="op">:</span><span class="dv">20000</span>, <span class="dv">100</span>, <span class="dt">replace=</span><span class="ot">FALSE</span>)),]</a>
-<a class="sourceLine" id="cb351-3" title="3"><span class="kw">mean</span>(sneetch_sample<span class="op">$</span>income)</a></code></pre></div>
+<div class="sourceCode" id="cb352"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb352-1" title="1">sneetch_sample &lt;-<span class="st"> </span>sneetchville[<span class="kw">c</span>(<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">18000</span>, <span class="dv">100</span>, <span class="dt">replace=</span><span class="ot">FALSE</span>),</a>
+<a class="sourceLine" id="cb352-2" title="2">                                 <span class="kw">sample</span>(<span class="dv">18001</span><span class="op">:</span><span class="dv">20000</span>, <span class="dv">100</span>, <span class="dt">replace=</span><span class="ot">FALSE</span>)),]</a>
+<a class="sourceLine" id="cb352-3" title="3"><span class="kw">mean</span>(sneetch_sample<span class="op">$</span>income)</a></code></pre></div>
 <pre><code>## [1] 12.40761</code></pre>
-<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb353-1" title="1"><span class="kw">tapply</span>(sneetch_sample<span class="op">$</span>income, sneetch_sample<span class="op">$</span>type, mean)</a></code></pre></div>
+<div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb354-1" title="1"><span class="kw">tapply</span>(sneetch_sample<span class="op">$</span>income, sneetch_sample<span class="op">$</span>type, mean)</a></code></pre></div>
 <pre><code>##      regular star-bellied 
 ##     10.02163     14.79360</code></pre>
-<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb355-1" title="1"><span class="kw">ggplot</span>(sneetch_sample, <span class="kw">aes</span>(<span class="dt">x=</span>type, <span class="dt">y=</span>income))<span class="op">+</span></a>
-<a class="sourceLine" id="cb355-2" title="2"><span class="st">  </span><span class="kw">geom_boxplot</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb356"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb356-1" title="1"><span class="kw">ggplot</span>(sneetch_sample, <span class="kw">aes</span>(<span class="dt">x=</span>type, <span class="dt">y=</span>income))<span class="op">+</span></a>
+<a class="sourceLine" id="cb356-2" title="2"><span class="st">  </span><span class="kw">geom_boxplot</span>()</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:sneetch-sample"></span>
 <img src="stat_book_files/figure-html/sneetch-sample-1.png" alt="Distribution of income in Sneetchville by Sneetch type for statified sample" width="672" />
 <p class="caption">
@@ -510,29 +510,29 @@ Figure 82: Distribution of income in Sneetchville by Sneetch type for statified 
 </div>
 <p>When I separate mean income by Sneetch type, I get estimates that are pretty close to the population values of 10 and 15. However, when I estimate mean income for the whole sample, I overestimate the population parameter substantially. It should be about 10.5 but I get 12.4. Why? My sample contains equal numbers of Star-bellied and regular Sneetches, but Star-bellied Sneetches are only about 10% of the population. Star-bellied Sneetches are thus over-represented and since they have higher incomes on average, I systematically overestimate income for Sneetchville as a whole.</p>
 <p>I can correct for this problem if I apply weights that are equal to the inverse of the probability of being drawn. There are 2000 Star-bellied Sneetches in the population and I sampled 100, so the probability of being sampled is 100/2000. Similarly for regular Sneetches the probability is 100/18000.</p>
-<div class="sourceCode" id="cb356"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb356-1" title="1">sneetch_sample<span class="op">$</span>sweight &lt;-<span class="st"> </span><span class="kw">ifelse</span>(sneetch_sample<span class="op">$</span>type<span class="op">==</span><span class="st">&quot;regular&quot;</span>, </a>
-<a class="sourceLine" id="cb356-2" title="2">                                 <span class="dv">18000</span><span class="op">/</span><span class="dv">100</span>, <span class="dv">2000</span><span class="op">/</span><span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb356-3" title="3"><span class="kw">tapply</span>(sneetch_sample<span class="op">$</span>sweight, sneetch_sample<span class="op">$</span>type, mean)</a></code></pre></div>
+<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb357-1" title="1">sneetch_sample<span class="op">$</span>sweight &lt;-<span class="st"> </span><span class="kw">ifelse</span>(sneetch_sample<span class="op">$</span>type<span class="op">==</span><span class="st">&quot;regular&quot;</span>, </a>
+<a class="sourceLine" id="cb357-2" title="2">                                 <span class="dv">18000</span><span class="op">/</span><span class="dv">100</span>, <span class="dv">2000</span><span class="op">/</span><span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb357-3" title="3"><span class="kw">tapply</span>(sneetch_sample<span class="op">$</span>sweight, sneetch_sample<span class="op">$</span>type, mean)</a></code></pre></div>
 <pre><code>##      regular star-bellied 
 ##          180           20</code></pre>
 <p>The weights represent how many observations in the population a given observation in the sample represents. I can use these weights to get a <strong>weighted mean</strong>. A weighted mean can be calculated as:</p>
 <p><span class="math display">\[\frac{\sum w_i*x_i}{\sum w_i}\]</span></p>
-<div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb358-1" title="1"><span class="kw">sum</span>(sneetch_sample<span class="op">$</span>sweight<span class="op">*</span>sneetch_sample<span class="op">$</span>income)<span class="op">/</span><span class="kw">sum</span>(sneetch_sample<span class="op">$</span>sweight)</a></code></pre></div>
+<div class="sourceCode" id="cb359"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb359-1" title="1"><span class="kw">sum</span>(sneetch_sample<span class="op">$</span>sweight<span class="op">*</span>sneetch_sample<span class="op">$</span>income)<span class="op">/</span><span class="kw">sum</span>(sneetch_sample<span class="op">$</span>sweight)</a></code></pre></div>
 <pre><code>## [1] 10.49883</code></pre>
-<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb360-1" title="1"><span class="kw">weighted.mean</span>(sneetch_sample<span class="op">$</span>income, sneetch_sample<span class="op">$</span>sweight)</a></code></pre></div>
+<div class="sourceCode" id="cb361"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb361-1" title="1"><span class="kw">weighted.mean</span>(sneetch_sample<span class="op">$</span>income, sneetch_sample<span class="op">$</span>sweight)</a></code></pre></div>
 <pre><code>## [1] 10.49883</code></pre>
 <p>Our weighted sample mean is now very close to the population mean of 10.5.</p>
 <p>So why add this complication to my sample? Lets say I want to do a hypothesis test on the mean income difference between Star-bellied Sneetches and regular Sneetches in my sample. Lets calculate the standard error for that test:</p>
-<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb362-1" title="1"><span class="kw">sqrt</span>(<span class="kw">sum</span>((<span class="kw">tapply</span>(sneetch_sample<span class="op">$</span>income, sneetch_sample<span class="op">$</span>type, sd))<span class="op">^</span><span class="dv">2</span><span class="op">/</span></a>
-<a class="sourceLine" id="cb362-2" title="2"><span class="st">  </span><span class="kw">table</span>(sneetch_sample<span class="op">$</span>type)))</a></code></pre></div>
+<div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb363-1" title="1"><span class="kw">sqrt</span>(<span class="kw">sum</span>((<span class="kw">tapply</span>(sneetch_sample<span class="op">$</span>income, sneetch_sample<span class="op">$</span>type, sd))<span class="op">^</span><span class="dv">2</span><span class="op">/</span></a>
+<a class="sourceLine" id="cb363-2" title="2"><span class="st">  </span><span class="kw">table</span>(sneetch_sample<span class="op">$</span>type)))</a></code></pre></div>
 <pre><code>## [1] 0.2974474</code></pre>
 <p>Now instead of a stratified sample, lets draw a simple random sample of the same size (200) and calculate the same standard error.</p>
-<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb364-1" title="1">sneetch_srs &lt;-<span class="st"> </span>sneetchville[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">20000</span>,<span class="dv">200</span>, <span class="dt">replace =</span> <span class="ot">FALSE</span>),]</a>
-<a class="sourceLine" id="cb364-2" title="2"><span class="kw">sqrt</span>(<span class="kw">sum</span>((<span class="kw">tapply</span>(sneetch_srs<span class="op">$</span>income, sneetch_srs<span class="op">$</span>type, sd))<span class="op">^</span><span class="dv">2</span><span class="op">/</span></a>
-<a class="sourceLine" id="cb364-3" title="3"><span class="st">  </span><span class="kw">table</span>(sneetch_srs<span class="op">$</span>type)))</a></code></pre></div>
+<div class="sourceCode" id="cb365"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb365-1" title="1">sneetch_srs &lt;-<span class="st"> </span>sneetchville[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">20000</span>,<span class="dv">200</span>, <span class="dt">replace =</span> <span class="ot">FALSE</span>),]</a>
+<a class="sourceLine" id="cb365-2" title="2"><span class="kw">sqrt</span>(<span class="kw">sum</span>((<span class="kw">tapply</span>(sneetch_srs<span class="op">$</span>income, sneetch_srs<span class="op">$</span>type, sd))<span class="op">^</span><span class="dv">2</span><span class="op">/</span></a>
+<a class="sourceLine" id="cb365-3" title="3"><span class="st">  </span><span class="kw">table</span>(sneetch_srs<span class="op">$</span>type)))</a></code></pre></div>
 <pre><code>## [1] 0.5086267</code></pre>
 <p>The standard errors on the mean difference are nearly doubled. Why? Remember that the sample size of each group is a factor in the standard error calculation. In this SRS we had the following:</p>
-<div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb366-1" title="1"><span class="kw">table</span>(sneetch_srs<span class="op">$</span>type)</a></code></pre></div>
+<div class="sourceCode" id="cb367"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb367-1" title="1"><span class="kw">table</span>(sneetch_srs<span class="op">$</span>type)</a></code></pre></div>
 <pre><code>## 
 ##      regular star-bellied 
 ##          182           18</code></pre>
@@ -553,7 +553,7 @@ Figure 82: Distribution of income in Sneetchville by Sneetch type for statified 
 <p>Clustering, stratification and weighting can all effect the representativeness and sampling variability of our sample. In samples that are not simple random samples, we need to take account of these <strong>design effects</strong> in our models.</p>
 <p>To illustrate such design effects, we will consider the Add Health data that we have been using. This data is the result of a very complex sampling design. Schools were the PSU in a multistage sampling design. The school sample and the individual sample of students within schools were also stratified by a variety of characteristics. For example, the school sample was stratified by region of the US to ensure that all regions were represented. Certain ethnic/racial groups were also oversampled by design and post-stratification weights were also calculated.</p>
 <p>In the publically available Add Health data, we do not have information on stratification variables, but we do have measures of clustering and weighting.</p>
-<div class="sourceCode" id="cb368"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb368-1" title="1"><span class="kw">head</span>(popularity[,<span class="kw">c</span>(<span class="st">&quot;cluster&quot;</span>,<span class="st">&quot;sweight&quot;</span>)])</a></code></pre></div>
+<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb369-1" title="1"><span class="kw">head</span>(popularity[,<span class="kw">c</span>(<span class="st">&quot;cluster&quot;</span>,<span class="st">&quot;sweight&quot;</span>)])</a></code></pre></div>
 <pre><code>##   cluster   sweight
 ## 1     472 3663.6562
 ## 2     472 4471.7647
@@ -563,14 +563,14 @@ Figure 82: Distribution of income in Sneetchville by Sneetch type for statified 
 ## 6     145  759.0284</code></pre>
 <p>The <code>cluster</code> variable is a numeric id for each school and tells us which students were sampled from which PSU. The <code>sweight</code> variable is our sampling weight variable and tells us how many students in the US this observation represents.</p>
 <p>Lets start with a naive model that ignores all of these design effects and just tries to predict number of friend nominations by our pseudoGPA measure:</p>
-<div class="sourceCode" id="cb370"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb370-1" title="1">model_basic &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>pseudoGPA, <span class="dt">data=</span>popularity)</a>
-<a class="sourceLine" id="cb370-2" title="2"><span class="kw">round</span>(<span class="kw">summary</span>(model_basic)<span class="op">$</span>coef, <span class="dv">3</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb371-1" title="1">model_basic &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>pseudoGPA, <span class="dt">data=</span>popularity)</a>
+<a class="sourceLine" id="cb371-2" title="2"><span class="kw">round</span>(<span class="kw">summary</span>(model_basic)<span class="op">$</span>coef, <span class="dv">3</span>)</a></code></pre></div>
 <pre><code>##             Estimate Std. Error t value Pr(&gt;|t|)
 ## (Intercept)    2.181      0.217  10.063        0
 ## pseudoGPA      0.837      0.074  11.304        0</code></pre>
 <p>This model is not necessarily representative of the population because it does not take account of the differential weight for each student. We can correct these estimates by adding in a weight argument to the <code>lm</code> command. This will essentially run a weighted least squares (WLS) model with these weights along the diagonal of the weight matrix. Intuitively, we are trying to minimize the weighted sum of squared residuals rather than the unweighted sum of squared residuals.</p>
-<div class="sourceCode" id="cb372"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb372-1" title="1">model_weighted &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>pseudoGPA, <span class="dt">data=</span>popularity, <span class="dt">weights =</span> sweight)</a>
-<a class="sourceLine" id="cb372-2" title="2"><span class="kw">round</span>(<span class="kw">summary</span>(model_weighted)<span class="op">$</span>coef, <span class="dv">3</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb373-1" title="1">model_weighted &lt;-<span class="st"> </span><span class="kw">lm</span>(indegree<span class="op">~</span>pseudoGPA, <span class="dt">data=</span>popularity, <span class="dt">weights =</span> sweight)</a>
+<a class="sourceLine" id="cb373-2" title="2"><span class="kw">round</span>(<span class="kw">summary</span>(model_weighted)<span class="op">$</span>coef, <span class="dv">3</span>)</a></code></pre></div>
 <pre><code>##             Estimate Std. Error t value Pr(&gt;|t|)
 ## (Intercept)    2.267      0.220  10.312        0
 ## pseudoGPA      0.826      0.075  11.009        0</code></pre>
@@ -581,10 +581,10 @@ Figure 82: Distribution of income in Sneetchville by Sneetch type for statified 
 <li>The cluster sampling</li>
 </ol>
 <p>We can address the first issue of variance in sample weights by using robust standard errors:</p>
-<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb374-1" title="1"><span class="kw">library</span>(sandwich)</a>
-<a class="sourceLine" id="cb374-2" title="2"><span class="kw">library</span>(lmtest)</a>
-<a class="sourceLine" id="cb374-3" title="3">model_robust &lt;-<span class="st"> </span><span class="kw">coeftest</span>(model_weighted, <span class="dt">vcov=</span><span class="kw">vcovHC</span>(model_weighted, <span class="st">&quot;HC1&quot;</span>))</a>
-<a class="sourceLine" id="cb374-4" title="4">model_robust</a></code></pre></div>
+<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb375-1" title="1"><span class="kw">library</span>(sandwich)</a>
+<a class="sourceLine" id="cb375-2" title="2"><span class="kw">library</span>(lmtest)</a>
+<a class="sourceLine" id="cb375-3" title="3">model_robust &lt;-<span class="st"> </span><span class="kw">coeftest</span>(model_weighted, <span class="dt">vcov=</span><span class="kw">vcovHC</span>(model_weighted, <span class="st">&quot;HC1&quot;</span>))</a>
+<a class="sourceLine" id="cb375-4" title="4">model_robust</a></code></pre></div>
 <pre><code>## 
 ## t test of coefficients:
 ## 
@@ -595,11 +595,11 @@ Figure 82: Distribution of income in Sneetchville by Sneetch type for statified 
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>Notice that the standard error increased from about 0.075 to 0.095.</p>
 <p>Robust standard errors will adequately address the design effect resulting from the variance of the sampling weights, but it does not address the design effect arising from clustering. Doing that is more mathematically complicated. We won’t go into the details here, but we will use the <code>survey</code> library in R that can account for a variety of design effects. To make use of this library, we first need to create a <code>svydesign</code> object that identifies the sampling design effects:</p>
-<div class="sourceCode" id="cb376"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb376-1" title="1"><span class="kw">library</span>(survey)</a>
-<a class="sourceLine" id="cb376-2" title="2">popularity_svy &lt;-<span class="st"> </span><span class="kw">svydesign</span>(<span class="dt">ids=</span><span class="op">~</span>cluster, <span class="dt">weight=</span><span class="op">~</span>sweight, <span class="dt">data=</span>popularity)</a></code></pre></div>
+<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb377-1" title="1"><span class="kw">library</span>(survey)</a>
+<a class="sourceLine" id="cb377-2" title="2">popularity_svy &lt;-<span class="st"> </span><span class="kw">svydesign</span>(<span class="dt">ids=</span><span class="op">~</span>cluster, <span class="dt">weight=</span><span class="op">~</span>sweight, <span class="dt">data=</span>popularity)</a></code></pre></div>
 <p>The <code>survey</code> library comes with a variety of functions that can be used to run a variety of models that expect this <code>svydesign</code> object rathre than a traditional data.frame. In this case, we want the <code>svyglm</code> command which can ge used to run “generalized linear models” which include our basic linear model.</p>
-<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb377-1" title="1">model_svy &lt;-<span class="st"> </span><span class="kw">svyglm</span>(indegree<span class="op">~</span>pseudoGPA, <span class="dt">design=</span>popularity_svy)</a>
-<a class="sourceLine" id="cb377-2" title="2"><span class="kw">round</span>(<span class="kw">summary</span>(model_svy)<span class="op">$</span>coef, <span class="dv">3</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb378"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb378-1" title="1">model_svy &lt;-<span class="st"> </span><span class="kw">svyglm</span>(indegree<span class="op">~</span>pseudoGPA, <span class="dt">design=</span>popularity_svy)</a>
+<a class="sourceLine" id="cb378-2" title="2"><span class="kw">round</span>(<span class="kw">summary</span>(model_svy)<span class="op">$</span>coef, <span class="dv">3</span>)</a></code></pre></div>
 <pre><code>##             Estimate Std. Error t value Pr(&gt;|t|)
 ## (Intercept)    2.267      0.322   7.030        0
 ## pseudoGPA      0.826      0.109   7.593        0</code></pre>

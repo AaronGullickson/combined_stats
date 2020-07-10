@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-26" />
+<meta name="date" content="2020-07-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -430,9 +430,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="a-simple-example" class="section level4">
 <h4>A simple example</h4>
 <p>Lets try out a simple example. I want to use my new logit model framework to predict survival on the Titanic by gender.</p>
-<div class="sourceCode" id="cb558"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb558-1" title="1">model.gender &lt;-<span class="st"> </span><span class="kw">glm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>(sex<span class="op">==</span><span class="st">&quot;Female&quot;</span>), </a>
-<a class="sourceLine" id="cb558-2" title="2">                    <span class="dt">data=</span>titanic, <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
-<a class="sourceLine" id="cb558-3" title="3"><span class="kw">round</span>(<span class="kw">summary</span>(model.gender)<span class="op">$</span>coef,<span class="dv">3</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb559"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb559-1" title="1">model.gender &lt;-<span class="st"> </span><span class="kw">glm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>(sex<span class="op">==</span><span class="st">&quot;Female&quot;</span>), </a>
+<a class="sourceLine" id="cb559-2" title="2">                    <span class="dt">data=</span>titanic, <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
+<a class="sourceLine" id="cb559-3" title="3"><span class="kw">round</span>(<span class="kw">summary</span>(model.gender)<span class="op">$</span>coef,<span class="dv">3</span>)</a></code></pre></div>
 <pre><code>##                     Estimate Std. Error z value Pr(&gt;|z|)
 ## (Intercept)           -1.444      0.088 -16.476        0
 ## sex == &quot;Female&quot;TRUE    2.425      0.136  17.832        0</code></pre>
@@ -451,25 +451,25 @@ e^{log(\frac{\hat{p}_i}{1-\hat{p}_i})} &amp; =  e^{-1.444+2.425(female_i)}\\
 <p><span class="math display">\[\frac{\hat{p}_i}{1-\hat{p}_i} = (0.236)(11.30)^{1}=0.236(11.30)\]</span></p>
 <p>We could work out the final number here, but this formulation is more important because it gives us the <strong>odds ratio</strong> of 11.3. This is the value we multiply the baseline odds by in order to get the odds for women. In this case, we can see that women had odds of surviving the Titanic that were 11.3 times higher than men’s odds. In general the exponential of the slopes gives us an odds ratio, although interpreting it correctly depends on whether you have a categorical or quantitative independent variable.</p>
 <p>Before discussing the quantitative case, lets revisit a method we already knew for calculating this odds ratio. We can do this by a two-way table.</p>
-<div class="sourceCode" id="cb560"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb560-1" title="1"><span class="kw">table</span>(titanic<span class="op">$</span>sex, titanic<span class="op">$</span>survival)</a></code></pre></div>
+<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb561-1" title="1"><span class="kw">table</span>(titanic<span class="op">$</span>sex, titanic<span class="op">$</span>survival)</a></code></pre></div>
 <pre><code>##         
 ##          Survived Died
 ##   Female      339  127
 ##   Male        161  682</code></pre>
 <p>The odds of survival for men are given by the number of survivals over the number of deaths:</p>
-<div class="sourceCode" id="cb562"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb562-1" title="1"><span class="dv">161</span><span class="op">/</span><span class="dv">682</span></a></code></pre></div>
+<div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb563-1" title="1"><span class="dv">161</span><span class="op">/</span><span class="dv">682</span></a></code></pre></div>
 <pre><code>## [1] 0.2360704</code></pre>
 <p>You can see that this number matches the baseline odds we just calculated from the logit model. We can also calculate the odds ratio by taking the cross-product of the table:</p>
-<div class="sourceCode" id="cb564"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb564-1" title="1"><span class="dv">339</span><span class="op">*</span><span class="dv">682</span><span class="op">/</span>(<span class="dv">161</span><span class="op">*</span><span class="dv">127</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb565-1" title="1"><span class="dv">339</span><span class="op">*</span><span class="dv">682</span><span class="op">/</span>(<span class="dv">161</span><span class="op">*</span><span class="dv">127</span>)</a></code></pre></div>
 <pre><code>## [1] 11.30718</code></pre>
 <p>The odds ratio between men and women is the same as what we just estimated from the logit model. The logit model and the two-way table both agree on the relevant odds and odds ratios. So why use the logit model? The logit model will allow us to estimate much more complex models by including quantitative variables, controlling for other variables, adding interaction terms, non-linear effects, and all of the other fun techniques we have been developing for the right-hand side of a linear function. Before turning to a more complex model, lets look at how to interpret logit models with a quantitative independent variable.</p>
 </div>
 <div id="interpreting-results-with-quantitative-independent-variables" class="section level4">
 <h4>Interpreting results with quantitative independent variables</h4>
 <p>Lets return to the example of predicting survival by fare paid:</p>
-<div class="sourceCode" id="cb566"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb566-1" title="1">model.fare &lt;-<span class="st"> </span><span class="kw">glm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>fare, </a>
-<a class="sourceLine" id="cb566-2" title="2">                  <span class="dt">data=</span>titanic, <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
-<a class="sourceLine" id="cb566-3" title="3"><span class="kw">coef</span>(model.fare)</a></code></pre></div>
+<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb567-1" title="1">model.fare &lt;-<span class="st"> </span><span class="kw">glm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>fare, </a>
+<a class="sourceLine" id="cb567-2" title="2">                  <span class="dt">data=</span>titanic, <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
+<a class="sourceLine" id="cb567-3" title="3"><span class="kw">coef</span>(model.fare)</a></code></pre></div>
 <pre><code>## (Intercept)        fare 
 ## -0.88402354  0.01247006</code></pre>
 <p>So our model is:</p>
@@ -492,33 +492,33 @@ e^{log(\frac{\hat{p}_i}{1-\hat{p}_i})} &amp; =  e^{-0.884+0.012(fare_i)}\\
 <div id="graphing-predicted-probabilities" class="section level4">
 <h4>Graphing predicted probabilities</h4>
 <p>We can look at how fare changes the predicted probability of survival by using the <code>predict</code> command. In this case, we will feed in a fake dataset of passengers paying every fare between 0 and 512 (the maximum actual value) in one unit increments. We just have to remember that the predicted values from <code>predict</code> will be log-odds which need to be converted to probabilities.</p>
-<div class="sourceCode" id="cb568"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb568-1" title="1">predict_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">fare=</span><span class="dv">0</span><span class="op">:</span><span class="dv">512</span>)</a>
-<a class="sourceLine" id="cb568-2" title="2">lodds &lt;-<span class="st"> </span><span class="kw">predict</span>(model.fare, <span class="dt">newdata=</span>predict_df)</a>
-<a class="sourceLine" id="cb568-3" title="3">predict_df<span class="op">$</span>probs &lt;-<span class="st"> </span><span class="kw">exp</span>(lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(lodds))</a>
-<a class="sourceLine" id="cb568-4" title="4"><span class="kw">ggplot</span>(predict_df,</a>
-<a class="sourceLine" id="cb568-5" title="5">       <span class="kw">aes</span>(<span class="dt">x=</span>fare, <span class="dt">y=</span>probs))<span class="op">+</span></a>
-<a class="sourceLine" id="cb568-6" title="6"><span class="st">  </span><span class="kw">geom_line</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb568-7" title="7"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;fare paid&quot;</span>, <span class="dt">y=</span><span class="st">&quot;probability of survival&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb568-8" title="8"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb569-1" title="1">predict_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">fare=</span><span class="dv">0</span><span class="op">:</span><span class="dv">512</span>)</a>
+<a class="sourceLine" id="cb569-2" title="2">lodds &lt;-<span class="st"> </span><span class="kw">predict</span>(model.fare, <span class="dt">newdata=</span>predict_df)</a>
+<a class="sourceLine" id="cb569-3" title="3">predict_df<span class="op">$</span>probs &lt;-<span class="st"> </span><span class="kw">exp</span>(lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(lodds))</a>
+<a class="sourceLine" id="cb569-4" title="4"><span class="kw">ggplot</span>(predict_df,</a>
+<a class="sourceLine" id="cb569-5" title="5">       <span class="kw">aes</span>(<span class="dt">x=</span>fare, <span class="dt">y=</span>probs))<span class="op">+</span></a>
+<a class="sourceLine" id="cb569-6" title="6"><span class="st">  </span><span class="kw">geom_line</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb569-7" title="7"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;fare paid&quot;</span>, <span class="dt">y=</span><span class="st">&quot;probability of survival&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb569-8" title="8"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
 <p><img src="stat_book_files/figure-html/predict-logit-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>We could also plot a more complicated example for a model that looks at both gender and fare. The trick here is we can use a handy function called <code>expand.grid</code> to set up our prediction dataframe. The <code>expand.grid</code> function will create a dataframe that includes an observation for every possible combination of the variables that you feed in.</p>
-<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb569-1" title="1">model.both &lt;-<span class="st"> </span><span class="kw">update</span>(model.fare, .<span class="op">~</span>.<span class="op">+</span>sex)</a>
-<a class="sourceLine" id="cb569-2" title="2">predict_df &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(<span class="dt">fare=</span><span class="dv">0</span><span class="op">:</span><span class="dv">512</span>, <span class="dt">sex=</span><span class="kw">c</span>(<span class="st">&quot;Female&quot;</span>,<span class="st">&quot;Male&quot;</span>))</a>
-<a class="sourceLine" id="cb569-3" title="3">lodds &lt;-<span class="st"> </span><span class="kw">predict</span>(model.both, <span class="dt">newdata=</span>predict_df)</a>
-<a class="sourceLine" id="cb569-4" title="4">predict_df<span class="op">$</span>probs &lt;-<span class="st"> </span><span class="kw">exp</span>(lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(lodds))</a>
-<a class="sourceLine" id="cb569-5" title="5"><span class="kw">ggplot</span>(predict_df,</a>
-<a class="sourceLine" id="cb569-6" title="6">       <span class="kw">aes</span>(<span class="dt">x=</span>fare, <span class="dt">y=</span>probs, <span class="dt">color=</span>sex))<span class="op">+</span></a>
-<a class="sourceLine" id="cb569-7" title="7"><span class="st">  </span><span class="kw">geom_line</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb569-8" title="8"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;fare paid&quot;</span>, <span class="dt">y=</span><span class="st">&quot;probability of survival&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb569-9" title="9"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb570-1" title="1">model.both &lt;-<span class="st"> </span><span class="kw">update</span>(model.fare, .<span class="op">~</span>.<span class="op">+</span>sex)</a>
+<a class="sourceLine" id="cb570-2" title="2">predict_df &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(<span class="dt">fare=</span><span class="dv">0</span><span class="op">:</span><span class="dv">512</span>, <span class="dt">sex=</span><span class="kw">c</span>(<span class="st">&quot;Female&quot;</span>,<span class="st">&quot;Male&quot;</span>))</a>
+<a class="sourceLine" id="cb570-3" title="3">lodds &lt;-<span class="st"> </span><span class="kw">predict</span>(model.both, <span class="dt">newdata=</span>predict_df)</a>
+<a class="sourceLine" id="cb570-4" title="4">predict_df<span class="op">$</span>probs &lt;-<span class="st"> </span><span class="kw">exp</span>(lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(lodds))</a>
+<a class="sourceLine" id="cb570-5" title="5"><span class="kw">ggplot</span>(predict_df,</a>
+<a class="sourceLine" id="cb570-6" title="6">       <span class="kw">aes</span>(<span class="dt">x=</span>fare, <span class="dt">y=</span>probs, <span class="dt">color=</span>sex))<span class="op">+</span></a>
+<a class="sourceLine" id="cb570-7" title="7"><span class="st">  </span><span class="kw">geom_line</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb570-8" title="8"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;fare paid&quot;</span>, <span class="dt">y=</span><span class="st">&quot;probability of survival&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb570-9" title="9"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
 <p><img src="stat_book_files/figure-html/predict-gender-fare-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="a-more-complex-example" class="section level4">
 <h4>A more complex example</h4>
 <p>Now lets try a more complex example that can take advantage of several of the features of linear models we have already developed.</p>
-<div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb570-1" title="1">model.smoking &lt;-<span class="st"> </span><span class="kw">glm</span>(smoker<span class="op">~</span><span class="kw">I</span>(pseudoGPA<span class="dv">-2</span>)<span class="op">+</span><span class="kw">I</span>(grade<span class="dv">-10</span>)<span class="op">+</span><span class="kw">I</span>((grade<span class="dv">-10</span>)<span class="op">^</span><span class="dv">2</span>)<span class="op">+</span>sex<span class="op">*</span>honorsociety, </a>
-<a class="sourceLine" id="cb570-2" title="2">                     <span class="dt">data=</span>popularity, <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
-<a class="sourceLine" id="cb570-3" title="3"><span class="kw">round</span>(<span class="kw">summary</span>(model.smoking)<span class="op">$</span>coef, <span class="dv">3</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb571-1" title="1">model.smoking &lt;-<span class="st"> </span><span class="kw">glm</span>(smoker<span class="op">~</span><span class="kw">I</span>(pseudoGPA<span class="dv">-2</span>)<span class="op">+</span><span class="kw">I</span>(grade<span class="dv">-10</span>)<span class="op">+</span><span class="kw">I</span>((grade<span class="dv">-10</span>)<span class="op">^</span><span class="dv">2</span>)<span class="op">+</span>sex<span class="op">*</span>honorsociety, </a>
+<a class="sourceLine" id="cb571-2" title="2">                     <span class="dt">data=</span>popularity, <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
+<a class="sourceLine" id="cb571-3" title="3"><span class="kw">round</span>(<span class="kw">summary</span>(model.smoking)<span class="op">$</span>coef, <span class="dv">3</span>)</a></code></pre></div>
 <pre><code>##                           Estimate Std. Error z value Pr(&gt;|z|)
 ## (Intercept)                 -1.086      0.086 -12.697    0.000
 ## I(pseudoGPA - 2)            -0.631      0.062 -10.173    0.000
@@ -534,7 +534,7 @@ e^{log(\frac{\hat{p}_i}{1-\hat{p}_i})} &amp; =  e^{-0.884+0.012(fare_i)}\\
 <li>gender and honor society membership. I have interacted these two variables so that honor society can have a different effect for boys and girls.</li>
 </ul>
 <p>In order to interpret the results, I need to exponentiate my coefficients:</p>
-<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb572-1" title="1"><span class="kw">exp</span>(<span class="kw">coef</span>(model.smoking))</a></code></pre></div>
+<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb573-1" title="1"><span class="kw">exp</span>(<span class="kw">coef</span>(model.smoking))</a></code></pre></div>
 <pre><code>##               (Intercept)          I(pseudoGPA - 2)             I(grade - 10) 
 ##                 0.3376500                 0.5321197                 1.3490978 
 ##         I((grade - 10)^2)                  sex Male          honorsocietyTRUE 
@@ -545,18 +545,18 @@ e^{log(\frac{\hat{p}_i}{1-\hat{p}_i})} &amp; =  e^{-0.884+0.012(fare_i)}\\
 <p>Holding constant gender, grade in school, and honor society membership, each letter grade increase in GPA is associated with nearly a halving (47% decline) in the odds of frequent smoking.</p>
 <p>The grade effects are a little harder to directly interpret because of the squared term applied in a multiplicative fashion. The basic trend is that increases in grade are associated with fairly large increases in the odds of frequent smoking. The negative effect on the squared term suggests a slightly diminishing effect at higher grade levels, but this is not statistically significant, so we are probably better off estimating a model without the squared term.</p>
 <p>To see how this complex age effect works, its probably easiest to calculate odds ratios at each of the grades from 7th through 12th:</p>
-<div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb574-1" title="1">grades &lt;-<span class="st"> </span><span class="dv">7</span><span class="op">:</span><span class="dv">12</span></a>
-<a class="sourceLine" id="cb574-2" title="2">odds &lt;-<span class="st"> </span><span class="kw">exp</span>(<span class="op">-</span><span class="fl">1.086+0.299</span><span class="op">*</span>(grades<span class="dv">-10</span>)<span class="op">-</span><span class="fl">0.013</span><span class="op">*</span>((grades<span class="dv">-10</span>)<span class="op">^</span><span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb574-3" title="3">odds[<span class="dv">2</span><span class="op">:</span><span class="dv">6</span>]<span class="op">/</span>odds[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb575"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb575-1" title="1">grades &lt;-<span class="st"> </span><span class="dv">7</span><span class="op">:</span><span class="dv">12</span></a>
+<a class="sourceLine" id="cb575-2" title="2">odds &lt;-<span class="st"> </span><span class="kw">exp</span>(<span class="op">-</span><span class="fl">1.086+0.299</span><span class="op">*</span>(grades<span class="dv">-10</span>)<span class="op">-</span><span class="fl">0.013</span><span class="op">*</span>((grades<span class="dv">-10</span>)<span class="op">^</span><span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb575-3" title="3">odds[<span class="dv">2</span><span class="op">:</span><span class="dv">6</span>]<span class="op">/</span>odds[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
 <pre><code>## [1] 1.439074 1.402141 1.366155 1.331092 1.296930</code></pre>
 <p>We can see that the biggest odds ratio increase is from 7th to 8th grade at 43.9% and the smallest estimated odds ratio increase is from 11th to 12th at 29.6%. Although the magnitudes vary in size, the risk of smoking increases substantially in size with increases in grade at all grade levels.</p>
 <p>The effects of gender and honor society are also somewhat more complex to interpret because of the interaction term. The main effects give us the effect when the other variable is held at the reference. So, among students who are not in honor society, and controlling for grade and GPA, boys have 12.5% lower odds <span class="math inline">\((100*(1-0.875))\)</span> of frequently smoking than girls. Among girls, honor society membership reduces the odds of smoking by about 52% <span class="math inline">\((100*(1-0.48))\)</span>.</p>
 <p>To interpret the interaction term, lets go ahead and calculate the honor society effect for boys:</p>
-<div class="sourceCode" id="cb576"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb576-1" title="1"><span class="kw">exp</span>(<span class="op">-</span><span class="fl">0.741+0.845</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb577"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb577-1" title="1"><span class="kw">exp</span>(<span class="op">-</span><span class="fl">0.741+0.845</span>)</a></code></pre></div>
 <pre><code>## [1] 1.1096</code></pre>
 <p>Among boys, those in honor society have 11% higher odds of smoking frequently than those not in honor society. So we see a very different effect of honor society here by gender.</p>
 <p>Notice that I could have gotten this same value by multiplying the exponentiated values of the main effect and interaction term:</p>
-<div class="sourceCode" id="cb578"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb578-1" title="1"><span class="fl">0.4765042</span><span class="op">*</span><span class="fl">2.3275203</span> </a></code></pre></div>
+<div class="sourceCode" id="cb579"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb579-1" title="1"><span class="fl">0.4765042</span><span class="op">*</span><span class="fl">2.3275203</span> </a></code></pre></div>
 <pre><code>## [1] 1.109073</code></pre>
 </div>
 </div>
@@ -589,44 +589,44 @@ Figure 100: Different marginal effects of a one pound increase in fare paid at f
 <p><span class="math display">\[\hat{p}(1-\hat{p})\beta_k=0.429(1-0.429)0.012=0.0029\]</span></p>
 <p>So, an increase in fare paid from fifty to fifty-one pounds is associated with an increase in the probability of survival of 0.29%.</p>
 <p>We can also do this with models that have more than one variable, but now we will have to estimate a <span class="math inline">\(\hat{p}\)</span> for values of more than one variable. The standard approach in these cases is to estimate the marginal effects on ther probability when at the mean for all independent variables. Lets try it out for a model that uses both fare and age to predict survival.</p>
-<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb580-1" title="1">model &lt;-<span class="st"> </span><span class="kw">glm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>fare<span class="op">+</span>age, <span class="dt">data=</span>titanic,</a>
-<a class="sourceLine" id="cb580-2" title="2">             <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
-<a class="sourceLine" id="cb580-3" title="3"><span class="co">#get predicted probabilty at mean fare and age</span></a>
-<a class="sourceLine" id="cb580-4" title="4">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">fare=</span><span class="kw">mean</span>(titanic<span class="op">$</span>fare), <span class="dt">age=</span><span class="kw">mean</span>(titanic<span class="op">$</span>age))</a>
-<a class="sourceLine" id="cb580-5" title="5">lodds &lt;-<span class="st"> </span><span class="kw">predict</span>(model, df)</a>
-<a class="sourceLine" id="cb580-6" title="6">p &lt;-<span class="st"> </span><span class="kw">exp</span>(lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(lodds))</a>
-<a class="sourceLine" id="cb580-7" title="7"><span class="co">#get marginal effects</span></a>
-<a class="sourceLine" id="cb580-8" title="8">p<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)<span class="op">*</span><span class="kw">coef</span>(model)[<span class="kw">c</span>(<span class="st">&quot;fare&quot;</span>,<span class="st">&quot;age&quot;</span>)]</a></code></pre></div>
+<div class="sourceCode" id="cb581"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb581-1" title="1">model &lt;-<span class="st"> </span><span class="kw">glm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>fare<span class="op">+</span>age, <span class="dt">data=</span>titanic,</a>
+<a class="sourceLine" id="cb581-2" title="2">             <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
+<a class="sourceLine" id="cb581-3" title="3"><span class="co">#get predicted probabilty at mean fare and age</span></a>
+<a class="sourceLine" id="cb581-4" title="4">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">fare=</span><span class="kw">mean</span>(titanic<span class="op">$</span>fare), <span class="dt">age=</span><span class="kw">mean</span>(titanic<span class="op">$</span>age))</a>
+<a class="sourceLine" id="cb581-5" title="5">lodds &lt;-<span class="st"> </span><span class="kw">predict</span>(model, df)</a>
+<a class="sourceLine" id="cb581-6" title="6">p &lt;-<span class="st"> </span><span class="kw">exp</span>(lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(lodds))</a>
+<a class="sourceLine" id="cb581-7" title="7"><span class="co">#get marginal effects</span></a>
+<a class="sourceLine" id="cb581-8" title="8">p<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)<span class="op">*</span><span class="kw">coef</span>(model)[<span class="kw">c</span>(<span class="st">&quot;fare&quot;</span>,<span class="st">&quot;age&quot;</span>)]</a></code></pre></div>
 <pre><code>##         fare          age 
 ##  0.003197334 -0.003233789</code></pre>
 <p>So, holding age at the mean, a one pound increase in fare from the mean is associated with an increase in the the probability of survival of 0.32%. Holding fare at the mean, a one year increase in age is associated with a decrease in the probability of survival of 0.32%. Coincidentally, the marginal effects of fare and age at the mean are about the same but in opposite directions.</p>
 <p>For categorical variables, the marginal effect on the probability is simply given by the difference in probability between the indicated and reference category. Lets add gender to our model and estimate its marginal effect on the probability.</p>
-<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb582-1" title="1">titanic<span class="op">$</span>female &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(titanic<span class="op">$</span>sex<span class="op">==</span><span class="st">&quot;Female&quot;</span>)</a>
-<a class="sourceLine" id="cb582-2" title="2">model &lt;-<span class="st"> </span><span class="kw">glm</span>(survival<span class="op">~</span>fare<span class="op">+</span>age<span class="op">+</span>female, <span class="dt">data=</span>titanic, </a>
-<a class="sourceLine" id="cb582-3" title="3">             <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
-<a class="sourceLine" id="cb582-4" title="4">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">fare=</span><span class="kw">rep</span>(<span class="kw">mean</span>(titanic<span class="op">$</span>fare),<span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb582-5" title="5">                 <span class="dt">age =</span><span class="kw">rep</span>(<span class="kw">mean</span>(titanic<span class="op">$</span>age),<span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb582-6" title="6">                 <span class="dt">female=</span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb582-7" title="7">lodds &lt;-<span class="st"> </span><span class="kw">predict</span>(model, df)</a>
-<a class="sourceLine" id="cb582-8" title="8">p &lt;-<span class="st"> </span><span class="kw">exp</span>(lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(lodds))</a>
-<a class="sourceLine" id="cb582-9" title="9">p</a></code></pre></div>
+<div class="sourceCode" id="cb583"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb583-1" title="1">titanic<span class="op">$</span>female &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(titanic<span class="op">$</span>sex<span class="op">==</span><span class="st">&quot;Female&quot;</span>)</a>
+<a class="sourceLine" id="cb583-2" title="2">model &lt;-<span class="st"> </span><span class="kw">glm</span>(survival<span class="op">~</span>fare<span class="op">+</span>age<span class="op">+</span>female, <span class="dt">data=</span>titanic, </a>
+<a class="sourceLine" id="cb583-3" title="3">             <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
+<a class="sourceLine" id="cb583-4" title="4">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">fare=</span><span class="kw">rep</span>(<span class="kw">mean</span>(titanic<span class="op">$</span>fare),<span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb583-5" title="5">                 <span class="dt">age =</span><span class="kw">rep</span>(<span class="kw">mean</span>(titanic<span class="op">$</span>age),<span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb583-6" title="6">                 <span class="dt">female=</span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb583-7" title="7">lodds &lt;-<span class="st"> </span><span class="kw">predict</span>(model, df)</a>
+<a class="sourceLine" id="cb583-8" title="8">p &lt;-<span class="st"> </span><span class="kw">exp</span>(lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(lodds))</a>
+<a class="sourceLine" id="cb583-9" title="9">p</a></code></pre></div>
 <pre><code>##         1         2 
 ## 0.8025075 0.2841702</code></pre>
-<div class="sourceCode" id="cb584"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb584-1" title="1"><span class="kw">diff</span>(p)</a></code></pre></div>
+<div class="sourceCode" id="cb585"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb585-1" title="1"><span class="kw">diff</span>(p)</a></code></pre></div>
 <pre><code>##          2 
 ## -0.5183373</code></pre>
 <p>Men had a 52% lower probability of surviving the Titanic than women, holding fare and age at the mean values.</p>
 <p>How do we calculate the marginal effects for fare and age in this last model. Gender is categorical and therefore we can’t just take the mean. Or can we? You may have noticed that I created a new variable called <code>female</code> coded directly as a 0/1 dummy variable. The mean of this variable is the proportion female on the Titanic. Although it would seem odd to do so, I can use this mean to get a predicted value for the probability mathematically. The result just tells me the expected log-odds/probabilities among a set of passengers where the proportion female equals that for the whole dataset. I can then use this approach to calculate the marginal effects for my quantitative variables.</p>
-<div class="sourceCode" id="cb586"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb586-1" title="1">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">fare=</span><span class="kw">mean</span>(titanic<span class="op">$</span>fare), <span class="dt">age=</span><span class="kw">mean</span>(titanic<span class="op">$</span>age),</a>
-<a class="sourceLine" id="cb586-2" title="2">                 <span class="dt">female=</span><span class="kw">mean</span>(titanic<span class="op">$</span>female))</a>
-<a class="sourceLine" id="cb586-3" title="3">lodds &lt;-<span class="st"> </span><span class="kw">predict</span>(model, df)</a>
-<a class="sourceLine" id="cb586-4" title="4">p &lt;-<span class="st"> </span><span class="kw">exp</span>(lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(lodds))</a>
-<a class="sourceLine" id="cb586-5" title="5">p<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)<span class="op">*</span><span class="kw">coef</span>(model)[<span class="kw">c</span>(<span class="st">&quot;fare&quot;</span>,<span class="st">&quot;age&quot;</span>)]</a></code></pre></div>
+<div class="sourceCode" id="cb587"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb587-1" title="1">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">fare=</span><span class="kw">mean</span>(titanic<span class="op">$</span>fare), <span class="dt">age=</span><span class="kw">mean</span>(titanic<span class="op">$</span>age),</a>
+<a class="sourceLine" id="cb587-2" title="2">                 <span class="dt">female=</span><span class="kw">mean</span>(titanic<span class="op">$</span>female))</a>
+<a class="sourceLine" id="cb587-3" title="3">lodds &lt;-<span class="st"> </span><span class="kw">predict</span>(model, df)</a>
+<a class="sourceLine" id="cb587-4" title="4">p &lt;-<span class="st"> </span><span class="kw">exp</span>(lodds)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(lodds))</a>
+<a class="sourceLine" id="cb587-5" title="5">p<span class="op">*</span>(<span class="dv">1</span><span class="op">-</span>p)<span class="op">*</span><span class="kw">coef</span>(model)[<span class="kw">c</span>(<span class="st">&quot;fare&quot;</span>,<span class="st">&quot;age&quot;</span>)]</a></code></pre></div>
 <pre><code>##         fare          age 
 ## -0.002310890  0.002089346</code></pre>
 <p>If you don’t want to go through the hard work of calculating these marginal effects by hand, you are in luck. The <code>mfx</code> library has a command called <code>logitmfx</code>. This command will run a logit model and report back the marginal effects on the probability.</p>
-<div class="sourceCode" id="cb588"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb588-1" title="1"><span class="kw">library</span>(mfx)</a></code></pre></div>
-<div class="sourceCode" id="cb589"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb589-1" title="1"><span class="kw">logitmfx</span>(survival<span class="op">~</span>fare<span class="op">+</span>age<span class="op">+</span>sex, <span class="dt">data=</span>titanic)</a></code></pre></div>
+<div class="sourceCode" id="cb589"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb589-1" title="1"><span class="kw">library</span>(mfx)</a></code></pre></div>
+<div class="sourceCode" id="cb590"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb590-1" title="1"><span class="kw">logitmfx</span>(survival<span class="op">~</span>fare<span class="op">+</span>age<span class="op">+</span>sex, <span class="dt">data=</span>titanic)</a></code></pre></div>
 <pre><code>## Call:
 ## logitmfx(formula = survival ~ fare + age + sex, data = titanic)
 ## 
@@ -657,9 +657,9 @@ Figure 101: Standard normal distribution with area to the right of one standard 
 </div>
 <p>Figure <a href="logit-model.html#fig:cumnormal">101</a> shows what that area is in the shaded region. 84% of the area of a standard normal distribution is below that one standard deviation mark. The inverse cumulative normal distribution just reverses which number we are asking about. Instead of feeding in “+1 SD” to get 0.84, I feed in 0.84 to get “+1 SD.” The idea is that we can represent any given probability as an abstract score on a continuous distribution that ranges from negative infinity to infinity. So, just like the logit transformation. the probit transformation stretches the probability across the full number line.</p>
 <p>To use a probit model, just replace the logit link with the probit link in your <code>glm</code> command:</p>
-<div class="sourceCode" id="cb591"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb591-1" title="1">model.probit &lt;-<span class="st"> </span><span class="kw">glm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>fare, <span class="dt">data=</span>titanic,</a>
-<a class="sourceLine" id="cb591-2" title="2">                    <span class="dt">family=</span><span class="kw">binomial</span>(probit))</a>
-<a class="sourceLine" id="cb591-3" title="3"><span class="kw">summary</span>(model.probit)<span class="op">$</span>coef</a></code></pre></div>
+<div class="sourceCode" id="cb592"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb592-1" title="1">model.probit &lt;-<span class="st"> </span><span class="kw">glm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>fare, <span class="dt">data=</span>titanic,</a>
+<a class="sourceLine" id="cb592-2" title="2">                    <span class="dt">family=</span><span class="kw">binomial</span>(probit))</a>
+<a class="sourceLine" id="cb592-3" title="3"><span class="kw">summary</span>(model.probit)<span class="op">$</span>coef</a></code></pre></div>
 <pre><code>##                 Estimate   Std. Error    z value     Pr(&gt;|z|)
 ## (Intercept) -0.538440000 0.0452344872 -11.903307 1.137481e-32
 ## fare         0.007202863 0.0009081451   7.931401 2.166876e-15</code></pre>
@@ -682,23 +682,23 @@ Figure 102: Predicted probabilities of survival on the Titanic by fare paid usin
 <p>Where <span class="math inline">\(logL\)</span> is the log-likelihood of the model. We basically multiply this value by -2. Why we choose -2 is a bit complicated and we won’t delve into it here, besides saying that it allows for some other mathematical properties that just work.</p>
 <p>Remember that the log-likelihood is the log of a probability. Because probabilities are between zero and one, the log of the likelihood will always be a negative number. The more negative the log-likelihood, the closer the likelihood to zero and therefore the poorer the fit of the best-fitting model. When we multiply this value by a negative value to get the deviance, the directionality reverses. A high deviance indicates worse fit – think of it like a golf score. Lower numbers are better, which intuitively makes sense of something called “deviance.”</p>
 <p>The <code>glm</code> object in <em>R</em> gives us the deviance directly:</p>
-<div class="sourceCode" id="cb593"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb593-1" title="1">model.fare<span class="op">$</span>deviance</a></code></pre></div>
+<div class="sourceCode" id="cb594"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb594-1" title="1">model.fare<span class="op">$</span>deviance</a></code></pre></div>
 <pre><code>## [1] 1654.785</code></pre>
 <p>The value of the deviance by itself is usually not that interesting. What we are interested in is the value of this deviance in comparison to other models of the same outcome. The implicit comparison is always to the null model. Luckily, the <code>glm</code> object also gives us the deviance of this null model, so we can directly compare them.</p>
-<div class="sourceCode" id="cb595"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb595-1" title="1">model.fare<span class="op">$</span>null.deviance</a></code></pre></div>
+<div class="sourceCode" id="cb596"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb596-1" title="1">model.fare<span class="op">$</span>null.deviance</a></code></pre></div>
 <pre><code>## [1] 1741.024</code></pre>
-<div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb597-1" title="1">model.fare<span class="op">$</span>null.deviance<span class="op">-</span>model.fare<span class="op">$</span>deviance</a></code></pre></div>
+<div class="sourceCode" id="cb598"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb598-1" title="1">model.fare<span class="op">$</span>null.deviance<span class="op">-</span>model.fare<span class="op">$</span>deviance</a></code></pre></div>
 <pre><code>## [1] 86.23961</code></pre>
 <p>Our model using fare as a predictor of survival reduced the deviance from the null model (where everyone had the same probability of survival) by 86.2. Is that a good number? There are several approaches to gauging the magnitude of that value.</p>
 <div id="likelihood-ratio-test" class="section level4">
 <h4>Likelihood Ratio Test</h4>
 <p>The Likelihood Ratio Test (LRT) is analagous to the F-test for linear models. It can be used to compare any two nested models where the null hypothesis is that all additional independent variables in the more complex model have a slope of zero.</p>
 <p>The LRT is tested by using the reduction in deviance in the more complex model as the test statistic. If the null hypothesis is true, then this test statistic should come from a chi-squared distribution with degrees of freedom equal to the number of additional variables in the more complex model. The chi-squared distribution has a somewhat similar shape to an F-distribution and won’t delve into the details here. We simply look for the area in the right tail of this chi-squared distribution to calculate the p-value. The <code>pchisq</code> function in <em>R</em> will give us this left-tail area and so we can just subtract this from one to get the right-tail area. Lets try it out by running an LRT of our fare model versus the null model.</p>
-<div class="sourceCode" id="cb599"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb599-1" title="1"><span class="dv">1</span><span class="op">-</span><span class="kw">pchisq</span>(<span class="fl">86.2</span>,<span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb600"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb600-1" title="1"><span class="dv">1</span><span class="op">-</span><span class="kw">pchisq</span>(<span class="fl">86.2</span>,<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## [1] 0</code></pre>
 <p>The reduction in deviance is so large that our p-value is very close to zero. We reject the null hypothesis in this case.</p>
 <p>You can also use the <code>anova</code> command to do an LRT but you have to remember to specify <code>test="LRT"</code> as an argument:</p>
-<div class="sourceCode" id="cb601"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb601-1" title="1"><span class="kw">anova</span>(model.fare, <span class="dt">test=</span><span class="st">&quot;LRT&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb602"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb602-1" title="1"><span class="kw">anova</span>(model.fare, <span class="dt">test=</span><span class="st">&quot;LRT&quot;</span>)</a></code></pre></div>
 <pre><code>## Analysis of Deviance Table
 ## 
 ## Model: binomial, link: logit
@@ -714,10 +714,10 @@ Figure 102: Predicted probabilities of survival on the Titanic by fare paid usin
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>Just like the F-test, we can compare any two nested models using the LRT. Lets try a model with passenger class and then one with passenger class and fare.</p>
-<div class="sourceCode" id="cb603"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb603-1" title="1">model.pclass &lt;-<span class="st"> </span><span class="kw">glm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>pclass, <span class="dt">data=</span>titanic,</a>
-<a class="sourceLine" id="cb603-2" title="2">                    <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
-<a class="sourceLine" id="cb603-3" title="3">model.complex &lt;-<span class="st"> </span><span class="kw">update</span>(model.pclass, .<span class="op">~</span>.<span class="op">+</span>fare)</a>
-<a class="sourceLine" id="cb603-4" title="4"><span class="kw">anova</span>(model.pclass, model.complex, <span class="dt">test=</span><span class="st">&quot;LRT&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb604"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb604-1" title="1">model.pclass &lt;-<span class="st"> </span><span class="kw">glm</span>((survival<span class="op">==</span><span class="st">&quot;Survived&quot;</span>)<span class="op">~</span>pclass, <span class="dt">data=</span>titanic,</a>
+<a class="sourceLine" id="cb604-2" title="2">                    <span class="dt">family=</span><span class="kw">binomial</span>(logit))</a>
+<a class="sourceLine" id="cb604-3" title="3">model.complex &lt;-<span class="st"> </span><span class="kw">update</span>(model.pclass, .<span class="op">~</span>.<span class="op">+</span>fare)</a>
+<a class="sourceLine" id="cb604-4" title="4"><span class="kw">anova</span>(model.pclass, model.complex, <span class="dt">test=</span><span class="st">&quot;LRT&quot;</span>)</a></code></pre></div>
 <pre><code>## Analysis of Deviance Table
 ## 
 ## Model 1: (survival == &quot;Survived&quot;) ~ pclass
@@ -736,7 +736,7 @@ Figure 102: Predicted probabilities of survival on the Titanic by fare paid usin
 <p><span class="math inline">\(D=\frac{G^2_0-G^2}{G^2}\)</span>$</p>
 <p>where <span class="math inline">\(G^2_0\)</span> is the deviance of the null model. Although not the same as <span class="math inline">\(R^2\)</span>, the idea is quite similar. The null deviance is as large as your deviance can get, so to ask how much we reduced the deviance, it makes intuitive sense to place it on a scale of how much deviance there was that could be accounted for in the first place.</p>
 <p>To calculate the reduction in deviance for our fare model:</p>
-<div class="sourceCode" id="cb605"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb605-1" title="1">(model.fare<span class="op">$</span>null.deviance<span class="op">-</span>model.fare<span class="op">$</span>deviance)<span class="op">/</span>model.fare<span class="op">$</span>deviance</a></code></pre></div>
+<div class="sourceCode" id="cb606"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb606-1" title="1">(model.fare<span class="op">$</span>null.deviance<span class="op">-</span>model.fare<span class="op">$</span>deviance)<span class="op">/</span>model.fare<span class="op">$</span>deviance</a></code></pre></div>
 <pre><code>## [1] 0.05211531</code></pre>
 <p>Using fare to predict the likelihood of survival reduces the deviance from the null model by about 5 percent.</p>
 </div>
@@ -747,29 +747,29 @@ Figure 102: Predicted probabilities of survival on the Titanic by fare paid usin
 <p><span class="math display">\[BIC=(G^2_2-G^2_1)+(p_2-p_1)\log n\]</span></p>
 <p>Where <span class="math inline">\(G^2_1\)</span> and <span class="math inline">\(G^2_2\)</span> are the deviance for model 1 and model 2, respectively, and <span class="math inline">\(p_1\)</span> and <span class="math inline">\(p_2\)</span> are the number of independent variables in models 1 and 2, respectively. The resulting BIC gives you the relative preference for model 2 over model 1. A negative BIC means that model 2 is preferred to model 1 and the more negative this value, the stronger the preference.</p>
 <p>Lets use this formula to compare the BIC of our passenger class model to the passenger class and fare model:</p>
-<div class="sourceCode" id="cb607"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb607-1" title="1">p1 &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">coef</span>(model.pclass))<span class="op">-</span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb607-2" title="2">p2 &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">coef</span>(model.complex))<span class="op">-</span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb607-3" title="3">(model.complex<span class="op">$</span>deviance<span class="op">-</span>model.pclass<span class="op">$</span>deviance)<span class="op">+</span>(p2<span class="op">-</span>p1)<span class="op">*</span><span class="kw">log</span>(<span class="kw">nrow</span>(titanic))</a></code></pre></div>
+<div class="sourceCode" id="cb608"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb608-1" title="1">p1 &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">coef</span>(model.pclass))<span class="op">-</span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb608-2" title="2">p2 &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">coef</span>(model.complex))<span class="op">-</span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb608-3" title="3">(model.complex<span class="op">$</span>deviance<span class="op">-</span>model.pclass<span class="op">$</span>deviance)<span class="op">+</span>(p2<span class="op">-</span>p1)<span class="op">*</span><span class="kw">log</span>(<span class="kw">nrow</span>(titanic))</a></code></pre></div>
 <pre><code>## [1] -3.738641</code></pre>
 <p>Because the BIC is negative but less than -5, we have a moderate preference for the more complex model. Note that we could have gotten this same result by just using the <code>BIC</code> command on each model (which takes BIC relative to the saturated model) and subtracting them:</p>
-<div class="sourceCode" id="cb609"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb609-1" title="1"><span class="kw">BIC</span>(model.complex)<span class="op">-</span><span class="kw">BIC</span>(model.pclass)</a></code></pre></div>
+<div class="sourceCode" id="cb610"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb610-1" title="1"><span class="kw">BIC</span>(model.complex)<span class="op">-</span><span class="kw">BIC</span>(model.pclass)</a></code></pre></div>
 <pre><code>## [1] -3.738641</code></pre>
 <p>Using the formula from above, we can also construct a BIC’ value where we compare the model to the null model. We just need to plug in values for the null model as model 1:</p>
 <p><span class="math display">\[BIC&#39;=(G^2-G^2_0)+(p)\log n\]</span></p>
 <p>Unfortunately, <em>R</em> does not have a built-in function for this calculation, but we can create a custom function pretty easily:</p>
-<div class="sourceCode" id="cb611"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb611-1" title="1">BIC.null.glm &lt;-<span class="st"> </span><span class="cf">function</span>(model) {</a>
-<a class="sourceLine" id="cb611-2" title="2">    n &lt;-<span class="st"> </span><span class="kw">length</span>(model<span class="op">$</span>resid)</a>
-<a class="sourceLine" id="cb611-3" title="3">    p &lt;-<span class="st"> </span><span class="kw">length</span>(model<span class="op">$</span>coef)<span class="op">-</span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb611-4" title="4">    <span class="kw">return</span>((model<span class="op">$</span>deviance<span class="op">-</span>model<span class="op">$</span>null.deviance)<span class="op">+</span>p<span class="op">*</span><span class="kw">log</span>(n))</a>
-<a class="sourceLine" id="cb611-5" title="5">}</a>
-<a class="sourceLine" id="cb611-6" title="6"><span class="kw">BIC.null.glm</span>(model.fare)</a></code></pre></div>
+<div class="sourceCode" id="cb612"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb612-1" title="1">BIC.null.glm &lt;-<span class="st"> </span><span class="cf">function</span>(model) {</a>
+<a class="sourceLine" id="cb612-2" title="2">    n &lt;-<span class="st"> </span><span class="kw">length</span>(model<span class="op">$</span>resid)</a>
+<a class="sourceLine" id="cb612-3" title="3">    p &lt;-<span class="st"> </span><span class="kw">length</span>(model<span class="op">$</span>coef)<span class="op">-</span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb612-4" title="4">    <span class="kw">return</span>((model<span class="op">$</span>deviance<span class="op">-</span>model<span class="op">$</span>null.deviance)<span class="op">+</span>p<span class="op">*</span><span class="kw">log</span>(n))</a>
+<a class="sourceLine" id="cb612-5" title="5">}</a>
+<a class="sourceLine" id="cb612-6" title="6"><span class="kw">BIC.null.glm</span>(model.fare)</a></code></pre></div>
 <pre><code>## [1] -79.06259</code></pre>
-<div class="sourceCode" id="cb613"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb613-1" title="1"><span class="kw">BIC.null.glm</span>(model.pclass)</a></code></pre></div>
+<div class="sourceCode" id="cb614"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb614-1" title="1"><span class="kw">BIC.null.glm</span>(model.pclass)</a></code></pre></div>
 <pre><code>## [1] -113.4114</code></pre>
-<div class="sourceCode" id="cb615"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb615-1" title="1"><span class="kw">BIC.null.glm</span>(model.complex)</a></code></pre></div>
+<div class="sourceCode" id="cb616"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb616-1" title="1"><span class="kw">BIC.null.glm</span>(model.complex)</a></code></pre></div>
 <pre><code>## [1] -117.1501</code></pre>
 <p>By comparing the results, we can see that we strongly prefer all three models to the null model. Of the three models, we get the most negative BIC’ for the model that includes both fare and passenger class. Note that the difference between the passenger class model and the complex model is the same as above with the built-in <code>BIC</code> function.</p>
-<div class="sourceCode" id="cb617"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb617-1" title="1"><span class="kw">BIC.null.glm</span>(model.complex)<span class="op">-</span><span class="kw">BIC.null.glm</span>(model.pclass)</a></code></pre></div>
+<div class="sourceCode" id="cb618"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb618-1" title="1"><span class="kw">BIC.null.glm</span>(model.complex)<span class="op">-</span><span class="kw">BIC.null.glm</span>(model.pclass)</a></code></pre></div>
 <pre><code>## [1] -3.738641</code></pre>
 </div>
 </div>
@@ -779,16 +779,16 @@ Figure 102: Predicted probabilities of survival on the Titanic by fare paid usin
 </iframe>
 <p>Separation can occur in logit models when the categories of the dependent variable separate an independent variable or combination of independent variables into segments. The easiest case to understand would be a two-way table in which all the values of category 1 and category 2 on one variable are identical to the values of another set of categories on another variable.
 Lets imagine a simple example of a yes/no question by gender of respondent for a simple case of six respondents:</p>
-<div class="sourceCode" id="cb619"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb619-1" title="1">y &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;no&quot;</span>,<span class="st">&quot;no&quot;</span>,<span class="st">&quot;no&quot;</span>))</a>
-<a class="sourceLine" id="cb619-2" title="2">x &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;female&quot;</span>,<span class="st">&quot;female&quot;</span>,<span class="st">&quot;female&quot;</span>,<span class="st">&quot;male&quot;</span>,<span class="st">&quot;male&quot;</span>,<span class="st">&quot;male&quot;</span>))</a>
-<a class="sourceLine" id="cb619-3" title="3"><span class="kw">table</span>(x,y)</a></code></pre></div>
+<div class="sourceCode" id="cb620"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb620-1" title="1">y &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;no&quot;</span>,<span class="st">&quot;no&quot;</span>,<span class="st">&quot;no&quot;</span>))</a>
+<a class="sourceLine" id="cb620-2" title="2">x &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;female&quot;</span>,<span class="st">&quot;female&quot;</span>,<span class="st">&quot;female&quot;</span>,<span class="st">&quot;male&quot;</span>,<span class="st">&quot;male&quot;</span>,<span class="st">&quot;male&quot;</span>))</a>
+<a class="sourceLine" id="cb620-3" title="3"><span class="kw">table</span>(x,y)</a></code></pre></div>
 <pre><code>##         y
 ## x        no yes
 ##   female  0   3
 ##   male    3   0</code></pre>
 <p>In this table, gender perfectly predicts a yes or no response. This is called <strong>perfect separation</strong>. If we try to predict yes/no by gender with a logit model, we will get some odd results:</p>
-<div class="sourceCode" id="cb621"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb621-1" title="1">model.sep &lt;-<span class="st"> </span><span class="kw">glm</span>(y<span class="op">~</span>x, <span class="dt">family=</span>binomial)</a>
-<a class="sourceLine" id="cb621-2" title="2"><span class="kw">summary</span>(model.sep)</a></code></pre></div>
+<div class="sourceCode" id="cb622"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb622-1" title="1">model.sep &lt;-<span class="st"> </span><span class="kw">glm</span>(y<span class="op">~</span>x, <span class="dt">family=</span>binomial)</a>
+<a class="sourceLine" id="cb622-2" title="2"><span class="kw">summary</span>(model.sep)</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = y ~ x, family = binomial)
@@ -811,10 +811,10 @@ Lets imagine a simple example of a yes/no question by gender of respondent for a
 ## Number of Fisher Scoring iterations: 23</code></pre>
 <p>Notice that the model reports values although it spits out a warning. However, the numbers in the coefficient table are all strange. My coefficient sizes are huge (-49 log-odds ratio), my standard errors are astronimical and my p-value is so close to 1 that it reports as 1. These are all signs of separation. The MLE solution does not exist for this data because the slope on male should be negative infinity!</p>
 <p>Complete separation can also happen for a quantitative independent variable.</p>
-<div class="sourceCode" id="cb623"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb623-1" title="1">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">20</span>,<span class="dv">21</span>,<span class="dv">22</span>,<span class="dv">23</span>,<span class="dv">24</span>,<span class="dv">25</span>)</a>
-<a class="sourceLine" id="cb623-2" title="2">model.sep &lt;-<span class="st"> </span><span class="kw">glm</span>(y<span class="op">~</span>x, <span class="dt">family=</span>binomial)</a></code></pre></div>
+<div class="sourceCode" id="cb624"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb624-1" title="1">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">20</span>,<span class="dv">21</span>,<span class="dv">22</span>,<span class="dv">23</span>,<span class="dv">24</span>,<span class="dv">25</span>)</a>
+<a class="sourceLine" id="cb624-2" title="2">model.sep &lt;-<span class="st"> </span><span class="kw">glm</span>(y<span class="op">~</span>x, <span class="dt">family=</span>binomial)</a></code></pre></div>
 <pre><code>## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
-<div class="sourceCode" id="cb625"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb625-1" title="1"><span class="kw">summary</span>(model.sep)</a></code></pre></div>
+<div class="sourceCode" id="cb626"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb626-1" title="1"><span class="kw">summary</span>(model.sep)</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = y ~ x, family = binomial)
@@ -837,16 +837,16 @@ Lets imagine a simple example of a yes/no question by gender of respondent for a
 ## Number of Fisher Scoring iterations: 25</code></pre>
 <p>I get a similar problem here because the quantitative variable can be perfectly separated by the dependent variable at age 22. All observations less than or equal to 22 say yes and all those above 22 say no.</p>
 <p>Perfect separation is a fairly rare occurence, except in very small datasets. A more common occurence is <strong>quasi-complete separation</strong> in which the dependent variable partially separates the independent variable. Lets continue with our example from before:</p>
-<div class="sourceCode" id="cb627"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb627-1" title="1">y &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;no&quot;</span>,<span class="st">&quot;no&quot;</span>,<span class="st">&quot;no&quot;</span>))</a>
-<a class="sourceLine" id="cb627-2" title="2">x &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;female&quot;</span>,<span class="st">&quot;female&quot;</span>,<span class="st">&quot;female&quot;</span>,<span class="st">&quot;male&quot;</span>,<span class="st">&quot;female&quot;</span>,<span class="st">&quot;male&quot;</span>))</a>
-<a class="sourceLine" id="cb627-3" title="3"><span class="kw">table</span>(x,y)</a></code></pre></div>
+<div class="sourceCode" id="cb628"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb628-1" title="1">y &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;yes&quot;</span>,<span class="st">&quot;no&quot;</span>,<span class="st">&quot;no&quot;</span>,<span class="st">&quot;no&quot;</span>))</a>
+<a class="sourceLine" id="cb628-2" title="2">x &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">&quot;female&quot;</span>,<span class="st">&quot;female&quot;</span>,<span class="st">&quot;female&quot;</span>,<span class="st">&quot;male&quot;</span>,<span class="st">&quot;female&quot;</span>,<span class="st">&quot;male&quot;</span>))</a>
+<a class="sourceLine" id="cb628-3" title="3"><span class="kw">table</span>(x,y)</a></code></pre></div>
 <pre><code>##         y
 ## x        no yes
 ##   female  1   3
 ##   male    2   0</code></pre>
 <p>In this case, gender does not perfectly predict the yes/no response. However, I get no cases of men who said yes. When you see cases of zero cells in your two-way table, it indicates that you have <strong>sparseness</strong> in the data and also <strong>quasi-complete separation</strong>. The effects of quasi-complete separation will be similar to complete separation.</p>
-<div class="sourceCode" id="cb629"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb629-1" title="1">model.qsep &lt;-<span class="st"> </span><span class="kw">glm</span>(y<span class="op">~</span>x, <span class="dt">family=</span>binomial)</a>
-<a class="sourceLine" id="cb629-2" title="2"><span class="kw">summary</span>(model.qsep)</a></code></pre></div>
+<div class="sourceCode" id="cb630"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb630-1" title="1">model.qsep &lt;-<span class="st"> </span><span class="kw">glm</span>(y<span class="op">~</span>x, <span class="dt">family=</span>binomial)</a>
+<a class="sourceLine" id="cb630-2" title="2"><span class="kw">summary</span>(model.qsep)</a></code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = y ~ x, family = binomial)
@@ -871,8 +871,8 @@ Lets imagine a simple example of a yes/no question by gender of respondent for a
 <p>Separation causes problems for model estimation. One way to resolve the issue is to try collapsing categorical variables with lots of categories. If some of these categories are small, then they could lead to sparseness when added to the model. This is particularly true if you start adding interactions between categorical variables. By collapsing some categories you may be able to remove the problem of sparseness.</p>
 <p>In cases where collapsing the variables is not an option, you can consider alernate estimation techniques. The most common is a <strong>penalized likelihood</strong> model. These models apply a penalty to the likelihood for very large coefficient sizes and can be used to pull extreme coefficients resulting from separation back closer to a reasonable value.</p>
 <p>You can implement a penalized likelihood model in <em>R</em> using the <code>logistf</code> package. This package includes a function <code>logistf</code> that can be used to directly estimate a penalized likelihod logit model.</p>
-<div class="sourceCode" id="cb631"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb631-1" title="1"><span class="kw">library</span>(logistf)</a>
-<a class="sourceLine" id="cb631-2" title="2"><span class="kw">logistf</span>(y<span class="op">~</span>x)</a></code></pre></div>
+<div class="sourceCode" id="cb632"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb632-1" title="1"><span class="kw">library</span>(logistf)</a>
+<a class="sourceLine" id="cb632-2" title="2"><span class="kw">logistf</span>(y<span class="op">~</span>x)</a></code></pre></div>
 <pre><code>## logistf(formula = y ~ x)
 ## Model fitted by Penalized ML
 ## Confidence intervals and p-values by Profile Likelihood 

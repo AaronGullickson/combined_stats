@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-26" />
+<meta name="date" content="2020-07-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -442,10 +442,10 @@ Figure 77: Scatterplot of GNP and number of workers unemployed, US 1947-1962
 </div>
 <p>The number unemployed tends to be cyclical and cycles last longer than a year, so we get a an up-down-up pattern show in red that leads to non-independence among the residuals from the linear model (shown in blue).</p>
 <p>We can more formally look at this by looking at the correlation between temporally-adjacent residuals, although this requires a bit of work to set up.</p>
-<div class="sourceCode" id="cb328"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb328-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(Employed<span class="op">~</span>GNP, <span class="dt">data=</span>longley)</a>
-<a class="sourceLine" id="cb328-2" title="2">temp &lt;-<span class="st"> </span><span class="kw">augment</span>(model)<span class="op">$</span>.resid</a>
-<a class="sourceLine" id="cb328-3" title="3">temp &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">earlier=</span>temp[<span class="dv">1</span><span class="op">:</span><span class="dv">15</span>], <span class="dt">later=</span>temp[<span class="dv">2</span><span class="op">:</span><span class="dv">16</span>])</a>
-<a class="sourceLine" id="cb328-4" title="4"><span class="kw">head</span>(temp)</a></code></pre></div>
+<div class="sourceCode" id="cb329"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb329-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(Employed<span class="op">~</span>GNP, <span class="dt">data=</span>longley)</a>
+<a class="sourceLine" id="cb329-2" title="2">temp &lt;-<span class="st"> </span><span class="kw">augment</span>(model)<span class="op">$</span>.resid</a>
+<a class="sourceLine" id="cb329-3" title="3">temp &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">earlier=</span>temp[<span class="dv">1</span><span class="op">:</span><span class="dv">15</span>], <span class="dt">later=</span>temp[<span class="dv">2</span><span class="op">:</span><span class="dv">16</span>])</a>
+<a class="sourceLine" id="cb329-4" title="4"><span class="kw">head</span>(temp)</a></code></pre></div>
 <pre><code>##       earlier       later
 ## 1  0.33732993  0.26276150
 ## 2  0.26276150 -0.64055835
@@ -455,7 +455,7 @@ Figure 77: Scatterplot of GNP and number of workers unemployed, US 1947-1962
 ## 6 -0.26360117  0.44744315</code></pre>
 <p>The two values in the first row are the residuals fro 1947 and 1948. The second row contains the residuals for 1948 and 1949, and so on. Notice how the later value becomes the earlier value in the next row.</p>
 <p>Lets look at how big the serial autocorrelation is:</p>
-<div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb330-1" title="1"><span class="kw">cor</span>(temp<span class="op">$</span>earlier, temp<span class="op">$</span>later)</a></code></pre></div>
+<div class="sourceCode" id="cb331"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb331-1" title="1"><span class="kw">cor</span>(temp<span class="op">$</span>earlier, temp<span class="op">$</span>later)</a></code></pre></div>
 <pre><code>## [1] 0.1622029</code></pre>
 <p>We are definitely seeing some positive serial autocorrelation, but its of a moderate size in this case.</p>
 </div>
@@ -470,15 +470,15 @@ Figure 77: Scatterplot of GNP and number of workers unemployed, US 1947-1962
 <h3>Heteroscedasticity</h3>
 <p>Say what? Yes, this is a real term. Heteroscedasticity means that the variance of your residuals is not constant but depends in some way on the terms in your model. In this case, observations are not drawn from identical distributions because the variance of this distribution is different for different observations.</p>
 <p>One of the most common ways that heteroscedasticity arises is when the variance of the residuals increases with the predicted value of the dependent variables. This can easily be diagnosed on a residual by fitted value plot, where it shows up as a cone shape as in Figure <a href="the-iid-violation-and-robust-standard-errors.html#fig:heteroscedasticity-cone">78</a>.</p>
-<div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb332-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(BoxOffice<span class="op">~</span>Runtime, <span class="dt">data=</span>movies)</a>
-<a class="sourceLine" id="cb332-2" title="2"><span class="kw">ggplot</span>(<span class="kw">augment</span>(model), <span class="kw">aes</span>(<span class="dt">x=</span>.fitted, <span class="dt">y=</span>.resid))<span class="op">+</span></a>
-<a class="sourceLine" id="cb332-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha=</span><span class="fl">0.7</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb332-4" title="4"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels=</span>scales<span class="op">::</span>dollar)<span class="op">+</span></a>
-<a class="sourceLine" id="cb332-5" title="5"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">labels=</span>scales<span class="op">::</span>dollar)<span class="op">+</span></a>
-<a class="sourceLine" id="cb332-6" title="6"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">linetype=</span><span class="dv">2</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb332-7" title="7"><span class="st">  </span><span class="kw">theme_bw</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb332-8" title="8"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;predicted box office returns&quot;</span>,</a>
-<a class="sourceLine" id="cb332-9" title="9">       <span class="dt">y=</span><span class="st">&quot;residuals from the model&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb333"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb333-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(BoxOffice<span class="op">~</span>Runtime, <span class="dt">data=</span>movies)</a>
+<a class="sourceLine" id="cb333-2" title="2"><span class="kw">ggplot</span>(<span class="kw">augment</span>(model), <span class="kw">aes</span>(<span class="dt">x=</span>.fitted, <span class="dt">y=</span>.resid))<span class="op">+</span></a>
+<a class="sourceLine" id="cb333-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha=</span><span class="fl">0.7</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb333-4" title="4"><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels=</span>scales<span class="op">::</span>dollar)<span class="op">+</span></a>
+<a class="sourceLine" id="cb333-5" title="5"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">labels=</span>scales<span class="op">::</span>dollar)<span class="op">+</span></a>
+<a class="sourceLine" id="cb333-6" title="6"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">linetype=</span><span class="dv">2</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb333-7" title="7"><span class="st">  </span><span class="kw">theme_bw</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb333-8" title="8"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;predicted box office returns&quot;</span>,</a>
+<a class="sourceLine" id="cb333-9" title="9">       <span class="dt">y=</span><span class="st">&quot;residuals from the model&quot;</span>)</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:heteroscedasticity-cone"></span>
 <img src="stat_book_files/figure-html/heteroscedasticity-cone-1.png" alt="Residual plot of model predicting box office returns by movie runtime" width="672" />
 <p class="caption">
@@ -493,13 +493,13 @@ Figure 78: Residual plot of model predicting box office returns by movie runtime
 </iframe>
 <p>Given that you have identified an IID violation in your model, what can you do about it? The best solution is to <strong>get a better model</strong>. IID violations are often implicitly telling you that the model you have selected is not the best approach to the actual data-generating process that you have.</p>
 <p>Lets take the case of heteroscedasticity. If you observe a cone shape to the residuals, it suggests that the absolute size of the residuals is growing with the size of the predicted value of your dependent variable. In relative terms (i.e. as a percentage of the predicted value), the size of those residuals may be more constant. A simple solution would be to log our dependent variable because this would move us from a model of absolute change in the dependent variable to one of relative change.</p>
-<div class="sourceCode" id="cb333"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb333-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(BoxOffice)<span class="op">~</span>Runtime, <span class="dt">data=</span>movies)</a>
-<a class="sourceLine" id="cb333-2" title="2"><span class="kw">ggplot</span>(<span class="kw">augment</span>(model), <span class="kw">aes</span>(<span class="dt">x=</span>.fitted, <span class="dt">y=</span>.resid))<span class="op">+</span></a>
-<a class="sourceLine" id="cb333-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha=</span><span class="fl">0.7</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb333-4" title="4"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">linetype=</span><span class="dv">2</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb333-5" title="5"><span class="st">  </span><span class="kw">theme_bw</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb333-6" title="6"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;predicted log of box office returns&quot;</span>,</a>
-<a class="sourceLine" id="cb333-7" title="7">       <span class="dt">y=</span><span class="st">&quot;residuals from the model&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb334-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(BoxOffice)<span class="op">~</span>Runtime, <span class="dt">data=</span>movies)</a>
+<a class="sourceLine" id="cb334-2" title="2"><span class="kw">ggplot</span>(<span class="kw">augment</span>(model), <span class="kw">aes</span>(<span class="dt">x=</span>.fitted, <span class="dt">y=</span>.resid))<span class="op">+</span></a>
+<a class="sourceLine" id="cb334-3" title="3"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha=</span><span class="fl">0.7</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb334-4" title="4"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">linetype=</span><span class="dv">2</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb334-5" title="5"><span class="st">  </span><span class="kw">theme_bw</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb334-6" title="6"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;predicted log of box office returns&quot;</span>,</a>
+<a class="sourceLine" id="cb334-7" title="7">       <span class="dt">y=</span><span class="st">&quot;residuals from the model&quot;</span>)</a></code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:heteroscedasticity-log"></span>
 <img src="stat_book_files/figure-html/heteroscedasticity-log-1.png" alt="Residual plot of model predicting the log of box office returns by movie runtime" width="672" />
 <p class="caption">
@@ -527,9 +527,9 @@ Figure 79: Residual plot of model predicting the log of box office returns by mo
 <li>Repeat step (2) over and over again until the results stop changing from iteration to iteration.</li>
 </ol>
 <p>For some types of weighted least squares, R has some built-in packages to handle the details internally. The <code>nlme</code> package can handle IRWLS using the <code>gls</code> function for a variety of weighting structures. For example, we can correct the <code>longley</code> data above by using an “AR1” structure for the autocorrelation. The AR1 pattern (which stands for “auto-regressive 1”) assumes that each subsequent residual is only correlated with its immediate temporal predecessor.</p>
-<div class="sourceCode" id="cb334"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb334-1" title="1"><span class="kw">library</span>(nlme)</a>
-<a class="sourceLine" id="cb334-2" title="2">model.ar1 &lt;-<span class="st"> </span><span class="kw">gls</span>(Employed<span class="op">~</span>GNP<span class="op">+</span>Population, <span class="dt">correlation=</span><span class="kw">corAR1</span>(<span class="dt">form=</span><span class="op">~</span>Year),<span class="dt">data=</span>longley)</a>
-<a class="sourceLine" id="cb334-3" title="3"><span class="kw">summary</span>(model.ar1)<span class="op">$</span>tTable</a></code></pre></div>
+<div class="sourceCode" id="cb335"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb335-1" title="1"><span class="kw">library</span>(nlme)</a>
+<a class="sourceLine" id="cb335-2" title="2">model.ar1 &lt;-<span class="st"> </span><span class="kw">gls</span>(Employed<span class="op">~</span>GNP<span class="op">+</span>Population, <span class="dt">correlation=</span><span class="kw">corAR1</span>(<span class="dt">form=</span><span class="op">~</span>Year),<span class="dt">data=</span>longley)</a>
+<a class="sourceLine" id="cb335-3" title="3"><span class="kw">summary</span>(model.ar1)<span class="op">$</span>tTable</a></code></pre></div>
 <pre><code>##                    Value  Std.Error   t-value      p-value
 ## (Intercept) 101.85813305 14.1989324  7.173647 7.222049e-06
 ## GNP           0.07207088  0.0106057  6.795485 1.271171e-05
@@ -539,14 +539,14 @@ Figure 79: Residual plot of model predicting the log of box office returns by mo
 <h3>Robust standard errors</h3>
 <p>Robust standard errors have become popular in recent years, partly due (I believe) to how easy they are to add to standard regression models in Stata. We won’t delve into the math behind the robust standard error, but the general idea is that robust standard errors will give you “correct” standard errors even when the model is mis-specified due to issues such as non-linearity, heteroscedasticity, and autocorrelation. Unlike weighted least squares, we don’t have to specify much about the underlying nature of the IID violation.</p>
 <p>Robust standard errors can be estimated in R using the <code>sandwich</code> and <code>lmtest</code> packages, and specifically with the <code>coeftest</code> command. Within this command, it is possible to specify different types of robust standard errors, but we will use the “HC1” version which is equivalent to the robust standard errors produced in Stata by default.</p>
-<div class="sourceCode" id="cb336"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb336-1" title="1"><span class="kw">library</span>(sandwich)</a>
-<a class="sourceLine" id="cb336-2" title="2"><span class="kw">library</span>(lmtest)</a>
-<a class="sourceLine" id="cb336-3" title="3">model &lt;-<span class="st"> </span><span class="kw">lm</span>(BoxOffice<span class="op">~</span>Runtime, <span class="dt">data=</span>movies)</a>
-<a class="sourceLine" id="cb336-4" title="4"><span class="kw">summary</span>(model)<span class="op">$</span>coef</a></code></pre></div>
+<div class="sourceCode" id="cb337"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb337-1" title="1"><span class="kw">library</span>(sandwich)</a>
+<a class="sourceLine" id="cb337-2" title="2"><span class="kw">library</span>(lmtest)</a>
+<a class="sourceLine" id="cb337-3" title="3">model &lt;-<span class="st"> </span><span class="kw">lm</span>(BoxOffice<span class="op">~</span>Runtime, <span class="dt">data=</span>movies)</a>
+<a class="sourceLine" id="cb337-4" title="4"><span class="kw">summary</span>(model)<span class="op">$</span>coef</a></code></pre></div>
 <pre><code>##                Estimate Std. Error   t value     Pr(&gt;|t|)
 ## (Intercept) -101.031612 7.86167078 -12.85116 1.134182e-36
 ## Runtime        1.389274 0.07378674  18.82824 3.754966e-74</code></pre>
-<div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb338-1" title="1"><span class="kw">coeftest</span>(model, <span class="dt">vcov=</span><span class="kw">vcovHC</span>(model, <span class="st">&quot;HC1&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb339-1" title="1"><span class="kw">coeftest</span>(model, <span class="dt">vcov=</span><span class="kw">vcovHC</span>(model, <span class="st">&quot;HC1&quot;</span>))</a></code></pre></div>
 <pre><code>## 
 ## t test of coefficients:
 ## 
@@ -560,12 +560,12 @@ Figure 79: Residual plot of model predicting the log of box office returns by mo
 <h4>Robust standard errors are diagnostics not corrections</h4>
 <p>The problem with robust standard errors is that the “robust” does not necessarily mean “better.” Robust standard errors will still be inefficient because they are implicitly telling you that your model specification is wrong. Intuitively, it would be better to fit the right model with regular standard errors than the wrong model with robust standard errors. From this perspective, robust standard errors can be an effective diagnostic tool but are generally not a good ultimate solution.</p>
 <p>To illustrate this, lets run the same model as above but now with the log of box office returns which we know will resolve the problem of heteroscedasticity:</p>
-<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb340-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(BoxOffice)<span class="op">~</span>Runtime, <span class="dt">data=</span>movies)</a>
-<a class="sourceLine" id="cb340-2" title="2"><span class="kw">summary</span>(model)<span class="op">$</span>coef</a></code></pre></div>
+<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb341-1" title="1">model &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="kw">log</span>(BoxOffice)<span class="op">~</span>Runtime, <span class="dt">data=</span>movies)</a>
+<a class="sourceLine" id="cb341-2" title="2"><span class="kw">summary</span>(model)<span class="op">$</span>coef</a></code></pre></div>
 <pre><code>##                Estimate  Std. Error   t value     Pr(&gt;|t|)
 ## (Intercept) -1.96019099 0.311641612 -6.289889 3.726077e-10
 ## Runtime      0.04025076 0.002924953 13.761164 1.288695e-41</code></pre>
-<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb342-1" title="1"><span class="kw">coeftest</span>(model, <span class="dt">vcov=</span><span class="kw">vcovHC</span>(model, <span class="st">&quot;HC1&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb343-1" title="1"><span class="kw">coeftest</span>(model, <span class="dt">vcov=</span><span class="kw">vcovHC</span>(model, <span class="st">&quot;HC1&quot;</span>))</a></code></pre></div>
 <pre><code>## 
 ## t test of coefficients:
 ## 

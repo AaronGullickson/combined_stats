@@ -24,7 +24,7 @@
 <meta name="author" content="Aaron Gullickson" />
 
 
-<meta name="date" content="2020-05-26" />
+<meta name="date" content="2020-07-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -633,6 +633,17 @@ Total
 </tbody>
 </table>
 <p>24.7% of passengers were first class, 21.2% of passengers were second class, and 54.2% of passengers were third class. Just over half of passengers were third class and the remaining passengers were fairly evenly split between first and second class.</p>
+<div class="dcl">
+<h4 id="try-it-out">Try it out</h4>
+<p>In the interactive <em>R</em> session below, try to calculate the proportion or percent of the voting age population that voted for each candidate (or didn’t vote) in the 21016 election, based on our politics dataset. Keep the following in mind:</p>
+<ol style="list-style-type: decimal">
+<li>The <tt>politics</tt> dataset is already loaded. Remember that to access a variable in a dataset, you need to use the <tt>$</tt> sign. In this case, the variable you want is called <tt>president</tt> so you need to use the syntax <tt>politics$president</tt>.</li>
+<li>You need to run the <tt>table</tt> command on your variable <em>before</em> you can run <tt>prop.table</tt>.</li>
+</ol>
+<p>Is the result surprising to you? Notice that no candidate received even close to 50%. Why is this the case?</p>
+<iframe src="dcl_interactives/calculate_props.html" frameborder="0" scrolling="no" style="width:100%;height:405px">
+</iframe>
+</div>
 </div>
 <div id="dont-make-a-piechart" class="section level4">
 <h4>Don’t make a piechart</h4>
@@ -671,6 +682,16 @@ Figure 2: Barplot of passenger class distribution on the Titanic
 <li><code>theme_bw()</code>: This last command is for the “theme” layer that just defines a variety of characteristics for the overall look of the figure. I like the <code>theme_bw</code> (bw for black and white) theme over the default theme that comes with <code>ggplot</code>.</li>
 </ol>
 <p>Ggplot is a very flexible system that repeats these same basic layer elements in all the graphs it creates. In an appendix to this book, you can see cookbook examples of all the ways we will we use it to create figures throughout the term.</p>
+<div class="dcl">
+<h4 id="try-it-out-1">Try it out</h4>
+<p>In the interactive <em>R</em> session below, use <tt>ggplot</tt> to construct a barplot of the percent of respondents in each category of presidential election voting from the <tt>president</tt> variable. Keep the following in mind:</p>
+<ol style="list-style-type: decimal">
+<li>You must combine together different elements of ggplot, in this case <tt>ggplot</tt> itself and <tt>geom_bar</tt> with a plus sign to display correctly.</li>
+<li>Be sure to add nice labels for your x and y axes by adding a <tt>labs</tt> command. Keep in mind that if you use <tt>coord_flip</tt> the axes will be reversed on your graph (i.e. the x-axis will represent the vertical axis).</li>
+</ol>
+<iframe src="dcl_interactives/barplot.html" frameborder="0" scrolling="no" style="width:100%;height:405px">
+</iframe>
+</div>
 </div>
 </div>
 <div id="looking-at-the-distribution-of-a-quantitative-variable" class="section level3">
@@ -796,6 +817,18 @@ Figure 4: Histogram of age in the politics data with five year bins
 <p>As Figure <a href="looking-at-distributions.html#fig:hist-agepol-bin5">4</a> shows, I get more or less the same overall impression but a more fine-grained view. I can more easily pick out the two distinct “humps” in the distribution that correspond to the baby boomers and their children. Sometimes adjusting bin width can reveal or hide important trends and sometimes it can just make it more difficult to visualize the distribution. As an exercise, you can play around with the interactive example below.</p>
 <iframe src="https://aarongullickson.shinyapps.io/histogram/?showcase=0" width="672" height="800px">
 </iframe>
+<div class="dcl">
+<h4 id="try-it-out-2">Try it out</h4>
+<p>In the interactive <em>R</em> session below, use <tt>ggplot</tt> to construct a histogram of the distribution of family income from the politics dataset using the <tt>income</tt> variable. Keep the following in mind:</p>
+<ol style="list-style-type: decimal">
+<li>You must combine together different elements of ggplot, in this case <tt>ggplot</tt> itself and <tt>geom_histogram</tt> with a plus sign to display correctly.</li>
+<li>Play around with the size of bins in your histogram by adding a <tt>binwidth</tt> argument to <tt>geom_histogram</tt>.</li>
+<li>Play around with the border and fill color of your histogram bars with the <tt>col</tt> and <tt>fill</tt> arguments to <tt>geom_histogram</tt>.</li>
+<li>Be sure to add nice labels for your x axis by adding a <tt>labs</tt> command.</li>
+</ol>
+<iframe src="dcl_interactives/histogram.html" frameborder="0" scrolling="no" style="width:100%;height:405px">
+</iframe>
+</div>
 <p>What kinds of things should you be looking for in your histogram? There are four general things to be on the lookout for when you examine a histogram.</p>
 <div id="center" class="section level4">
 <h4>Center</h4>
