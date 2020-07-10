@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'/>
+  <script async src="https://cdn.datacamp.com/dcl-react-dev.js.gz"></script>
+</head>
+
+<body>
+<div data-datacamp-exercise data-lang="r" data-show-run-button data-height="400">
+  <code data-type="pre-exercise-code">
+  	# This will get executed each time the exercise gets initialized
+	  load(url("https://github.com/AaronGullickson/combined_stats/blob/master/example_datasets/add_health/popularity.RData?raw=true"))
+	  library(ggplot2)
+  </code>
+  <code data-type="sample-code">
+	# create a scatterplot showing the relationship between parental income (independent variable) and number of friend nominations (dependent variable) in the popularity dataset and add the best-fitting line to the scatterplot
+	ggplot(popularity, aes())
+  
+  
+  </code>
+  <code data-type="solution">
+  # create a scatterplot showing the relationship between parental income (independent variable) and number of friend nominations (dependent variable) in the popularity dataset and add the best-fitting line to the scatterplot  
+  ggplot(popularity, 
+         aes(x=parentinc, 
+             y=indegree))+
+    geom_jitter(alpha=0.1)+
+    geom_smooth(method="lm", se=FALSE)+
+    labs(x="parental income in $1000s", 
+         y="number of friend nominations")+
+    theme_bw()
+  </code>
+  <code data-type="sct">
+  ex() %>% {
+    check_function(., "ggplot") %>% check_arg("data") %>% check_equal()
+    check_function(., "aes") %>% {
+      check_arg(., "x") %>% check_equal(eval=FALSE, 
+                                        incorrect_msg="The `x` aesthetic should be the variable `parentinc`.") 
+      check_arg(., "y") %>% check_equal(eval=FALSE, 
+                                        incorrect_msg="The `y` aesthetic should be the variable `indegree`.") 
+  }
+    check_function(., "geom_jitter") %>% check_arg("alpha")
+    check_function(., "geom_smooth") %>% check_arg("method") %>% check_equal(incorrect_msg="the method should be `lm`")
+    check_function(., "labs", 
+                   not_called_msg="You should provide labels for your axes with the `labs` command." ) %>% {
+    check_arg(., "x", arg_not_specified_msg="You should label the x-axis")
+    check_arg(., "y", arg_not_specified_msg="You should label the y-axis")
+    }
+  }
+  success_msg("Great Job!")
+  </code>
+</div>
+</body>
+</html>

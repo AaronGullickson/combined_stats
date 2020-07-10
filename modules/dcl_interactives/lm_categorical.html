@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'/>
+  <script async src="https://cdn.datacamp.com/dcl-react-dev.js.gz"></script>
+</head>
+
+<body>
+<div data-datacamp-exercise data-lang="r" data-show-run-button data-height="400">
+  <code data-type="pre-exercise-code">
+  	# This will get executed each time the exercise gets initialized
+	  load(url("https://github.com/AaronGullickson/combined_stats/blob/master/example_datasets/earnings/earnings.RData?raw=true"))
+	  options(digits=3)
+  </code>
+  <code data-type="sample-code">
+	# Create a linear model predicting hourly wages by age where you re-center age at 40 years, number of children, gender, and education.
+	model <- lm( , data=earnings)
+	coef(model)
+  
+  </code>
+  <code data-type="solution">
+	# Create a linear model predicting hourly wages by age where you re-center age at 40 years, number of children, gender, and education.
+	model <- lm(wages~I(age-40)+
+	              nchild+
+	              gender+
+	              education, 
+	            data=earnings)
+	coef(model)
+  </code>
+  <code data-type="sct">
+    ex() %>% {
+    check_function(., "lm") %>% {
+      check_arg(., "formula") %>% check_equal()
+      check_arg(., "data") %>% check_equal()
+    }
+  }
+  success_msg("Great Job!")
+  </code>
+</div>
+</body>
+</html>

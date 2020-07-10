@@ -159,7 +159,7 @@ This result is much more compact and will do for our purposes at the moment.
 
 You can easily add an OLS regression line to a scatterplot in `ggplot`. We can do this using the `geom_smooth` function. However we also need to specify that our method of smoothing is "lm" (for linear model) with the `method="lm"` argument. Here is the code for the example earlier: 
 
-```{r scatter-age-violent-line2, echo=FALSE, fig.cap="Use geom_smooth to plot an OLS regression line with or without a confidence interval band"}
+```{r scatter-age-violent-line2, echo=TRUE, fig.cap="Use geom_smooth to plot an OLS regression line with or without a confidence interval band"}
 ggplot(crimes, aes(x=MedianAge, y=Violent))+
   geom_smooth(method="lm", se=TRUE)+
   geom_point()+
@@ -168,6 +168,22 @@ ggplot(crimes, aes(x=MedianAge, y=Violent))+
 ```
 
 You will notice that Figure \@ref(fig:scatter-age-violent-line2) also adds a band of grey. This is the confidence interval band for my line and is drawn by default. We will discuss issues of inference for the OLS regression line below. If you want to remove this you can change the `se` argument in `geom_smooth` to FALSE.
+
+<div class = "dcl">
+
+#### Try it out
+
+In the interactive *R* session below, Create a scatterplot showing the relationship between a student's parental income and the number of friend nominations they receive using the popularity dataset and then add the best fitting line to your plot. Keep the following in mind:
+
+1. You must combine together different elements of ggplot, in this case <tt>ggplot</tt> itself and <tt>geom_boxplot</tt> with a plus sign to display correctly.
+2. Be sure to add nice labels for your x axis by adding a <tt>labs</tt> command.
+3. You will observe significant issues with overplotting, so you should use <tt>geom_jitter</tt> and the <tt>alpha</tt> argument to help see patterns in the data. 
+4. Use <tt>geom_smooth</tt> to add the line. Don't forget to specify the <tt>method</tt>.
+
+Does the best-fitting line surprise you? What did you expect it to look like?
+<iframe src="dcl_interactives/ols_line.html" frameborder="0" scrolling="no" style="width:100%;height:405px"></iframe>
+
+</div>
 
 ### The OLS regression line as a model
 
@@ -290,6 +306,20 @@ Its also possible to re-center an independent variable in the `lm` command witho
 ```{r}
 coef(lm(Violent~I(MedianAge-35), data=crimes))
 ```
+
+<div class = "dcl">
+
+#### Try it out
+
+In the interactive *R* session below, create a linear model predicting hourly wages by age where you re-center age on 40. Keep the following in mind:
+
+1. You will need to fill in the formula part of the <tt>lm</tt> command below. Remember that your dependent variable (in this case wages) goes on the left side of the <tt>~</tt>.
+2. Use the <tt>I(x-number)</tt> syntax as shown above to re-center age in the model formula.
+
+How would you interpret the intercept in the model output?
+<iframe src="dcl_interactives/lm_recenter.html" frameborder="0" scrolling="no" style="width:100%;height:405px"></iframe>
+
+</div>
 
 ### How good is $x$ as a predictor of $y$?
 
@@ -879,6 +909,28 @@ htmlreg(list(m1, m2),
 
 All of the coefficients (except for Catholic, which was tiny anyway) have declined substantially in size. The mean differences from fundamentalist Protestants for both Jews and other religions have basically disappeared and the "None" effect has been severely reduced. In other words, almost all or all of the observed differences in sexual frequency by religious affiliation were indirectly a product of underlying age differences between religious affiliations. If you were just about ready to convert to a different religion to get laid more often, you may want to hold off for the moment. 
 
+<div class = "dcl">
+
+#### Try it out
+
+In the interactive *R* session below, lets try creating a full linear model. We are going to predict hourly wages by the following independent variables:
+
+1. Age, re-centered on 40
+2. Number of children, not re-centered
+3. Gender
+4. Highest educational degree
+
+Keep the following in mind:
+
+1. You will need to fill in the formula part of the <tt>lm</tt> command below. Remember that your dependent variable (in this case wages) goes on the left side of the <tt>~</tt>.
+2. Use the <tt>I(x-number)</tt> syntax as shown above to re-center age in the model formula.
+
+How would you interpret all of the slopes and intercepts in the model output? Are you surprised by any of the results.
+<iframe src="dcl_interactives/lm_categorical.html" frameborder="0" scrolling="no" style="width:100%;height:405px"></iframe>
+
+</div>
+
+
 ------
 
 ## Interaction Terms
@@ -1014,6 +1066,21 @@ round(coef(model),2)
 ```
 
 The results are exactly the same as before. To include an interaction term between two variables I just have to connect them with a `*` rather than a `+` in the `lm` formula. By default, *R* will include each variable separately as well as their interaction. 
+
+<div class = "dcl">
+
+#### Try it out
+
+In the interactive *R* session below, lets try a linear model that predicts hourly wages by number of children, gender, and the interaction between the two variables. 
+
+1. You will need to fill in the formula part of the <tt>lm</tt> command below. Remember that your dependent variable (in this case wages) goes on the left side of the <tt>~</tt>.
+2. Use the <tt>I(x-number)</tt> syntax as shown above to re-center age in the model formula.
+
+What does the interaction term tell you about different wage returns to children for men and women?
+<iframe src="dcl_interactives/lm_interact.html" frameborder="0" scrolling="no" style="width:100%;height:405px"></iframe>
+
+</div>
+
 
 ### Interaction terms with multiple categories
 
