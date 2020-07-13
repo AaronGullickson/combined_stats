@@ -7,7 +7,8 @@ classoption: landscape
 
 ```{r setup9, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-load("../example_datasets/politics/politics.RData")
+library(here)
+load(here("example_datasets","earnings","earnings.RData"))
 ```
 
 # Handout 11: Interpret a slope and intercept
@@ -15,7 +16,7 @@ load("../example_datasets/politics/politics.RData")
 \Large
 
 ```{r}
-coef(lm(income~I(age-18), data=politics))
+coef(lm(wages~I(age-18), data=earnings))
 ```
 
 &nbsp;

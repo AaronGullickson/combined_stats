@@ -13,20 +13,20 @@ load("../example_datasets/earnings/earnings.RData")
 # Handout 13: Fill out the "slopes" for the regression models with different references
 
 ```{r}
-round(tapply(earnings$wages, earnings$race, mean, na.rm=TRUE),0)
+round(tapply(earnings$wages, earnings$race, mean, na.rm=TRUE),2)
 ```
 
-```{r echo=FALSE, fig.width=4, fig.height=2, out.width='400px', out.height='200px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
+```{r echo=FALSE, fig.width=5, fig.height=1.6, out.width='400px', out.height='200px', dpi=300, fig.align='center', dev.args = list(bg = 'transparent')}
 par(mar=c(1,4,1,1), cex.axis=0.6, cex.lab=0.6)
 plot(1, 67, cex=0.7, pch=21, bg="grey", bty="n", xaxt="n",
      yaxt="n", xlab="", ylab="wages (in dollars)",
      ylim=c(15,30), xlim=c(0.8,2))
 text(1,67,"White",cex=0.7, pos=2)
-axis(2, at=seq(from=30,to=80, by=10), las=1)
-abline(h=seq(from=30,to=80,by=5), lty=2, lwd=0.5, col="grey")
+axis(2, at=seq(from=15,to=30, by=5), las=1)
+abline(h=seq(from=15,to=30,by=1), lty=2, lwd=0.5, col="grey")
 ```
 
-\Large
+\large
 
 | Variable   | Estimate    | Estimate    | 
 |:-----------|------------:|------------:|

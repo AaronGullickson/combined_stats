@@ -7,17 +7,16 @@ classoption: landscape
 
 ```{r setup12, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-load("../example_datasets/politics/politics.RData")
+library(here)
+load(here("example_datasets","earnings","earnings.RData"))
 ```
 
 # Handout 14: Interpret the slope and intercept of regression model with categorical predictors
 
 ```{r}
-round(summary(lm(income~race+educ+I(age-25), data=politics))$coef,2)
+round(summary(lm(wages~race+education+I(age-25), data=earnings))$coef,2)
 ```
-\Large
-
-&nbsp;
+\large
 
 Interpret the slope on Black in a single sentence:
 
