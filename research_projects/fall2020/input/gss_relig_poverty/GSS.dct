@@ -1,0 +1,12 @@
+infile dictionary {
+    _column(1)    numeric                               YEAR   %20f  "Gss year for this respondent                       "
+   _column(21)    numeric                             ATTEND   %20f  "How often r attends religious services"
+   _column(41)    numeric                             REGION   %20f  "Region of interview"
+   _column(61)    numeric                             HOMPOP   %20f  "Number of persons in household"
+   _column(81)    numeric                               RACE   %20f  "Race of respondent"
+  _column(101)    numeric                                SEX   %20f  "Respondents sex"
+  _column(121)    numeric                                AGE   %20f  "Age of respondent"
+  _column(141)    numeric                             CHILDS   %20f  "Number of children"
+  _column(161)    numeric                            WRKSTAT   %20f  "Labor force status"
+  _column(181)    numeric                           INCOME16   %20f  "Total family income"
+}
