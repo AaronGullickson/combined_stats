@@ -1076,8 +1076,11 @@ Given that you have identified an IID violation in your model, what can you do a
 Lets take the case of heteroscedasticity. If you observe a cone shape to the residuals, it suggests that the absolute size of the residuals is growing with the size of the predicted value of your dependent variable. In relative terms (i.e. as a percentage of the predicted value), the size of those residuals may be more constant. A simple solution would be to log our dependent variable because this would move us from a model of absolute change in the dependent variable to one of relative change.
 
 ```{r heteroscedasticity-log, fig.cap='Residual plot of model predicting the log of box office returns by movie runtime'}
+# NOTE: There is currently a bug in augment that does not produce .resid when variables
+# are transformed, so we will use the standardized residual instead, which should 
+# be the same with regard to issues of linearity
 model <- lm(log(BoxOffice)~Runtime, data=movies)
-ggplot(augment(model), aes(x=.fitted, y=.resid))+
+ggplot(augment(model), aes(x=.fitted, y=.std.resid))+
   geom_point(alpha=0.7)+
   geom_hline(yintercept = 0, linetype=2)+
   theme_bw()+
