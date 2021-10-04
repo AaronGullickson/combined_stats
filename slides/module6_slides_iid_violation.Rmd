@@ -163,7 +163,7 @@ There are a number of potential solutions to the iid problem. These include:
 .pull-left[
 ```{r heteroscedasticity-original, echo=FALSE}
 model <- lm(BoxOffice~TomatoRating, data=movies)
-ggplot(augment(model), aes(x=.fitted, y=.resid))+
+ggplot(augment(model), aes(x=.fitted, y=.std.resid))+
   geom_point(alpha=0.7)+
   geom_hline(yintercept=0, linetype=2)+
   labs(x="fitted values of box office returns by Tomato Rating",
@@ -177,7 +177,7 @@ ggplot(augment(model), aes(x=.fitted, y=.resid))+
 .pull-right[
 ```{r heteroscedasticity-log, echo=FALSE}
 model <- lm(log(BoxOffice)~TomatoRating, data=movies)
-ggplot(augment(model), aes(x=.fitted, y=.resid))+
+ggplot(augment(model), aes(x=.fitted, y=.std.resid))+
   geom_point(alpha=0.7)+
   geom_hline(yintercept=0, linetype=2)+
   labs(x="fitted values of log box office returns by Tomato Rating",

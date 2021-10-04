@@ -711,7 +711,7 @@ plot_ly(x=jitter(sex$educ,10), y=jitter(sex$age,10), z=jitter(sex$sexf,10)) %>%
 
 ---
 
-## `r icon::fa("calculator")` Calculating the model
+## `r icons::fontawesome("calculator")` Calculating the model
 
 ```{r}
 model <- lm(sexf~I(educ-12)+I(age-18), data=sex)

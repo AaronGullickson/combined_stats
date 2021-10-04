@@ -36,7 +36,7 @@ When we refer to the **distribution** of a variable, we are referring to how the
 --
 
 .pull-left[
-### `r icon::fa("binoculars")` Look at it
+### `r icons::fontawesome("binoculars")` Look at it
 
 - We can make a plot that shows the distribution.
 - We make different kinds of plots for categorical and quantitative variables.
@@ -47,7 +47,7 @@ When we refer to the **distribution** of a variable, we are referring to how the
 --
 
 .pull-left[
-### `r icon::fa("square-root-alt")` Measure it
+### `r icons::fontawesome("square-root-alt")` Measure it
 
 - We can calculate summary measures of the **center** and **spread** of the distribution.
 - We an only calculate summary measures for quantitative variables.

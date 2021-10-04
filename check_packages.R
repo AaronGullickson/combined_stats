@@ -15,7 +15,7 @@ packages = c("here", "texreg", "pander","stargazer",
              "ggplot2","ggalt","scales","ggrepel", "plotly",
              "viridis", "latex2exp",
              "scatterplot3d","corrgram","gganimate","gifski",
-             "devtools")
+             "devtools","remotes")
 
 package.check <- lapply(packages, FUN = function(x) {
   if (!require(x, character.only = TRUE)) {
@@ -29,11 +29,22 @@ if(!require(patchwork)) {
   library(patchwork)
 }
 
-if(!require(icon)) {
-  devtools::install_github("ropenscilabs/icon")
+if(!require(icons)) {
+  remotes::install_github("mitchelloharawild/icons")
 } else {
   #don't load to avoid conflicts
-  detach("package:icon", unload=TRUE)
+  detach("package:icons", unload=TRUE)
+}
+
+#download icons
+if(!icons::icon_installed(icons::ionicons)) {
+  icons::download_ionicons()
+}
+if(!icons::icon_installed(icons::academicons)) {
+  icons::download_academicons()
+}
+if(!icons::icon_installed(icons::fontawesome)) {
+  icons::download_fontawesome()
 }
 
 if(!require(emo)) {

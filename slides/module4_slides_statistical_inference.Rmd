@@ -521,7 +521,7 @@ where $t$ is the **t-statistic** and will be a number somewhat larger than 1.96.
 
 ---
 
-## `r  icon::fa("calculator")` Calculating the t-statistic
+## `r  icons::fontawesome("calculator")` Calculating the t-statistic
 
 The t-statistic you get depends on two characteristics:
 
@@ -1125,7 +1125,7 @@ In my case:
 --
 
 .pull-right[
-### `r icon::fa("calculator")` Calculation
+### `r icons::fontawesome("calculator")` Calculation
 
 We use the `pt` command to get the area in the lower tail and multiply by two to get both tails:
 

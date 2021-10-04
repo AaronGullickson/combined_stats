@@ -105,8 +105,9 @@ We will look at data collected by myself and Nicole Marwell on the spatial distr
 
 ```{r nyc-map, echo=FALSE, warning=FALSE, message=FALSE}
 #load health area map and merge it with data
-ha_shp <- readShapeSpatial(here("modules","resources","health_area_shapefiles/nyha"),
-                           proj4string=CRS("+proj=lcc +lat_1=41.03333333333333+lat_2=40.66666666666666 +lat_0=40.16666666666666 +lon_0=-74 +x_0=300000.0000000001 +y_0=0 +ellps=GRS80 +datum=NAD83 +to_meter=0.3048006096012192 +no_defs"))
+ha_shp <- readShapeSpatial(here("modules","resources",
+                                "health_area_shapefiles/nyha"),
+                           proj4string=CRS("+proj=utm +zone=19 +ellps=GRS80 +datum=NAD83"))
 #Health areas not uniquely identified without boro code
 ha_shp@data$health_area <- ha_shp@data$BoroCode*10000+ha_shp@data$HealthArea
 ha_shp@data <- merge(ha_shp@data, nyc, all.x=TRUE)

@@ -157,7 +157,7 @@ ggplot(movies, aes(x=TomatoRating,
 
 ---
 
-## `r icon::fa("user-ninja")` Adjusting span
+## `r icons::fontawesome("user-ninja")` Adjusting span
 
 .pull-left[
 ```{r adjust-span, fig.show="hide"}
@@ -966,7 +966,7 @@ geom_jitter(alpha=0.005, width = 1)+
 
 ---
 
-## `r icon::fa("user-ninja")` Plotting the spline model
+## `r icons::fontawesome("user-ninja")` Plotting the spline model
 
 .pull-left[
 We cannot use `geom_smooth` to show the fit of this spline model. However, with some additional effort, we can plot the effect on a graph. 

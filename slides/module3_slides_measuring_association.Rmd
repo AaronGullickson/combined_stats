@@ -311,7 +311,7 @@ ggplot(titanic, aes(x=survival, y=..prop..,
 
 ---
 
-## `r icon::fa("user-ninja")` Presidential choice by education
+## `r icons::fontawesome("user-ninja")` Presidential choice by education
 
 
 .pull-left[
@@ -344,7 +344,7 @@ ggplot(subset(politics, president!="No Vote"),
 
 ---
 
-## `r icon::fa("user-ninja")` Super fancy three-way table
+## `r icons::fontawesome("user-ninja")` Super fancy three-way table
 
 .pull-left[
 ```{r three-way-table, fig.show="hide"}
@@ -702,7 +702,7 @@ ggplot(popularity, aes(x=pseudoGPA, y=indegree))+
 
 ---
 
-## `r icon::fa("user-ninja")` Adding a third variable by color
+## `r icons::fontawesome("user-ninja")` Adding a third variable by color
 
 .pull-left[
 ```{r scatter-color, fig.show="hide"}
@@ -731,7 +731,7 @@ $$r=\frac{1}{n-1}\sum^n_{i=1} (\frac{x_i-\bar{x}}{s_x}*\frac{y_i-\bar{y}}{s_y})$
 
 --
 
-### `r icon::fa("compact-disc")` Let's break it down
+### `r icons::fontawesome("compact-disc")` Let's break it down
 
 --
 
@@ -836,7 +836,7 @@ cor(crimes$Unemployment, crimes$Property)
 --
 
 .pull-left[
-### `r icon::fa("directions")` Direction
+### `r icons::fontawesome("directions")` Direction
 The sign of $r$ indicates the direction of the relationship. Positive values indicate a positive relationship and negative values indicate a negative relationship. Zero indicates no relationship.
 ]
 

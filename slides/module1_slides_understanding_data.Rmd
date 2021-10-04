@@ -206,7 +206,7 @@ knitr::kable(titanic[c(13, 1238, 2, 306),], row.names=FALSE,
 
 class: inverse, middle
 
-.left-column[## `r icon::fa("pen-square")` Your Turn]
+.left-column[## `r icons::fontawesome("pen-square")` Your Turn]
 .right-column[
 
 ### Think of a dataset measuring something you might care about.
@@ -493,7 +493,7 @@ There are two different views of exactly what the use of statistics contributes 
 --
 
 .pull-left[
-### `r icon::fa("flask")` Pseudo-Experimental
+### `r icons::fontawesome("flask")` Pseudo-Experimental
 
 - We use statistical modeling to try to mimic the stronger causal claims of experimental research. 
 - This can be as simple as "controlling" for other variables to mimic random assignment of a treatment, to the use of "natural" experiments.
@@ -502,7 +502,7 @@ There are two different views of exactly what the use of statistics contributes 
 --
 
 .pull-right[
-### `r icon::fa("binoculars")` Formal Description
+### `r icons::fontawesome("binoculars")` Formal Description
 
 - We use statistical modeling to describe what we observe in the data in a formal, systematic, and replicable way. 
 - We show how the data are either consistent or inconsistent with certain views of a social process as derived from theory. 
