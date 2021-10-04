@@ -1,0 +1,16 @@
+bookdown::bs4_book:
+  theme:
+     primary: "#000080"
+     danger:  "#dc3545"   # default .rmdcaution = red
+     success: "#198754"   # default .rmdimportant = green
+     info:    "#0dcaf0"   # default .rmdtip = cyan
+     warning: "#ffc107"   # default .rmdwarning = yellow
+     base_font: 
+      google: Atkinson Hyperlegible
+  css: my_styles.css
+bookdown::pdf_book:
+  number_section: false
+bookdown::gitbook:
+  split_by: "section+number"
+  number_section: false
+  css: my_styles.css

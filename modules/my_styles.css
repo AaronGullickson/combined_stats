@@ -17,6 +17,11 @@ caption {
   text-align: left;
 }
 
+/* highlight links with background color when hovered over */
+a:hover {
+    background-color: #ffe5b4;
+}
+
 /* class for DataCamp Light interactive div */
 .dcl {
  border-radius: 10px 10px 10px 10px;

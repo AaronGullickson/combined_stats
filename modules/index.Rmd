@@ -3,13 +3,6 @@ title: "Statistical Analysis in Sociology"
 author: "Aaron Gullickson"
 date: "`r Sys.Date()`"
 knit: "bookdown::render_book"
-output: 
-  bookdown::pdf_book:
-    number_section: false
-  bookdown::gitbook:
-    split_by: "section+number"
-    number_section: false
-    css: my_styles.css
 url: https\://stat-analysis.netlify.app/
 github-repo: AaronGullickson/combined_stats
 site: bookdown::bookdown_site
