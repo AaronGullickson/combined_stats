@@ -7,3 +7,4 @@ modules/_bookdown_files
 slides/*.html
 slides/*module*files/
 admin/*
+slides/libs
